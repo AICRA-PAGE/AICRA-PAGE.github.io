@@ -1,0 +1,63 @@
+{% comment %}
+Header Component - ByteByteGo Style Navigation
+{% endcomment %}
+
+<header class="site-header{% if site.navbar_fixed %} fixed{% endif %}">
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="{{ '/' | relative_url }}" class="nav-brand">
+        {% if site.logo %}
+        <img src="{{ site.logo | relative_url }}" alt="{{ site.title }}" class="nav-logo">
+        {% endif %}
+        <span class="nav-title">{{ site.title | default: "AICRA" }}</span>
+      </a>
+
+      <button class="nav-toggle" aria-label="Toggle navigation" id="nav-toggle">
+        <span class="hamburger"></span>
+      </button>
+
+      <ul class="nav-menu" id="nav-menu">
+        {% for link in site.nav_links %}
+        <li class="nav-item">
+          <a href="{{ link.url | relative_url }}" class="nav-link {% if page.url == link.url %}active{% endif %}">
+            {{ link.name }}
+          </a>
+        </li>
+        {% endfor %}
+
+        {% unless site.nav_links %}
+        <li class="nav-item">
+          <a href="{{ '/' | relative_url }}" class="nav-link {% if page.url == '/' %}active{% endif %}">Home</a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ '/blog/' | relative_url }}" class="nav-link {% if page.url contains '/blog' %}active{% endif %}">Blog</a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ '/publications/' | relative_url }}" class="nav-link {% if page.url contains '/publications' %}active{% endif %}">Publications</a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ '/team/' | relative_url }}" class="nav-link {% if page.url contains '/team' %}active{% endif %}">Team</a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ '/about/' | relative_url }}" class="nav-link {% if page.url contains '/about' %}active{% endif %}">About</a>
+        </li>
+        {% endunless %}
+
+        <li class="nav-item">
+          <button id="dark-mode-toggle" class="dark-mode-btn" aria-label="Toggle dark mode">
+            <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</header>
+
+<script>
+  // Mobile navigation toggle
+  document.getElementById('nav-toggle').addEventListener('click', function() {
+    document.getElementById('nav-menu').classList.toggle('active');
+    this.classList.toggle('active');
+  });
+</script>

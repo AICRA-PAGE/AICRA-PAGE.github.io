@@ -1,0 +1,146 @@
+---
+layout: default
+---
+
+<article class="page-content">
+  <header class="page-header">
+    <h1 class="page-title">{{ page.title }}</h1>
+    {% if page.description %}
+    <p class="page-description">{{ page.description }}</p>
+    {% endif %}
+  </header>
+
+  <div class="page-body">
+    {{ content }}
+  </div>
+</article>
+
+<style>
+.page-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+}
+
+.page-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-primary, #1f2937);
+  margin-bottom: 1rem;
+}
+
+.page-description {
+  font-size: 1.1rem;
+  color: var(--text-secondary, #6b7280);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.page-body {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: var(--text-primary, #1f2937);
+}
+
+.page-body h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-top: 3rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--primary-color, #2563eb);
+}
+
+.page-body h3 {
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.page-body ul, .page-body ol {
+  margin-left: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.page-body li {
+  margin-bottom: 0.5rem;
+}
+
+.page-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+}
+
+.page-body th, .page-body td {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color, #e5e7eb);
+  text-align: left;
+}
+
+.page-body th {
+  background: var(--bg-secondary, #f9fafb);
+  font-weight: 600;
+}
+
+.page-body a {
+  color: var(--primary-color, #2563eb);
+  text-decoration: none;
+}
+
+.page-body a:hover {
+  text-decoration: underline;
+}
+
+.page-body hr {
+  border: none;
+  border-top: 1px solid var(--border-color, #e5e7eb);
+  margin: 2rem 0;
+}
+
+.page-body strong {
+  font-weight: 600;
+}
+
+.page-body code {
+  background: var(--bg-secondary, #f3f4f6);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+@media (max-width: 768px) {
+  .page-content {
+    padding: 1rem;
+  }
+
+  .page-title {
+    font-size: 2rem;
+  }
+
+  .page-body h2 {
+    font-size: 1.5rem;
+  }
+}
+
+[data-theme="dark"] .page-title,
+[data-theme="dark"] .page-body {
+  color: var(--text-primary, #f3f4f6);
+}
+
+[data-theme="dark"] .page-body th {
+  background: var(--bg-tertiary, #374151);
+}
+
+[data-theme="dark"] .page-body code {
+  background: var(--bg-tertiary, #374151);
+}
+</style>

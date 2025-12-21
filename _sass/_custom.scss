@@ -1,0 +1,877 @@
+// AICRA Custom Styles - ByteByteGo Inspired
+// ==========================================
+
+// Color Variables
+$primary-color: #1a73e8;
+$secondary-color: #5f6368;
+$accent-color: #ea4335;
+$bg-light: #f8f9fa;
+$bg-dark: #1a1a2e;
+$text-primary: #202124;
+$text-secondary: #5f6368;
+$border-color: #e8eaed;
+$card-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+$card-hover-shadow: 0 14px 28px rgba(0,0,0,0.15), 0 10px 10px rgba(0,0,0,0.12);
+
+// Typography
+$font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+$font-mono: 'Fira Code', 'Source Code Pro', monospace;
+
+// ==========================================
+// Hero Section (ByteByteGo Style)
+// ==========================================
+.hero-section {
+  background: linear-gradient(135deg, $bg-dark 0%, darken($bg-dark, 10%) 100%);
+  color: white;
+  padding: 4rem 2rem;
+  text-align: center;
+  margin-bottom: 3rem;
+  border-radius: 0 0 2rem 2rem;
+
+  .hero-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: linear-gradient(90deg, #fff 0%, #a8dadc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero-subtitle {
+    font-size: 1.25rem;
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-top: 2rem;
+
+    .stat-item {
+      text-align: center;
+
+      .stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: $primary-color;
+      }
+
+      .stat-label {
+        font-size: 0.875rem;
+        opacity: 0.8;
+      }
+    }
+  }
+}
+
+// ==========================================
+// Post Cards (ByteByteGo Style)
+// ==========================================
+.post-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+  padding: 0 1rem;
+}
+
+.post-card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: $card-shadow;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid $border-color;
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: $card-hover-shadow;
+
+    .post-thumbnail img {
+      transform: scale(1.05);
+    }
+  }
+
+  .post-thumbnail {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+    background: linear-gradient(135deg, $primary-color 0%, darken($primary-color, 15%) 100%);
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .post-category {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      background: rgba(255, 255, 255, 0.95);
+      color: $primary-color;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    // Default thumbnail with icon
+    &.default-thumbnail {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .thumbnail-icon {
+        font-size: 4rem;
+        color: rgba(255, 255, 255, 0.3);
+      }
+    }
+  }
+
+  .post-content {
+    padding: 1.5rem;
+
+    .post-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: $text-primary;
+      margin-bottom: 0.75rem;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+
+      a {
+        color: inherit;
+        text-decoration: none;
+
+        &:hover {
+          color: $primary-color;
+        }
+      }
+    }
+
+    .post-excerpt {
+      font-size: 0.9rem;
+      color: $text-secondary;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .post-meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.8rem;
+      color: $text-secondary;
+
+      .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+
+        i {
+          font-size: 0.9rem;
+        }
+      }
+
+      .reading-time {
+        background: $bg-light;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+      }
+    }
+  }
+
+  .post-tags {
+    padding: 0 1.5rem 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+
+    .tag {
+      background: $bg-light;
+      color: $text-secondary;
+      padding: 0.25rem 0.75rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      transition: all 0.2s;
+
+      &:hover {
+        background: $primary-color;
+        color: white;
+      }
+    }
+  }
+}
+
+// ==========================================
+// Featured Post (Large Card)
+// ==========================================
+.featured-post {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 0;
+  margin-bottom: 1rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+
+  .post-thumbnail {
+    height: 100%;
+    min-height: 300px;
+    border-radius: 16px 0 0 16px;
+
+    @media (max-width: 768px) {
+      border-radius: 16px 16px 0 0;
+      min-height: 200px;
+    }
+  }
+
+  .post-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2rem;
+    background: white;
+    border-radius: 0 16px 16px 0;
+    border: 1px solid $border-color;
+    border-left: none;
+
+    @media (max-width: 768px) {
+      border-radius: 0 0 16px 16px;
+      border: 1px solid $border-color;
+      border-top: none;
+    }
+
+    .featured-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: linear-gradient(90deg, $accent-color, darken($accent-color, 10%));
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      width: fit-content;
+    }
+
+    .post-title {
+      font-size: 1.75rem;
+      -webkit-line-clamp: 3;
+    }
+
+    .post-excerpt {
+      -webkit-line-clamp: 4;
+    }
+  }
+}
+
+// ==========================================
+// Section Headers
+// ==========================================
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  padding: 0 1rem;
+
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: $text-primary;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    &::before {
+      content: '';
+      width: 4px;
+      height: 1.5rem;
+      background: $primary-color;
+      border-radius: 2px;
+    }
+  }
+
+  .view-all {
+    color: $primary-color;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+// ==========================================
+// Research Areas / Categories Grid
+// ==========================================
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  padding: 0 1rem;
+  margin-bottom: 3rem;
+}
+
+.category-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: $card-shadow;
+  border: 1px solid $border-color;
+  transition: all 0.3s ease;
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: $card-hover-shadow;
+    border-color: $primary-color;
+
+    .category-icon {
+      transform: scale(1.1);
+    }
+  }
+
+  .category-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    transition: transform 0.3s ease;
+  }
+
+  .category-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: $text-primary;
+    margin-bottom: 0.5rem;
+  }
+
+  .category-count {
+    font-size: 0.8rem;
+    color: $text-secondary;
+  }
+}
+
+// ==========================================
+// Post Page Layout (Single Post)
+// ==========================================
+.post-header {
+  max-width: 800px;
+  margin: 0 auto 2rem;
+  padding: 2rem 1rem;
+
+  .post-category-label {
+    display: inline-block;
+    background: $primary-color;
+    color: white;
+    padding: 0.25rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+    color: $text-primary;
+
+    @media (max-width: 768px) {
+      font-size: 1.75rem;
+    }
+  }
+
+  .post-meta-full {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid $border-color;
+
+    .author-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+
+      .author-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: $primary-color;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+      }
+
+      .author-details {
+        .author-name {
+          font-weight: 600;
+          color: $text-primary;
+        }
+
+        .publish-date {
+          font-size: 0.85rem;
+          color: $text-secondary;
+        }
+      }
+    }
+
+    .post-stats {
+      display: flex;
+      gap: 1rem;
+      margin-left: auto;
+
+      .stat {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        color: $text-secondary;
+        font-size: 0.9rem;
+      }
+    }
+  }
+}
+
+.post-featured-image {
+  max-width: 1000px;
+  margin: 0 auto 3rem;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: $card-shadow;
+
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+}
+
+.post-body {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 1rem;
+
+  h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 2.5rem 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid $primary-color;
+  }
+
+  h3 {
+    font-size: 1.35rem;
+    font-weight: 600;
+    margin: 2rem 0 0.75rem;
+  }
+
+  p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+    color: $text-primary;
+  }
+
+  ul, ol {
+    margin-bottom: 1.5rem;
+    padding-left: 1.5rem;
+
+    li {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  // Info Box (ByteByteGo Style)
+  .info-box {
+    background: linear-gradient(135deg, lighten($primary-color, 40%) 0%, lighten($primary-color, 45%) 100%);
+    border-left: 4px solid $primary-color;
+    padding: 1.5rem;
+    margin: 2rem 0;
+    border-radius: 0 12px 12px 0;
+
+    .info-title {
+      font-weight: 700;
+      color: $primary-color;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+  }
+
+  // Warning Box
+  .warning-box {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    border-left: 4px solid #ffc107;
+    padding: 1.5rem;
+    margin: 2rem 0;
+    border-radius: 0 12px 12px 0;
+  }
+
+  // Danger Box
+  .danger-box {
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    border-left: 4px solid $accent-color;
+    padding: 1.5rem;
+    margin: 2rem 0;
+    border-radius: 0 12px 12px 0;
+  }
+
+  // Code Blocks
+  pre {
+    background: $bg-dark;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+    overflow-x: auto;
+
+    code {
+      font-family: $font-mono;
+      font-size: 0.9rem;
+      color: #e2e8f0;
+    }
+  }
+
+  code {
+    font-family: $font-mono;
+    background: $bg-light;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+
+  // Tables (ByteByteGo Style)
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2rem 0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: $card-shadow;
+
+    th {
+      background: $primary-color;
+      color: white;
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    td {
+      padding: 1rem;
+      border-bottom: 1px solid $border-color;
+    }
+
+    tr:nth-child(even) {
+      background: $bg-light;
+    }
+
+    tr:hover {
+      background: lighten($primary-color, 45%);
+    }
+  }
+
+  // Blockquotes
+  blockquote {
+    border-left: 4px solid $primary-color;
+    margin: 2rem 0;
+    padding: 1rem 1.5rem;
+    background: $bg-light;
+    border-radius: 0 12px 12px 0;
+    font-style: italic;
+    color: $text-secondary;
+  }
+}
+
+// ==========================================
+// Newsletter Signup (ByteByteGo Style)
+// ==========================================
+.newsletter-section {
+  background: linear-gradient(135deg, $bg-dark 0%, darken($bg-dark, 10%) 100%);
+  color: white;
+  padding: 4rem 2rem;
+  text-align: center;
+  margin: 4rem 0;
+  border-radius: 16px;
+
+  .newsletter-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .newsletter-desc {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    max-width: 500px;
+    margin: 0 auto 2rem;
+  }
+
+  .newsletter-form {
+    display: flex;
+    gap: 1rem;
+    max-width: 500px;
+    margin: 0 auto;
+
+    @media (max-width: 576px) {
+      flex-direction: column;
+    }
+
+    input[type="email"] {
+      flex: 1;
+      padding: 1rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    button {
+      background: $primary-color;
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+
+      &:hover {
+        background: darken($primary-color, 10%);
+      }
+    }
+  }
+}
+
+// ==========================================
+// Footer
+// ==========================================
+.site-footer {
+  background: $bg-dark;
+  color: white;
+  padding: 3rem 2rem;
+  margin-top: 4rem;
+
+  .footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .footer-main {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 3rem;
+    padding-bottom: 2rem;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+
+  .footer-brand {
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      margin-bottom: 1rem;
+
+      .footer-logo-img {
+        height: 40px;
+        width: auto;
+      }
+
+      .footer-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: white;
+      }
+    }
+
+    .footer-description {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+  }
+
+  .footer-links {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+
+    @media (max-width: 576px) {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .footer-section {
+    h4 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1rem;
+      color: white;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      li {
+        margin-bottom: 0.5rem;
+
+        a {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          color: rgba(255, 255, 255, 0.7);
+          text-decoration: none;
+          font-size: 0.9rem;
+          transition: color 0.2s;
+
+          svg {
+            flex-shrink: 0;
+          }
+
+          &:hover {
+            color: white;
+          }
+        }
+      }
+    }
+  }
+
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.85rem;
+
+    @media (max-width: 576px) {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .copyright {
+      color: rgba(255, 255, 255, 0.6);
+      margin: 0;
+    }
+
+    .powered-by {
+      color: rgba(255, 255, 255, 0.5);
+      margin: 0;
+
+      a {
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+
+        &:hover {
+          color: white;
+        }
+      }
+    }
+  }
+}
+
+// ==========================================
+// Dark Mode Support
+// ==========================================
+@media (prefers-color-scheme: dark) {
+  .post-card {
+    background: lighten($bg-dark, 5%);
+    border-color: rgba(255, 255, 255, 0.1);
+
+    .post-content {
+      .post-title a {
+        color: white;
+      }
+
+      .post-excerpt {
+        color: rgba(255, 255, 255, 0.7);
+      }
+    }
+  }
+
+  .category-card {
+    background: lighten($bg-dark, 5%);
+    border-color: rgba(255, 255, 255, 0.1);
+
+    .category-name {
+      color: white;
+    }
+  }
+
+  .post-body {
+    h2, h3, p, li {
+      color: rgba(255, 255, 255, 0.9);
+    }
+  }
+}
+
+// ==========================================
+// Responsive Design
+// ==========================================
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 2rem 1rem;
+
+    .hero-title {
+      font-size: 1.75rem;
+    }
+
+    .hero-stats {
+      gap: 1.5rem;
+
+      .stat-item .stat-number {
+        font-size: 1.5rem;
+      }
+    }
+  }
+
+  .post-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+}

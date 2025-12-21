@@ -1,0 +1,124 @@
+---
+layout: default
+---
+
+{% include hero-section.html %}
+
+<div class="home-content">
+  {% if site.posts.size > 0 %}
+  <!-- Featured Post -->
+  {% assign featured_post = site.posts | where: "featured", true | first %}
+  {% if featured_post %}
+  <section class="section featured-section">
+    <div class="section-header">
+      <h2>Featured</h2>
+    </div>
+    {% include post-card.html post=featured_post featured=true %}
+  </section>
+  {% endif %}
+
+  <!-- Latest Posts -->
+  <section class="section posts-section">
+    <div class="section-header">
+      <h2>Latest Articles</h2>
+      <a href="{{ '/blog/' | relative_url }}" class="view-all">View All →</a>
+    </div>
+    <div class="posts-grid">
+      {% for post in site.posts limit:6 %}
+        {% unless post.featured %}
+        {% include post-card.html post=post %}
+        {% endunless %}
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- Research Areas -->
+  <section class="section research-section">
+    <div class="section-header">
+      <h2>Research Areas</h2>
+    </div>
+    <div class="category-grid">
+      <a href="{{ '/blog/category/llm-security' | relative_url }}" class="category-card">
+        <div class="category-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <h3>LLM Security</h3>
+        <p>대규모 언어 모델 보안 취약점 분석</p>
+      </a>
+
+      <a href="{{ '/blog/category/agentic-ai' | relative_url }}" class="category-card">
+        <div class="category-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </div>
+        <h3>Agentic AI</h3>
+        <p>AI 에이전트 시스템 보안 연구</p>
+      </a>
+
+      <a href="{{ '/blog/category/mcp-security' | relative_url }}" class="category-card">
+        <div class="category-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+        </div>
+        <h3>MCP Security</h3>
+        <p>Model Context Protocol 보안</p>
+      </a>
+
+      <a href="{{ '/blog/category/prompt-injection' | relative_url }}" class="category-card">
+        <div class="category-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3>Prompt Injection</h3>
+        <p>프롬프트 인젝션 공격/방어</p>
+      </a>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="section about-section">
+    <div class="about-card">
+      <div class="about-content">
+        <h2>About AICRA</h2>
+        <p>
+          <strong>인공지능보안연구회 (AICRA)</strong>는 AI 시스템의 보안을 연구하고
+          안전한 AI 생태계 구축에 기여하는 연구 단체입니다.
+        </p>
+        <p>
+          We research AI system security and contribute to building a safer AI ecosystem.
+        </p>
+        <a href="{{ '/about/' | relative_url }}" class="btn-primary">Learn More</a>
+      </div>
+      <div class="about-stats">
+        <div class="stat-box">
+          <span class="stat-number">{{ site.posts | size }}</span>
+          <span class="stat-label">Publications</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number">{{ site.data.team.members | size | default: "10+" }}</span>
+          <span class="stat-label">Researchers</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number">{{ site.categories | size }}</span>
+          <span class="stat-label">Research Areas</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- News Section -->
+  {% if page.news and site.announcements.enabled %}
+  <section class="section news-section">
+    <div class="section-header">
+      <h2>News & Announcements</h2>
+    </div>
+    <div class="news-list">
+      {% assign news = site.news | reverse %}
+      {% for item in news limit: 5 %}
+      <div class="news-item">
+        <span class="news-date">{{ item.date | date: "%Y-%m-%d" }}</span>
+        <span class="news-content">{{ item.content | markdownify | strip_html | truncate: 100 }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+</div>

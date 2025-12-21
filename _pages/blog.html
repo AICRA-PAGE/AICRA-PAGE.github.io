@@ -1,0 +1,129 @@
+---
+layout: default
+title: Blog
+permalink: /blog/
+description: AI 보안 연구 아티클 및 분석
+---
+
+<div class="blog-page">
+  <header class="page-header">
+    <h1>Research Blog</h1>
+    <p class="page-description">
+      AI 보안의 최신 연구, 분석, 그리고 인사이트를 공유합니다.
+    </p>
+  </header>
+
+  <!-- Category Filter -->
+  <nav class="category-filter">
+    <a href="{{ '/blog/' | relative_url }}" class="filter-btn active">All</a>
+    {% for category in site.categories %}
+    <a href="{{ '/blog/category/' | append: category[0] | downcase | relative_url }}" class="filter-btn">
+      {{ category[0] }}
+    </a>
+    {% endfor %}
+  </nav>
+
+  <!-- Posts Grid -->
+  <div class="posts-grid">
+    {% for post in site.posts %}
+      {% include post-card.html post=post %}
+    {% endfor %}
+  </div>
+
+  {% if site.posts.size == 0 %}
+  <div class="empty-state">
+    <p>아직 게시된 글이 없습니다.</p>
+    <p>곧 새로운 연구 내용이 업로드됩니다.</p>
+  </div>
+  {% endif %}
+</div>
+
+<style>
+.blog-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding: 2rem 0;
+}
+
+.page-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.page-description {
+  font-size: 1.1rem;
+  color: var(--text-secondary, #666);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.category-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+}
+
+.filter-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  text-decoration: none;
+  color: var(--text-secondary, #666);
+  background: var(--bg-secondary, #f5f5f5);
+  transition: all 0.2s;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+  background: var(--primary-color, #2563eb);
+  color: white;
+}
+
+.posts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text-secondary, #666);
+}
+
+@media (max-width: 768px) {
+  .blog-page {
+    padding: 1rem;
+  }
+
+  .page-header h1 {
+    font-size: 2rem;
+  }
+
+  .posts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+[data-theme="dark"] .filter-btn {
+  background: var(--bg-tertiary, #374151);
+  color: var(--text-secondary, #9ca3af);
+}
+
+[data-theme="dark"] .filter-btn:hover,
+[data-theme="dark"] .filter-btn.active {
+  background: var(--primary-color, #3b82f6);
+  color: white;
+}
+</style>

@@ -1,0 +1,45 @@
+{% comment %}
+Hero Section Component - ByteByteGo Style
+Usage: {% include hero-section.html %}
+{% endcomment %}
+
+<section class="hero-section">
+  <div class="hero-content">
+    <h1 class="hero-title">
+      {% if site.hero_title %}
+        {{ site.hero_title }}
+      {% else %}
+        AI Security Research
+      {% endif %}
+    </h1>
+    <p class="hero-subtitle">
+      {% if site.hero_subtitle %}
+        {{ site.hero_subtitle }}
+      {% else %}
+        Exploring the frontier of AI safety and security
+      {% endif %}
+    </p>
+    {% if site.hero_cta %}
+    <div class="hero-cta">
+      <a href="{{ site.hero_cta_url | default: '/blog/' | relative_url }}" class="btn-primary">
+        {{ site.hero_cta | default: "Explore Articles" }}
+      </a>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat-item">
+      <span class="stat-number">{{ site.posts | size }}</span>
+      <span class="stat-label">Articles</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number">{{ site.categories | size }}</span>
+      <span class="stat-label">Topics</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number">{{ site.tags | size }}</span>
+      <span class="stat-label">Tags</span>
+    </div>
+  </div>
+</section>

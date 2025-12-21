@@ -1,0 +1,112 @@
+---
+layout: default
+---
+
+<div class="archive-page">
+  <header class="archive-header">
+    <span class="archive-label">Tag</span>
+    <h1 class="archive-title">#{{ page.title }}</h1>
+    <p class="archive-description">'{{ page.title }}' 태그가 포함된 연구 및 분석 글 목록입니다.</p>
+  </header>
+
+  <div class="posts-grid">
+    {% for post in page.posts %}
+      {% include post-card.html post=post %}
+    {% endfor %}
+  </div>
+
+  {% if page.posts.size == 0 %}
+  <div class="empty-state">
+    <p>해당 태그의 글이 없습니다.</p>
+  </div>
+  {% endif %}
+
+  <nav class="archive-nav">
+    <a href="{{ '/blog/' | relative_url }}" class="back-link">← 전체 글 보기</a>
+  </nav>
+</div>
+
+<style>
+.archive-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.archive-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding: 2rem 0;
+}
+
+.archive-label {
+  display: inline-block;
+  background: var(--primary-color, #2563eb);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 1rem;
+}
+
+.archive-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--text-primary, #1f2937);
+}
+
+.archive-description {
+  font-size: 1.1rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+.posts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+.archive-nav {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-color, #e5e7eb);
+}
+
+.back-link {
+  color: var(--primary-color, #2563eb);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .archive-page {
+    padding: 1rem;
+  }
+
+  .archive-title {
+    font-size: 2rem;
+  }
+
+  .posts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+[data-theme="dark"] .archive-title {
+  color: var(--text-primary, #f3f4f6);
+}
+</style>

@@ -2,24 +2,50 @@
 # Site settings
 # -----------------------------------------------------------------------------
 
-title: AICRA - AI Security Research
+title: AICRA
 first_name: AI
 last_name: Security Research Association
 email: contact@aicra.org
 description: >
-  인공지능보안연구회 (AICRA) - AI Security Research Association
-  Advancing AI Security through Collaborative Research
+  인공지능보안연구회 (AICRA) - AI Security Research Association of Korea.
+  Advancing AI Security through Collaborative Research.
 
 footer_text: >
   Powered by Jekyll with al-folio theme.
 
 keywords: AI security, LLM security, OWASP, prompt injection, MCP security, agentic AI
 lang: ko
-icon: 
+icon:
+logo: # /assets/img/logo.png (add your logo here)
 
 url: https://aicra-page.github.io
 baseurl: /AICRA-analyze
 last_updated: true
+
+# -----------------------------------------------------------------------------
+# Hero Section
+# -----------------------------------------------------------------------------
+
+hero_title: "인공지능보안연구회"
+hero_subtitle: "AI 보안의 최전선을 연구하고, 안전한 AI 생태계를 구축합니다."
+hero_cta: "연구 살펴보기"
+hero_cta_url: /blog/
+
+# -----------------------------------------------------------------------------
+# Navigation
+# -----------------------------------------------------------------------------
+
+nav_links:
+  - name: Home
+    url: /
+  - name: Blog
+    url: /blog/
+  - name: Publications
+    url: /publications/
+  - name: Team
+    url: /team/
+  - name: About
+    url: /about/
 
 # -----------------------------------------------------------------------------
 # Theme
@@ -106,6 +132,14 @@ plugins:
   - jekyll-seo-tag
   - jemoji
   - jekyll-archives
+
+# -----------------------------------------------------------------------------
+# Sass/SCSS
+# -----------------------------------------------------------------------------
+
+sass:
+  sass_dir: _sass
+  style: compressed
 
 # -----------------------------------------------------------------------------
 # Jekyll Archives
