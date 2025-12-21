@@ -1,0 +1,102 @@
+# AICRA Cross-Posting Configuration
+# 크로스포스팅 플랫폼 설정
+
+platforms:
+  github_pages:
+    name: "GitHub Pages"
+    url: "https://aicra-page.github.io/AICRA-analyze"
+    type: "primary"
+    language: "ko"
+    format: "full"
+    auto_deploy: true
+
+  naver:
+    name: "Naver Blog"
+    url: "https://blog.naver.com/aicra_security"
+    type: "secondary"
+    language: "ko"
+    format: "summary"
+    max_length: 800
+    features:
+      - "한글 요약본"
+      - "인포그래픽 중심"
+      - "네이버 SEO 최적화"
+    hashtags:
+      - "인공지능보안"
+      - "AI보안"
+      - "LLM보안"
+      - "OWASP"
+      - "프롬프트인젝션"
+
+  medium:
+    name: "Medium"
+    url: "https://medium.com/@aicra-security"
+    type: "secondary"
+    language: "en"
+    format: "full"
+    max_length: 1500
+    features:
+      - "English full translation"
+      - "Technical deep-dive"
+      - "Code examples"
+    tags:
+      - "ai-security"
+      - "llm-security"
+      - "owasp"
+      - "cybersecurity"
+      - "machine-learning"
+
+  substack:
+    name: "Substack Newsletter"
+    url: "https://aicra.substack.com"
+    type: "newsletter"
+    language: "ko"
+    format: "digest"
+    frequency: "weekly"
+    features:
+      - "주간 다이제스트"
+      - "큐레이션 뉴스"
+      - "전문가 코멘터리"
+    schedule:
+      day: "Monday"
+      time: "09:00"
+
+# Content Transformation Rules
+transformation:
+  github_to_naver:
+    - "Remove front matter"
+    - "Convert markdown to HTML"
+    - "Shorten to 800 chars"
+    - "Add Naver-specific formatting"
+    - "Include infographic images"
+
+  github_to_medium:
+    - "Translate to English"
+    - "Keep full markdown"
+    - "Add Medium-specific tags"
+    - "Include code blocks"
+
+  github_to_substack:
+    - "Create weekly summary"
+    - "Aggregate multiple posts"
+    - "Add newsletter formatting"
+    - "Include call-to-action"
+
+# Workflow
+workflow:
+  trigger: "new_post"
+  steps:
+    - name: "Publish to GitHub Pages"
+      auto: true
+
+    - name: "Generate Naver summary"
+      auto: false
+      template: "_crosspost/naver-template.md"
+
+    - name: "Translate for Medium"
+      auto: false
+      template: "_crosspost/medium-template.md"
+
+    - name: "Add to weekly digest"
+      auto: true
+      target: "_crosspost/weekly-digest.md"

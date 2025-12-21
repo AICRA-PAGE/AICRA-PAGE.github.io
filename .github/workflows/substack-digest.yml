@@ -1,0 +1,171 @@
+name: Weekly Substack Digest
+
+on:
+  # Run every Sunday at 6 PM KST (9 AM UTC)
+  schedule:
+    - cron: '0 9 * * 0'
+  workflow_dispatch:
+    inputs:
+      force_generate:
+        description: 'Force generate digest even if no new posts'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  generate-digest:
+    runs-on: ubuntu-latest
+    if: ${{ vars.ENABLE_SUBSTACK == 'true' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install gray-matter marked date-fns
+
+      - name: Generate weekly digest
+        id: digest
+        run: |
+          node << 'EOF'
+          const fs = require('fs');
+          const path = require('path');
+          const matter = require('gray-matter');
+
+          // Get posts from last 7 days
+          const postsDir = '_posts';
+          const oneWeekAgo = new Date();
+          oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+          const posts = fs.readdirSync(postsDir)
+            .filter(f => f.endsWith('.md'))
+            .map(f => {
+              const content = fs.readFileSync(path.join(postsDir, f), 'utf8');
+              const { data } = matter(content);
+              const dateMatch = f.match(/^(\d{4}-\d{2}-\d{2})/);
+              const postDate = dateMatch ? new Date(dateMatch[1]) : new Date();
+              return { file: f, ...data, date: postDate };
+            })
+            .filter(p => p.date >= oneWeekAgo)
+            .sort((a, b) => b.date - a.date);
+
+          if (posts.length === 0 && process.env.FORCE !== 'true') {
+            console.log('No new posts this week. Skipping digest.');
+            fs.writeFileSync('digest-status.txt', 'skip');
+            process.exit(0);
+          }
+
+          // Generate digest content
+          const today = new Date();
+          const weekNum = Math.ceil(today.getDate() / 7);
+          const month = today.toLocaleDateString('ko-KR', { month: 'long' });
+          const year = today.getFullYear();
+
+          let digest = `# AICRA 위클리 AI 보안 뉴스레터
+
+**${year}년 ${month} ${weekNum}주차** | 인공지능보안연구회
+
+---
+
+안녕하세요, AICRA 뉴스레터 구독자 여러분!
+
+이번 주 AI 보안 분야의 주요 소식을 전해드립니다.
+
+---
+
+## 📝 AICRA 블로그 신규 포스트
+
+`;
+
+          posts.forEach((post, i) => {
+            const url = `https://aicra-page.github.io/AICRA-analyze/${post.file.replace('.md', '/')}`;
+            digest += `### ${i + 1}. ${post.title || 'Untitled'}
+
+${post.description || post.excerpt || '자세한 내용은 블로그에서 확인하세요.'}
+
+👉 [전문 읽기](${url})
+
+`;
+          });
+
+          digest += `---
+
+## 💬 AICRA에서 알립니다
+
+AI 보안에 관한 질문이나 연구 주제 제안이 있으시면 언제든 연락주세요!
+
+---
+
+**읽어주셔서 감사합니다!**
+
+다음 주에도 AI 보안 소식으로 찾아뵙겠습니다.
+
+🌐 블로그: https://aicra-page.github.io/AICRA-analyze/
+
+---
+
+*이 뉴스레터가 유용하셨다면, 동료에게 공유해 주세요!*
+`;
+
+          // Save digest
+          const digestPath = `_crosspost/substack/digest-${today.toISOString().split('T')[0]}.md`;
+          fs.mkdirSync(path.dirname(digestPath), { recursive: true });
+          fs.writeFileSync(digestPath, digest);
+          fs.writeFileSync('digest-status.txt', 'generated');
+          fs.writeFileSync('digest-path.txt', digestPath);
+
+          console.log(`Generated digest: ${digestPath}`);
+          console.log(`Included ${posts.length} posts`);
+          EOF
+        env:
+          FORCE: ${{ inputs.force_generate }}
+
+      - name: Check digest status
+        id: status
+        run: |
+          if [ -f digest-status.txt ]; then
+            STATUS=$(cat digest-status.txt)
+            echo "status=$STATUS" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Send to Zapier webhook (optional)
+        if: steps.status.outputs.status == 'generated' && vars.ZAPIER_WEBHOOK_URL != ''
+        run: |
+          DIGEST_PATH=$(cat digest-path.txt)
+          CONTENT=$(cat "$DIGEST_PATH" | jq -Rs .)
+
+          curl -X POST "${{ vars.ZAPIER_WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"title\": \"AICRA 위클리 AI 보안 뉴스레터\",
+              \"content\": $CONTENT,
+              \"date\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"
+            }"
+
+      - name: Commit digest
+        if: steps.status.outputs.status == 'generated'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add _crosspost/substack/ || true
+          git diff --staged --quiet || git commit -m "chore: Generate weekly Substack digest [skip ci]"
+          git push || true
+
+      - name: Summary
+        if: steps.status.outputs.status == 'generated'
+        run: |
+          echo "## Weekly Digest Generated" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Digest file: \`$(cat digest-path.txt)\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "1. Review the generated digest" >> $GITHUB_STEP_SUMMARY
+          echo "2. Copy content to Substack editor" >> $GITHUB_STEP_SUMMARY
+          echo "3. Schedule for Monday 9 AM KST" >> $GITHUB_STEP_SUMMARY

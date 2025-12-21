@@ -1,0 +1,165 @@
+name: Cross-post to Medium
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "_posts/**/*.md"
+  workflow_dispatch:
+    inputs:
+      post_file:
+        description: 'Post file to cross-post (e.g., 2025-12-21-owasp-llm-top-10-2025.md)'
+        required: true
+        type: string
+
+jobs:
+  crosspost:
+    runs-on: ubuntu-latest
+    # Only run if MEDIUM_TOKEN secret exists
+    if: ${{ vars.ENABLE_CROSSPOST == 'true' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Get changed posts
+        id: changed
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "posts=_posts/${{ inputs.post_file }}" >> $GITHUB_OUTPUT
+          else
+            CHANGED=$(git diff --name-only HEAD~1 HEAD -- '_posts/*.md' | head -1)
+            echo "posts=$CHANGED" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install gray-matter marked
+
+      - name: Transform and post to Medium
+        if: steps.changed.outputs.posts != ''
+        env:
+          MEDIUM_TOKEN: ${{ secrets.MEDIUM_TOKEN }}
+          MEDIUM_USER_ID: ${{ secrets.MEDIUM_USER_ID }}
+        run: |
+          node << 'EOF'
+          const fs = require('fs');
+          const matter = require('gray-matter');
+          const { marked } = require('marked');
+
+          const postFile = process.env.CHANGED_POST || '${{ steps.changed.outputs.posts }}';
+
+          if (!postFile || !fs.existsSync(postFile)) {
+            console.log('No post file found, skipping...');
+            process.exit(0);
+          }
+
+          const content = fs.readFileSync(postFile, 'utf8');
+          const { data, content: body } = matter(content);
+
+          // Transform Korean to English title indicator
+          const title = data.title + ' [AICRA]';
+
+          // Convert markdown to HTML
+          const htmlContent = marked(body);
+
+          // Medium API payload
+          const payload = {
+            title: title,
+            contentFormat: 'html',
+            content: htmlContent,
+            tags: data.tags || ['ai-security', 'llm', 'owasp'],
+            publishStatus: 'draft', // Start as draft for review
+            canonicalUrl: `https://aicra-page.github.io/AICRA-analyze${postFile.replace('_posts/', '/').replace('.md', '/')}`
+          };
+
+          console.log('Prepared Medium post:', title);
+          console.log('Tags:', payload.tags);
+          console.log('Status: Draft (manual publish required)');
+
+          // If token exists, actually post
+          if (process.env.MEDIUM_TOKEN && process.env.MEDIUM_USER_ID) {
+            const https = require('https');
+            const postData = JSON.stringify(payload);
+
+            const options = {
+              hostname: 'api.medium.com',
+              port: 443,
+              path: `/v1/users/${process.env.MEDIUM_USER_ID}/posts`,
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${process.env.MEDIUM_TOKEN}`,
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(postData)
+              }
+            };
+
+            const req = https.request(options, (res) => {
+              let data = '';
+              res.on('data', (chunk) => data += chunk);
+              res.on('end', () => {
+                console.log('Medium API Response:', res.statusCode);
+                if (res.statusCode === 201) {
+                  console.log('Successfully created draft on Medium!');
+                } else {
+                  console.log('Response:', data);
+                }
+              });
+            });
+
+            req.on('error', (e) => console.error('Error:', e.message));
+            req.write(postData);
+            req.end();
+          } else {
+            console.log('MEDIUM_TOKEN not configured. Dry run completed.');
+          }
+          EOF
+
+      - name: Create Naver summary
+        if: steps.changed.outputs.posts != ''
+        run: |
+          POST="${{ steps.changed.outputs.posts }}"
+          if [ -n "$POST" ] && [ -f "$POST" ]; then
+            # Extract title and create summary
+            TITLE=$(grep "^title:" "$POST" | sed 's/title: *"\(.*\)"/\1/')
+
+            # Create Naver-ready summary (first 800 chars of content)
+            mkdir -p _crosspost/naver
+            BASENAME=$(basename "$POST")
+
+            cat > "_crosspost/naver/$BASENAME" << NAVER
+---
+title: "$TITLE"
+platform: naver
+max_length: 800
+hashtags: ["인공지능보안", "AI보안", "LLM보안", "OWASP", "사이버보안"]
+---
+
+## 네이버 블로그용 요약본
+
+[원문 링크](https://aicra-page.github.io/AICRA-analyze/${POST%.md}/)
+
+---
+(아래 내용을 네이버 블로그에 복사하세요)
+
+NAVER
+
+            # Add first 800 chars summary
+            sed -n '/^---$/,/^---$/d; p' "$POST" | head -c 800 >> "_crosspost/naver/$BASENAME"
+
+            echo "Created Naver summary: _crosspost/naver/$BASENAME"
+          fi
+
+      - name: Commit summaries
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add _crosspost/ || true
+          git diff --staged --quiet || git commit -m "chore: Generate cross-post summaries [skip ci]"
+          git push || true
