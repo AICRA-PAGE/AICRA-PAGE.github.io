@@ -1,0 +1,134 @@
+# -----------------------------------------------------------------------------
+# Site settings
+# -----------------------------------------------------------------------------
+
+title: AICRA - AI Security Research
+first_name: AI
+last_name: Security Research Association
+email: contact@aicra.org
+description: >
+  인공지능보안연구회 (AICRA) - AI Security Research Association
+  Advancing AI Security through Collaborative Research
+
+footer_text: >
+  Powered by Jekyll with al-folio theme.
+
+keywords: AI security, LLM security, OWASP, prompt injection, MCP security, agentic AI
+lang: ko
+icon: 
+
+url: https://aicra-page.github.io
+baseurl: /AICRA-analyze
+last_updated: true
+
+# -----------------------------------------------------------------------------
+# Theme
+# -----------------------------------------------------------------------------
+
+repo_theme_light: default
+repo_theme_dark: dark
+
+# -----------------------------------------------------------------------------
+# Layout
+# -----------------------------------------------------------------------------
+
+navbar_fixed: true
+footer_fixed: false
+search_enabled: true
+max_width: 800px
+
+# -----------------------------------------------------------------------------
+# Open Graph
+# -----------------------------------------------------------------------------
+
+serve_og_meta: true
+serve_schema_org: true
+
+# -----------------------------------------------------------------------------
+# Social
+# -----------------------------------------------------------------------------
+
+github_username: AICRA-PAGE
+github_repo: AICRA-analyze
+
+# -----------------------------------------------------------------------------
+# Blog
+# -----------------------------------------------------------------------------
+
+blog_name: AICRA Research Blog
+blog_nav_title: Blog
+blog_description: AI Security Research and Analysis
+
+pagination:
+  enabled: true
+
+related_blog_posts:
+  enabled: true
+  max_related: 5
+
+# -----------------------------------------------------------------------------
+# Collections
+# -----------------------------------------------------------------------------
+
+collections:
+  news:
+    defaults:
+      layout: post
+    output: true
+    permalink: /news/:path/
+
+announcements:
+  enabled: true
+  scrollable: true
+  limit: 5
+
+# -----------------------------------------------------------------------------
+# Jekyll settings
+# -----------------------------------------------------------------------------
+
+markdown: kramdown
+highlighter: rouge
+
+include: ['_pages']
+exclude:
+  - bin/
+  - Gemfile
+  - Gemfile.lock
+  - LICENSE
+  - README.md
+  - vendor
+
+plugins:
+  - jekyll-feed
+  - jekyll-paginate-v2
+  - jekyll-sitemap
+  - jekyll-toc
+  - jemoji
+
+# -----------------------------------------------------------------------------
+# Jekyll Scholar
+# -----------------------------------------------------------------------------
+
+scholar:
+  style: apa
+  locale: en
+  source: /_bibliography/
+  bibliography: papers.bib
+
+# -----------------------------------------------------------------------------
+# Jekyll Archives
+# -----------------------------------------------------------------------------
+
+jekyll-archives:
+  enabled: [year, tags, categories]
+  layouts:
+    year: archive-year
+    tag: archive-tag
+    category: archive-category
+  permalinks:
+    year: '/blog/:year/'
+    tag: '/blog/tag/:name/'
+    category: '/blog/category/:name/'
+
+display_tags: ['AI Security', 'LLM', 'OWASP', 'MCP', 'Prompt Injection', 'Agentic AI']
+display_categories: ['Research', 'Analysis', 'Tutorial', 'News']
