@@ -103,17 +103,9 @@ plugins:
   - jekyll-paginate-v2
   - jekyll-sitemap
   - jekyll-toc
+  - jekyll-seo-tag
   - jemoji
-
-# -----------------------------------------------------------------------------
-# Jekyll Scholar
-# -----------------------------------------------------------------------------
-
-scholar:
-  style: apa
-  locale: en
-  source: /_bibliography/
-  bibliography: papers.bib
+  - jekyll-archives
 
 # -----------------------------------------------------------------------------
 # Jekyll Archives
