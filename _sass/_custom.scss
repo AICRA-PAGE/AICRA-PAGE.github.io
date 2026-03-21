@@ -673,32 +673,6 @@ h1, h2, h3, h4, h5, h6 {
     }
   }
 
-  .about-stats {
-    background: var(--surface-alt);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: var(--space-8);
-    padding: var(--space-8);
-  }
-
-  .stat-box {
-    text-align: center;
-
-    .stat-number {
-      display: block;
-      font-size: 2rem;
-      font-weight: 800;
-      color: var(--accent);
-    }
-
-    .stat-label {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-  }
 }
 
 // ============================================
@@ -1521,10 +1495,6 @@ h1, h2, h3, h4, h5, h6 {
     grid-template-columns: 1fr;
   }
 
-  .about-section .about-stats {
-    flex-direction: row;
-    justify-content: space-around;
-  }
 
   .blog-page {
     padding: var(--space-8) var(--space-4);
