@@ -1744,11 +1744,58 @@ h1, h2, h3, h4, h5, h6 {
 // ============================================
 .mermaid {
   background: var(--surface);
-  padding: var(--space-6);
+  padding: var(--space-8) var(--space-6);
   border: 1px solid var(--divider);
-  margin: var(--space-6) 0;
+  border-radius: var(--radius);
+  margin: var(--space-8) 0;
   text-align: center;
   overflow-x: auto;
+  min-height: 200px;
+
+  // Force larger, more readable rendering
+  svg {
+    max-width: 100%;
+    min-width: 600px;
+    height: auto !important;
+    min-height: 280px;
+    font-size: 14px !important;
+  }
+
+  // Node text readability
+  .nodeLabel, .label, text {
+    font-family: var(--font-sans) !important;
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+  }
+
+  // Larger nodes
+  .node rect, .node circle, .node polygon {
+    rx: 6;
+    ry: 6;
+  }
+
+  // Edge labels
+  .edgeLabel {
+    font-size: 12px !important;
+    background: var(--surface) !important;
+    padding: 2px 6px !important;
+  }
+
+  // Subgraph titles
+  .cluster-label text {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+  }
+
+  // Caption below diagram
+  + p > em:only-child {
+    display: block;
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: calc(-1 * var(--space-4));
+    margin-bottom: var(--space-6);
+  }
 }
 
 // ============================================

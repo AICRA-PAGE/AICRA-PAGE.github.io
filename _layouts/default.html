@@ -77,7 +77,21 @@
     mermaid.initialize({
       startOnLoad: true,
       theme: document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default',
-      securityLevel: 'loose'
+      securityLevel: 'loose',
+      fontSize: 14,
+      flowchart: { curve: 'basis', padding: 20, nodeSpacing: 50, rankSpacing: 60, htmlLabels: true },
+      themeVariables: {
+        fontFamily: "'Pretendard Variable', 'Noto Serif KR', sans-serif",
+        fontSize: '14px',
+        primaryColor: '#2F5D50',
+        primaryTextColor: '#1A1A1A',
+        primaryBorderColor: '#D6D0C4',
+        lineColor: '#6B665C',
+        secondaryColor: '#F5F3ED',
+        tertiaryColor: '#EDEBE4',
+        noteBkgColor: '#FAF7F2',
+        noteTextColor: '#1A1A1A'
+      }
     });
   </script>
 
