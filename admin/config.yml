@@ -3,7 +3,7 @@ backend:
   repo: AICRA-PAGE/AICRA-PAGE.github.io
   branch: main
   auth_type: pkce
-  app_id: aicra-page-cms
+  app_id: Ov23liEaIePLBcXAW38s
 
 media_folder: "assets/images/posts"
 public_folder: "/assets/images/posts"
