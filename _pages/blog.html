@@ -24,10 +24,32 @@ description: AI Security Research and Analysis
   </nav>
 
   <div class="posts-grid">
-    {% for post in site.posts %}
-      {% include post-card.html post=post %}
-    {% endfor %}
+    {% if paginator.posts %}
+      {% for post in paginator.posts %}
+        {% include post-card.html post=post %}
+      {% endfor %}
+    {% else %}
+      {% for post in site.posts %}
+        {% include post-card.html post=post %}
+      {% endfor %}
+    {% endif %}
   </div>
+
+  {% if paginator.total_pages > 1 %}
+  <nav class="pagination" aria-label="Blog pagination">
+    {% if paginator.previous_page %}
+    <a href="{{ paginator.previous_page_path | relative_url }}" class="page-link prev">&larr; Prev</a>
+    {% endif %}
+
+    <span class="page-info">
+      Page {{ paginator.page }} / {{ paginator.total_pages }}
+    </span>
+
+    {% if paginator.next_page %}
+    <a href="{{ paginator.next_page_path | relative_url }}" class="page-link next">Next &rarr;</a>
+    {% endif %}
+  </nav>
+  {% endif %}
 
   {% if site.posts.size == 0 %}
   <div class="empty-state">

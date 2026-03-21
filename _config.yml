@@ -90,6 +90,10 @@ future: true
 
 pagination:
   enabled: true
+  per_page: 9
+  permalink: "/blog/page/:num/"
+  sort_field: "date"
+  sort_reverse: true
 
 related_blog_posts:
   enabled: true

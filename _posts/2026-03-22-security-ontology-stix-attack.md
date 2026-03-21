@@ -11,8 +11,6 @@ lang: ko
 thumbnail: /assets/img/posts/security-ontology.svg
 ---
 
-# 보안 데이터 표준화의 미래: STIX 2.1과 ATT&CK의 온톨로지 통합
-
 ## Executive Summary
 
 사이버 보안 위협 대응의 복잡성이 급증하면서, 이질적인 보안 데이터를 통합하고 자동화하는 능력이 조직의 생존을 결정짓고 있습니다. 현재 보안 인텔리전스 조직들은 MITRE ATT&CK, STIX/TAXII, OpenIOC, YARA 등 수십 가지 서로 다른 형식의 위협 데이터를 관리하고 있으며, 이러한 데이터 간의 의미론적(semantic) 관계를 파악하기 위해 상당한 수동 작업을 수행하고 있습니다.
@@ -525,33 +523,18 @@ playbook:
 
 ---
 
-## 참고 자료
+## 참고 링크
 
-### 학술 논문
-
-1. Strom, B. E., Applebaum, A., Stratton, D. P., Lawler, K., Wampler, N., & SList, K. E. (2024). MITRE ATT&CK: Design and Philosophy. MITRE Technical Report, v1.14.
-
-2. Conneau, A., Khandelwal, K., & Schwenk, H. (2023). Ontology-driven approach to cybersecurity information. *Journal of Cybersecurity Research*, 45(3), 234-251.
-
-3. Underbrink, A., Saladin, J., & Hasson, N. (2022). STIX 2.1 Object Relationships in Threat Intelligence Sharing. *IEEE Transactions on Information Forensics and Security*, 17(5), 1234-1248.
-
-4. Torres-Carrion, P., González-González, C. S., & Aciar, S. (2021). Knowledge Graphs in Cybersecurity: A Comprehensive Survey. *ACM Computing Surveys*, 54(10), 1-35.
-
-5. Oltramari, A., Bradshaw, J. M., Kovalsky, S. G., & Szekely, P. A. (2020). Towards a Unified Cybersecurity Ontology. *STIX Whitepaper*, MITRE Corporation.
-
-### 웹 자료
-
-- STIX 공식 문서: [https://oasis-open.github.io/cti-documentation/stix/intro.html](https://oasis-open.github.io/cti-documentation/stix/intro.html)
-- MITRE ATT&CK Framework: [https://attack.mitre.org](https://attack.mitre.org)
-- Neo4j Knowledge Graphs: [https://neo4j.com/knowledge-graphs/](https://neo4j.com/knowledge-graphs/)
-- SPARQL 1.1 Query Language: [https://www.w3.org/TR/sparql11-query/](https://www.w3.org/TR/sparql11-query/)
+- [OASIS STIX 2.1 공식 문서](https://oasis-open.github.io/cti-documentation/stix/intro.html)
+- [MITRE ATT&CK Framework](https://attack.mitre.org)
+- [MITRE ATT&CK Design and Philosophy](https://attack.mitre.org/docs/ATTACK_Design_and_Philosophy_March_2020.pdf)
+- [Unified Cybersecurity Ontology (UCO)](https://unifiedcyberontology.org/)
+- [Neo4j Knowledge Graphs](https://neo4j.com/knowledge-graphs/)
+- [SPARQL 1.1 Query Language (W3C)](https://www.w3.org/TR/sparql11-query/)
+- [TAXII 2.1 Specification](https://docs.oasis-open.org/cti/taxii/v2.1/taxii-v2.1.html)
 
 ---
 
-**문서 정보**
-- 작성: AICRA 기술위원회
-- 작성일: 2026년 3월 22일
-- 버전: 1.0
-- 라이선스: CC-BY-SA 4.0 (국내 자유로운 확산 권장)
+**AICRA** | 2026년 3월 22일
 
-*본 문서는 보안 커뮤니티의 피드백을 환영합니다. 제안 및 수정안은 AICRA 공식 채널로 제출해주시기 바랍니다.*
+*이 글에서 다루는 내용은 보안 커뮤니티의 피드백을 환영합니다.*

@@ -1941,3 +1941,37 @@ h1, h2, h3, h4, h5, h6 {
     .tag { font-size: 0.75rem; }
   }
 }
+
+// ============================================
+// Pagination
+// ============================================
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-6);
+  margin-top: var(--space-12);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--divider);
+
+  .page-link {
+    padding: var(--space-2) var(--space-4);
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
+    text-decoration: none;
+    transition: all 0.2s;
+
+    &:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+  }
+
+  .page-info {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+}

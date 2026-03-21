@@ -574,30 +574,18 @@ Response:
 
 ---
 
-## 참고자료
+## 참고 링크
 
-1. **OWASP Top 10 for Agentic Applications** (2025년 12월)
-   - https://genai.owasp.org/
-
-2. **OWASP Secure MCP Server Development Guide** (2026년 2월)
-   - https://genai.owasp.org/
-
-3. **Model Context Protocol Specification**
-   - https://modelcontextprotocol.io/specification/
-
-4. **MITRE ATLAS - GenAI Threat Matrix**
-   - https://atlas.mitre.org/
-
-5. **Anthropic Responsible Scaling Policy** (2026)
-   - https://anthropic.com/safety
-
-6. **NIST AI Risk Management Framework** (1.0 Final, Jan 2024)
-   - https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.RMF.1.0.pdf
+- [OWASP Top 10 for Agentic Applications](https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/)
+- [OWASP Agentic Security Initiative](https://genai.owasp.org/initiatives/agentic-security-initiative/)
+- [Model Context Protocol Specification](https://modelcontextprotocol.io/specification/)
+- [MITRE ATLAS - GenAI Threat Matrix](https://atlas.mitre.org/)
+- [Anthropic Responsible Scaling Policy](https://www.anthropic.com/research/responsible-scaling-policy)
+- [NIST AI Risk Management Framework 1.0](https://www.nist.gov/artificial-intelligence/ai-risk-management-framework)
+- [Indirect Prompt Injection (Greshake et al.)](https://arxiv.org/abs/2302.12173)
 
 ---
 
-*이 문서는 AICRA 보안 연구팀이 작성했으며, 실무자와 정책 입안자 모두를 대상으로 합니다. 질문이나 피드백은 security@aicra.org로 연락 바랍니다.*
+**AICRA** | 2026년 3월 22일
 
-**Last Updated**: 2026-03-22  
-**Authors**: AICRA Security Research Group  
-**License**: CC BY-SA 4.0
+*이 글에서 다루는 공격 기법은 방어 목적의 교육 자료입니다.*
