@@ -16,7 +16,8 @@ description: AI Security Research and Analysis
   <nav class="category-filter">
     <a href="{{ '/blog/' | relative_url }}" class="filter-btn active">All</a>
     {% for category in site.categories %}
-    <a href="{{ '/blog/category/' | append: category[0] | slugify | relative_url }}" class="filter-btn">
+    {% assign cat_slug = category[0] | slugify %}
+    <a href="{{ '/blog/category/' | append: cat_slug | append: '/' | relative_url }}" class="filter-btn">
       {{ category[0] }}
     </a>
     {% endfor %}
