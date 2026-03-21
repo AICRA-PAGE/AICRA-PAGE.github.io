@@ -1751,15 +1751,14 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: var(--radius);
   margin: var(--space-6) 0;
   text-align: center;
-  overflow-x: auto;
-  overflow-y: hidden;
+  overflow: auto;
+  max-height: 600px;
 
   // Force larger, more readable rendering
   svg {
     max-width: 100%;
-    min-width: min(600px, 100%);
+    width: 100%;
     height: auto !important;
-    max-height: 500px;
     font-size: 14px !important;
   }
 
