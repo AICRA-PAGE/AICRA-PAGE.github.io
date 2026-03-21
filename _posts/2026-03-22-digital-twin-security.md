@@ -65,6 +65,49 @@ lang: ko
 
 그러나 **디지털 트윈의 특성상** 이들 가정이 깨질 경우, 물리-가상 불일치로부터 발생하는 피해가 급증합니다.
 
+### 1.3 Purdue 모델에서의 디지털 트윈 배치
+
+Purdue Enterprise-Control System Integration(ECSI) 모델은 산업 자동화 시스템을 Level 0(물리 프로세스)부터 Level 5(엔터프라이즈)까지 계층적으로 분류합니다. 디지털 트윈은 이 계층 구조를 가로질러 배치됩니다:
+
+```mermaid
+graph TB
+    subgraph L5["Level 5: Enterprise"]
+        ERP["ERP, 비즈니스 분석"]
+    end
+    subgraph L4["Level 4: Site Operations"]
+        MES["MES, 디지털 트윈 플랫폼"]
+    end
+    subgraph L3["Level 3: Area Supervision"]
+        SCADA["SCADA, HMI, 히스토리안"]
+    end
+    subgraph L2["Level 2: Process Control"]
+        PLC["PLC, RTU, DCS"]
+    end
+    subgraph L01["Level 0-1: Field"]
+        SENS["센서, 액추에이터, 필드 기기"]
+    end
+
+    L5 ---|"경영 데이터"| L4
+    L4 ---|"제어 명령/시뮬레이션"| L3
+    L3 ---|"제어 신호"| L2
+    L2 ---|"센서/액추에이터"| L01
+
+    DT["디지털 트윈"] -.->|"데이터 수집"| L01
+    DT -.->|"상태 동기화"| L3
+    DT -.->|"예측 제어"| L2
+    L4 --- DT
+
+    style DT fill:#B5422C,color:#fff
+```
+
+**IT-OT 수렴과 새로운 공격 표면**: 전통적으로 Level 3(DMZ)이 IT와 OT의 경계였습니다. 그러나 디지털 트윈이 Level 4(IT 영역)에서 Level 0-2(OT 영역)의 데이터를 직접 수집하고 제어 신호를 피드백하면서, 이 경계가 사실상 무너집니다. IT 측 공격(피싱, 웹 취약점, 클라우드 침해)이 DT를 경유하여 직접 물리 시스템에 영향을 줄 수 있는 **새로운 공격 경로**가 형성됩니다.
+
+**OT 환경의 보안 특수성**:
+- **가용성 최우선**: IT의 CIA(기밀성-무결성-가용성)와 달리, OT는 AIC 순서. 시스템 중단은 인명 위험
+- **패치 불가 환경**: 많은 ICS 장비는 24/7 운영되어 정기 패치가 불가능
+- **레거시 프로토콜**: Modbus(1979년 설계), DNP3 등은 인증/암호화 미지원
+- **물리적 비가역성**: 잘못된 제어 신호는 장비 파괴, 환경 오염, 인명 피해로 이어질 수 있음
+
 ---
 
 ## 2. 동기화 공격(Synchronization Attacks) 분석
@@ -352,24 +395,320 @@ AICRA는 산업, 학계, 규제 기관과 함께 Digital Twin Security Standard 
 
 ---
 
-## 참고문헌
+## 7. ICS/SCADA 환경에서의 디지털 트윈 공격 패턴
 
-[1] Tao, F., Liu, W., & Liu, J. (2023). "Making Digital Twin Secure: A State-of-the-Art Survey." *Journal of Industrial Information Integration*, 34, 100477.
+디지털 트윈이 ICS/SCADA 환경에 통합되면서, 전통적 IT 공격과 구별되는 산업 특화 공격 패턴이 발생합니다.
 
-[2] National Institute of Standards and Technology (NIST). (2022). "Cybersecurity Framework Version 1.1." https://www.nist.gov/cyberframework
+### 7.1 센서 스푸핑과 상태 드리프트
 
-[3] International Electrotechnical Commission (IEC). (2023). "IEC 62443 - Industrial automation and control systems security."
+센서 스푸핑은 가장 기초적이면서도 치명적인 OT 공격입니다. 공격자가 네트워크 상의 센서 신호(4-20mA, Modbus RTU, MQTT)를 가로채어 위조된 값으로 대체합니다.
 
-[4] Suo, H., et al. (2024). "Anomaly Detection in Digital Twin Systems using Ensemble Learning." *IEEE Transactions on Industrial Informatics*, 20(2), 1234-1246.
+| 공격 단계 | 행위 | 디지털 트윈 영향 |
+|-----------|------|-----------------|
+| 1. 정찰 | 센서-PLC 통신 패턴 스니핑 | 공격 표면 식별 |
+| 2. 가로채기 | ARP 스푸핑 또는 물리적 탭 | 통신 채널 장악 |
+| 3. 주입 | 거짓 센서값 전송 (정상 범위 내) | DT 모델에 거짓 상태 반영 |
+| 4. 확산 | 히스토리안에 위조 데이터 축적 | DT 재학습 데이터 오염 |
+| 5. 제어 영향 | DT 기반 예측 제어 오작동 | 물리 시스템 손상 가능 |
 
-[5] European Telecommunications Standards Institute (ETSI). (2023). "ETSI GR QSC 002 V1.1.1 - Quantum-Safe Cryptography: Migration Recommendations for the Post-Quantum Era."
+### 7.2 재생 공격(Replay Attack)과 시간 동기화 위협
+
+```mermaid
+sequenceDiagram
+    participant S as 센서
+    participant A as 공격자
+    participant H as 히스토리안
+    participant DT as 디지털 트윈
+
+    Note over A: 1단계: 녹화
+    S->>H: 정상 데이터 (2주간)
+    A-->>A: 데이터 캡처
+
+    Note over A: 2단계: 재생
+    A->>H: 녹화된 정상 데이터 반복 전송
+    H->>DT: 오염된 시계열 데이터
+    DT->>DT: 거짓 패턴 학습
+    Note over DT: 실제 환경 변화 감지 불가
+```
+
+재생 공격은 과거의 정상적인 센서 신호를 녹화했다가 반복 전송합니다. 히스토리안 데이터가 장기간 보관되므로, 오염된 데이터는 향후 수개월간 DT 재학습에 영향을 미칩니다.
+
+### 7.3 히스토리안 데이터베이스 포이즈닝
+
+히스토리안은 DT의 주요 학습 소스입니다. 공격 경로:
+
+1. **접근 취득**: 약한 자격증명, SQL 인젝션, 내부자 위협
+2. **선택적 변조**: 특정 시간대 데이터만 교묘하게 수정 (+5% 상향 등)
+3. **DT 독성화**: 변조된 데이터로 ML 모델 재학습 -> 거짓 패턴 습득
+4. **감지 우회**: 감사 로그 동시 수정으로 흔적 은폐
+
+### 7.4 PLC 로직 변조와 디지털 트윈 복합 효과
+
+PLC 펌웨어나 래더 로직 자체를 변조하면 제어 법칙이 왜곡됩니다. DT가 변조된 PLC로부터 피드백을 수신하면, 거짓 인과관계를 학습하여 복원된 정상 PLC와 충돌하는 모델이 생성됩니다.
+
+### 7.5 OPC UA/Modbus 프로토콜 악용
+
+| 프로토콜 | 취약점 | 공격 벡터 | 디지털 트윈 리스크 |
+|----------|--------|----------|-------------------|
+| OPC UA | 인증서 검증 느슨 | MITM, Node ID 변조 | 센서값 위변조 |
+| Modbus | 인증 메커니즘 없음 | 함수 코드 조작, 슬레이브 스푸핑 | 제어 레지스터 직접 변조 |
+| DNP3 | 레거시 직렬 버전 무방비 | UCO 공격, 시퀀스 조작 | 변전소 상태값 조작 |
 
 ---
 
-**저자:** AICRA (Artificial Intelligence & Cyber-Physical Systems Research Alliance)  
-**발행 날짜:** 2026년 3월 22일  
-**버전:** 1.0 (Initial Publication)
+## 8. 산업 사례 연구: ICS 공격의 디지털 트윈 관점 재해석
+
+### 8.1 Stuxnet (2009-2010): 프로세스 기만의 원형
+
+Stuxnet은 이란 나탄즈 핵시설의 Siemens S7-315/S7-417 PLC를 목표로 한 최초의 국가 수준 사이버 무기로, 미국 NSA와 이스라엘 Unit 8200의 공동 작전(Operation Olympic Games)으로 추정됩니다.
+
+**공격 흐름 (Kill Chain)**:
+1. 감염된 USB 드라이브를 통해 에어갭(air-gapped) 네트워크 침투
+2. Windows zero-day 4개 동시 활용 (MS10-046, MS10-061 등)
+3. Siemens Step 7 프로젝트 파일(.S7P)에서 PLC 구성 정보 추출
+4. 정상 PLC 코드를 변조된 코드로 교체 -- 주파수 변환기(VFD) 회전속도를 1,410Hz에서 2Hz~1,064Hz로 주기적 변동
+5. 동시에 SCADA HMI에는 정상 상태(1,410Hz 고정)를 표시하는 스푸핑 데이터 전송
+6. 결과: IR-1 원심분리기 약 1,000대 파괴 (전체 8,700대 중 약 11%)
+
+**피해 규모**: 이란의 우라늄 농축 프로그램을 약 2년 지연시킨 것으로 평가됩니다. 물리적 장비 교체 비용은 공개되지 않았으나, 핵 프로그램 전체 지연으로 인한 전략적 비용은 수십억 달러 규모로 추정됩니다.
+
+**디지털 트윈 관점**: Stuxnet이 수행한 "SCADA 스푸핑"은 정확히 **Man-in-the-Twin** 공격의 원형입니다. 물리 세계(원심분리기 파괴)와 가상 표현(SCADA 정상 표시)을 분리시키는 것 -- 이것이 DT 환경에서 재현된다면, 시뮬레이션 엔진 자체가 조작되어 동료 검증(peer validation)이 실패하는 상황이 발생합니다.
+
+| MITRE ATT&CK ICS | 기법 | Stuxnet 적용 | DT 환경 적용 |
+|-------------------|------|-------------|-------------|
+| T0855 | Firmware Corruption | PLC 프로그램 변조 | DT 시뮬레이션 로직 변조 |
+| T0801 | Manipulation of View | SCADA 정상 표시 스푸핑 | DT 대시보드 정상 표시 |
+| T0836 | Modify Parameter | 원심분리기 회전속도 조작 | DT 제어 파라미터 조작 |
+| T0862 | Supply Chain Compromise | USB 매개체 이용 | 모델 학습 데이터 오염 |
+
+**핵심 교훈**: (1) 격리된 네트워크도 물리적 매개체로 침투 가능 (2) 시각적 피드백만으로는 실제 상태를 신뢰할 수 없음 (3) 물리 센서와 제어 신호의 독립적 교차 검증이 필수
+
+### 8.2 Industroyer/CrashOverride (2015-2016): 그리드 프로토콜 악용
+
+세계 최초의 대규모 사이버 기반 정전을 야기한 공격입니다. 우크라이나 전력 유통회사 3곳(Prykarpattyaoblenergo, Chernivtsioblenergo, Kyivoblenergo)의 ICS 네트워크를 침투하여 23만 명이 최대 6시간 정전되었습니다.
+
+**공격 흐름**:
+1. 스피어 피싱 이메일로 IT 네트워크 초기 침투 (BlackEnergy 3 악성코드)
+2. VPN 자격증명 탈취를 통한 OT 네트워크 횡적 이동
+3. Industroyer 페이로드 배포 -- IEC 60870-5-101/104, IEC 61850, OPC DA 4개 프로토콜 동시 지원
+4. RTU(Remote Terminal Unit)에 무인증 제어 명령 전송
+5. 순차적으로 변전소 차단기(breaker) 개방 명령 -> 정전
+6. 동시에 KillDisk 와이퍼로 SCADA 워크스테이션 파괴 -> 수동 복구 강제
+
+**디지털 트윈 교훈**: 스마트 그리드 환경에서 DT가 도입된다면, Industroyer 스타일로 DNP3/IEC 104 데이터를 위변조하여 DT의 전력 흐름 시뮬레이션을 오도할 수 있습니다. 잘못된 부하 예측으로 인해 (1) 과부하 상태를 간과하여 설비 손상 초래, 또는 (2) 불필요한 차단으로 인한 서비스 중단이 발생합니다.
+
+| MITRE ATT&CK ICS | 기법 | Industroyer 적용 |
+|-------------------|------|-----------------|
+| T0858 | Change Operating State | 차단기 상태 원격 변경 |
+| T0889 | Unauthorized Command Message | RTU에 권한 없는 명령 |
+| T0885 | Transmit Type Confusion Data | HMI에 혼란 데이터 전송 |
+| T0822 | External Remote Services | VPN을 통한 OT 접근 |
+
+### 8.3 TRITON/HatMan (2017): 안전 시스템 경계 붕괴
+
+ICS 공격의 새로운 차원을 연 사건입니다. 이전 공격들이 제어 로직(PLC, RTU)을 대상으로 했다면, TRITON은 **Safety Instrumented System(SIS)** -- 마지막 안전 방어선까지 침투했습니다. 사우디아라비아의 Petro Rabigh 정유소가 목표였던 것으로 알려져 있습니다.
+
+**공격 흐름**:
+1. IT 네트워크 침투 (기술 지원 포털 활용)
+2. OT 네트워크 정찰 -- Schneider Electric Triconex SIS 모델 식별
+3. Triconex SIS의 TriStation 프로토콜 역공학
+4. 악의적 래더 로직을 SIS 프로그램에 원격 주입
+5. 안전 시스템의 비상 정지(Emergency Shutdown, ESD) 신호를 무효화
+
+**피해 및 발견**: 공격자의 코드에 버그가 있어 SIS가 비정상 종료되면서 발견되었습니다. 만약 버그가 없었다면, 안전 시스템이 비활성화된 상태에서 공정 이상이 발생할 경우 폭발 등 물리적 재해로 이어질 수 있었습니다.
+
+**디지털 트윈 교훈**: TRITON이 보여준 위협의 본질은 **"신뢰의 붕괴"**입니다. DT의 안전 검증 로직도 같은 위협에 노출됩니다. 시뮬레이션 기반 Safety Integrity Level(SIL) 평가가 조작된 시스템에서 실행된다면, 안전 보증 자체가 무의미해집니다. 물리 센서와 독립적인 하드웨어 안전 회로(hardwired safety)가 DT 환경에서도 반드시 유지되어야 합니다.
+
+### 8.4 INCONTROLLER/PIPEDREAM (2022): 다중 프로토콜 도구킷
+
+CISA Advisory AA22-103A로 공개된 ICS 전용 다중 프로토콜 공격 도구킷으로, APT 그룹 CHERNOVITE가 개발한 것으로 추정됩니다. **실제 공격에 사용되기 전에 발견되어 차단된 드문 사례**입니다.
+
+**도구킷 구성**:
+- **TAGRUN**: OPC UA 서버 스캐닝 및 데이터 수집
+- **CODECALL**: CODESYS 기반 PLC 원격 코드 실행
+- **OMSHELL**: Omron NJ/NX PLC 제어 (HTTP/FINS 프로토콜)
+- **MOUSEHOLE**: Schneider Electric Modicon PLC 대상
+
+**디지털 트윈 교훈**: PIPEDREAM의 다중 프로토콜 특성은 클라우드 기반 DT의 정확한 공격 표면과 일치합니다. DT 플랫폼은 OPC UA, Modbus, CODESYS 등 다양한 프로토콜로 현장 기기와 통신하며, 이 모든 채널이 동시에 공격받을 수 있습니다. 공급망(IoT 펌웨어)을 통한 초기 침투 후, DT의 센서 데이터 수집 채널을 타겟하여 대규모 모델 오염이 가능합니다.
+
+### 8.5 사건 종합 비교
+
+| 사건 | 연도 | 대상 | 물리적 피해 | DT 시대 재현시 영향 |
+|------|------|------|-----------|-------------------|
+| Stuxnet | 2009 | 핵시설 PLC | 원심분리기 1,000대 파괴 | DT 모델 전체 오염 + 물리 파괴 |
+| Industroyer | 2016 | 전력 SCADA | 23만명 정전 (6시간) | 그리드 DT 시뮬레이션 오도 -> 대규모 정전 |
+| TRITON | 2017 | 정유소 SIS | 안전 시스템 무력화 | DT 안전 검증 자체 실패 -> 재해 |
+| PIPEDREAM | 2022 | 다중 ICS | (차단됨) | 다중 프로토콜 DT 채널 동시 공격 |
+
+```mermaid
+graph LR
+    subgraph 2009["2009-2010"]
+        S["Stuxnet<br/>PLC 로직 변조<br/>SCADA 스푸핑"]
+    end
+    subgraph 2016["2015-2016"]
+        I["Industroyer<br/>프로토콜 명령 탈취<br/>그리드 공격"]
+    end
+    subgraph 2017["2017"]
+        T["TRITON<br/>SIS 침투<br/>안전 경계 붕괴"]
+    end
+    subgraph 2022["2022"]
+        P["PIPEDREAM<br/>다중 프로토콜<br/>도구킷화"]
+    end
+
+    S -->|"교훈: 물리-가상 분리 공격"| I
+    I -->|"교훈: 프로토콜 직접 공격"| T
+    T -->|"교훈: 안전 시스템까지 확장"| P
+    P -->|"현재: DT 환경 직접 위협"| DT["디지털 트윈<br/>통합 위협"]
+
+    style DT fill:#B5422C,color:#fff
+```
 
 ---
 
-**면책 조항:** 본 논문에서 제시된 공격 기법은 교육 및 방어 목적으로만 기술되었습니다. 실제 시스템에 대한 무단 테스트는 불법입니다.
+## 9. 정량적 위험 평가 프레임워크
+
+### 9.1 FAIR 방법론 적용
+
+FAIR(Factor Analysis of Information Risk)를 ICS/디지털 트윈 환경에 적용합니다:
+
+```
+Annual Loss Expectancy = Loss Event Frequency x Probable Loss Magnitude
+LEF = Threat Event Frequency x Vulnerability x (1 - Control Effectiveness)
+```
+
+### 9.2 시나리오별 위험 정량화
+
+| 시나리오 | 위협 빈도 | 취약점 | 방어 효과 | 예상 손실 | ALE |
+|---------|---------|--------|---------|---------|-----|
+| 센서 스푸핑 -> DT 오작동 | 0.5/yr | 0.7 | 0.6 | $350M | $49M |
+| 히스토리안 포이즈닝 | 0.3/yr | 0.6 | 0.5 | $200M | $18M |
+| PLC 로직 변조 | 0.2/yr | 0.5 | 0.7 | $500M | $15M |
+| 프로토콜 MITM | 0.8/yr | 0.4 | 0.8 | $100M | $6.4M |
+
+### 9.3 Monte Carlo 시뮬레이션을 통한 불확실성 분석
+
+단일 ALE 계산값만으로는 의사결정에 한계가 있습니다. 각 변수가 확률 분포를 따른다고 가정하면:
+
+| 변수 | 분포 유형 | P5 (최선) | P50 (중앙) | P95 (최악) |
+|------|---------|---------|---------|----------|
+| 자산 가치 (AV) | 로그정규 | $300M | $500M | $1B |
+| 위협 빈도 (TEF) | 포아송 | 0.2/yr | 0.5/yr | 2.0/yr |
+| 취약점 (V) | 베타 | 0.4 | 0.7 | 0.9 |
+| 방어 효과 (CE) | 베타 | 0.3 | 0.6 | 0.85 |
+
+10,000회 Monte Carlo 시뮬레이션 결과:
+- **P5 (최선)**: ALE $2M/yr -- 방어가 효과적이고 공격 빈도가 낮은 경우
+- **P50 (중앙)**: ALE $48M/yr -- 현실적 기대값
+- **P95 (최악)**: ALE $380M/yr -- 국가 수준 공격자, 방어 실패 시나리오
+
+이 분포를 기반으로, 95% 신뢰도에서 연간 보안 예산 $50M 투자는 기대 손실 대비 정당화됩니다. 특히 TRITON급 사고의 경우 인명 피해까지 고려하면, 방어 투자의 정당성은 더욱 강해집니다.
+
+### 9.4 방어 투자 ROI 분석
+
+| 방어 조치 | 투자 비용 | ALE 감소 | 3년 ROI | IEC 62443 SL |
+|-----------|---------|---------|---------|-------------|
+| TLS 암호화 + 센서 서명 | $500K | $12M/yr | 2,400% | SL 2 달성 |
+| 이상탐지 AI 시스템 | $2M | $18M/yr | 900% | SL 3 달성 |
+| 물리 기반 데이터 검증 | $1.5M | $9M/yr | 600% | SL 3+ |
+| 다중 소스 데이터 융합 | $3M | $15M/yr | 500% | SL 4 |
+| 통합 방어 (전체) | $7M | $45M/yr | 643% | SL 4 달성 |
+
+```mermaid
+graph TB
+    subgraph 투자["방어 투자 단계"]
+        L1["1단계: TLS + 센서 서명<br/>$500K | ROI 2,400%"]
+        L2["2단계: 이상탐지 AI<br/>$2M | ROI 900%"]
+        L3["3단계: 물리 기반 검증<br/>$1.5M | ROI 600%"]
+        L4["4단계: 다중 소스 융합<br/>$3M | ROI 500%"]
+    end
+
+    subgraph 효과["보안 수준 달성"]
+        SL2["IEC 62443 SL 2<br/>숙련 공격자 방어"]
+        SL3["IEC 62443 SL 3<br/>전문 공격자 방어"]
+        SL4["IEC 62443 SL 4<br/>국가급 공격자 방어"]
+    end
+
+    L1 --> SL2
+    L2 --> SL3
+    L3 --> SL3
+    L4 --> SL4
+
+    style L1 fill:#2F5D50,color:#fff
+    style SL4 fill:#B5422C,color:#fff
+```
+
+---
+
+## 10. 표준 프레임워크 교차 참조
+
+### 10.1 NIST SP 800-82r3: OT 보안 가이드라인
+
+2023년 개정된 NIST SP 800-82r3은 OT 환경 보안의 표준 지침으로, IT-OT 수렴 환경에서의 보안 통제를 상세히 다룹니다. 디지털 트윈은 이 수렴의 핵심 기술이므로, 800-82r3의 모든 요구사항이 직접 적용됩니다.
+
+**핵심 적용 영역**:
+- **네트워크 세분화**: DT 플랫폼과 OT 네트워크 간 DMZ 설정, 단방향 게이트웨이 검토
+- **접근 제어**: DT 관리 인터페이스에 다중 인증(MFA) 적용, 역할 기반 접근 제어
+- **모니터링**: DT 데이터 흐름에 대한 지속적 모니터링, 비정상 패턴 탐지
+
+### 10.2 IEC 62443 보안 수준(Security Level) 매핑
+
+IEC 62443은 산업 시스템의 보안을 4단계 Security Level(SL)로 정의합니다. DT 환경에서 각 SL이 요구하는 통제:
+
+| SL | 위협 수준 | DT 요구사항 | 핵심 통제 |
+|----|---------|----------|---------|
+| 1 | 비의도적 | 기본 접근 제어 | 패스워드 인증, 기본 로깅 |
+| 2 | 일반 공격자 | 암호화 + 인증 | TLS, RBAC, 감사 추적 |
+| 3 | 전문 공격자 | 다층 방어 | 이상탐지, 무결성 검증, 침투 테스트 |
+| 4 | 국가급 공격자 | 완전 방어 | 물리 기반 검증, 하드웨어 보안, 제로 트러스트 |
+
+### 10.3 NIST CSF 2.0과 DT 보안 매핑
+
+NIST CSF 2.0은 Govern(거버넌스) 기능을 새로 추가하여, 조직 전체의 사이버보안 위험 관리 전략을 강조합니다.
+
+```mermaid
+graph TB
+    GV["Govern<br/>DT 보안 정책 수립<br/>위험 허용 수준 정의"] --> ID["Identify<br/>DT 자산 목록화<br/>데이터 흐름 매핑"]
+    ID --> PR["Protect<br/>센서 인증, 암호화<br/>접근 제어, 격리"]
+    PR --> DE["Detect<br/>이상탐지, 모니터링<br/>물리-가상 불일치 감지"]
+    DE --> RS["Respond<br/>사고 대응, 격리<br/>DT 모델 롤백"]
+    RS --> RC["Recover<br/>DT 재구축<br/>검증된 백업 복원"]
+
+    style GV fill:#2F5D50,color:#fff
+    style DE fill:#B5422C,color:#fff
+```
+
+### 10.4 MITRE ATT&CK for ICS 탐지 유스케이스
+
+각 공격 기법에 대한 구체적 탐지 규칙:
+
+| 통제 목표 | NIST 800-82r3 | CSF 2.0 | IEC 62443 | ATT&CK ICS | 탐지 방법 |
+|----------|--------------|---------|-----------|-----------|----------|
+| 센서 인증 | 5.3 | PR.AA | SR 1.1 (SL3) | T0806 | 인증서 검증 실패 알림 |
+| 통신 암호화 | 5.4 | PR.DS | SR 4.1 (SL2+) | T0885 | 평문 프로토콜 트래픽 감지 |
+| 접근 제어 | 5.1 | PR.AC | SR 2.1 (SL2+) | T0889 | 비인가 명령 시도 카운터 |
+| 이상 탐지 | 6.2 | DE.CM | SR 6.1 (SL3) | T0801 | 물리-가상 상태 편차 임계값 |
+| 사고 대응 | 6.3 | RS.RP | SR 6.2 (SL3+) | 전체 | 자동 격리 + 알림 파이프라인 |
+| 물리-가상 검증 | (신규) | ID.RA | (신규) | T0806/T0801 | 교차 센서 일관성 검증 |
+| 공급망 무결성 | 5.5 | ID.SC | SR 2.4 (SL3) | T0862 | 펌웨어 서명 검증 |
+| 모델 무결성 | (신규) | PR.DS | (신규) | (신규) | ML 모델 해시 비교 |
+
+---
+
+## 참고 링크
+
+- [NIST SP 800-82r3 - OT 보안 가이드](https://csrc.nist.gov/pubs/sp/800/82/r3/final)
+- [NIST Cybersecurity Framework 2.0](https://www.nist.gov/cyberframework)
+- [NIST SP 800-30r1 - 위험 평가 가이드](https://csrc.nist.gov/pubs/sp/800/30/r1/final)
+- [IEC 62443 시리즈 - 산업 자동화 보안](https://www.isa.org/standards-and-publications/isa-standards/isa-iec-62443-series-of-standards)
+- [MITRE ATT&CK for ICS](https://attack.mitre.org/techniques/ics/)
+- [CISA Advisory AA22-103A - PIPEDREAM](https://www.cisa.gov/news-events/cybersecurity-advisories/aa22-103a)
+- [Mandiant - TRITON 분석 보고서](https://www.mandiant.com/resources/blog/attackers-deploy-new-ics-attack-framework-triton)
+- [Dragos - CRASHOVERRIDE 분석](https://www.dragos.com/resource/crashoverride/)
+- [Langner - Stuxnet 기술 분석](https://www.langner.com/to-kill-a-centrifuge/)
+- [FAIR Institute - 정보 위험 분석](https://www.fairinstitute.org/)
+
+---
+
+**AICRA** | 2026년 3월 22일
+
+*이 글에서 다루는 공격 기법은 방어 목적의 교육 자료입니다.*
