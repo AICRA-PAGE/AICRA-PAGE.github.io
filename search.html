@@ -1,0 +1,153 @@
+---
+layout: default
+title: Search
+permalink: /search/
+---
+
+<div class="search-page">
+  <h1>Search</h1>
+  <p class="search-description">AICRA 연구 포스트를 검색합니다.</p>
+
+  <div class="search-input-wrapper">
+    <label for="search-input" class="sr-only">검색</label>
+    <input type="text" id="search-input" placeholder="검색어를 입력하세요..." autocomplete="off" autofocus>
+    <span class="search-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+    </span>
+  </div>
+
+  <div class="search-filters">
+    <span class="filter-label">Filter:</span>
+    <button class="filter-btn active" data-filter="all">All</button>
+    {% for cat in site.display_categories %}
+    <button class="filter-btn" data-filter="{{ cat | slugify }}">{{ cat }}</button>
+    {% endfor %}
+  </div>
+
+  <div id="search-results" class="search-results" aria-live="polite">
+    <p class="search-hint">검색어를 입력하면 결과가 여기에 표시됩니다.</p>
+  </div>
+</div>
+
+<script>
+(function() {
+  // Build search index from all posts
+  var posts = [
+    {% for post in site.posts %}
+    {
+      title: {{ post.title | jsonify }},
+      url: {{ post.url | relative_url | jsonify }},
+      date: {{ post.date | date: "%Y-%m-%d" | jsonify }},
+      description: {{ post.description | default: "" | jsonify }},
+      categories: {{ post.categories | default: empty | jsonify }},
+      tags: {{ post.tags | default: empty | jsonify }},
+      content: {{ post.content | strip_html | truncatewords: 200 | jsonify }},
+      _searchable: null
+    }{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  ];
+
+  var input = document.getElementById('search-input');
+  var results = document.getElementById('search-results');
+  var filterBtns = document.querySelectorAll('.filter-btn');
+  var activeFilter = 'all';
+
+  // Precompute searchable text once
+  posts.forEach(function(p) {
+    p.categories = p.categories || [];
+    p.tags = p.tags || [];
+    p._searchable = (p.title + ' ' + p.description + ' ' + p.tags.join(' ') + ' ' + p.content).toLowerCase();
+    p._catSlugs = p.categories.map(function(c) { return c.toLowerCase().replace(/\s+/g, '-'); });
+  });
+
+  function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.appendChild(document.createTextNode(str));
+    return div.innerHTML;
+  }
+
+  // Filter buttons
+  filterBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      filterBtns.forEach(function(b) { b.classList.remove('active'); b.setAttribute('aria-pressed', 'false'); });
+      this.classList.add('active');
+      this.setAttribute('aria-pressed', 'true');
+      activeFilter = this.getAttribute('data-filter');
+      doSearch(input.value);
+    });
+  });
+
+  // Search logic
+  function doSearch(query) {
+    query = query.toLowerCase().trim();
+    if (!query) {
+      results.innerHTML = '<p class="search-hint">검색어를 입력하면 결과가 여기에 표시됩니다.</p>';
+      return;
+    }
+
+    var matches = posts.filter(function(post) {
+      if (activeFilter !== 'all') {
+        if (post._catSlugs.indexOf(activeFilter) === -1) return false;
+      }
+      var terms = query.split(/\s+/);
+      return terms.every(function(term) { return post._searchable.indexOf(term) !== -1; });
+    });
+
+    if (matches.length === 0) {
+      results.innerHTML = '<p class="search-no-results">"' + escapeHtml(query) + '"에 대한 결과가 없습니다.</p>';
+      return;
+    }
+
+    var shown = matches.slice(0, 50);
+    var html = '<p class="search-count">' + matches.length + '개 결과' + (matches.length > 50 ? ' (상위 50개 표시)' : '') + '</p><div class="search-results-list">';
+    shown.forEach(function(post) {
+      var snippet = post.content.substring(0, 200);
+      var idx = post.content.toLowerCase().indexOf(query.split(/\s+/)[0]);
+      if (idx > 50) {
+        snippet = '...' + post.content.substring(idx - 50, idx + 150) + '...';
+      }
+
+      html += '<article class="search-result-item">';
+      html += '<a href="' + post.url + '" class="search-result-link">';
+      html += '<h3>' + highlightText(post.title, query) + '</h3>';
+      html += '<p class="search-result-meta">' + post.date;
+      if (post.categories.length) html += ' &middot; ' + post.categories.join(', ');
+      html += '</p>';
+      html += '<p class="search-result-snippet">' + highlightText(snippet, query) + '</p>';
+      if (post.tags.length) {
+        html += '<div class="search-result-tags">';
+        post.tags.forEach(function(tag) {
+          html += '<span class="tag">#' + tag + '</span>';
+        });
+        html += '</div>';
+      }
+      html += '</a></article>';
+    });
+    html += '</div>';
+    results.innerHTML = html;
+  }
+
+  function highlightText(text, query) {
+    var terms = query.split(/\s+/).filter(Boolean);
+    terms.forEach(function(term) {
+      var regex = new RegExp('(' + term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+      text = text.replace(regex, '<mark>$1</mark>');
+    });
+    return text;
+  }
+
+  // Debounced input
+  var timer;
+  input.addEventListener('input', function() {
+    clearTimeout(timer);
+    timer = setTimeout(function() { doSearch(input.value); }, 200);
+  });
+
+  // URL query parameter support
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('q')) {
+    input.value = params.get('q');
+    doSearch(params.get('q'));
+  }
+})();
+</script>

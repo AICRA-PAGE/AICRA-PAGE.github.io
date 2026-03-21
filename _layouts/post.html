@@ -63,16 +63,114 @@ layout: default
     {% endif %}
   </header>
 
+  <div class="post-content-wrapper">
+    {% if page.toc %}
+    <aside class="toc-sidebar" id="toc-sidebar">
+      <nav class="table-of-contents" aria-label="Table of Contents">
+        <h3>Table of Contents</h3>
+        {% toc %}
+      </nav>
+    </aside>
+    {% endif %}
+
+    <div class="post-body" id="post-body">
+      {{ content }}
+    </div>
+  </div>
+
   {% if page.toc %}
-  <nav class="table-of-contents">
-    <h3>Table of Contents</h3>
-    {% toc %}
-  </nav>
+  <script>
+  (function() {
+    var headings = document.querySelectorAll('#post-body h2, #post-body h3');
+    var tocLinks = document.querySelectorAll('.table-of-contents a');
+    if (!headings.length || !tocLinks.length) return;
+
+    var tocSidebar = document.getElementById('toc-sidebar');
+
+    // Sticky behavior
+    var stickyOffset = 80;
+    function updateSticky() {
+      if (window.innerWidth < 1200) {
+        tocSidebar.classList.remove('is-sticky');
+        return;
+      }
+      if (window.scrollY > stickyOffset) {
+        tocSidebar.classList.add('is-sticky');
+      } else {
+        tocSidebar.classList.remove('is-sticky');
+      }
+    }
+
+    // IntersectionObserver for active section
+    var visibleHeadings = new Set();
+    var headingOrder = Array.from(headings).map(function(h) { return h.id; }).filter(Boolean);
+
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        var id = entry.target.getAttribute('id');
+        if (!id) return;
+        if (entry.isIntersecting) {
+          visibleHeadings.add(id);
+        } else {
+          visibleHeadings.delete(id);
+        }
+      });
+
+      // Pick the topmost visible heading as winner
+      var winner = null;
+      for (var i = 0; i < headingOrder.length; i++) {
+        if (visibleHeadings.has(headingOrder[i])) { winner = headingOrder[i]; break; }
+      }
+      if (winner) {
+        tocLinks.forEach(function(link) {
+          link.classList.remove('toc-active');
+          if (link.getAttribute('href') === '#' + winner) {
+            link.classList.add('toc-active');
+          }
+        });
+      }
+    }, { rootMargin: '-80px 0px -70% 0px', threshold: 0 });
+
+    headings.forEach(function(h) { if (h.id) observer.observe(h); });
+
+    // Smooth scroll on TOC click
+    tocLinks.forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        var href = this.getAttribute('href');
+        if (href && href.startsWith('#')) {
+          e.preventDefault();
+          var target = document.getElementById(href.slice(1));
+          if (target) {
+            window.scrollTo({ top: target.offsetTop - 70, behavior: 'smooth' });
+            history.replaceState(null, '', href);
+            target.setAttribute('tabindex', '-1');
+            target.focus({ preventScroll: true });
+          }
+        }
+      });
+    });
+
+    window.addEventListener('scroll', updateSticky, { passive: true });
+    updateSticky();
+  })();
+  </script>
   {% endif %}
 
-  <div class="post-body">
-    {{ content }}
+  <!-- Update notice -->
+  {% if page.last_modified_at %}
+  <div class="update-notice">
+    Last updated: {{ page.last_modified_at | date: "%Y-%m-%d" }}
+    {% if page.changelog %}
+    <details>
+      <summary>Changelog</summary>
+      {{ page.changelog | markdownify }}
+    </details>
+    {% endif %}
   </div>
+  {% endif %}
+
+  <!-- Cite this post -->
+  {% include cite-this.html %}
 
   <footer class="post-footer">
     <div class="post-share">
@@ -85,7 +183,7 @@ layout: default
       </a>
     </div>
 
-    {% if page.related %}
+    <!-- Related posts -->
     <div class="related-posts">
       <h3>Related Posts</h3>
       <div class="related-grid">
@@ -94,6 +192,8 @@ layout: default
         {% endfor %}
       </div>
     </div>
-    {% endif %}
+
+    <!-- Comments -->
+    {% include giscus.html %}
   </footer>
 </article>
