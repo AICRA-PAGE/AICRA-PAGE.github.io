@@ -1,6 +1,6 @@
-# AICRA - AI Security Research Association
+# AICRA
 
-## 인공지능보안연구회 (AICRA)
+## AICRA
 
 AI 보안 연구를 통해 더 안전한 AI 생태계를 구축합니다.
 

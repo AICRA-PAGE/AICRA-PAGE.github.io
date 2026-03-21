@@ -1,0 +1,22 @@
+{% comment %}
+Cite This Post - BibTeX export for academic posts
+Auto-included in post layout. No manual setup needed.
+{% endcomment %}
+
+<div class="cite-box">
+  <h4>Cite This Post</h4>
+  <div class="cite-formats">
+    <button class="cite-tab active" data-format="bibtex">BibTeX</button>
+    <button class="cite-tab" data-format="apa">APA</button>
+  </div>
+  <pre class="cite-content" id="cite-bibtex">@article{aicra{{ page.date | date: "%Y" }}{{ page.title | slugify | truncate: 20, "" }},
+  title={ {{- page.title -}} },
+  author={ {{- page.author | default: "AICRA" -}} },
+  journal={AICRA Research Blog},
+  year={ {{- page.date | date: "%Y" -}} },
+  month={ {{- page.date | date: "%m" -}} },
+  url={ {{- page.url | absolute_url -}} }
+}</pre>
+  <pre class="cite-content" id="cite-apa" style="display:none;">{{ page.author | default: "AICRA" }}. ({{ page.date | date: "%Y, %B %d" }}). {{ page.title }}. AICRA Research Blog. {{ page.url | absolute_url }}</pre>
+  <button class="cite-copy-btn" onclick="navigator.clipboard.writeText(document.querySelector('.cite-content:not([style*=none])').textContent).then(()=>{this.textContent='Copied!';setTimeout(()=>{this.textContent='Copy'},2000)})">Copy</button>
+</div>

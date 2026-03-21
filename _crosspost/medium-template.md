@@ -7,7 +7,7 @@ language: en
 # Medium Post Template
 
 ## Title Format
-{English Title} | AICRA (AI Security Research Association of Korea)
+{English Title} | AICRA 
 
 ## Tags (5 max on Medium)
 - ai-security
@@ -27,7 +27,7 @@ language: en
 
 ### Introduction (Hook)
 ```markdown
-*This article was originally published by AICRA (AI Security Research Association of Korea).
+*This article was originally published by AICRA .
 [Read the Korean version](https://aicra-page.github.io/AICRA-analyze/)*
 
 ---
@@ -69,7 +69,7 @@ Before we dive in, here are the key points:
 
 ## About AICRA
 
-The AI Security Research Association of Korea (AICRA) is dedicated to
+The AICRA  is dedicated to
 advancing AI security research and best practices.
 
 **Follow us for more AI security insights:**
