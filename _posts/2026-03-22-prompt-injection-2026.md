@@ -475,63 +475,110 @@ class SecureAgent:
 
 ---
 
-## 8. 결론 및 AICRA 권장사항
+## 8. 탐지 및 모니터링 전략
 
-### 8.1 주요 발견
+프롬프트 인젝션의 방어만큼 중요한 것이 **탐지**입니다. 공격이 방어를 우회했을 때 빠르게 발견하는 것이 피해를 최소화합니다.
 
-1. **진화의 가속도**: 프롬프트 인젝션 공격은 연간 기술적 복잡도가 지수함수적으로 증가
-2. **다층 방어 필수**: 단일 방어 기법으로는 Generation 3 이상 공격 방어 불가
-3. **구조적 설계**: 입력 정제보다 컨텍스트 격리와 의도 검증이 더 효과적
+### 8.1 실시간 탐지 지표
 
-### 8.2 AICRA 권장사항
+| 탐지 지표 | 정상 범위 | 이상 신호 | 대응 |
+|----------|---------|---------|------|
+| 시스템 프롬프트 참조율 | < 5% | 출력에 시스템 프롬프트 내용 포함 | 즉시 차단 + 로그 |
+| 도구 호출 빈도 | 세션당 5-15회 | 단일 턴에서 10+ 도구 호출 | Rate limit + 검토 |
+| 권한 범위 변경 | 없음 | 에이전트가 요청하지 않은 리소스 접근 | 세션 격리 |
+| 출력 길이 편차 | 평균 대비 ±50% | 비정상적으로 긴/짧은 출력 | 로깅 + 분석 |
+| 언어 전환 | 일관된 언어 | 갑작스러운 언어/톤 변화 | 의도 재검증 |
 
-**즉시 실행 (1주 내):**
-- [ ] 모든 LLM 입력을 명시적으로 분리된 섹션에 배치
-- [ ] 신뢰할 수 없는 외부 데이터에 대한 검증 강화
-- [ ] 에이전트 간 권한 정보 전달 금지
+### 8.2 탐지 파이프라인 아키텍처
 
-**단기 과제 (1개월 내):**
-- [ ] 도구 접근 제어(ACL) 시스템 구현
-- [ ] 의도 검증 모듈 추가 (토큰 분류 기반)
-- [ ] 모든 권한 변경 사항 감사 로그 기록
+```mermaid
+graph LR
+    INPUT["사용자 입력"] --> PRECHECK["Pre-check<br/>패턴 매칭<br/>금지어 필터"]
+    PRECHECK --> LLM["LLM 처리"]
+    LLM --> POSTCHECK["Post-check<br/>출력 검증<br/>시스템 프롬프트 누출 검사"]
+    POSTCHECK --> INTENT["의도 검증<br/>원래 요청과 출력 일치?"]
+    INTENT --> OUTPUT["최종 출력"]
 
-**중기 계획 (분기 단위):**
-- [ ] 다단계 검증 프레임워크 개발
-- [ ] 에이전트 격리 아키텍처 전환
-- [ ] 실시간 이상 탐지 시스템 구축
+    PRECHECK -.->|"의심"| QUARANTINE["격리 큐"]
+    POSTCHECK -.->|"이상"| QUARANTINE
+    INTENT -.->|"불일치"| QUARANTINE
+    QUARANTINE --> REVIEW["수동 검토"]
 
-### 8.3 업계 표준화의 필요성
+    style QUARANTINE fill:#B5422C,color:#fff
+```
 
-현재 프롬프트 인젝션 방어는 각사의 임의 방식으로 진행 중입니다. OWASP는 "Top 10 for LLM Applications"에서 이를 명시했지만, 구체적인 구현 표준은 부재합니다. 다음을 제안합니다:
+### 8.3 자동화 도구 비교
 
-1. **LLM 안전 표준화 (ISO 27001 확장)**
-   - 컨텍스트 격리 필수 요구사항
-   - 다층 방어 벤치마크
+프롬프트 인젝션 탐지/테스트에 사용할 수 있는 오픈소스 도구:
 
-2. **감시 및 모니터링 가이드라인**
-   - 비정상적 도구 호출 탐지
-   - 크로스 에이전트 상태 누수 탐지
-
-3. **정기적 침투 테스트 표준화**
-   - Generation 4 공격 시뮬레이션
-   - 에이전트 체인 공격 테스트 케이스
-
----
-
-## 참고 문헌
-
-1. **Perez, F., & Ribeiro, M.T.** (2023). "Is Your NLP Model Really Robust? Evaluating Adversarial Examples in Text Classification." *Proceedings of AAAI 2023*.
-
-2. **Greshake, K., et al.** (2023). "Not What You've Signed Up For: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection." *arXiv preprint 2302.12173*.
-
-3. **Nasr, M., et al.** (2023). "Scalable Extraction of Training Data from Language Models." *Proceedings of USENIX Security 2023*.
-
-4. **OWASP** (2024). "Top 10 for Large Language Model Applications v1.1." https://owasp.org/www-project-top-10-for-large-language-model-applications/
-
-5. **Liu, W., et al.** (2025). "Prompt Injection Attack in Agent-Based Systems: Analysis and Mitigation Strategies." *IEEE Transactions on Software Engineering*, (in press).
+| 도구 | 용도 | 특징 | 링크 |
+|------|------|------|------|
+| Garak | LLM 취약점 스캐너 | 다양한 인젝션 프로브, 자동 보고서 | github.com/leondz/garak |
+| Promptfoo | 레드팀 프레임워크 | 커스텀 테스트 케이스, CI/CD 통합 | github.com/promptfoo/promptfoo |
+| PyRIT (Microsoft) | AI 레드팀 도구 | 멀티턴 공격, 에이전트 체인 테스트 | github.com/Azure/PyRIT |
+| Rebuff | 인젝션 탐지 SDK | 실시간 탐지, 허니팟 방식 | github.com/protectai/rebuff |
+| LLM Guard | 입출력 스캐너 | 토큰 분석, 정규식+ML 하이브리드 | github.com/protectai/llm-guard |
 
 ---
 
-**저자:** AICRA Security Research Team  
-**최종 검토:** 2026년 3월 22일  
-**다음 업데이트:** 2026년 6월 (Generation 5 공격 분석 예정)
+## 9. 조직 대응 체계
+
+### 9.1 핵심 방어 우선순위
+
+| 우선순위 | 통제 영역 | 핵심 조치 |
+|:--------:|----------|----------|
+| P0 | 컨텍스트 격리 | 시스템/사용자/외부 데이터를 명시적으로 분리된 섹션에 배치 |
+| P0 | 외부 데이터 검증 | 신뢰할 수 없는 콘텐츠에 실행 가능한 명령이 포함되지 않도록 sanitize |
+| P1 | 도구 접근 제어 | 에이전트별 ACL, 최소 권한 원칙, 도구 호출 승인 워크플로우 |
+| P1 | 의도 검증 | 입력 의도와 출력 행동의 일관성을 토큰 분류 기반으로 검증 |
+| P2 | 감사 추적 | 모든 프롬프트, 도구 호출, 권한 변경을 immutable 로그에 기록 |
+| P2 | 레드팀 평가 | 주기적으로 Generation 3-4 수준의 공격 시뮬레이션 수행 |
+
+### 9.2 업계 표준화 현황
+
+프롬프트 인젝션 방어는 아직 표준이 부족합니다. 현재 참고할 수 있는 프레임워크:
+
+- **OWASP LLM Top 10 v1.1**: LLM01(Prompt Injection)을 최우선 위험으로 분류. 방어 원칙은 제시하지만 구체적 구현 표준은 부재
+- **NIST AI RMF**: AI 위험 관리 프레임워크로 Govern/Map/Measure/Manage 단계를 정의. 프롬프트 인젝션 특화 가이드는 아직 없음
+- **EU AI Act**: 고위험 AI 시스템에 대한 적대적 공격 방어를 요구. 프롬프트 인젝션을 명시적으로 언급하지는 않지만, "robustness against adversarial manipulation" 조항이 적용
+- **ISO/IEC 42001**: AI 관리 시스템 표준으로, 입력 검증과 출력 모니터링을 조직 프로세스에 포함하도록 요구
+
+### 9.3 프롬프트 인젝션 방어 성숙도 모델
+
+| 성숙도 | 단계 | 통제 |
+|:------:|------|------|
+| 1 | 기본 | 입력 필터링 (금지어, 정규식) |
+| 2 | 구조적 | 시스템/사용자 프롬프트 분리, 출력 검증 |
+| 3 | 다층 | 의도 검증 + 도구 ACL + 실시간 모니터링 |
+| 4 | 적응적 | ML 기반 이상 탐지, 자동 격리, 레드팀 자동화 |
+| 5 | 예측적 | 위협 인텔리전스 통합, 새로운 공격 패턴 사전 탐지 |
+
+---
+
+## 10. 결론
+
+프롬프트 인젝션은 LLM 보안의 가장 근본적인 문제입니다. 2024-2026년 사이에 공격은 직접 인젝션에서 간접, 다단계, 에이전트 체인으로 급속히 진화했고, 이 추세는 에이전틱 AI의 확산과 함께 가속될 것입니다.
+
+가장 중요한 교훈은 **"입력을 정제하는 것만으로는 부족하다"**는 것입니다. 구조적 분리(시스템/사용자/외부 컨텍스트), 의도 검증(입력과 출력의 일관성), 최소 권한 원칙(에이전트별 도구 ACL)이 함께 작동해야 합니다.
+
+프롬프트 인젝션에 대한 완벽한 방어는 현재 불가능합니다. 하지만 다층 방어를 통해 공격의 성공 확률을 낮추고, 성공하더라도 피해 범위를 제한하는 것은 가능합니다. 이것이 Defense-in-Depth의 핵심이며, 모든 LLM 기반 시스템의 설계 원칙이 되어야 합니다.
+
+---
+
+## 참고 링크
+
+- [OWASP Top 10 for LLM Applications v1.1](https://owasp.org/www-project-top-10-for-large-language-model-applications/)
+- [Indirect Prompt Injection (Greshake et al., 2023)](https://arxiv.org/abs/2302.12173)
+- [Scalable Training Data Extraction (Nasr et al., 2023)](https://arxiv.org/abs/2311.17035)
+- [Garak - LLM Vulnerability Scanner](https://github.com/leondz/garak)
+- [Promptfoo - LLM Red Team Framework](https://github.com/promptfoo/promptfoo)
+- [PyRIT - Microsoft AI Red Team Tool](https://github.com/Azure/PyRIT)
+- [LLM Guard - Input/Output Scanner](https://github.com/protectai/llm-guard)
+- [NIST AI Risk Management Framework](https://www.nist.gov/artificial-intelligence/ai-risk-management-framework)
+- [EU AI Act - Robustness Requirements](https://artificialintelligenceact.eu/)
+
+---
+
+**AICRA** | 2026년 3월 22일
+
+*이 글에서 다루는 공격 기법은 방어 목적의 교육 자료입니다.*
