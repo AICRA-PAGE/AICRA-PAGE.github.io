@@ -67,6 +67,13 @@
   <!-- Mermaid (diagrams in markdown) -->
   <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
   <script>
+    // Convert kramdown code blocks to mermaid divs before init
+    document.querySelectorAll('pre code.language-mermaid').forEach(function(block) {
+      var div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = block.textContent;
+      block.parentElement.replaceWith(div);
+    });
     mermaid.initialize({
       startOnLoad: true,
       theme: document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default',
@@ -104,8 +111,9 @@
       bar.style.width = Math.min(pct, 100) + '%';
     });
 
-    // Code copy button (auto-inject on all code blocks)
+    // Code copy button (auto-inject on code blocks, skip cite-box and mermaid)
     document.querySelectorAll('pre code').forEach(function(block) {
+      if (block.closest('.cite-box') || block.classList.contains('language-mermaid')) return;
       var btn = document.createElement('button');
       btn.className = 'code-copy-btn';
       btn.textContent = 'Copy';

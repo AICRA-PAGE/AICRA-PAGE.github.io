@@ -18,5 +18,20 @@ Auto-included in post layout. No manual setup needed.
   url={ {{- page.url | absolute_url -}} }
 }</pre>
   <pre class="cite-content" id="cite-apa" style="display:none;">{{ page.author | default: "AICRA" }}. ({{ page.date | date: "%Y, %B %d" }}). {{ page.title }}. AICRA Research Blog. {{ page.url | absolute_url }}</pre>
-  <button class="cite-copy-btn" onclick="navigator.clipboard.writeText(document.querySelector('.cite-content:not([style*=none])').textContent).then(()=>{this.textContent='Copied!';setTimeout(()=>{this.textContent='Copy'},2000)})">Copy</button>
+  <button class="cite-copy-btn" onclick="navigator.clipboard.writeText(document.querySelector('.cite-content:not([style*=none])').textContent).then(()=>{this.textContent='Copied!';setTimeout(()=>{this.textContent='Copy Citation'},2000)})">Copy Citation</button>
 </div>
+
+<script>
+(function() {
+  var tabs = document.querySelectorAll('.cite-tab');
+  tabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      tabs.forEach(function(t) { t.classList.remove('active'); });
+      this.classList.add('active');
+      var fmt = this.getAttribute('data-format');
+      document.getElementById('cite-bibtex').style.display = fmt === 'bibtex' ? 'block' : 'none';
+      document.getElementById('cite-apa').style.display = fmt === 'apa' ? 'block' : 'none';
+    });
+  });
+})();
+</script>
