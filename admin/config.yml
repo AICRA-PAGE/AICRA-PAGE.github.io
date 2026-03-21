@@ -2,6 +2,8 @@ backend:
   name: github
   repo: AICRA-PAGE/AICRA-PAGE.github.io
   branch: main
+  auth_type: pkce
+  app_id: aicra-page-cms
 
 media_folder: "assets/images/posts"
 public_folder: "/assets/images/posts"
