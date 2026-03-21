@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" fill="none">
+  <rect width="800" height="400" fill="#1C1917"/>
+  <rect x="40" y="40" width="720" height="320" rx="8" fill="#292524" stroke="#44403C"/>
+  <!-- Injection arrow -->
+  <g transform="translate(100,100)">
+    <rect width="180" height="60" rx="6" fill="#2F5D50"/>
+    <text x="90" y="35" text-anchor="middle" fill="#fff" font-family="sans-serif" font-size="14" font-weight="600">User Input</text>
+  </g>
+  <line x1="290" y1="130" x2="370" y2="130" stroke="#B5422C" stroke-width="3" stroke-dasharray="8,4"/>
+  <polygon points="370,120 395,130 370,140" fill="#B5422C"/>
+  <g transform="translate(400,100)">
+    <rect width="180" height="60" rx="6" fill="#B5422C"/>
+    <text x="90" y="35" text-anchor="middle" fill="#fff" font-family="sans-serif" font-size="14" font-weight="600">LLM</text>
+  </g>
+  <g transform="translate(250,200)">
+    <rect width="260" height="50" rx="6" fill="none" stroke="#B5422C" stroke-width="2" stroke-dasharray="6,3"/>
+    <text x="130" y="30" text-anchor="middle" fill="#B5422C" font-family="monospace" font-size="12">Ignore previous instructions...</text>
+  </g>
+  <text x="400" y="310" text-anchor="middle" fill="#E9E4DA" font-family="sans-serif" font-size="22" font-weight="700">Prompt Injection 2026</text>
+  <text x="400" y="340" text-anchor="middle" fill="#BEB7AA" font-family="sans-serif" font-size="14">Multi-stage Attack Evolution &amp; Defense</text>
+</svg>

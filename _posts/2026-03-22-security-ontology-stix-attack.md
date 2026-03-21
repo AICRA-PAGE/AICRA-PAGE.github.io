@@ -8,6 +8,7 @@ tags: [STIX, ATT&CK, 보안온톨로지, 지식그래프, 시맨틱보안, UCO, 
 author: AICRA
 toc: true
 lang: ko
+thumbnail: /assets/img/posts/security-ontology.svg
 ---
 
 # 보안 데이터 표준화의 미래: STIX 2.1과 ATT&CK의 온톨로지 통합
@@ -26,7 +27,7 @@ lang: ko
 
 지난 10년간 보안 산업은 위협 정보 공유를 위한 다양한 표준을 개발했습니다:
 
-- **STIX 1.x / 2.1**: Palo Alto Networks와 MITRE의 주도로 개발된 XML/JSON 기반 위협 정보 표현
+- **STIX 1.x / 2.1**: MITRE가 초기 개발하고 OASIS CTI 위원회가 표준화한 JSON 기반 위협 정보 표현
 - **TAXII**: STIX 데이터 교환을 위한 API 프로토콜
 - **OpenIOC**: Mandiant의 인디케이터 형식
 - **YARA**: VirusTotal과 보안 커뮤니티의 악성코드 탐지 규칙

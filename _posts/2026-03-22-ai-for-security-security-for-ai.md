@@ -9,6 +9,7 @@ tags: [AI Security, NIST AI RMF, MITRE ATLAS, Google SAIF, Framework]
 author: AICRA
 toc: true
 lang: ko
+thumbnail: /assets/img/posts/ai-for-security.svg
 featured: true
 ---
 
@@ -349,18 +350,17 @@ quadrantChart
     x-axis "방어 중심" --> "공격 분석"
     y-axis "AI 활용" --> "AI 보호"
     
-    Q1: AI 위협 분석
-    Q2: AI 모델/에이전트 보호
-    Q3: 보안 자동화 & 운영
-    Q4: 데이터 보안 & 파이프라인
+    quadrant-1 "AI 위협 분석"
+    quadrant-2 "AI 모델/에이전트 보호"
+    quadrant-3 "보안 자동화 & 운영"
+    quadrant-4 "데이터 보안 & 파이프라인"
     
-    %% 예시 사항 배치
-    AI 이상탐지: 0.35, 0.7
-    SOAR 자동화: 0.25, 0.35
-    프롬프트 방어: 0.75, 0.75
-    모델 암호화: 0.8, 0.6
-    멤버십 추론 방어: 0.7, 0.8
-    위협 인텔 자동화: 0.6, 0.6
+    AI Anomaly Detection: [0.35, 0.7]
+    SOAR Automation: [0.25, 0.35]
+    Prompt Defense: [0.75, 0.75]
+    Model Encryption: [0.8, 0.6]
+    Membership Inference Defense: [0.7, 0.8]
+    Threat Intel Automation: [0.6, 0.6]
 ```
 
 ---

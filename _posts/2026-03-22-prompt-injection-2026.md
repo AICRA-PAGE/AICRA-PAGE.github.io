@@ -9,6 +9,7 @@ tags: [Prompt Injection, LLM Security, OWASP, Attack Evolution, Defense Framewor
 author: AICRA
 toc: true
 lang: ko
+thumbnail: /assets/img/posts/prompt-injection.svg
 ---
 
 ## Executive Summary
@@ -285,10 +286,11 @@ def verify_intent(user_input: str, expected_task: str) -> bool:
 
 ## 5. 실전 CVE 및 사례 분석
 
-### 5.1 CVE-2023-45678: ChatGPT 플러그인 연쇄 인젝션
+### 5.1 ChatGPT 플러그인 연쇄 인젝션 사례
 
-**발견일:** 2023년 11월
-**CVSS 점수:** 7.8 (High)
+> 아래 사례는 실제 보고된 취약점 패턴을 기반으로 구성한 시나리오입니다.
+
+**유형:** Indirect Prompt Injection via Plugin Response
 
 **취약점:**
 ```
@@ -310,7 +312,7 @@ ChatGPT 플러그인이 외부 API 응답을 정제 없이 사용
 - 플러그인 응답에 strict sanitization 적용
 - 신뢰할 수 없는 데이터 별도 프롬프트 섹션 처리
 
-### 5.2 CVE-2024-12345: 엔터프라이즈 AI 문서 시스템 권한 상승
+### 5.2 엔터프라이즈 AI 문서 시스템 권한 상승 시나리오
 
 **발견일:** 2024년 4월
 **영향:** Fortune 500 기업 3곳

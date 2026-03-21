@@ -9,6 +9,7 @@ tags: [Digital Twin, IoT Security, ICS, Cyber-Physical Systems, AI Security]
 author: AICRA
 toc: true
 lang: ko
+thumbnail: /assets/img/posts/digital-twin.svg
 ---
 
 ## Executive Summary

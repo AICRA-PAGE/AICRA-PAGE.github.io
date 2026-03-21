@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" fill="none">
+  <rect width="800" height="400" fill="#1C1917"/>
+  <rect x="40" y="40" width="720" height="320" rx="8" fill="#292524" stroke="#44403C"/>
+  <!-- Agent chain -->
+  <g transform="translate(100,100)">
+    <circle cx="40" cy="30" r="30" fill="#2F5D50"/>
+    <text x="40" y="35" text-anchor="middle" fill="#fff" font-family="sans-serif" font-size="11" font-weight="600">Agent A</text>
+  </g>
+  <line x1="175" y1="130" x2="250" y2="130" stroke="#6B665C" stroke-width="2"/>
+  <polygon points="250,125 262,130 250,135" fill="#6B665C"/>
+  <g transform="translate(270,100)">
+    <circle cx="40" cy="30" r="30" fill="#2F5D50"/>
+    <text x="40" y="35" text-anchor="middle" fill="#fff" font-family="sans-serif" font-size="11" font-weight="600">Agent B</text>
+  </g>
+  <line x1="345" y1="130" x2="420" y2="130" stroke="#6B665C" stroke-width="2"/>
+  <polygon points="420,125 432,130 420,135" fill="#6B665C"/>
+  <g transform="translate(440,100)">
+    <circle cx="40" cy="30" r="30" fill="#B5422C"/>
+    <text x="40" y="35" text-anchor="middle" fill="#fff" font-family="sans-serif" font-size="11" font-weight="600">Agent C</text>
+  </g>
+  <line x1="515" y1="130" x2="580" y2="130" stroke="#B5422C" stroke-width="2" stroke-dasharray="6,3"/>
+  <polygon points="580,125 592,130 580,135" fill="#B5422C"/>
+  <g transform="translate(600,100)">
+    <rect width="100" height="60" rx="6" fill="#B5422C" opacity="0.8"/>
+    <text x="50" y="25" text-anchor="middle" fill="#fff" font-family="sans-serif" font-size="10" font-weight="600">Tools</text>
+    <text x="50" y="45" text-anchor="middle" fill="#E8A08C" font-family="sans-serif" font-size="9">DB/API/FS</text>
+  </g>
+  <text x="400" y="220" text-anchor="middle" fill="#B5422C" font-family="monospace" font-size="12">Privilege Escalation Chain</text>
+  <text x="400" y="280" text-anchor="middle" fill="#E9E4DA" font-family="sans-serif" font-size="22" font-weight="700">Agentic AI Security</text>
+  <text x="400" y="310" text-anchor="middle" fill="#BEB7AA" font-family="sans-serif" font-size="14">Attack Chains &amp; Defense Design</text>
+</svg>

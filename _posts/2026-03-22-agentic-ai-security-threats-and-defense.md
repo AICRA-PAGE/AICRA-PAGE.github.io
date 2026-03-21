@@ -9,6 +9,7 @@ tags: [Agentic AI, MCP, Agent Security, OWASP, Prompt Injection, Tool Abuse]
 author: AICRA
 toc: true
 lang: ko
+thumbnail: /assets/img/posts/agentic-ai.svg
 ---
 
 ## Executive Summary
