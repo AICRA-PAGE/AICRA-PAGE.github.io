@@ -1,0 +1,34 @@
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ScholarlyArticle",
+  "headline": {{ page.title | jsonify }},
+  "description": {{ page.description | default: site.description | jsonify }},
+  "datePublished": "{{ page.date | date_to_xmlschema }}",
+  {% if page.last_modified_at %}"dateModified": "{{ page.last_modified_at | date_to_xmlschema }}",{% endif %}
+  "author": {
+    "@type": "Organization",
+    "name": {{ page.author | default: "AICRA" | jsonify }},
+    "url": "{{ site.url }}"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "AICRA - AI Security Research Association",
+    "url": "{{ site.url }}",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "{{ '/assets/img/favicon.png' | absolute_url }}"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{ page.url | absolute_url }}"
+  },
+  "url": "{{ page.url | absolute_url }}",
+  "inLanguage": "{{ site.lang | default: 'ko' }}",
+  {% if page.keywords %}"keywords": {{ page.keywords | jsonify }},{% elsif page.tags %}"keywords": {{ page.tags | jsonify }},{% endif %}
+  {% if page.categories %}"articleSection": {{ page.categories | first | jsonify }},{% endif %}
+  "isAccessibleForFree": true,
+  "creativeWorkStatus": "Published"
+}
+</script>

@@ -1,0 +1,40 @@
+# AICRA Post Frontmatter Schema
+# All posts MUST include required fields
+# Optional fields enhance SEO, search, and Key Claims panel
+
+required:
+  - title          # Post title (Korean + English terms)
+  - description    # 1-2 sentence summary
+  - date           # YYYY-MM-DD format
+  - categories     # Array: [Research, Analysis, Tutorial, News]
+  - tags           # Array of topic tags
+  - author         # Author name or team
+
+recommended:
+  - toc            # true/false - enable Table of Contents
+  - lang           # ko (default) or en
+  - last_modified_at  # YYYY-MM-DD for update tracking
+
+optional:
+  - layout         # post (default)
+  - series         # Series name for navigation (e.g., "AI Security Fundamentals")
+  - series_order   # Number in series (1, 2, 3...)
+  - severity       # critical, high, medium, low, info
+  - threat_model   # Brief threat model description
+  - key_claims     # Array of 3 key claims for summary panel
+  - reading_time   # Override auto-calculated reading time (minutes)
+  - thumbnail      # Path to hero image
+  - bibtex         # BibTeX citation key
+
+categories_allowed:
+  - Research
+  - Analysis
+  - Tutorial
+  - News
+
+severity_levels:
+  - critical
+  - high
+  - medium
+  - low
+  - info
