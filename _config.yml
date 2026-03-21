@@ -84,6 +84,10 @@ blog_name: AICRA Research Blog
 blog_nav_title: Blog
 blog_description: AI Security Research and Analysis
 
+# Timezone & Future posts
+timezone: Asia/Seoul
+future: true
+
 pagination:
   enabled: true
 
