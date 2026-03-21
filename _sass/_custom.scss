@@ -16,6 +16,7 @@
   --divider: #D9D3C8;
   --accent: #B5422C;
   --accent-hover: #8B4A3B;
+  --accent-contrast: #ffffff;
   --accent-secondary: #2F5D50;
   --accent-secondary-hover: #3C6A5D;
   --accent-light: #F0E8E5;
@@ -71,6 +72,7 @@
   --divider: #3D3835;
   --accent: #D4826A;
   --accent-hover: #E8A08C;
+  --accent-contrast: #1C1917; // dark text on accent backgrounds
   --accent-secondary: #6B9E8F;
   --accent-secondary-hover: #89B5A9;
   --accent-light: #3D2E2A;
@@ -1077,7 +1079,7 @@ h1, h2, h3, h4, h5, h6 {
 
     th {
       background: var(--accent);
-      color: #fff;
+      color: var(--accent-contrast);
       padding: var(--space-3) var(--space-4);
       text-align: left;
       font-weight: 600;
