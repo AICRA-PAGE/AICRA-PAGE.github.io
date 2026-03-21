@@ -1,33 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="AICRA logo">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 220" role="img" aria-label="AICRA logo">
   <title>AICRA</title>
-  <desc>Shield monogram logo for AI security research organization</desc>
+  <desc>Abstract geometric mark - intersecting analysis structure</desc>
 
-  <!-- Shield (Oxide Green) -->
-  <path
-    d="M128 24 L52 56 V120 C52 176 90 212 128 232 C166 212 204 176 204 120 V56 Z"
-    fill="none"
-    stroke="#2F5D50"
-    stroke-width="14"
-    stroke-linejoin="round"
-  />
-
-  <!-- Monogram A (Rust) -->
-  <path
-    d="M90 178 L128 88 L166 178"
-    fill="none"
-    stroke="#B5422C"
-    stroke-width="16"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  />
-  <!-- Crossbar (Oxide Green - layered defense) -->
-  <line
-    x1="106"
-    y1="142"
-    x2="150"
-    y2="142"
-    stroke="#2F5D50"
-    stroke-width="12"
-    stroke-linecap="round"
-  />
+  <!-- Cross-analysis geometric icon -->
+  <g transform="translate(110,110)">
+    <rect x="-18" y="-76" width="36" height="152" rx="18" transform="rotate(35)" fill="#2F5D50"/>
+    <rect x="-18" y="-76" width="36" height="152" rx="18" transform="rotate(145)" fill="#B5422C"/>
+    <rect x="-12" y="-58" width="24" height="116" rx="12" transform="rotate(35)" fill="#F5F3ED" opacity="0.9"/>
+    <rect x="-12" y="-58" width="24" height="116" rx="12" transform="rotate(145)" fill="#F5F3ED" opacity="0.9"/>
+    <circle cx="0" cy="0" r="18" fill="#2F5D50"/>
+    <circle cx="0" cy="0" r="8" fill="#F5F3ED"/>
+  </g>
 </svg>
