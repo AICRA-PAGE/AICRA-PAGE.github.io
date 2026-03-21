@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="AICRA logo">
+  <title>AICRA</title>
+  <desc>Shield monogram logo for AI security research organization</desc>
+
+  <!-- Shield (Oxide Green) -->
+  <path
+    d="M128 24 L52 56 V120 C52 176 90 212 128 232 C166 212 204 176 204 120 V56 Z"
+    fill="none"
+    stroke="#2F5D50"
+    stroke-width="14"
+    stroke-linejoin="round"
+  />
+
+  <!-- Monogram A (Rust) -->
+  <path
+    d="M90 178 L128 88 L166 178"
+    fill="none"
+    stroke="#B5422C"
+    stroke-width="16"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <!-- Crossbar (Oxide Green - layered defense) -->
+  <line
+    x1="106"
+    y1="142"
+    x2="150"
+    y2="142"
+    stroke="#2F5D50"
+    stroke-width="12"
+    stroke-linecap="round"
+  />
+</svg>

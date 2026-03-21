@@ -15,7 +15,7 @@ footer_text: >
 keywords: AI security, LLM security, OWASP, prompt injection, MCP security, agentic AI
 lang: ko
 icon:
-logo: # /assets/img/logo.png (add your logo here)
+logo: /assets/img/logo.svg
 
 url: https://aicra-page.github.io
 baseurl: ""
