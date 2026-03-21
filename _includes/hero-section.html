@@ -1,10 +1,6 @@
-{% comment %}
-Hero Section Component - ByteByteGo Style
-Usage: {% include hero-section.html %}
-{% endcomment %}
-
 <section class="hero-section">
   <div class="hero-content">
+    <p class="hero-eyebrow">AI Security Research Association</p>
     <h1 class="hero-title">
       {% if site.hero_title %}
         {{ site.hero_title }}
@@ -26,20 +22,5 @@ Usage: {% include hero-section.html %}
       </a>
     </div>
     {% endif %}
-  </div>
-
-  <div class="hero-stats">
-    <div class="stat-item">
-      <span class="stat-number">{{ site.posts | size }}</span>
-      <span class="stat-label">Articles</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-number">{{ site.categories | size }}</span>
-      <span class="stat-label">Topics</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-number">{{ site.tags | size }}</span>
-      <span class="stat-label">Tags</span>
-    </div>
   </div>
 </section>
