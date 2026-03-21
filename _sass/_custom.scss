@@ -1746,20 +1746,20 @@ h1, h2, h3, h4, h5, h6 {
 // ============================================
 .mermaid {
   background: var(--surface);
-  padding: var(--space-8) var(--space-6);
+  padding: var(--space-6);
   border: 1px solid var(--divider);
   border-radius: var(--radius);
-  margin: var(--space-8) 0;
+  margin: var(--space-6) 0;
   text-align: center;
   overflow-x: auto;
-  min-height: 200px;
+  overflow-y: hidden;
 
   // Force larger, more readable rendering
   svg {
     max-width: 100%;
-    min-width: 600px;
+    min-width: min(600px, 100%);
     height: auto !important;
-    min-height: 280px;
+    max-height: 500px;
     font-size: 14px !important;
   }
 

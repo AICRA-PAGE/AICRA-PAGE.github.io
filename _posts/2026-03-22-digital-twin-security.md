@@ -258,15 +258,15 @@ sequenceDiagram
 
 ### 5.1 Defense-in-Depth 설계 원칙
 
-```mermaid
-graph TD
-    A["Layer 1: 센서 인증<br/>(ECDSA, PKI)"] --> B["Layer 2: 전송 암호화<br/>(TLS 1.3, QUIC)"]
-    B --> C["Layer 3: 데이터 검증<br/>(체크섬, 타임스탐프 검증)"]
-    C --> D["Layer 4: 상태 검증<br/>(물리 법칙 기반 범위 체크)"]
-    D --> E["Layer 5: 모델 무결성<br/>(서명된 모델, 버전 관리)"]
-    E --> F["Layer 6: 이상 탐지<br/>(ML 기반 outlier detection)"]
-    F --> G["Layer 7: 제어 격리<br/>(수동 승인, 제한된 범위)"]
-```
+| Layer | 방어 계층 | 핵심 기술 |
+|:-----:|----------|---------|
+| 1 | 센서 인증 | ECDSA, PKI 인증서 |
+| 2 | 전송 암호화 | TLS 1.3, QUIC |
+| 3 | 데이터 검증 | 체크섬, 타임스탬프 |
+| 4 | 상태 검증 | 물리 법칙 범위 체크 |
+| 5 | 모델 무결성 | 서명, 버전 관리 |
+| 6 | 이상 탐지 | ML 기반 outlier detection |
+| 7 | 제어 격리 | 수동 승인, 범위 제한 |
 
 ### 5.2 핵심 방어 메커니즘
 
