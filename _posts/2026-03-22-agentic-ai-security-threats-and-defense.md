@@ -16,7 +16,7 @@ thumbnail: /assets/img/posts/agentic-ai.svg
 
 에이전틱 AI(Agentic AI) 시스템은 전통적인 LLM 애플리케이션과 근본적으로 다른 보안 패러다임을 요구한다. 단순한 입출력 처리를 넘어 **자율적 도구 호출, 권한 위임, 장기 메모리 관리**를 수행하는 에이전트는 새로운 공격 벡터와 위험도를 만든다.
 
-본 연구는 OWASP Agentic Top 10(2025년 12월)과 Model Context Protocol(MCP) 생태계의 보안 위협을 분석하고, **도구 남용(Tool Abuse) → 권한 에스컬레이션(Privilege Escalation) → 시스템 타협(System Compromise)**으로 이어지는 공격 사슬을 정의한다. 특히 MCP 서버의 프로토콜 수준 취약점과 공급망 위험을 상세 검토하며, 런타임 격리, 의도 검증, 감시자 아키텍처(Observer Pattern)를 통한 방어 설계를 제시한다.
+이 글에서는 [OWASP Top 10 for Agentic Applications for 2026](https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/)(2025년 12월 9일 발표)과 Model Context Protocol(MCP) 생태계의 보안 위협을 분석합니다. **도구 남용(Tool Abuse) -> 권한 에스컬레이션(Privilege Escalation) -> 시스템 타협(System Compromise)**으로 이어지는 공격 사슬을 정의하고, MCP 서버의 프로토콜 수준 취약점과 공급망 위험을 살펴봅니다. 방어 전략으로는 런타임 격리, 의도 검증, 감시자 아키텍처(Observer Pattern)를 다룹니다.
 
 ---
 

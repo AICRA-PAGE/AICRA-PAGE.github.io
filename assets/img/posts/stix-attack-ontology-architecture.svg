@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" font-family="Pretendard, -apple-system, sans-serif">
+  <defs>
+    <linearGradient id="headerGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2F5D50"/>
+      <stop offset="100%" stop-color="#3d7a68"/>
+    </linearGradient>
+    <linearGradient id="stixGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e3f2fd"/>
+      <stop offset="100%" stop-color="#bbdefb"/>
+    </linearGradient>
+    <linearGradient id="attackGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fce4ec"/>
+      <stop offset="100%" stop-color="#f8bbd0"/>
+    </linearGradient>
+    <linearGradient id="ucoGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fff3e0"/>
+      <stop offset="100%" stop-color="#ffe0b2"/>
+    </linearGradient>
+    <linearGradient id="graphGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e8f5e9"/>
+      <stop offset="100%" stop-color="#c8e6c9"/>
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="600" fill="#F5F3ED" rx="8"/>
+
+  <!-- Title Bar -->
+  <rect x="0" y="0" width="900" height="50" fill="url(#headerGrad)" rx="8"/>
+  <rect x="0" y="40" width="900" height="10" fill="url(#headerGrad)"/>
+  <text x="450" y="32" text-anchor="middle" fill="white" font-size="18" font-weight="700">STIX 2.1 + ATT&amp;CK 온톨로지 통합 아키텍처</text>
+
+  <!-- Layer Labels -->
+  <text x="30" y="90" fill="#5C5A54" font-size="11" font-weight="600">L3: 인스턴스 계층</text>
+  <text x="30" y="230" fill="#5C5A54" font-size="11" font-weight="600">L2: 표준 계층</text>
+  <text x="30" y="370" fill="#5C5A54" font-size="11" font-weight="600">L1: 통합 온톨로지</text>
+  <text x="30" y="490" fill="#5C5A54" font-size="11" font-weight="600">출력: 자동화</text>
+
+  <!-- L3: Instance Layer -->
+  <g filter="url(#shadow)">
+    <rect x="150" y="65" width="140" height="50" rx="6" fill="#e8eaf6" stroke="#5c6bc0" stroke-width="1.5"/>
+    <text x="220" y="85" text-anchor="middle" fill="#283593" font-size="11" font-weight="600">APT28 RDP 공격</text>
+    <text x="220" y="100" text-anchor="middle" fill="#5c6bc0" font-size="9">T1021.001 인스턴스</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="320" y="65" width="140" height="50" rx="6" fill="#e8eaf6" stroke="#5c6bc0" stroke-width="1.5"/>
+    <text x="390" y="85" text-anchor="middle" fill="#283593" font-size="11" font-weight="600">Emotet 샘플</text>
+    <text x="390" y="100" text-anchor="middle" fill="#5c6bc0" font-size="9">Malware 인스턴스</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="490" y="65" width="140" height="50" rx="6" fill="#e8eaf6" stroke="#5c6bc0" stroke-width="1.5"/>
+    <text x="560" y="85" text-anchor="middle" fill="#283593" font-size="11" font-weight="600">CVE-2024-3400</text>
+    <text x="560" y="100" text-anchor="middle" fill="#5c6bc0" font-size="9">Vulnerability 인스턴스</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="660" y="65" width="140" height="50" rx="6" fill="#e8eaf6" stroke="#5c6bc0" stroke-width="1.5"/>
+    <text x="730" y="85" text-anchor="middle" fill="#283593" font-size="11" font-weight="600">네트워크 IOC</text>
+    <text x="730" y="100" text-anchor="middle" fill="#5c6bc0" font-size="9">Indicator 인스턴스</text>
+  </g>
+
+  <!-- Arrows L3 -> L2 -->
+  <line x1="220" y1="115" x2="280" y2="160" stroke="#9e9e9e" stroke-width="1" marker-end="url(#arrowGray)"/>
+  <line x1="390" y1="115" x2="390" y2="160" stroke="#9e9e9e" stroke-width="1"/>
+  <line x1="560" y1="115" x2="500" y2="160" stroke="#9e9e9e" stroke-width="1"/>
+  <line x1="730" y1="115" x2="650" y2="160" stroke="#9e9e9e" stroke-width="1"/>
+
+  <!-- L2: STIX -->
+  <g filter="url(#shadow)">
+    <rect x="150" y="155" width="300" height="90" rx="8" fill="url(#stixGrad)" stroke="#1565c0" stroke-width="1.5"/>
+    <text x="300" y="175" text-anchor="middle" fill="#0d47a1" font-size="13" font-weight="700">STIX 2.1</text>
+    <text x="190" y="198" fill="#1565c0" font-size="10">SDO: Attack-Pattern</text>
+    <text x="190" y="213" fill="#1565c0" font-size="10">SDO: Malware, Tool</text>
+    <text x="190" y="228" fill="#1565c0" font-size="10">SDO: Indicator, Vulnerability</text>
+    <text x="340" y="198" fill="#1565c0" font-size="10">SRO: uses</text>
+    <text x="340" y="213" fill="#1565c0" font-size="10">SRO: targets</text>
+    <text x="340" y="228" fill="#1565c0" font-size="10">SRO: mitigates</text>
+  </g>
+
+  <!-- L2: ATT&CK -->
+  <g filter="url(#shadow)">
+    <rect x="490" y="155" width="300" height="90" rx="8" fill="url(#attackGrad)" stroke="#c62828" stroke-width="1.5"/>
+    <text x="640" y="175" text-anchor="middle" fill="#b71c1c" font-size="13" font-weight="700">MITRE ATT&amp;CK</text>
+    <text x="530" y="198" fill="#c62828" font-size="10">Tactic (14개 전술)</text>
+    <text x="530" y="213" fill="#c62828" font-size="10">Technique (200+)</text>
+    <text x="530" y="228" fill="#c62828" font-size="10">Sub-technique (400+)</text>
+    <text x="700" y="198" fill="#c62828" font-size="10">Group</text>
+    <text x="700" y="213" fill="#c62828" font-size="10">Software</text>
+    <text x="700" y="228" fill="#c62828" font-size="10">Mitigation</text>
+  </g>
+
+  <!-- Mapping arrows between STIX and ATT&CK -->
+  <path d="M 450 200 Q 470 185 490 200" stroke="#B5422C" stroke-width="2" fill="none" stroke-dasharray="4,3"/>
+  <text x="470" y="183" text-anchor="middle" fill="#B5422C" font-size="9" font-weight="600">sameAs</text>
+
+  <!-- Arrows L2 -> L1 -->
+  <line x1="300" y1="245" x2="380" y2="300" stroke="#9e9e9e" stroke-width="1.5"/>
+  <line x1="640" y1="245" x2="560" y2="300" stroke="#9e9e9e" stroke-width="1.5"/>
+
+  <!-- L1: UCO Ontology -->
+  <g filter="url(#shadow)">
+    <rect x="220" y="295" width="500" height="100" rx="10" fill="url(#ucoGrad)" stroke="#e65100" stroke-width="2"/>
+    <text x="470" y="318" text-anchor="middle" fill="#bf360c" font-size="14" font-weight="700">통합 온톨로지 (UCO 모델 기반)</text>
+    <text x="290" y="342" fill="#e65100" font-size="11" font-weight="600">SecurityEntity</text>
+    <text x="290" y="358" fill="#795548" font-size="9">Actor | Action | Artifact</text>
+    <text x="470" y="342" fill="#e65100" font-size="11" font-weight="600">SecurityRelation</text>
+    <text x="470" y="358" fill="#795548" font-size="9">causality | capability | mitigation</text>
+    <text x="650" y="342" fill="#e65100" font-size="11" font-weight="600">SecurityEvent</text>
+    <text x="650" y="358" fill="#795548" font-size="9">timestamp | context | links</text>
+
+    <rect x="240" y="370" width="460" height="18" rx="3" fill="#fff8e1"/>
+    <text x="470" y="383" text-anchor="middle" fill="#795548" font-size="9">SPARQL 쿼리 + OWL 추론 + SWRL 규칙 엔진</text>
+  </g>
+
+  <!-- Arrows L1 -> Output -->
+  <line x1="350" y1="395" x2="250" y2="445" stroke="#2e7d32" stroke-width="1.5"/>
+  <line x1="470" y1="395" x2="470" y2="445" stroke="#2e7d32" stroke-width="1.5"/>
+  <line x1="590" y1="395" x2="690" y2="445" stroke="#2e7d32" stroke-width="1.5"/>
+
+  <!-- Output Layer -->
+  <g filter="url(#shadow)">
+    <rect x="150" y="440" width="200" height="55" rx="6" fill="url(#graphGrad)" stroke="#2e7d32" stroke-width="1.5"/>
+    <text x="250" y="462" text-anchor="middle" fill="#1b5e20" font-size="12" font-weight="600">위협 상관분석</text>
+    <text x="250" y="480" text-anchor="middle" fill="#4caf50" font-size="9">자동 APT 귀속, 공격 체인 탐지</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="370" y="440" width="200" height="55" rx="6" fill="url(#graphGrad)" stroke="#2e7d32" stroke-width="1.5"/>
+    <text x="470" y="462" text-anchor="middle" fill="#1b5e20" font-size="12" font-weight="600">자동 탐지/대응</text>
+    <text x="470" y="480" text-anchor="middle" fill="#4caf50" font-size="9">SOAR 플레이북, 자동 격리</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="590" y="440" width="200" height="55" rx="6" fill="url(#graphGrad)" stroke="#2e7d32" stroke-width="1.5"/>
+    <text x="690" y="462" text-anchor="middle" fill="#1b5e20" font-size="12" font-weight="600">예측적 방어</text>
+    <text x="690" y="480" text-anchor="middle" fill="#4caf50" font-size="9">공격 경로 예측, 선제 조치</text>
+  </g>
+
+  <!-- Footer -->
+  <text x="450" y="535" text-anchor="middle" fill="#9e9e9e" font-size="10">AICRA | STIX 2.1 + ATT&amp;CK 온톨로지 통합 아키텍처 다이어그램</text>
+  <text x="450" y="555" text-anchor="middle" fill="#bdbdbd" font-size="9">L3(인스턴스) -> L2(표준) -> L1(통합 온톨로지) -> 자동화 출력</text>
+</svg>
