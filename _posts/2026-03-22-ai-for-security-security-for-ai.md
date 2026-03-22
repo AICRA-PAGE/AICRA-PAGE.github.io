@@ -22,7 +22,12 @@ featured: true
 - **AI For Security (AI4Sec)**: AI 기술을 보안 운영, 위협 탐지, 자동화에 활용
 - **Security For AI (Sec4AI)**: AI 모델, 데이터, 에이전트, MCP(Model Context Protocol)를 공격으로부터 보호
 
-이 양방향 접근은 NIST AI Risk Management Framework (AI RMF) 1.0, Google's Secure AI Framework (SAIF), MITRE ATLAS 등 최근 표준과 일맥상통한다[1][2][3].
+이 양방향 접근은 여러 글로벌 프레임워크와 관련이 있습니다. 다만 각 프레임워크의 초점은 다릅니다:
+- **NIST AI RMF 1.0**: AI 시스템 전반의 위험 관리 거버넌스 프레임워크
+- **Google SAIF**: AI 시스템 자체를 보호하는 보안 제어 프레임워크 (Sec4AI에 가까움)
+- **MITRE ATLAS**: AI 시스템을 겨냥한 적대적 TTP 지식 베이스 (위협 분류 체계)
+
+이들을 하나의 "양방향 프레임워크"로 묶는 것은 이 글의 분석적 관점이며, 각 기관의 공식 입장은 아닙니다.
 
 ---
 
