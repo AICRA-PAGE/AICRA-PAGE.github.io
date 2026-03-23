@@ -73,7 +73,7 @@ layout: default
     </aside>
     {% endif %}
 
-    <div class="post-body" id="post-body">
+    <div class="post-body{% if page.wide %} wide{% endif %}" id="post-body">
       {{ content }}
     </div>
   </div>
