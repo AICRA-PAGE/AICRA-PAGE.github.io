@@ -11,6 +11,8 @@ lang: ko
 thumbnail: /assets/img/posts/rag-security.svg
 ---
 
+![RAG Defense-in-Depth 아키텍처](/assets/img/posts/rag-defense-architecture.svg)
+
 ## 요약
 
 RAG(Retrieval-Augmented Generation) 시스템은 LLM의 hallucination 문제를 해결하고 최신 정보를 제공하는 강력한 아키텍처입니다. 하지만 RAG 파이프라인의 각 단계에는 고유한 보안 위협이 존재합니다. 이 글에서는 문서 수집부터 최종 생성까지 RAG 시스템의 공격 표면을 분석하고, Defense-in-Depth 아키텍처를 통한 방어 전략을 정리합니다.

@@ -23,6 +23,8 @@ thumbnail: /assets/img/posts/digital-twin.svg
 
 ---
 
+![디지털 트윈 공격 표면](/assets/img/posts/digital-twin-attack-surface.svg)
+
 ## 1. 디지털 트윈의 구조와 데이터 경계
 
 ### 1.1 Physical-Digital-Control 루프 아키텍처

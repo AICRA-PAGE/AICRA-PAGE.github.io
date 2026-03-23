@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300" font-family="Pretendard, sans-serif">
+  <defs><filter id="s"><feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.12"/></filter></defs>
+  <rect width="800" height="300" fill="#F5F3ED" rx="8"/>
+  <rect x="0" y="0" width="800" height="40" fill="#1565c0" rx="8"/>
+  <rect x="0" y="30" width="800" height="10" fill="#1565c0"/>
+  <text x="400" y="25" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">디지털 트윈 공격 표면: Physical-Digital-Control 루프</text>
+
+  <!-- Physical -->
+  <g filter="url(#s)">
+    <rect x="30" y="60" width="220" height="110" rx="6" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>
+    <text x="140" y="82" text-anchor="middle" fill="#1b5e20" font-size="12" font-weight="700">Physical System</text>
+    <text x="50" y="102" fill="#4caf50" font-size="9">센서, 액추에이터, 기계 설비</text>
+    <text x="50" y="118" fill="#c62828" font-size="9">공격: 센서 스푸핑</text>
+    <text x="50" y="134" fill="#c62828" font-size="9">공격: 물리적 변조</text>
+    <text x="50" y="150" fill="#c62828" font-size="9">공격: 통신 가로채기</text>
+  </g>
+
+  <!-- Digital Twin -->
+  <g filter="url(#s)">
+    <rect x="290" y="60" width="220" height="110" rx="6" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.5"/>
+    <text x="400" y="82" text-anchor="middle" fill="#0d47a1" font-size="12" font-weight="700">Digital Twin</text>
+    <text x="310" y="102" fill="#42a5f5" font-size="9">가상 모델, 센서 데이터 저장</text>
+    <text x="310" y="118" fill="#c62828" font-size="9">공격: 모델 변조</text>
+    <text x="310" y="134" fill="#c62828" font-size="9">공격: 동기화 공격</text>
+    <text x="310" y="150" fill="#c62828" font-size="9">공격: 데이터 포이즈닝</text>
+  </g>
+
+  <!-- Control -->
+  <g filter="url(#s)">
+    <rect x="550" y="60" width="220" height="110" rx="6" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+    <text x="660" y="82" text-anchor="middle" fill="#bf360c" font-size="12" font-weight="700">Control System</text>
+    <text x="570" y="102" fill="#ff9800" font-size="9">의사결정 로직, 자동화 규칙</text>
+    <text x="570" y="118" fill="#c62828" font-size="9">공격: 제어 명령 변조</text>
+    <text x="570" y="134" fill="#c62828" font-size="9">공격: 의사결정 조작</text>
+    <text x="570" y="150" fill="#c62828" font-size="9">공격: 비인가 접근</text>
+  </g>
+
+  <!-- Arrows -->
+  <line x1="250" y1="115" x2="290" y2="115" stroke="#5C5A54" stroke-width="2"/>
+  <text x="270" y="108" text-anchor="middle" fill="#5C5A54" font-size="8">데이터</text>
+  <line x1="510" y1="115" x2="550" y2="115" stroke="#5C5A54" stroke-width="2"/>
+  <text x="530" y="108" text-anchor="middle" fill="#5C5A54" font-size="8">제어 신호</text>
+
+  <!-- Trust boundaries -->
+  <rect x="30" y="195" width="740" height="80" rx="6" fill="#fce4ec" stroke="#c62828" stroke-width="1" stroke-dasharray="5,3"/>
+  <text x="400" y="215" text-anchor="middle" fill="#b71c1c" font-size="11" font-weight="700">신뢰 경계 (Trust Boundaries)</text>
+  <text x="140" y="240" text-anchor="middle" fill="#c62828" font-size="9">입력 경계: 센서->트윈</text>
+  <text x="400" y="240" text-anchor="middle" fill="#c62828" font-size="9">동기화 경계: 트윈 내부 일관성</text>
+  <text x="660" y="240" text-anchor="middle" fill="#c62828" font-size="9">출력 경계: 트윈->제어</text>
+  <text x="400" y="260" text-anchor="middle" fill="#795548" font-size="8">각 경계에서 데이터 무결성, 인증, 타이밍 검증 필수</text>
+
+  <text x="400" y="290" text-anchor="middle" fill="#9e9e9e" font-size="9">AICRA | 디지털 트윈 Physical-Digital-Control 공격 표면</text>
+</svg>
