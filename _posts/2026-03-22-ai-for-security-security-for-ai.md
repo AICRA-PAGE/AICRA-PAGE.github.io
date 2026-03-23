@@ -19,7 +19,7 @@ featured: true
 
 이 두 방향을 **양방향 프레임워크**라고 부릅니다:
 
-- **AI For Security (AI4Sec)**: AI 기술을 보안 운영, 위협 탐지, 자동화에 활용
+- **AI For Security (AI4Sec)**: AI 기술을 위협 탐지, 분석, 방어 자동화에 활용
 - **Security For AI (Sec4AI)**: AI 모델, 데이터, 에이전트, MCP(Model Context Protocol)를 공격으로부터 보호
 
 이 양방향 접근은 여러 글로벌 프레임워크와 관련이 있습니다. 다만 각 프레임워크의 초점은 다릅니다:
@@ -375,7 +375,7 @@ quadrantChart
 
 ---
 
-## 8. AICRA 권장사항
+## 8. 정리 및 제언
 
 조직이 AI 보안의 양방향 프레임워크를 구현하기 위해서는:
 
