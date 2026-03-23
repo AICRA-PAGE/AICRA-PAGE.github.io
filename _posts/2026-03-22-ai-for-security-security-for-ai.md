@@ -324,6 +324,8 @@ graph TB
     MA --> MAI
 ```
 
+OWASP는 AI BOM(AI Bill of Materials) Generator 이니셔티브를 통해 AI 시스템의 구성요소를 체계적으로 추적하는 표준화 작업도 진행하고 있다.
+
 ### 6.2 Google Secure AI Framework (SAIF)
 
 Google SAIF는 AI 공급망 보안을 중심으로 한다[2]. 주요 영역:
