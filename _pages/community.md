@@ -34,9 +34,10 @@ description: "AICRA 멤버 커뮤니티 - 연구 토론, Q&A, 공지사항"
 
 <script src="https://giscus.app/client.js"
   data-repo="AICRA-PAGE/AICRA-PAGE.github.io"
-  data-repo-id=""
+  data-repo-id="R_kgDOQsfbOQ"
   data-category="General"
   data-category-id=""
+  <!-- TODO: Create "General" discussion category at https://github.com/AICRA-PAGE/AICRA-PAGE.github.io/settings then paste category_id here -->
   data-mapping="pathname"
   data-strict="0"
   data-reactions-enabled="1"

@@ -172,3 +172,23 @@ jekyll-archives:
 
 display_tags: ['AI Security', 'LLM', 'OWASP', 'MCP', 'Prompt Injection', 'Agentic AI']
 display_categories: ['Research', 'Analysis', 'Tutorial', 'News']
+
+# -----------------------------------------------------------------------------
+# Giscus Comments
+# -----------------------------------------------------------------------------
+# To activate: create "Announcements" category in GitHub Discussions
+# at https://github.com/AICRA-PAGE/AICRA-PAGE.github.io/discussions/categories
+# Then get IDs from https://giscus.app/
+
+giscus:
+  repo: AICRA-PAGE/AICRA-PAGE.github.io
+  repo_id: R_kgDOQsfbOQ
+  category: Announcements
+  category_id: ""  # TODO: Create Announcements category in GitHub Discussions, then paste ID here
+  mapping: pathname
+  input_position: top
+  theme: preferred_color_scheme
+  lang: ko
+  reactions_enabled: "1"
+  emit_metadata: "0"
+  lazy: true

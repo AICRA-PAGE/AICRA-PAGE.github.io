@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://aicra-page.github.io/sitemap.xml

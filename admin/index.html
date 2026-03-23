@@ -4,9 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AICRA Blog - Content Manager</title>
+  <link href="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.css" rel="stylesheet">
 </head>
 <body>
-  <!-- Decap CMS: GitHub PKCE auth supported natively -->
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  <!-- Sveltia CMS with external OAuth proxy -->
+  <!-- Setup: deploy sveltia-cms-auth on Cloudflare Workers -->
+  <!-- See: https://github.com/sveltia/sveltia-cms-auth -->
+  <script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>
 </body>
 </html>
