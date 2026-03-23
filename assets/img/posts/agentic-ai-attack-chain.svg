@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 350" font-family="Pretendard, sans-serif">
+  <defs><filter id="s"><feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.12"/></filter></defs>
+  <rect width="800" height="350" fill="#F5F3ED" rx="8"/>
+  <rect x="0" y="0" width="800" height="40" fill="#B5422C" rx="8"/>
+  <rect x="0" y="30" width="800" height="10" fill="#B5422C"/>
+  <text x="400" y="25" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">에이전틱 AI 공격 사슬: 프롬프트 인젝션에서 시스템 타협까지</text>
+
+  <!-- Attack chain boxes -->
+  <g filter="url(#s)">
+    <rect x="30" y="70" width="130" height="60" rx="6" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+    <text x="95" y="95" text-anchor="middle" fill="#bf360c" font-size="10" font-weight="700">Prompt Injection</text>
+    <text x="95" y="115" text-anchor="middle" fill="#e65100" font-size="8">컨텍스트 오염</text>
+  </g>
+
+  <g filter="url(#s)">
+    <rect x="190" y="70" width="130" height="60" rx="6" fill="#fce4ec" stroke="#c62828" stroke-width="1.5"/>
+    <text x="255" y="95" text-anchor="middle" fill="#b71c1c" font-size="10" font-weight="700">Tool Misuse</text>
+    <text x="255" y="115" text-anchor="middle" fill="#c62828" font-size="8">의도 왜곡된 도구 호출</text>
+  </g>
+
+  <g filter="url(#s)">
+    <rect x="350" y="70" width="130" height="60" rx="6" fill="#f3e5f5" stroke="#6a1b9a" stroke-width="1.5"/>
+    <text x="415" y="95" text-anchor="middle" fill="#4a148c" font-size="10" font-weight="700">Privilege Escalation</text>
+    <text x="415" y="115" text-anchor="middle" fill="#6a1b9a" font-size="8">도구 연쇄로 권한 확대</text>
+  </g>
+
+  <g filter="url(#s)">
+    <rect x="510" y="70" width="130" height="60" rx="6" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.5"/>
+    <text x="575" y="95" text-anchor="middle" fill="#0d47a1" font-size="10" font-weight="700">Memory Poison</text>
+    <text x="575" y="115" text-anchor="middle" fill="#1565c0" font-size="8">향후 세션 오염</text>
+  </g>
+
+  <g filter="url(#s)">
+    <rect x="670" y="70" width="100" height="60" rx="6" fill="#c62828"/>
+    <text x="720" y="95" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">System</text>
+    <text x="720" y="115" text-anchor="middle" fill="#ffcdd2" font-size="8">Compromise</text>
+  </g>
+
+  <!-- Arrows -->
+  <line x1="160" y1="100" x2="190" y2="100" stroke="#9e9e9e" stroke-width="2"/>
+  <line x1="320" y1="100" x2="350" y2="100" stroke="#9e9e9e" stroke-width="2"/>
+  <line x1="480" y1="100" x2="510" y2="100" stroke="#9e9e9e" stroke-width="2"/>
+  <line x1="640" y1="100" x2="670" y2="100" stroke="#9e9e9e" stroke-width="2"/>
+
+  <!-- Defense layers below -->
+  <text x="400" y="165" text-anchor="middle" fill="#2F5D50" font-size="12" font-weight="700">방어 계층</text>
+
+  <g filter="url(#s)">
+    <rect x="30" y="180" width="150" height="45" rx="4" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1"/>
+    <text x="105" y="200" text-anchor="middle" fill="#1b5e20" font-size="9" font-weight="600">입력 검증 + 컨텍스트 격리</text>
+    <text x="105" y="215" text-anchor="middle" fill="#4caf50" font-size="8">프롬프트 마크업, 분리</text>
+  </g>
+
+  <g filter="url(#s)">
+    <rect x="200" y="180" width="150" height="45" rx="4" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1"/>
+    <text x="275" y="200" text-anchor="middle" fill="#1b5e20" font-size="9" font-weight="600">의도 검증 + 도구 ACL</text>
+    <text x="275" y="215" text-anchor="middle" fill="#4caf50" font-size="8">Intent 서명, 화이트리스트</text>
+  </g>
+
+  <g filter="url(#s)">
+    <rect x="370" y="180" width="150" height="45" rx="4" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1"/>
+    <text x="445" y="200" text-anchor="middle" fill="#1b5e20" font-size="9" font-weight="600">격리 + 권한 최소화</text>
+    <text x="445" y="215" text-anchor="middle" fill="#4caf50" font-size="8">샌드박스, 에이전트별 ACL</text>
+  </g>
+
+  <g filter="url(#s)">
+    <rect x="540" y="180" width="130" height="45" rx="4" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1"/>
+    <text x="605" y="200" text-anchor="middle" fill="#1b5e20" font-size="9" font-weight="600">메모리 보호</text>
+    <text x="605" y="215" text-anchor="middle" fill="#4caf50" font-size="8">세션 격리, 정리</text>
+  </g>
+
+  <g filter="url(#s)">
+    <rect x="690" y="180" width="80" height="45" rx="4" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1"/>
+    <text x="730" y="200" text-anchor="middle" fill="#1b5e20" font-size="9" font-weight="600">감사 추적</text>
+    <text x="730" y="215" text-anchor="middle" fill="#4caf50" font-size="8">전체 로깅</text>
+  </g>
+
+  <!-- MCP specific -->
+  <rect x="30" y="250" width="740" height="70" rx="6" fill="#fff8e1" stroke="#f9a825" stroke-width="1"/>
+  <text x="400" y="270" text-anchor="middle" fill="#f57f17" font-size="11" font-weight="700">MCP 공급망 위험</text>
+  <text x="150" y="295" text-anchor="middle" fill="#795548" font-size="9">npm typosquatting</text>
+  <text x="320" y="295" text-anchor="middle" fill="#795548" font-size="9">악성 도구 설명</text>
+  <text x="490" y="295" text-anchor="middle" fill="#795548" font-size="9">서버 스푸핑</text>
+  <text x="660" y="295" text-anchor="middle" fill="#795548" font-size="9">런타임 악성 동작</text>
+
+  <text x="400" y="340" text-anchor="middle" fill="#9e9e9e" font-size="9">AICRA | 에이전틱 AI 공격 사슬 및 방어 계층</text>
+</svg>
