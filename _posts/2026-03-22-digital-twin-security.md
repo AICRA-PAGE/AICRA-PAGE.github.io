@@ -744,6 +744,9 @@ graph TB
 - [Dragos - CRASHOVERRIDE 분석](https://www.dragos.com/resource/crashoverride/)
 - [Langner - Stuxnet 기술 분석](https://www.langner.com/to-kill-a-centrifuge/)
 - [FAIR Institute - 정보 위험 분석](https://www.fairinstitute.org/)
+- [AICRA: OWASP LLM Top 10 2025](/blog/2025/owasp-llm-top-10-2025/) (관련 포스트)
+- [AICRA: RAG 시스템 보안](/blog/2026/rag-system-security/) (관련 포스트)
+- [AICRA: 에이전틱 AI 공격 사슬](/blog/2026/agentic-ai-security-threats-and-defense/) (관련 포스트)
 
 ---
 

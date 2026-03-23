@@ -205,13 +205,36 @@ STIX threat-actor (APT28) ─── 귀속(attributed-to) ─── STIX identit
 
 ### 2.5 ATT&CK Navigator와의 연동
 
-실무에서 가장 먼저 시도해볼 수 있는 시각화는 [ATT&CK Navigator](https://mitre-attack.github.io/attack-navigator/)입니다. Navigator에서 특정 APT 그룹의 기법 커버리지를 히트맵으로 볼 수 있고, 이를 STIX 데이터와 매핑하면:
+ATT&CK Navigator는 MITRE ATT&CK 데이터를 시각적으로 표현하고 조작할 수 있는 웹 기반 도구입니다. 조직은 Navigator를 통해 자신의 환경에서 관찰된 공격 기법을 매핑하고, 방어 전략을 계획할 수 있습니다.
 
-1. Navigator에서 APT28 레이어 로드
-2. 조직의 방어 커버리지 레이어 오버레이
-3. 겹치지 않는 영역 = 방어 공백 식별
+```json
+{
+  "techniques": [
+    {
+      "techniqueID": "T1078",
+      "techniqueName": "Valid Accounts",
+      "comment": "Observed in recent incident"
+    },
+    {
+      "techniqueID": "T1566",
+      "techniqueName": "Phishing",
+      "comment": "Email-based vector"
+    }
+  ]
+}
+```
 
-이 과정이 현재는 수동이지만, 온톨로지를 통해 자동화하면 "새로운 APT 그룹이 등장했을 때 우리 조직의 방어 공백이 어디인지"를 즉시 파악할 수 있습니다.
+### 2.6 MITRE ATLAS와 AI 특화 위협 분류
+
+MITRE ATLAS(Adversarial Threat Landscape for Artificial-Intelligence Systems)는 AI 시스템을 대상으로 하는 고유한 위협 기법을 분류합니다. 기존 ATT&CK 프레임워크는 일반적인 IT 보안에 초점을 맞추고 있으나, ATLAS는 머신러닝 모델, 학습 데이터, 추론 파이프라인 등 AI 특화 공격 벡터를 다룹니다.
+
+주요 ATLAS 기법 ID와 설명:
+
+- **AML.T0051.000 (Direct LLM Prompt Injection)**: 공격자가 LLM에 직접적인 프롬프트 주입 공격을 수행하여 의도하지 않은 명령을 실행하도록 유도합니다.
+- **AML.T0051.001 (Indirect LLM Prompt Injection)**: 외부 데이터 소스를 통해 간접적으로 프롬프트를 주입합니다.
+- **AML.T0018 (Backdoor ML Model)**: 모델 개발 또는 학습 과정에서 백도어를 심어 특정 입력에 대해 공격자가 의도한 결과를 생성합니다.
+- **AML.T0054 (LLM Jailbreak)**: LLM의 안전 장치와 콘텐츠 필터를 우회하여 제한된 콘텐츠 생성을 강제합니다.
+- **AML.T0020 (Poison Training Data)**: 모델 학습에 사용되는 데이터셋에 악의적인 데이터를 주입합니다.
 
 ---
 
