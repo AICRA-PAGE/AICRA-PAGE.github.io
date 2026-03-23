@@ -39,6 +39,10 @@ nav_links:
     url: /
   - name: Blog
     url: /blog/
+  - name: News
+    url: /news/
+  - name: Community
+    url: /community/
   - name: Publications
     url: /publications/
   - name: Team

@@ -33,6 +33,28 @@
 
 ---
 
+### 방법 4: 자동 변환기 (post-generator.js)
+
+텍스트 파일이나 Obsidian 노트를 블로그 포스트로 자동 변환합니다:
+
+```bash
+# 텍스트 파일에서 포스트 생성
+node scripts/post-generator.js --title "제목" --text content.txt --tags tag1 tag2
+
+# 이미지 포함
+node scripts/post-generator.js --title "제목" --text content.txt --images diagram.svg photo.png
+
+# Obsidian 노트에서 변환
+node scripts/post-generator.js --from-obsidian "path/to/note.md"
+
+# 도움말
+node scripts/post-generator.js --help
+```
+
+자동 처리: frontmatter, 이미지 복사, thumbnail SVG 생성, 참고자료 섹션
+
+---
+
 ## 포스트 템플릿
 
 ```markdown

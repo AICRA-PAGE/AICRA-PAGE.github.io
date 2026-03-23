@@ -5,6 +5,8 @@ backend:
   auth_type: pkce
   app_id: Ov23liEaIePLBcXAW38s
 
+publish_mode: editorial_workflow
+
 media_folder: "assets/images/posts"
 public_folder: "/assets/images/posts"
 
@@ -55,6 +57,22 @@ collections:
       - label: "Team"
         name: "team"
         file: "_pages/team.md"
+        fields:
+          - { label: "Layout", name: "layout", widget: "hidden", default: "page" }
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Permalink", name: "permalink", widget: "string" }
+          - { label: "Body", name: "body", widget: "markdown" }
+      - label: "News"
+        name: "news"
+        file: "_pages/news.md"
+        fields:
+          - { label: "Layout", name: "layout", widget: "hidden", default: "page" }
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Permalink", name: "permalink", widget: "string" }
+          - { label: "Body", name: "body", widget: "markdown" }
+      - label: "Community"
+        name: "community"
+        file: "_pages/community.md"
         fields:
           - { label: "Layout", name: "layout", widget: "hidden", default: "page" }
           - { label: "Title", name: "title", widget: "string" }
