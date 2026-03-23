@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300" font-family="Pretendard, sans-serif">
+  <defs><filter id="s"><feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.12"/></filter></defs>
+  <rect width="800" height="300" fill="#F5F3ED" rx="8"/>
+  <rect x="0" y="0" width="800" height="40" fill="#B5422C" rx="8"/>
+  <rect x="0" y="30" width="800" height="10" fill="#B5422C"/>
+  <text x="400" y="25" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">Prompt Injection 4세대 진화</text>
+
+  <!-- Gen 1 -->
+  <g filter="url(#s)">
+    <rect x="30" y="60" width="170" height="180" rx="6" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+    <rect x="30" y="60" width="170" height="28" rx="6" fill="#e65100"/>
+    <text x="115" y="79" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">Gen 1: Direct (2022)</text>
+    <text x="45" y="105" fill="#bf360c" font-size="9">입력 필드에 직접 삽입</text>
+    <text x="45" y="122" fill="#bf360c" font-size="9">"Ignore previous..."</text>
+    <text x="45" y="145" fill="#795548" font-size="8">난이도: 낮음</text>
+    <text x="45" y="160" fill="#795548" font-size="8">탐지: 쉬움</text>
+    <text x="45" y="175" fill="#795548" font-size="8">영향: 단일 세션</text>
+    <rect x="45" y="190" width="140" height="20" rx="3" fill="#ffe0b2"/>
+    <text x="115" y="204" text-anchor="middle" fill="#e65100" font-size="8">방어: 입력 필터링</text>
+  </g>
+
+  <!-- Gen 2 -->
+  <g filter="url(#s)">
+    <rect x="220" y="60" width="170" height="180" rx="6" fill="#fce4ec" stroke="#c62828" stroke-width="1.5"/>
+    <rect x="220" y="60" width="170" height="28" rx="6" fill="#c62828"/>
+    <text x="305" y="79" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">Gen 2: Indirect (2023)</text>
+    <text x="235" y="105" fill="#b71c1c" font-size="9">외부 데이터에 숨김</text>
+    <text x="235" y="122" fill="#b71c1c" font-size="9">웹/이메일/문서 경유</text>
+    <text x="235" y="145" fill="#795548" font-size="8">난이도: 중간</text>
+    <text x="235" y="160" fill="#795548" font-size="8">탐지: 어려움</text>
+    <text x="235" y="175" fill="#795548" font-size="8">영향: 다중 사용자</text>
+    <rect x="235" y="190" width="140" height="20" rx="3" fill="#ffcdd2"/>
+    <text x="305" y="204" text-anchor="middle" fill="#c62828" font-size="8">방어: 데이터 소스 검증</text>
+  </g>
+
+  <!-- Gen 3 -->
+  <g filter="url(#s)">
+    <rect x="410" y="60" width="170" height="180" rx="6" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.5"/>
+    <rect x="410" y="60" width="170" height="28" rx="6" fill="#1565c0"/>
+    <text x="495" y="79" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">Gen 3: Multi-step (2024)</text>
+    <text x="425" y="105" fill="#0d47a1" font-size="9">다중 호출 점진적 공격</text>
+    <text x="425" y="122" fill="#0d47a1" font-size="9">단계별 목표 달성</text>
+    <text x="425" y="145" fill="#795548" font-size="8">난이도: 높음</text>
+    <text x="425" y="160" fill="#795548" font-size="8">탐지: 매우 어려움</text>
+    <text x="425" y="175" fill="#795548" font-size="8">영향: 시스템 전체</text>
+    <rect x="425" y="190" width="140" height="20" rx="3" fill="#bbdefb"/>
+    <text x="495" y="204" text-anchor="middle" fill="#1565c0" font-size="8">방어: 상태 모니터링</text>
+  </g>
+
+  <!-- Gen 4 -->
+  <g filter="url(#s)">
+    <rect x="600" y="60" width="170" height="180" rx="6" fill="#f3e5f5" stroke="#6a1b9a" stroke-width="1.5"/>
+    <rect x="600" y="60" width="170" height="28" rx="6" fill="#6a1b9a"/>
+    <text x="685" y="79" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">Gen 4: Agent Chain (2025)</text>
+    <text x="615" y="105" fill="#4a148c" font-size="9">에이전트 도구 체인 악용</text>
+    <text x="615" y="122" fill="#4a148c" font-size="9">크로스 에이전트 전파</text>
+    <text x="615" y="145" fill="#795548" font-size="8">난이도: 매우 높음</text>
+    <text x="615" y="160" fill="#795548" font-size="8">탐지: 극도로 어려움</text>
+    <text x="615" y="175" fill="#795548" font-size="8">영향: 에이전트+외부</text>
+    <rect x="615" y="190" width="140" height="20" rx="3" fill="#e1bee7"/>
+    <text x="685" y="204" text-anchor="middle" fill="#6a1b9a" font-size="8">방어: 격리+ACL+감사</text>
+  </g>
+
+  <!-- Evolution arrows -->
+  <line x1="200" y1="150" x2="220" y2="150" stroke="#9e9e9e" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="390" y1="150" x2="410" y2="150" stroke="#9e9e9e" stroke-width="2"/>
+  <line x1="580" y1="150" x2="600" y2="150" stroke="#9e9e9e" stroke-width="2"/>
+
+  <text x="400" y="270" text-anchor="middle" fill="#9e9e9e" font-size="10">AICRA | Prompt Injection 공격 진화: 단순 입력 조작에서 에이전트 체인 공격까지</text>
+</svg>
