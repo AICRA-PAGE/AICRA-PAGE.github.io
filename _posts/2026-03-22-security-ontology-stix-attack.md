@@ -862,6 +862,8 @@ ORDER BY technique.external_id;
 - [Apache Jena](https://jena.apache.org/) - Java 기반 시맨틱 웹 프레임워크 (SPARQL, OWL 추론)
 - [SPARQL 1.1 Query Language (W3C)](https://www.w3.org/TR/sparql11-query/) - 그래프 쿼리 언어 표준
 - [OWL 2 Web Ontology Language (W3C)](https://www.w3.org/TR/owl2-overview/) - 온톨로지 정의 표준
+- [AICRA: OWASP Agentic Top 10 분석](/blog/2026/owasp-agentic-top-10-2026/) (관련 포스트)
+- [AICRA: OWASP LLM Top 10 2025](/blog/2025/owasp-llm-top-10-2025/) (관련 포스트)
 
 ### 관련 연구/보고서
 - [SANS 2024 SOC Survey](https://www.sans.org/white-papers/soc-survey/) - SOC 팀 운영 현황
