@@ -1,9 +1,48 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200" font-family="Pretendard, sans-serif">
-  <rect width="400" height="200" fill="#B5422C" rx="8"/>
-  <text x="200" y="70" text-anchor="middle" fill="#ffffff" font-size="14" font-weight="700">OWASP Top 10</text>
-  <text x="200" y="95" text-anchor="middle" fill="#ffcdd2" font-size="16" font-weight="700">Agentic Applications</text>
-  <text x="200" y="120" text-anchor="middle" fill="#ffffff" font-size="11" opacity="0.8">for 2026</text>
-  <line x1="120" y1="140" x2="280" y2="140" stroke="#ffffff" stroke-width="1" opacity="0.3"/>
-  <text x="200" y="165" text-anchor="middle" fill="#ffffff" font-size="10" opacity="0.7">ASI01 - ASI10 | AI Agent Security</text>
-  <text x="200" y="185" text-anchor="middle" fill="#ffcdd2" font-size="9">AICRA Research Blog</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" fill="none">
+  <rect width="800" height="400" fill="#1C1917"/>
+  <rect x="40" y="40" width="720" height="320" rx="8" fill="#292524" stroke="#44403C"/>
+  <!-- Grid of 10 ASI boxes -->
+  <g transform="translate(70,80)">
+    <rect width="120" height="50" rx="4" fill="#B5422C"/>
+    <text x="60" y="30" text-anchor="middle" fill="#fff" font-family="sans-serif" font-size="14" font-weight="600">ASI01</text>
+  </g>
+  <g transform="translate(200,80)">
+    <rect width="120" height="50" rx="4" fill="#B5422C"/>
+    <text x="60" y="30" text-anchor="middle" fill="#fff" font-family="sans-serif" font-size="14" font-weight="600">ASI02</text>
+  </g>
+  <g transform="translate(330,80)">
+    <rect width="120" height="50" rx="4" fill="#B5422C"/>
+    <text x="60" y="30" text-anchor="middle" fill="#fff" font-family="sans-serif" font-size="14" font-weight="600">ASI03</text>
+  </g>
+  <g transform="translate(460,80)">
+    <rect width="120" height="50" rx="4" fill="#B7791F"/>
+    <text x="60" y="30" text-anchor="middle" fill="#fff" font-family="sans-serif" font-size="14" font-weight="600">ASI04</text>
+  </g>
+  <g transform="translate(590,80)">
+    <rect width="120" height="50" rx="4" fill="#B7791F"/>
+    <text x="60" y="30" text-anchor="middle" fill="#fff" font-family="sans-serif" font-size="14" font-weight="600">ASI05</text>
+  </g>
+  <g transform="translate(70,150)">
+    <rect width="120" height="50" rx="4" fill="#B7791F"/>
+    <text x="60" y="30" text-anchor="middle" fill="#fff" font-family="sans-serif" font-size="14" font-weight="600">ASI06</text>
+  </g>
+  <g transform="translate(200,150)">
+    <rect width="120" height="50" rx="4" fill="#B7791F"/>
+    <text x="60" y="30" text-anchor="middle" fill="#fff" font-family="sans-serif" font-size="14" font-weight="600">ASI07</text>
+  </g>
+  <g transform="translate(330,150)">
+    <rect width="120" height="50" rx="4" fill="#2F5D50"/>
+    <text x="60" y="30" text-anchor="middle" fill="#fff" font-family="sans-serif" font-size="14" font-weight="600">ASI08</text>
+  </g>
+  <g transform="translate(460,150)">
+    <rect width="120" height="50" rx="4" fill="#2F5D50"/>
+    <text x="60" y="30" text-anchor="middle" fill="#fff" font-family="sans-serif" font-size="14" font-weight="600">ASI09</text>
+  </g>
+  <g transform="translate(590,150)">
+    <rect width="120" height="50" rx="4" fill="#2F5D50"/>
+    <text x="60" y="30" text-anchor="middle" fill="#fff" font-family="sans-serif" font-size="14" font-weight="600">ASI10</text>
+  </g>
+  <text x="400" y="260" text-anchor="middle" fill="#E9E4DA" font-family="sans-serif" font-size="24" font-weight="700">OWASP Agentic Top 10</text>
+  <text x="400" y="290" text-anchor="middle" fill="#BEB7AA" font-family="sans-serif" font-size="16">2026 AI Agent Security Threats</text>
+  <text x="400" y="330" text-anchor="middle" fill="#6B665C" font-family="sans-serif" font-size="12">AICRA</text>
 </svg>
