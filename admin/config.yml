@@ -83,6 +83,12 @@ collections:
       - { label: "Collaborative", name: collaborative, widget: boolean, default: false, required: false }
       - { label: "Date", name: date, widget: datetime }
       - { label: "Status", name: status, widget: select, options: ["draft", "review", "published"], default: "draft" }
+      - label: "Domain"
+        name: domain
+        widget: select
+        options: ["LLM Security", "Adversarial ML", "Prompt Injection", "AI Red Teaming", "MCP Security", "Agentic AI Security", "Privacy / FL", "AI Governance"]
+        default: "LLM Security"
+        required: false
       - { label: "Abstract", name: abstract, widget: text, required: false }
       - label: "Keywords"
         name: keywords

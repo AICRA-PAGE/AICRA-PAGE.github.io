@@ -6,57 +6,94 @@ description: "AICRA 연구 논문 및 기술 보고서"
 ---
 
 <div style="max-width:800px;margin:0 auto;padding:20px;">
-  <header style="text-align:center;margin-bottom:2rem;">
+  <header style="text-align:center;margin-bottom:1.5rem;">
     <h1 style="font-size:1.5rem;color:#2f5d50;">Research Papers</h1>
-    <p style="color:#6b665c;font-size:0.88rem;">AICRA 연구 논문 및 기술 보고서</p>
-    <a href="/admin/paper-editor.html" style="display:inline-block;margin-top:12px;padding:8px 20px;background:#2f5d50;color:#fff;border-radius:6px;text-decoration:none;font-size:0.85rem;font-weight:600;">
-      논문 작성하기
+    <p style="color:#6b665c;font-size:0.88rem;">AI Security & Information Security Research</p>
+    <a href="/admin/paper-editor.html" style="display:inline-block;margin-top:10px;padding:7px 18px;background:#2f5d50;color:#fff;border-radius:6px;text-decoration:none;font-size:0.82rem;font-weight:600;">
+      Write Paper
     </a>
   </header>
+
+  <!-- Domain Filter -->
+  <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:1.5rem;" id="domainFilter">
+    <button onclick="filterDomain('all')" class="df active" style="padding:4px 12px;border:1px solid #e0ddd5;border-radius:14px;font-size:0.72rem;cursor:pointer;background:#2f5d50;color:#fff;">All</button>
+    <button onclick="filterDomain('LLM Security')" class="df" style="padding:4px 12px;border:1px solid #e0ddd5;border-radius:14px;font-size:0.72rem;cursor:pointer;background:#fff;color:#44403C;">LLM Security</button>
+    <button onclick="filterDomain('Adversarial ML')" class="df" style="padding:4px 12px;border:1px solid #e0ddd5;border-radius:14px;font-size:0.72rem;cursor:pointer;background:#fff;color:#44403C;">Adversarial ML</button>
+    <button onclick="filterDomain('Prompt Injection')" class="df" style="padding:4px 12px;border:1px solid #e0ddd5;border-radius:14px;font-size:0.72rem;cursor:pointer;background:#fff;color:#44403C;">Prompt Injection</button>
+    <button onclick="filterDomain('AI Red Teaming')" class="df" style="padding:4px 12px;border:1px solid #e0ddd5;border-radius:14px;font-size:0.72rem;cursor:pointer;background:#fff;color:#44403C;">AI Red Teaming</button>
+    <button onclick="filterDomain('Agentic AI Security')" class="df" style="padding:4px 12px;border:1px solid #e0ddd5;border-radius:14px;font-size:0.72rem;cursor:pointer;background:#fff;color:#44403C;">Agentic AI</button>
+    <button onclick="filterDomain('Privacy')" class="df" style="padding:4px 12px;border:1px solid #e0ddd5;border-radius:14px;font-size:0.72rem;cursor:pointer;background:#fff;color:#44403C;">Privacy / FL</button>
+    <button onclick="filterDomain('AI Governance')" class="df" style="padding:4px 12px;border:1px solid #e0ddd5;border-radius:14px;font-size:0.72rem;cursor:pointer;background:#fff;color:#44403C;">Governance</button>
+  </div>
 
   {% assign published = site.papers | where: "status", "published" | sort: "date" | reverse %}
   {% assign drafts = site.papers | where: "status", "draft" | sort: "date" | reverse %}
   {% assign reviews = site.papers | where: "status", "review" | sort: "date" | reverse %}
 
   {% if published.size > 0 %}
-  <h2 style="font-size:1.1rem;color:#2f5d50;border-bottom:1px solid #e0ddd5;padding-bottom:4px;">Published</h2>
+  <h2 style="font-size:1.05rem;color:#2f5d50;border-bottom:1px solid #e0ddd5;padding-bottom:4px;">Published</h2>
   {% for paper in published %}
-  <div style="background:#fff;border:1px solid #e0ddd5;border-radius:8px;padding:16px;margin:12px 0;">
+  <div class="paper-card" data-domain="{{ paper.domain }}" style="background:#fff;border:1px solid #e0ddd5;border-radius:8px;padding:14px;margin:10px 0;">
     <a href="{{ paper.url }}" style="text-decoration:none;color:#1c1917;">
-      <h3 style="font-size:0.95rem;color:#2f5d50;margin-bottom:4px;">{{ paper.title }}</h3>
+      <h3 style="font-size:0.92rem;color:#2f5d50;margin-bottom:3px;">{{ paper.title }}</h3>
     </a>
-    <p style="font-size:0.75rem;color:#6b665c;">
+    <p style="font-size:0.72rem;color:#6b665c;">
       {{ paper.author }}{% if paper.authors and paper.authors.size > 0 %}, {{ paper.authors | join: ", " }}{% endif %}
       | {{ paper.date | date: "%Y-%m-%d" }}
+      {% if paper.domain %} | <span style="background:#e8f5e9;color:#2e7d32;padding:1px 6px;border-radius:8px;font-size:0.62rem;">{{ paper.domain }}</span>{% endif %}
       {% if paper.collaborative %} | <span style="color:#b7791f;">Collaborative</span>{% endif %}
     </p>
     {% if paper.abstract %}
-    <p style="font-size:0.8rem;color:#44403C;margin-top:6px;line-height:1.5;">{{ paper.abstract | truncate: 200 }}</p>
+    <p style="font-size:0.78rem;color:#44403C;margin-top:5px;line-height:1.5;">{{ paper.abstract | truncate: 200 }}</p>
     {% endif %}
     {% if paper.keywords %}
-    <p style="font-size:0.7rem;color:#8b8580;margin-top:4px;">{{ paper.keywords | join: " | " }}</p>
+    <p style="font-size:0.65rem;color:#8b8580;margin-top:3px;">{{ paper.keywords | join: " | " }}</p>
     {% endif %}
   </div>
   {% endfor %}
   {% endif %}
 
   {% if reviews.size > 0 %}
-  <h2 style="font-size:1.1rem;color:#b7791f;border-bottom:1px solid #e0ddd5;padding-bottom:4px;margin-top:2rem;">Under Review</h2>
+  <h2 style="font-size:1.05rem;color:#b7791f;border-bottom:1px solid #e0ddd5;padding-bottom:4px;margin-top:1.5rem;">Under Review</h2>
   {% for paper in reviews %}
-  <div style="background:#fff8f0;border:1px solid #f0e0cc;border-radius:8px;padding:16px;margin:12px 0;">
-    <h3 style="font-size:0.95rem;color:#b7791f;">{{ paper.title }}</h3>
-    <p style="font-size:0.75rem;color:#6b665c;">{{ paper.author }} | {{ paper.date | date: "%Y-%m-%d" }}</p>
+  <div class="paper-card" data-domain="{{ paper.domain }}" style="background:#fff8f0;border:1px solid #f0e0cc;border-radius:8px;padding:14px;margin:10px 0;">
+    <h3 style="font-size:0.92rem;color:#b7791f;">{{ paper.title }}</h3>
+    <p style="font-size:0.72rem;color:#6b665c;">
+      {{ paper.author }} | {{ paper.date | date: "%Y-%m-%d" }}
+      {% if paper.domain %} | <span style="background:#fff3cd;color:#856404;padding:1px 6px;border-radius:8px;font-size:0.62rem;">{{ paper.domain }}</span>{% endif %}
+    </p>
   </div>
   {% endfor %}
   {% endif %}
 
   {% if drafts.size > 0 %}
-  <h2 style="font-size:1.1rem;color:#8b8580;border-bottom:1px solid #e0ddd5;padding-bottom:4px;margin-top:2rem;">Drafts</h2>
+  <h2 style="font-size:1.05rem;color:#8b8580;border-bottom:1px solid #e0ddd5;padding-bottom:4px;margin-top:1.5rem;">Drafts</h2>
   {% for paper in drafts %}
-  <div style="background:#f5f3ed;border:1px solid #e0ddd5;border-radius:8px;padding:16px;margin:12px 0;">
-    <h3 style="font-size:0.95rem;color:#6b665c;">{{ paper.title }}</h3>
-    <p style="font-size:0.75rem;color:#8b8580;">{{ paper.author }} | {{ paper.date | date: "%Y-%m-%d" }}</p>
+  <div class="paper-card" data-domain="{{ paper.domain }}" style="background:#f5f3ed;border:1px solid #e0ddd5;border-radius:8px;padding:14px;margin:10px 0;">
+    <h3 style="font-size:0.92rem;color:#6b665c;">{{ paper.title }}</h3>
+    <p style="font-size:0.72rem;color:#8b8580;">
+      {{ paper.author }} | {{ paper.date | date: "%Y-%m-%d" }}
+      {% if paper.domain %} | <span style="background:#f0f0f0;color:#666;padding:1px 6px;border-radius:8px;font-size:0.62rem;">{{ paper.domain }}</span>{% endif %}
+    </p>
   </div>
   {% endfor %}
   {% endif %}
+
+  {% if published.size == 0 and reviews.size == 0 and drafts.size == 0 %}
+  <div style="text-align:center;padding:3rem;color:#8b8580;">
+    <p>No papers yet.</p>
+    <p style="font-size:0.82rem;margin-top:8px;">Start writing your first AI security research paper.</p>
+  </div>
+  {% endif %}
 </div>
+
+<script>
+function filterDomain(domain){
+  document.querySelectorAll('.df').forEach(b=>{b.style.background='#fff';b.style.color='#44403C';});
+  event.target.style.background='#2f5d50';event.target.style.color='#fff';
+  document.querySelectorAll('.paper-card').forEach(c=>{
+    if(domain==='all')c.style.display='';
+    else c.style.display=(c.dataset.domain||'').includes(domain)?'':'none';
+  });
+}
+</script>

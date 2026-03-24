@@ -21,7 +21,9 @@ layout: default
     </div>
     {% endif %}
 
-    <p style="font-size:0.75rem;color:#8b8580;">{{ page.date | date: "%Y-%m-%d" }}
+    <p style="font-size:0.75rem;color:#8b8580;">
+      {{ page.date | date: "%Y-%m-%d" }}
+      {% if page.domain %} | <span style="background:#e8f5e9;color:#2e7d32;padding:1px 8px;border-radius:10px;font-size:0.68rem;">{{ page.domain }}</span>{% endif %}
       {% if page.status %} | <span style="background:{% if page.status == 'published' %}#e8f5e9;color:#2e7d32{% elsif page.status == 'review' %}#fff8e1;color:#f57f17{% else %}#f5f5f5;color:#757575{% endif %};padding:1px 8px;border-radius:10px;font-size:0.7rem;">{{ page.status }}</span>{% endif %}
     </p>
 
@@ -31,9 +33,19 @@ layout: default
 
     {% if page.keywords %}
     <p style="font-size:0.72rem;color:#6b665c;">
-      <strong>Keywords:</strong> {{ page.keywords | join: " · " }}
+      <strong>Keywords:</strong> {{ page.keywords | join: " &middot; " }}
     </p>
     {% endif %}
+
+    <!-- Edit button: visible only to author/co-authors or if collaborative -->
+    <div id="edit-btn-area" style="margin-top:12px;display:none;">
+      <a id="edit-link" href="/admin/paper-editor.html" style="display:inline-block;padding:6px 16px;background:#2f5d50;color:#fff;border-radius:6px;text-decoration:none;font-size:0.78rem;font-weight:600;">
+        Edit Paper
+      </a>
+    </div>
+    <p id="edit-login-hint" style="font-size:0.68rem;color:#8b8580;margin-top:8px;display:none;">
+      Log in via CMS to edit this paper
+    </p>
   </header>
 
   <div class="paper-body" style="font-size:0.88rem;line-height:1.9;">
@@ -45,3 +57,68 @@ layout: default
     {% if page.collaborative %}<p style="color:#b7791f;">Open for contributions</p>{% endif %}
   </footer>
 </article>
+
+<script>
+(function(){
+  const paperAuthor = "{{ page.author | downcase }}";
+  const coAuthors = [{% for a in page.authors %}"{{ a | downcase }}"{% unless forloop.last %},{% endunless %}{% endfor %}];
+  const isCollaborative = {{ page.collaborative | default: false }};
+
+  function checkEditPermission(){
+    // Try to get GitHub token from Sveltia CMS localStorage
+    let token = null;
+    for(let i=0;i<localStorage.length;i++){
+      const key=localStorage.key(i);
+      if(key&&(key.includes('sveltia')||key.includes('netlify'))&&key.includes('token')){
+        try{const v=JSON.parse(localStorage.getItem(key));token=v.token||v.access_token||v;}catch(e){const v=localStorage.getItem(key);if(v&&v.length>10)token=v;}
+      }
+    }
+    // Also check for direct token storage
+    if(!token){
+      const raw=localStorage.getItem('sveltia-cms.user');
+      if(raw){try{token=JSON.parse(raw).token;}catch(e){}}
+    }
+    if(!token){
+      const raw=localStorage.getItem('netlify-cms-user');
+      if(raw){try{token=JSON.parse(raw).token;}catch(e){}}
+    }
+
+    if(!token){
+      document.getElementById('edit-login-hint').style.display='block';
+      return;
+    }
+
+    // Check cache first (5 min TTL)
+    const cached=localStorage.getItem('aicra.gh.user');
+    if(cached){
+      try{
+        const c=JSON.parse(cached);
+        if(Date.now()-c.at<300000){showEditButton(c.login);return;}
+      }catch(e){}
+    }
+
+    // Fetch current user from GitHub API
+    fetch('https://api.github.com/user',{headers:{'Authorization':'token '+token}})
+      .then(r=>r.ok?r.json():null)
+      .then(user=>{
+        if(!user)return;
+        localStorage.setItem('aicra.gh.user',JSON.stringify({login:user.login,at:Date.now()}));
+        showEditButton(user.login);
+      })
+      .catch(()=>{document.getElementById('edit-login-hint').style.display='block';});
+  }
+
+  function showEditButton(login){
+    const lc=login.toLowerCase();
+    const allowed=isCollaborative||(lc===paperAuthor)||coAuthors.includes(lc);
+    if(allowed){
+      document.getElementById('edit-btn-area').style.display='block';
+    }else{
+      document.getElementById('edit-login-hint').style.display='block';
+      document.getElementById('edit-login-hint').textContent='Only the author or co-authors can edit this paper';
+    }
+  }
+
+  checkEditPermission();
+})();
+</script>

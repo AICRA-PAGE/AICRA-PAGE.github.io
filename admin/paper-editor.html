@@ -16,133 +16,145 @@
 body{font-family:'Pretendard',sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden}
 
 /* Toolbar */
-.tb{display:flex;align-items:center;padding:8px 14px;background:var(--panel);border-bottom:1px solid var(--line);gap:8px;flex-shrink:0}
+.tb{display:flex;align-items:center;padding:8px 14px;background:var(--panel);border-bottom:1px solid var(--line);gap:6px;flex-shrink:0}
 .tb img{width:22px;height:22px}
-.tb h1{font-size:.85rem;color:var(--brand);font-weight:700;margin-right:4px}
-.tb .badge{font-size:.6rem;background:var(--accent);color:#fff;padding:1px 6px;border-radius:4px;font-weight:600}
-.tb .sep{width:1px;height:20px;background:var(--line);margin:0 4px}
-.bt{padding:5px 12px;border:none;border-radius:6px;font-size:.72rem;font-weight:600;cursor:pointer;background:var(--surface);color:var(--text);border:1px solid var(--line);transition:.15s}
+.tb h1{font-size:.85rem;color:var(--brand);font-weight:700;margin-right:2px}
+.tb .badge{font-size:.58rem;background:var(--accent);color:#fff;padding:1px 6px;border-radius:4px;font-weight:600}
+.tb .sep{width:1px;height:20px;background:var(--line);margin:0 3px}
+.bt{padding:4px 10px;border:none;border-radius:6px;font-size:.7rem;font-weight:600;cursor:pointer;background:var(--surface);color:var(--text);border:1px solid var(--line);transition:.15s}
 .bt:hover{background:var(--line)}
 .bt.p{background:var(--brand);color:#fff;border-color:var(--brand)}
 .bt.p:hover{background:var(--brand2)}
 .spacer{flex:1}
-.bt.icon{font-size:.8rem;padding:5px 8px}
+.bt.icon{font-size:.78rem;padding:4px 7px}
 
 /* Meta */
-.meta{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:6px;padding:6px 14px;background:var(--surface);border-bottom:1px solid var(--line);flex-shrink:0}
-.meta label{font-size:.6rem;color:var(--muted);font-weight:600;display:block;margin-bottom:2px}
-.meta input,.meta select{width:100%;padding:5px 8px;border:1px solid var(--line);border-radius:5px;font-size:.78rem;background:var(--panel);color:var(--text);font-family:inherit}
-.meta2{display:grid;grid-template-columns:2fr 2fr 1fr;gap:6px;padding:6px 14px;background:var(--surface);border-bottom:1px solid var(--line);flex-shrink:0}
-.meta2 label{font-size:.6rem;color:var(--muted);font-weight:600;display:block;margin-bottom:2px}
-.meta2 input{width:100%;padding:5px 8px;border:1px solid var(--line);border-radius:5px;font-size:.78rem;background:var(--panel);color:var(--text);font-family:inherit}
-.meta2 .chk{display:flex;align-items:center;gap:6px;padding-top:14px}
+.meta{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:6px;padding:6px 14px;background:var(--surface);border-bottom:1px solid var(--line);flex-shrink:0}
+.meta label{font-size:.58rem;color:var(--muted);font-weight:600;display:block;margin-bottom:1px}
+.meta input,.meta select{width:100%;padding:4px 7px;border:1px solid var(--line);border-radius:5px;font-size:.75rem;background:var(--panel);color:var(--text);font-family:inherit}
+.meta2{display:grid;grid-template-columns:2fr 2fr 1fr;gap:6px;padding:5px 14px;background:var(--surface);border-bottom:1px solid var(--line);flex-shrink:0}
+.meta2 label{font-size:.58rem;color:var(--muted);font-weight:600;display:block;margin-bottom:1px}
+.meta2 input{width:100%;padding:4px 7px;border:1px solid var(--line);border-radius:5px;font-size:.75rem;background:var(--panel);color:var(--text);font-family:inherit}
+.meta2 .chk{display:flex;align-items:center;gap:6px;padding-top:12px}
 .meta2 .chk input{width:auto}
-.meta2 .chk span{font-size:.72rem;color:var(--muted)}
+.meta2 .chk span{font-size:.7rem;color:var(--muted)}
 
-/* Insert bar */
-.ins{display:flex;gap:4px;padding:4px 14px;background:var(--panel);border-bottom:1px solid var(--line);flex-shrink:0;flex-wrap:wrap}
-.ins button{padding:3px 10px;border:1px solid var(--line);border-radius:5px;font-size:.65rem;background:var(--panel);color:var(--muted);cursor:pointer}
+/* Insert bar - grouped */
+.ins{display:flex;gap:3px;padding:4px 14px;background:var(--panel);border-bottom:1px solid var(--line);flex-shrink:0;flex-wrap:wrap;align-items:center}
+.ins button{padding:3px 8px;border:1px solid var(--line);border-radius:4px;font-size:.62rem;background:var(--panel);color:var(--muted);cursor:pointer;white-space:nowrap}
 .ins button:hover{background:var(--surface);color:var(--text)}
-.ins .grp{display:flex;gap:3px;padding-left:6px;border-left:1px solid var(--line)}
+.ins .gl{font-size:.55rem;color:var(--brand);font-weight:700;padding:0 4px 0 6px;border-left:2px solid var(--brand);margin-left:4px}
+.ins .gl:first-child{border-left:none;margin-left:0}
 
 /* Editor */
 .ed{display:flex;flex:1;overflow:hidden}
 .pn{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.pn-label{padding:4px 14px;font-size:.62rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;background:var(--surface);border-bottom:1px solid var(--line);flex-shrink:0;display:flex;justify-content:space-between;align-items:center}
-.pn-label .opts{display:flex;gap:6px}
-.pn-label .opts button{font-size:.58rem;padding:2px 6px;border:1px solid var(--line);border-radius:4px;background:transparent;color:var(--muted);cursor:pointer}
+.pn-label{padding:3px 14px;font-size:.6rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;background:var(--surface);border-bottom:1px solid var(--line);flex-shrink:0;display:flex;justify-content:space-between;align-items:center}
+.pn-label .opts{display:flex;gap:5px}
+.pn-label .opts button{font-size:.56rem;padding:2px 5px;border:1px solid var(--line);border-radius:3px;background:transparent;color:var(--muted);cursor:pointer}
 .pn-label .opts button.active{background:var(--brand);color:#fff;border-color:var(--brand)}
-#input{flex:1;padding:16px;border:none;resize:none;font-size:14px;line-height:1.8;font-family:'JetBrains Mono',monospace;background:var(--panel);color:var(--text);outline:none;tab-size:2}
+#input{flex:1;padding:14px;border:none;resize:none;font-size:13.5px;line-height:1.75;font-family:'JetBrains Mono',monospace;background:var(--panel);color:var(--text);outline:none;tab-size:2}
 .dv{width:3px;background:var(--line);cursor:col-resize;flex-shrink:0}
 
-/* Preview - academic paper style */
-#pv{flex:1;padding:32px 40px;overflow-y:auto;background:var(--panel);font-family:'Noto Serif KR','Pretendard',serif;font-size:.95rem;line-height:1.9;color:var(--text);max-width:100%}
-#pv.two-col{column-count:2;column-gap:28px;column-rule:1px solid var(--line);font-size:.82rem;line-height:1.7;padding:24px 28px}
-#pv h1{font-size:1.5rem;font-weight:700;text-align:center;margin-bottom:.3rem;color:var(--text)}
-#pv h2{font-size:1.2rem;font-weight:700;padding-bottom:4px;border-bottom:2px solid var(--brand);margin:1.8rem 0 .8rem;color:var(--brand)}
-#pv h3{font-size:1.05rem;font-weight:600;margin:1.2rem 0 .5rem}
-#pv h4{font-size:.95rem;font-weight:600;margin:.8rem 0 .4rem}
-#pv p{margin-bottom:1rem;text-align:justify}
-#pv ul,#pv ol{margin-bottom:1rem;padding-left:1.5rem}
-#pv li{line-height:1.8;margin-bottom:.3rem}
+/* Preview - IEEE/ACM engineering paper style */
+#pv{flex:1;padding:28px 36px;overflow-y:auto;background:var(--panel);font-family:'Noto Serif KR','Pretendard',serif;font-size:.92rem;line-height:1.85;color:var(--text);max-width:100%}
+#pv.two-col{column-count:2;column-gap:24px;column-rule:1px solid var(--line);font-size:.8rem;line-height:1.65;padding:20px 24px}
+#pv h1{font-size:1.4rem;font-weight:700;text-align:center;margin-bottom:.2rem;color:var(--text)}
+#pv h2{font-size:1.05rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding-bottom:3px;border-bottom:1.5px solid var(--brand);margin:1.6rem 0 .7rem;color:var(--brand)}
+#pv h3{font-size:.95rem;font-weight:600;margin:1rem 0 .4rem;color:var(--text)}
+#pv h4{font-size:.88rem;font-weight:600;margin:.7rem 0 .3rem;font-style:italic}
+#pv p{margin-bottom:.8rem;text-align:justify;hyphens:auto}
+#pv ul,#pv ol{margin-bottom:.8rem;padding-left:1.4rem}
+#pv li{line-height:1.7;margin-bottom:.2rem}
 #pv strong{font-weight:700}
-#pv pre{background:var(--code-bg);border-radius:var(--radius);padding:1rem;margin:1rem 0;overflow-x:auto;border:1px solid var(--line)}
-#pv pre code{font-family:'JetBrains Mono',monospace;font-size:.82rem;color:#e2e8f0;background:none;padding:0}
-#pv code{font-family:'JetBrains Mono',monospace;background:var(--surface);padding:2px 5px;border-radius:3px;font-size:.85em;color:var(--brand)}
-#pv table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.85rem}
-#pv th{background:var(--brand);color:#fff;padding:.5rem .6rem;text-align:left;font-weight:600;font-size:.82rem}
-#pv td{padding:.5rem .6rem;border-bottom:1px solid var(--line);font-size:.85rem}
-#pv blockquote{border-left:3px solid var(--brand);padding:.6rem 1rem;margin:.8rem 0;background:var(--surface);font-style:italic;font-size:.9rem}
-#pv hr{border:none;border-top:1px solid var(--line);margin:1.5rem 0}
+#pv pre{background:var(--code-bg);border-radius:var(--radius);padding:.9rem;margin:.8rem 0;overflow-x:auto;border:1px solid var(--line)}
+#pv pre code{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:#e2e8f0;background:none;padding:0}
+#pv code{font-family:'JetBrains Mono',monospace;background:var(--surface);padding:1px 4px;border-radius:3px;font-size:.83em;color:var(--brand)}
+#pv table{width:100%;border-collapse:collapse;margin:.8rem 0;font-size:.8rem}
+#pv th{background:var(--brand);color:#fff;padding:.4rem .5rem;text-align:left;font-weight:600;font-size:.78rem}
+#pv td{padding:.4rem .5rem;border-bottom:1px solid var(--line);font-size:.8rem}
+#pv tr:nth-child(even){background:var(--surface)}
+#pv blockquote{border-left:3px solid var(--brand);padding:.5rem .8rem;margin:.6rem 0;background:var(--surface);font-style:italic;font-size:.85rem}
+#pv hr{border:none;border-top:1px solid var(--line);margin:1.2rem 0}
 #pv img{max-width:100%;border-radius:var(--radius)}
-#pv .katex-display{margin:.8rem 0}
+#pv .katex-display{margin:.6rem 0}
+#pv em{font-style:italic}
 
 /* Academic environments */
-#pv .env-block{border:1px solid var(--line);border-radius:6px;padding:12px 16px;margin:1rem 0;background:var(--surface);page-break-inside:avoid}
+#pv .env-block{border:1px solid var(--line);border-radius:6px;padding:10px 14px;margin:.8rem 0;background:var(--surface);page-break-inside:avoid}
 #pv .env-block.theorem{border-left:4px solid var(--brand)}
 #pv .env-block.lemma{border-left:4px solid #6366f1}
 #pv .env-block.definition{border-left:4px solid #0891b2}
 #pv .env-block.corollary{border-left:4px solid #7c3aed}
 #pv .env-block.proposition{border-left:4px solid #059669}
-#pv .env-block.algorithm{border-left:4px solid var(--accent);font-family:'JetBrains Mono',monospace;font-size:.82rem;white-space:pre-wrap}
-#pv .env-label{font-weight:700;color:var(--brand);margin-bottom:4px;font-size:.88rem}
+#pv .env-block.algorithm{border-left:4px solid var(--accent);font-family:'JetBrains Mono',monospace;font-size:.78rem;white-space:pre-wrap}
+#pv .env-label{font-weight:700;color:var(--brand);margin-bottom:3px;font-size:.84rem}
 #pv .env-block.lemma .env-label{color:#6366f1}
 #pv .env-block.definition .env-label{color:#0891b2}
 #pv .env-block.corollary .env-label{color:#7c3aed}
 #pv .env-block.proposition .env-label{color:#059669}
 #pv .env-block.algorithm .env-label{color:var(--accent);font-family:'Pretendard',sans-serif}
-#pv .proof{margin:1rem 0;font-style:italic}
+#pv .proof{margin:.8rem 0;font-style:italic}
 #pv .proof::after{content:' \25A1';float:right;color:var(--brand)}
-#pv .proof-label{font-weight:700;font-style:normal;margin-right:6px}
-#pv .eq-row{display:flex;align-items:center;margin:.5rem 0}
+#pv .proof-label{font-weight:700;font-style:normal;margin-right:4px}
+#pv .eq-row{display:flex;align-items:center;margin:.4rem 0}
 #pv .eq-row .katex-display{flex:1;margin:0}
-#pv .eq-num{color:var(--muted);font-size:.82rem;min-width:40px;text-align:right}
-#pv .abstract-box{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:14px 18px;margin:1rem 0;font-size:.88rem;line-height:1.7}
-#pv .abstract-box strong{display:block;margin-bottom:4px;color:var(--brand)}
-#pv .bib-list{font-size:.82rem;line-height:1.6;counter-reset:bib}
-#pv .bib-list p{padding-left:2.2rem;text-indent:-2.2rem;margin-bottom:.4rem}
+#pv .eq-num{color:var(--muted);font-size:.78rem;min-width:36px;text-align:right}
+#pv .abstract-box{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:12px 16px;margin:.8rem 0;font-size:.85rem;line-height:1.65}
+#pv .abstract-box strong{display:block;margin-bottom:3px;color:var(--brand);font-size:.78rem;text-transform:uppercase;letter-spacing:.5px}
+#pv .bib-list{font-size:.78rem;line-height:1.55;counter-reset:bib}
+#pv .bib-list p{padding-left:2rem;text-indent:-2rem;margin-bottom:.3rem}
 #pv .bib-list p::before{counter-increment:bib;content:'[' counter(bib) '] ';font-weight:600;color:var(--brand)}
 #pv .cite{color:var(--brand);font-weight:600;cursor:help}
+#pv .fig-caption{text-align:center;font-size:.78rem;color:var(--muted);margin-top:4px;font-style:italic}
 
 /* Status bar */
-.st{display:flex;gap:14px;padding:4px 14px;font-size:.65rem;color:var(--muted);background:var(--surface);border-top:1px solid var(--line);flex-shrink:0;align-items:center}
+.st{display:flex;gap:12px;padding:3px 14px;font-size:.62rem;color:var(--muted);background:var(--surface);border-top:1px solid var(--line);flex-shrink:0;align-items:center}
 .st b{color:var(--text)}
-.score{padding:2px 8px;border-radius:10px;color:#fff;font-size:.62rem}
+.score{padding:2px 7px;border-radius:10px;color:#fff;font-size:.6rem}
 .sh{background:var(--brand)}.sm{background:var(--accent)}.sl{background:#b42318}
 
 /* Ref sidebar */
 .ref-panel{width:0;overflow:hidden;transition:width .2s;border-left:1px solid var(--line);background:var(--panel);display:flex;flex-direction:column}
 .ref-panel.open{width:280px}
-.ref-head{padding:8px 12px;font-size:.72rem;font-weight:700;color:var(--brand);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
-.ref-list{flex:1;overflow-y:auto;padding:8px}
-.ref-item{padding:6px 8px;font-size:.7rem;border-bottom:1px solid var(--line);line-height:1.5;color:var(--text)}
-.ref-item b{color:var(--brand);margin-right:4px}
-.ref-add{display:flex;gap:4px;padding:8px;border-top:1px solid var(--line);flex-shrink:0}
-.ref-add input{flex:1;padding:4px 8px;border:1px solid var(--line);border-radius:4px;font-size:.68rem;background:var(--panel);color:var(--text)}
-.ref-add button{padding:4px 10px;background:var(--brand);color:#fff;border:none;border-radius:4px;font-size:.65rem;cursor:pointer}
+.ref-head{padding:7px 10px;font-size:.7rem;font-weight:700;color:var(--brand);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.ref-list{flex:1;overflow-y:auto;padding:6px}
+.ref-item{padding:5px 7px;font-size:.68rem;border-bottom:1px solid var(--line);line-height:1.45;color:var(--text)}
+.ref-item b{color:var(--brand);margin-right:3px}
+.ref-add{display:flex;gap:3px;padding:6px;border-top:1px solid var(--line);flex-shrink:0}
+.ref-add input{flex:1;padding:4px 7px;border:1px solid var(--line);border-radius:4px;font-size:.65rem;background:var(--panel);color:var(--text)}
+.ref-add button{padding:4px 8px;background:var(--brand);color:#fff;border:none;border-radius:4px;font-size:.62rem;cursor:pointer}
 
-/* Print */
+/* Print - IEEE 2-column */
 @media print{
   .tb,.meta,.meta2,.ins,.st,.dv,.ref-panel,#input,.pn-label{display:none!important}
   .ed{display:block!important}
   .pn:first-child{display:none!important}
   .pn:last-child{display:block!important;overflow:visible!important}
-  #pv{padding:0!important;font-size:11pt!important;column-count:2;column-gap:20pt}
-  #pv h1{font-size:14pt}#pv h2{font-size:12pt}
+  #pv{padding:0!important;font-size:10pt!important;column-count:2;column-gap:18pt;line-height:1.4}
+  #pv h1{font-size:13pt;margin-bottom:4pt}
+  #pv h2{font-size:10pt;text-transform:uppercase}
+  #pv table{font-size:8pt}
   body{height:auto;overflow:visible}
 }
-
-/* Responsive */
-@media(max-width:1024px){.ed{flex-direction:column}.meta{grid-template-columns:1fr 1fr}.meta2{grid-template-columns:1fr 1fr 1fr}.ref-panel.open{width:220px}}
+@media(max-width:1024px){.ed{flex-direction:column}.meta{grid-template-columns:1fr 1fr 1fr}.ref-panel.open{width:220px}}
 </style>
 </head>
 <body>
 
 <div class="tb">
-  <img src="/assets/img/logo.svg" alt=""><h1>Paper Editor</h1><span class="badge">Academic</span>
+  <img src="/assets/img/logo.svg" alt=""><h1>Paper Editor</h1><span class="badge">AI Security</span>
   <div class="sep"></div>
-  <button class="bt" onclick="ins('tpl')">Paper Template</button>
-  <button class="bt" onclick="toggleRef()">References</button>
+  <select id="tplSel" style="padding:3px 6px;border:1px solid var(--line);border-radius:5px;font-size:.68rem;background:var(--panel);color:var(--text)" onchange="insTpl(this.value)">
+    <option value="">-- Paper Format --</option>
+    <option value="ieee">IEEE Conference</option>
+    <option value="acm">ACM Conference</option>
+    <option value="usenix">USENIX Security</option>
+    <option value="journal">Journal (Full)</option>
+    <option value="short">Short Paper (4-6p)</option>
+    <option value="poster">Poster / Extended Abstract</option>
+  </select>
+  <button class="bt" onclick="toggleRef()">Refs</button>
   <div class="spacer"></div>
   <button class="bt" onclick="validatePaper()">Validate</button>
   <button class="bt p" onclick="publish()">Export</button>
@@ -150,49 +162,53 @@ body{font-family:'Pretendard',sans-serif;background:var(--bg);color:var(--text);
   <button class="bt icon" onclick="toggleDark()" title="Dark mode">&#9684;</button>
   <button class="bt icon" onclick="toggleFocus()" title="Focus mode">&#9974;</button>
   <button class="bt icon" onclick="window.print()" title="Print/PDF">&#9113;</button>
-  <a class="bt" href="/admin/" style="text-decoration:none">CMS</a>
-  <a class="bt" href="/admin/editor.html" style="text-decoration:none">Blog Editor</a>
+  <a class="bt" href="/admin/editor.html" style="text-decoration:none;font-size:.62rem">Blog</a>
+  <a class="bt" href="/admin/" style="text-decoration:none;font-size:.62rem">CMS</a>
 </div>
 
 <div class="meta" id="metaBar">
   <div><label>Title</label><input id="ti" placeholder="Paper title"></div>
   <div><label>Author</label><input id="au" placeholder="First Author" value="AICRA"></div>
-  <div><label>Status</label><select id="st-sel"><option value="draft">Draft</option><option value="review">Under Review</option><option value="published">Published</option></select></div>
-  <div><label>Keywords</label><input id="kw" placeholder="AI, Security, OWASP"></div>
+  <div><label>Domain</label><select id="dm"><option value="LLM Security">LLM Security</option><option value="Adversarial ML">Adversarial ML</option><option value="Prompt Injection">Prompt Injection</option><option value="AI Red Teaming">AI Red Teaming</option><option value="MCP Security">MCP Security</option><option value="Agentic AI Security">Agentic AI Security</option><option value="Privacy">Privacy / FL</option><option value="AI Governance">AI Governance</option></select></div>
+  <div><label>Status</label><select id="st-sel"><option value="draft">Draft</option><option value="review">Review</option><option value="published">Published</option></select></div>
+  <div><label>Keywords</label><input id="kw" placeholder="LLM, OWASP, jailbreak"></div>
 </div>
 
 <div class="meta2" id="metaBar2">
-  <div><label>Co-authors</label><input id="coau" placeholder="Author2, Author3 (comma-separated)"></div>
-  <div><label>Abstract (one line)</label><input id="ab" placeholder="Brief abstract"></div>
-  <div class="chk"><input type="checkbox" id="collab"><span>Collaborative editing</span></div>
+  <div><label>Co-authors</label><input id="coau" placeholder="Author2, Author3"></div>
+  <div><label>Abstract</label><input id="ab" placeholder="One-line abstract"></div>
+  <div class="chk"><input type="checkbox" id="collab"><span>Collaborative</span></div>
 </div>
 
 <div class="ins" id="insBar">
+  <span class="gl">Structure</span>
   <button onclick="ins('sec')">Section</button>
   <button onclick="ins('subsec')">Subsec</button>
   <button onclick="ins('eq')">Equation</button>
-  <button onclick="ins('eqn')">Eq (numbered)</button>
-  <div class="grp">
-    <button onclick="ins('thm')">Theorem</button>
-    <button onclick="ins('lem')">Lemma</button>
-    <button onclick="ins('def')">Definition</button>
-    <button onclick="ins('cor')">Corollary</button>
-    <button onclick="ins('prop')">Proposition</button>
-    <button onclick="ins('proof')">Proof</button>
-    <button onclick="ins('algo')">Algorithm</button>
-  </div>
-  <div class="grp">
-    <button onclick="ins('table')">Table</button>
-    <button onclick="ins('fig')">Figure</button>
-    <button onclick="ins('code')">Code</button>
-    <button onclick="ins('cite')">Cite [n]</button>
-    <button onclick="ins('hr')">---</button>
-  </div>
+  <button onclick="ins('fig')">Figure</button>
+  <button onclick="ins('table')">Table</button>
+  <button onclick="ins('code')">Code</button>
+  <button onclick="ins('cite')">Cite</button>
+
+  <span class="gl">Env</span>
+  <button onclick="ins('thm')">Thm</button>
+  <button onclick="ins('def')">Def</button>
+  <button onclick="ins('lem')">Lem</button>
+  <button onclick="ins('proof')">Proof</button>
+  <button onclick="ins('algo')">Algo</button>
+
+  <span class="gl">Security</span>
+  <button onclick="ins('threat')">Threat Model</button>
+  <button onclick="ins('eval_tbl')">Eval Matrix</button>
+  <button onclick="ins('comparison')">Comparison</button>
+  <button onclick="ins('framework')">Framework Ref</button>
+  <button onclick="ins('disclosure')">Disclosure</button>
+  <button onclick="ins('ethics')">Ethics</button>
 </div>
 
 <div class="ed">
   <div class="pn"><div class="pn-label">LaTeX + Markdown</div>
-    <textarea id="input" spellcheck="true" lang="ko" placeholder="LaTeX + Markdown. Use $...$ for inline math, $$...$$ for display math.&#10;&#10;'Paper Template' to start with a full academic structure."></textarea>
+    <textarea id="input" spellcheck="true" lang="ko" placeholder="Select a template above to start, or write LaTeX + Markdown directly.&#10;&#10;$...$ for inline math, $$...$$ for display math.&#10;:::theorem, :::definition, :::proof for environments.&#10;[cite:1] for citations."></textarea>
   </div>
   <div class="dv" id="dv"></div>
   <div class="pn">
@@ -203,227 +219,617 @@ body{font-family:'Pretendard',sans-serif;background:var(--bg);color:var(--text);
         <button onclick="toggleCol(true)" id="col2btn">2-Col</button>
       </div>
     </div>
-    <div id="pv"><p style="color:var(--muted);text-align:center;padding:40px">Enter text to see live preview with KaTeX rendering</p></div>
+    <div id="pv"><p style="color:var(--muted);text-align:center;padding:40px">Select a template or start typing</p></div>
   </div>
   <div class="ref-panel" id="refPanel">
-    <div class="ref-head"><span>References</span><button class="bt" style="padding:2px 6px;font-size:.6rem" onclick="toggleRef()">X</button></div>
+    <div class="ref-head"><span>References</span><button class="bt" style="padding:1px 5px;font-size:.55rem" onclick="toggleRef()">X</button></div>
     <div class="ref-list" id="refList"></div>
     <div class="ref-add">
-      <input id="refInput" placeholder="Author. Title. Year.">
-      <button onclick="addRef()">Add</button>
+      <input id="refInput" placeholder="Author, Title, Venue, Year">
+      <button onclick="addRef()">+</button>
     </div>
   </div>
 </div>
 
 <div class="st" id="stBar">
-  <span><b id="wc">0</b> chars <b id="ww">0</b> words</span>
-  <span>Sections: <b id="sc">0</b></span>
-  <span>Equations: <b id="eqc">0</b></span>
-  <span>Refs: <b id="rc">0</b></span>
-  <span>~<b id="pg">0</b> pages</span>
-  <span style="margin-left:auto">Score: <span class="score sl" id="qs">0</span></span>
+  <span><b id="wc">0</b>c <b id="ww">0</b>w</span>
+  <span>Sec:<b id="sc">0</b></span>
+  <span>Eq:<b id="eqc">0</b></span>
+  <span>Ref:<b id="rc">0</b></span>
+  <span>~<b id="pg">0</b>p</span>
+  <span style="margin-left:auto">Score:<span class="score sl" id="qs">0</span></span>
   <span id="as" style="color:var(--brand)"></span>
 </div>
 
 <script>
 const inp=document.getElementById('input'),pv=document.getElementById('pv');
 let focusMode=false,refs=[];
-
-// === COUNTERS ===
 let envCounters={theorem:0,lemma:0,definition:0,corollary:0,proposition:0,algorithm:0};
 let eqCounter=0;
 
 // === LIVE PREVIEW ===
-inp.addEventListener('input',debounce(()=>{render();},150));
-
+inp.addEventListener('input',debounce(()=>{render();},120));
 function debounce(fn,ms){let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms);};}
 
 function render(){
   const raw=inp.value;
-  if(!raw.trim()){pv.innerHTML='<p style="color:var(--muted);text-align:center;padding:40px">Enter text to see live preview</p>';updateStats(raw);return;}
+  if(!raw.trim()){pv.innerHTML='<p style="color:var(--muted);text-align:center;padding:40px">Select a template or start typing</p>';updateStats(raw);return;}
   envCounters={theorem:0,lemma:0,definition:0,corollary:0,proposition:0,algorithm:0};
   eqCounter=0;
   let t=raw;
-  // Process academic environments before Markdown
   t=processEnvs(t);
-  // Process numbered equations $$...$$ {#eq}
   t=processNumberedEq(t);
-  // Process citations [cite:n]
   t=processCitations(t);
-  // Parse Markdown
   let html=marked.parse(t);
-  // Restore environments
   html=restoreEnvs(html);
   pv.innerHTML=html;
-  // Render KaTeX
-  renderMath(pv);
+  renderMathInElement(pv,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false},{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}],throwOnError:false});
   updateStats(raw);
 }
 
-// === ACADEMIC ENVIRONMENTS ===
-const envPlaceholders=[];
+// === ENVIRONMENTS ===
+const envPH=[];
 function processEnvs(t){
-  envPlaceholders.length=0;
+  envPH.length=0;
+  // Abstract
+  t=t.replace(/:::abstract\n([\s\S]*?)\n:::/g,(m,body)=>{
+    const ph='\x00E'+envPH.length+'\x00';
+    envPH.push('<div class="abstract-box"><strong>Abstract</strong>'+marked.parse(body.trim())+'</div>');
+    return ph;
+  });
   const types=['theorem','lemma','definition','corollary','proposition','algorithm','proof'];
   for(const ty of types){
     const re=new RegExp(':::'+ty+'(?:\\s+(.+?))?\\n([\\s\\S]*?)\\n:::','g');
     t=t.replace(re,(m,title,body)=>{
-      let label='';
+      let html='';
       if(ty==='proof'){
-        label='<div class="proof"><span class="proof-label">Proof.</span> '+(title?'('+title+') ':'')+body.trim()+'</div>';
+        html='<div class="proof"><span class="proof-label">Proof.</span> '+(title?'('+title+') ':'')+body.trim()+'</div>';
       }else{
         envCounters[ty]++;
-        const names={theorem:'Theorem',lemma:'Lemma',definition:'Definition',corollary:'Corollary',proposition:'Proposition',algorithm:'Algorithm'};
-        const num=envCounters[ty];
-        label='<div class="env-block '+ty+'"><div class="env-label">'+names[ty]+' '+num+(title?' ('+title+')':'')+'</div>'+body.trim()+'</div>';
+        const N={theorem:'Theorem',lemma:'Lemma',definition:'Definition',corollary:'Corollary',proposition:'Proposition',algorithm:'Algorithm'};
+        html='<div class="env-block '+ty+'"><div class="env-label">'+N[ty]+' '+envCounters[ty]+(title?' ('+title+')':'')+'</div>'+body.trim()+'</div>';
       }
-      const ph='\x00ENV'+envPlaceholders.length+'\x00';
-      envPlaceholders.push(label);
+      const ph='\x00E'+envPH.length+'\x00';
+      envPH.push(html);
       return ph;
     });
   }
   return t;
 }
-function restoreEnvs(html){
-  for(let i=0;i<envPlaceholders.length;i++){
-    html=html.replace('\x00ENV'+i+'\x00',envPlaceholders[i]);
-    // Also handle when Markdown wraps it in <p>
-    html=html.replace('<p>\x00ENV'+i+'\x00</p>',envPlaceholders[i]);
-  }
-  return html;
-}
+function restoreEnvs(html){for(let i=0;i<envPH.length;i++){html=html.replace('<p>\x00E'+i+'\x00</p>',envPH[i]);html=html.replace('\x00E'+i+'\x00',envPH[i]);}return html;}
 
-// === NUMBERED EQUATIONS ===
-function processNumberedEq(t){
-  // $$...$$ on its own line -> numbered
-  return t.replace(/^\$\$\s*\n?([\s\S]*?)\n?\$\$\s*(?:\{#(eq\d*)\})?$/gm,(m,eq,label)=>{
-    eqCounter++;
-    return '<div class="eq-row"><div class="katex-display">$$'+eq.trim()+'$$</div><div class="eq-num">('+eqCounter+')</div></div>';
-  });
-}
+function processNumberedEq(t){return t.replace(/^\$\$\s*\n?([\s\S]*?)\n?\$\$\s*$/gm,(m,eq)=>{eqCounter++;return '<div class="eq-row"><div class="katex-display">$$'+eq.trim()+'$$</div><div class="eq-num">('+eqCounter+')</div></div>';});}
+function processCitations(t){return t.replace(/\[cite:(\d+)\]/g,(m,n)=>'<span class="cite" title="'+(refs[parseInt(n)-1]||'Ref '+n)+'">['+n+']</span>');}
 
-// === CITATIONS ===
-function processCitations(t){
-  return t.replace(/\[cite:(\d+)\]/g,(m,n)=>{
-    const idx=parseInt(n)-1;
-    const ref=refs[idx];
-    return '<span class="cite" title="'+(ref||'Reference '+n)+'">['+n+']</span>';
-  });
-}
-
-// === KATEX RENDER ===
-function renderMath(el){
-  renderMathInElement(el,{
-    delimiters:[
-      {left:'$$',right:'$$',display:true},
-      {left:'$',right:'$',display:false},
-      {left:'\\(',right:'\\)',display:false},
-      {left:'\\[',right:'\\]',display:true}
-    ],
-    throwOnError:false
-  });
-}
-
-// === KEYBOARD SHORTCUTS ===
+// === KEYBOARD ===
 inp.addEventListener('keydown',e=>{
-  if(e.key==='Tab'){e.preventDefault();const s=inp.selectionStart;inp.setRangeText('  ',s,s,'end');}
+  if(e.key==='Tab'){e.preventDefault();inp.setRangeText('  ',inp.selectionStart,inp.selectionStart,'end');}
   if((e.ctrlKey||e.metaKey)&&e.key==='b'){e.preventDefault();wrap('**','**');}
   if((e.ctrlKey||e.metaKey)&&e.key==='i'){e.preventDefault();wrap('*','*');}
   if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();wrap('[','](url)');}
   if((e.ctrlKey||e.metaKey)&&e.key==='m'){e.preventDefault();wrap('$','$');}
-  if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();save();document.getElementById('as').textContent='Saved!';}
+  if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();save();document.getElementById('as').textContent='Saved';}
 });
 function wrap(a,b){const s=inp.selectionStart,e=inp.selectionEnd,sel=inp.value.substring(s,e);inp.setRangeText(a+sel+b,s,e,'end');inp.dispatchEvent(new Event('input'));}
 
-// === INSERT TEMPLATES ===
-function ins(type){
-  const T={
-    tpl:`# Paper Title
+// === VENUE FORMAT TEMPLATES (format-focused, not topic-prescriptive) ===
+function insTpl(type){
+  if(!type)return;
+  const templates={
+ieee:`# [Paper Title]
 
-**Authors:** Author1, Author2
+**Authors:** [Author 1]$^1$, [Author 2]$^2$
+$^1$[Department, Institution] $^2$[Department, Institution]
 
 :::abstract
-Brief summary of the paper's main contributions.
+[Context: 1-2 sentences on the problem domain]
+[Gap: what is missing or insufficient in current work]
+[Method: your approach in one sentence]
+[Result: key quantitative finding]
+[Implication: why it matters]
+:::
+
+**Index Terms:** [term 1], [term 2], [term 3]
+
+---
+
+## 1. Introduction
+
+<!-- Guideline: Problem -> Motivation -> Gap -> Contribution list -->
+
+**Contributions.** The main contributions of this paper are:
+- C1:
+- C2:
+- C3:
+
+---
+
+## 2. Background and Related Work
+
+### 2.1 [Background Topic]
+### 2.2 [Related Approaches]
+
+---
+
+## 3. Threat Model
+
+### 3.1 Assets
+### 3.2 Adversary Capabilities
+### 3.3 Trust Boundaries
+### 3.4 Assumptions and Out-of-Scope
+
+---
+
+## 4. Proposed Approach
+
+### 4.1 Overview
+### 4.2 Design
+
+<!-- Insert equations, algorithms, definitions as needed -->
+
+---
+
+## 5. Implementation
+
+---
+
+## 6. Evaluation
+
+### 6.1 Experimental Setup
+
+<!-- Table format: -->
+<!-- Table I: Experimental Environment -->
+| Component | Specification |
+|-----------|--------------|
+| | |
+
+### 6.2 Metrics
+### 6.3 Baselines
+### 6.4 Results
+
+<!-- Table format: -->
+<!-- Table II: Main Results -->
+| Method | Metric A | Metric B | Metric C |
+|--------|----------|----------|----------|
+| Baseline 1 | | | |
+| Ours | | | |
+
+### 6.5 Ablation Study
+
+---
+
+## 7. Discussion
+
+### 7.1 Limitations
+### 7.2 Broader Impact
+
+---
+
+## 8. Conclusion
+
+---
+
+## Acknowledgments
+
+---
+
+## References
+
+<!-- IEEE numeric style: [1] A. Author, "Title," in Proc. Venue, Year, pp. xx-xx. -->
+`,
+
+acm:`# [Paper Title]
+
+**Authors:** [Author 1] ([affiliation], [email], ORCID: [0000-0000-0000-0000])
+
+:::abstract
+**Background:** [1-2 sentences]
+**Objective:** [what is being studied or built]
+**Method:** [approach taken]
+**Results:** [quantitative outcome]
+**Conclusion:** [takeaway]
+:::
+
+**CCS Concepts:** [Security and privacy -> specific concept]
+**Keywords:** [keyword 1]; [keyword 2]; [keyword 3]
+
+---
+
+## 1. Introduction
+
+---
+
+## 2. Scope and Assumptions
+
+---
+
+## 3. Related Work
+
+---
+
+## 4. System Model / Architecture
+
+---
+
+## 5. Threat Model
+
+---
+
+## 6. Methodology
+
+---
+
+## 7. Experimental Design
+
+### 7.1 Setup
+### 7.2 Metrics
+### 7.3 Baselines
+
+---
+
+## 8. Results
+
+### 8.1 Main Findings
+### 8.2 Error Analysis
+
+---
+
+## 9. Threats to Validity
+
+---
+
+## 10. Ethics Statement
+
+---
+
+## 11. Conclusion
+
+**Artifact Availability:** [URL or N/A]
+
+---
+
+## References
+
+<!-- ACM style: [1] Author. Year. Title. In Proc. Venue. Publisher, pages. DOI -->
+`,
+
+usenix:`# [Paper Title]
+
+[Author 1], [Institution]; [Author 2], [Institution]
+
+:::abstract
+[Problem statement]
+[Approach taken]
+[Main measured result with numbers]
+[Practical significance]
 :::
 
 ---
 
 ## 1. Introduction
 
-Background and motivation.
+---
+
+## 2. Problem Statement
 
 ---
 
-## 2. Related Work
-
-Prior research summary.
+## 3. Design Goals
 
 ---
 
-## 3. Methodology
-
-### 3.1 Problem Formulation
-
-$$
-\\mathcal{L} = \\sum_{i=1}^{N} \\ell(f(x_i), y_i)
-$$
-
-### 3.2 Proposed Approach
-
-:::definition Formal Definition
-Content of the definition.
-:::
-
-:::theorem Main Result
-Statement of the theorem.
-:::
-
-:::proof
-Proof goes here.
-:::
+## 4. System Design
 
 ---
 
-## 4. Experiments
-
-### 4.1 Setup
-
-| Dataset | Samples | Classes |
-|---------|---------|---------|
-| A | 10,000 | 10 |
-| B | 50,000 | 100 |
-
-### 4.2 Results
+## 5. Threat Model
 
 ---
 
-## 5. Discussion
+## 6. Implementation
 
 ---
 
-## 6. Conclusion
+## 7. Evaluation
+
+### 7.1 Experimental Environment
+### 7.2 Workloads / Inputs
+### 7.3 Metrics
+### 7.4 Comparative Results
+### 7.5 Sensitivity Analysis
+
+<!-- Table format: Table 1: [What is compared] -->
+| Configuration | Metric A | Metric B | Overhead |
+|---------------|----------|----------|----------|
+| | | | |
+
+---
+
+## 8. Deployment Considerations
+
+---
+
+## 9. Limitations and Future Work
+
+---
+
+## 10. Conclusion
+
+---
+
+## Acknowledgments
 
 ---
 
 ## References
 
+<!-- USENIX style: [1] Author. Title. In Proc. USENIX Security, Year. -->
 `,
+
+journal:`# [Paper Title]
+
+**Authors:** [Author 1]$^{1,*}$, [Author 2]$^2$
+$^1$[Full affiliation] $^2$[Full affiliation] $^*$Corresponding author
+
+:::abstract
+[200-300 words, single paragraph. Context -> Gap -> Objective -> Method -> Results -> Conclusion]
+:::
+
+**Keywords:** [5-8 terms]
+
+---
+
+## 1. Introduction
+
+### 1.1 Motivation
+### 1.2 Research Questions
+### 1.3 Contributions
+### 1.4 Paper Organization
+
+---
+
+## 2. Preliminaries
+
+### 2.1 Definitions and Notation
+
+:::definition [Term]
+[Formal definition]
+:::
+
+### 2.2 Background
+
+---
+
+## 3. Related Work
+
+---
+
+## 4. Threat Model and Problem Formulation
+
+### 4.1 System Model
+### 4.2 Adversary Model
+### 4.3 Security Goals
+
+---
+
+## 5. Proposed Approach
+
+### 5.1 Overview
+### 5.2 Detailed Design
+### 5.3 Formal Analysis
+
+:::theorem [Main Result]
+[Statement]
+:::
+
+:::proof
+[Proof]
+:::
+
+---
+
+## 6. Implementation
+
+---
+
+## 7. Experimental Evaluation
+
+### 7.1 Setup
+### 7.2 Research Questions
+- RQ1:
+- RQ2:
+- RQ3:
+### 7.3 Results
+### 7.4 Discussion
+
+---
+
+## 8. Limitations
+
+---
+
+## 9. Related Work (Extended)
+
+---
+
+## 10. Conclusion and Future Work
+
+---
+
+## Acknowledgments
+
+---
+
+## References
+
+---
+
+## Appendix A: [Additional Material]
+`,
+
+short:`# [Paper Title]
+
+**Authors:** [Author 1], [Author 2]
+
+:::abstract
+[100-150 words. Problem -> Approach -> Key result -> Significance]
+:::
+
+---
+
+## 1. Introduction and Motivation
+
+---
+
+## 2. Background
+
+---
+
+## 3. Approach
+
+---
+
+## 4. Evaluation
+
+| | Metric A | Metric B |
+|------|----------|----------|
+| Baseline | | |
+| Ours | | |
+
+---
+
+## 5. Conclusion
+
+---
+
+## References
+`,
+
+poster:`# [Paper Title]
+
+**Authors:** [Author 1], [Author 2] ([Institution])
+
+:::abstract
+[80-120 words. One-paragraph summary.]
+:::
+
+---
+
+## Problem
+
+## Approach
+
+## Key Results
+
+## Conclusion and Future Work
+
+---
+
+## References
+`
+  };
+  if(templates[type]){
+    inp.value=templates[type];
+    inp.dispatchEvent(new Event('input'));
+    document.getElementById('tplSel').value='';
+  }
+}
+
+// === INSERT SNIPPETS ===
+function ins(type){
+  const T={
     sec:'## Section Title\n\n',
     subsec:'### Subsection Title\n\n',
     eq:'\n$$\n\\mathcal{L} = \n$$\n\n',
-    eqn:'\n$$\nx = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}\n$$\n\n',
-    thm:':::theorem Title\nStatement of the theorem.\n:::\n\n',
-    lem:':::lemma Title\nStatement of the lemma.\n:::\n\n',
-    def:':::definition Name\nFormal definition.\n:::\n\n',
-    cor:':::corollary\nConsequence statement.\n:::\n\n',
-    prop:':::proposition\nProposition statement.\n:::\n\n',
-    proof:':::proof\nProof content.\n:::\n\n',
-    algo:':::algorithm Algorithm Name\nInput: data X\nOutput: model M\n1. Initialize parameters\n2. For each epoch:\n   a. Forward pass\n   b. Compute loss\n   c. Backpropagation\n3. Return trained model\n:::\n\n',
-    table:'| Column 1 | Column 2 | Column 3 |\n|----------|----------|----------|\n|  |  |  |\n|  |  |  |\n',
+    thm:':::theorem Title\nStatement.\n:::\n\n',
+    lem:':::lemma Title\nStatement.\n:::\n\n',
+    def:':::definition Name\nDefinition.\n:::\n\n',
+    cor:':::corollary\nStatement.\n:::\n\n',
+    prop:':::proposition\nStatement.\n:::\n\n',
+    proof:':::proof\nProof.\n:::\n\n',
+    algo:':::algorithm Name\nInput: X\nOutput: Y\n1. Step one\n2. Step two\n3. Return result\n:::\n\n',
+    table:'| Col 1 | Col 2 | Col 3 |\n|-------|-------|-------|\n|  |  |  |\n',
     fig:'![Figure caption](/assets/img/papers/figure.svg)\n*Figure N. Description.*\n\n',
     code:'```python\n# code\n```\n',
     cite:'[cite:'+(refs.length+1)+']',
-    hr:'\n---\n\n'
+    hr:'\n---\n\n',
+
+    // Security paper formatting elements (format guides, not topic-prescriptive)
+    threat:`### Threat Model
+
+**Assets**
+- [What is being protected]
+
+**Adversary**
+- **Goal:**
+- **Access level:** [black-box / gray-box / white-box]
+- **Capabilities:**
+- **Knowledge:**
+
+**Attack Surface**
+| Surface | Entry Point | Current Control | Residual Risk |
+|---------|-------------|-----------------|---------------|
+| | | | |
+
+**Trust Boundaries**
+-
+
+**Assumptions and Out-of-Scope**
+-
+
+`,
+
+    eval_tbl:`<!-- Table N: [What is measured] -->
+| Method | Metric A | Metric B | Metric C | Overhead |
+|--------|----------|----------|----------|----------|
+| Baseline | | | | |
+| Proposed | | | | |
+
+`,
+
+    comparison:`<!-- Table N: [Comparison of approaches] -->
+| Approach | Advantage | Limitation | Scope | Complexity |
+|----------|-----------|------------|-------|-----------|
+| | | | | |
+
+`,
+
+    framework:`### Framework Mapping
+
+| Finding | Framework | ID / Category | Relevant Function |
+|---------|-----------|--------------|-------------------|
+| | [MITRE ATLAS / OWASP / NIST / CWE / ISO] | | |
+
+<!-- Common framework references:
+  MITRE ATLAS: AML.Txxxx (adversarial ML techniques)
+  OWASP LLM Top 10: LLM01-LLM10
+  OWASP Agentic Top 10: AG01-AG10
+  NIST AI RMF: Govern / Map / Measure / Manage
+  CWE: CWE-xxx (common weakness enumeration)
+  ISO/IEC 27001 / 42001
+-->
+
+`,
+
+    disclosure:`### Responsible Disclosure
+
+- **Discovery date:**
+- **Vendor / contacted party:**
+- **Initial report date:**
+- **Patch / mitigation date:**
+- **Public disclosure date:**
+
+`,
+
+    ethics:`### Ethics Statement
+
+- **Dual-use risk assessment:**
+- **Data / human subjects considerations:**
+- **Abuse prevention measures:**
+- **IRB / ethics review status:**
+- **Compliance notes:**
+
+`
   };
   const s=inp.selectionStart;
   inp.setRangeText(T[type]||'',s,s,'end');
@@ -432,81 +838,49 @@ Proof goes here.
 }
 
 // === REFERENCE MANAGER ===
-function addRef(){
-  const input=document.getElementById('refInput');
-  const val=input.value.trim();
-  if(!val)return;
-  refs.push(val);
-  input.value='';
-  renderRefs();
-  render();
-}
-function removeRef(idx){
-  refs.splice(idx,1);
-  renderRefs();
-  render();
-}
-function renderRefs(){
-  const list=document.getElementById('refList');
-  document.getElementById('rc').textContent=refs.length;
-  list.innerHTML=refs.map((r,i)=>
-    '<div class="ref-item"><b>['+(i+1)+']</b>'+r+
-    ' <span style="cursor:pointer;color:#b42318;float:right" onclick="removeRef('+i+')">x</span></div>'
-  ).join('');
-}
+function addRef(){const i=document.getElementById('refInput');const v=i.value.trim();if(!v)return;refs.push(v);i.value='';renderRefs();render();}
+function removeRef(idx){refs.splice(idx,1);renderRefs();render();}
+function renderRefs(){const l=document.getElementById('refList');document.getElementById('rc').textContent=refs.length;l.innerHTML=refs.map((r,i)=>'<div class="ref-item"><b>['+(i+1)+']</b>'+r+' <span style="cursor:pointer;color:#b42318;float:right" onclick="removeRef('+i+')">x</span></div>').join('');}
+function toggleRef(){document.getElementById('refPanel').classList.toggle('open');}
 
-function toggleRef(){
-  document.getElementById('refPanel').classList.toggle('open');
-}
-
-// === VALIDATE PAPER ===
+// === VALIDATE (AI Security-aware) ===
 function validatePaper(){
-  const t=inp.value;
-  const issues=[];
-  // Structure checks
-  if(!t.match(/^#\s/m))issues.push('[-] Missing title (H1)');
-  else issues.push('[+] Title present');
+  const t=inp.value;const issues=[];
+  if(!t.match(/^#\s/m))issues.push('[-] Missing title');else issues.push('[+] Title');
   const secs=(t.match(/^##\s/gm)||[]).length;
-  if(secs<3)issues.push('[-] Only '+secs+' sections (recommend 5+)');
-  else issues.push('[+] '+secs+' sections');
-  if(!t.includes('Introduction')&&!t.includes('서론'))issues.push('[!] No Introduction section');
-  if(!t.includes('Conclusion')&&!t.includes('결론'))issues.push('[!] No Conclusion section');
-  if(!t.includes('Reference')&&!t.includes('참고'))issues.push('[!] No References section');
-  // Math
-  const eqs=(t.match(/\$\$/g)||[]).length/2;
-  if(eqs>0)issues.push('[+] '+Math.floor(eqs)+' equations');
-  else issues.push('[!] No equations found');
-  // Environments
-  const envs=(t.match(/:::(theorem|lemma|definition|corollary|proposition|algorithm|proof)/g)||[]).length;
-  if(envs>0)issues.push('[+] '+envs+' academic environments');
-  // Citations
+  issues.push(secs>=5?'[+] '+secs+' sections':'[-] '+secs+' sections (5+ recommended)');
+  if(!t.match(/introduction|서론/i))issues.push('[!] No Introduction');
+  if(!t.match(/conclusion|결론/i))issues.push('[!] No Conclusion');
+  if(!t.match(/reference|참고/i))issues.push('[!] No References');
+  // AI Security specific checks
+  if(t.match(/threat\s*model|위협\s*모델/i))issues.push('[+] Threat model present');
+  else issues.push('[!] No threat model (required for security papers)');
+  if(t.match(/MITRE|ATLAS|OWASP|NIST|CWE|CVE/))issues.push('[+] Framework references found');
+  else issues.push('[!] No framework mapping (MITRE ATLAS / OWASP / NIST)');
+  if(t.match(/ethic|disclosure|책임|윤리/i))issues.push('[+] Ethics/disclosure section');
+  else issues.push('[!] No ethics/disclosure section');
+  const eqs=Math.floor((t.match(/\$\$/g)||[]).length/2);
+  issues.push(eqs>0?'[+] '+eqs+' equations':'[!] No equations');
+  const envs=(t.match(/:::(theorem|lemma|definition|algorithm|proof)/g)||[]).length;
+  if(envs)issues.push('[+] '+envs+' environments');
   const cites=(t.match(/\[cite:\d+\]/g)||[]).length;
-  if(cites>0)issues.push('[+] '+cites+' citations');
-  else issues.push('[!] No citations');
-  if(refs.length===0)issues.push('[-] Reference list empty');
-  else issues.push('[+] '+refs.length+' references in list');
-  // Word count
+  issues.push(cites>0?'[+] '+cites+' citations':'[!] No citations');
+  issues.push(refs.length>0?'[+] '+refs.length+' references':'[-] Reference list empty');
   const wc=t.trim().split(/\s+/).length;
-  if(wc<500)issues.push('[!] Only '+wc+' words (short for a paper)');
-  else issues.push('[+] '+wc+' words');
-  // Abstract
-  if(!document.getElementById('ab').value&&!t.includes(':::abstract'))issues.push('[-] No abstract');
-  else issues.push('[+] Abstract present');
+  issues.push(wc>=500?'[+] '+wc+' words':'[!] '+wc+' words (short)');
+  if(document.getElementById('ab').value||t.includes(':::abstract'))issues.push('[+] Abstract');
+  else issues.push('[-] No abstract');
   // Score
   let sc=0;
-  sc+=secs>=5?20:secs*4;
-  sc+=eqs>0?15:0;
-  sc+=envs>0?15:0;
-  sc+=cites>0?10:0;
-  sc+=refs.length>0?10:0;
-  sc+=wc>=1000?15:Math.floor(wc/100)*1.5;
-  sc+=(t.includes('Introduction')||t.includes('서론'))?5:0;
-  sc+=(t.includes('Conclusion')||t.includes('결론'))?5:0;
-  sc+=(document.getElementById('ab').value||t.includes(':::abstract'))?5:0;
+  sc+=Math.min(secs*4,20);sc+=(eqs>0?10:0);sc+=(envs>0?10:0);sc+=(cites>0?8:0);sc+=(refs.length>0?8:0);
+  sc+=(wc>=1000?12:Math.floor(wc/100)*1.2);
+  sc+=(t.match(/threat\s*model|위협/i)?10:0);
+  sc+=(t.match(/MITRE|ATLAS|OWASP|NIST/)?8:0);
+  sc+=(t.match(/ethic|disclosure/i)?7:0);
+  sc+=(t.match(/introduction|서론/i)?4:0);sc+=(t.match(/conclusion|결론/i)?3:0);
   sc=Math.min(Math.round(sc),100);
   const el=document.getElementById('qs');el.textContent=sc;el.className='score '+(sc>=75?'sh':sc>=50?'sm':'sl');
-
-  pv.innerHTML='<div style="background:var(--surface);border-radius:8px;padding:16px;margin-bottom:16px;font-size:.82rem;line-height:1.8"><strong style="color:var(--brand)">Paper Validation (Score: '+sc+')</strong><br>'+issues.join('<br>')+'</div>'+pv.innerHTML;
+  pv.innerHTML='<div style="background:var(--surface);border-radius:6px;padding:14px;margin-bottom:14px;font-size:.8rem;line-height:1.7"><strong style="color:var(--brand)">Paper Validation ('+sc+'/100)</strong><br>'+issues.join('<br>')+'</div>'+pv.innerHTML;
 }
 
 // === STATS ===
@@ -520,113 +894,58 @@ function updateStats(t){
   document.getElementById('eqc').textContent=eq;
   document.getElementById('rc').textContent=refs.length;
   document.getElementById('pg').textContent=Math.max(1,Math.ceil(w/300));
-  // Auto quality
-  let sc=0;sc+=Math.min(s*5,25);sc+=Math.min(Math.floor(w/80),25);
+  let sc=0;sc+=Math.min(s*4,20);sc+=Math.min(Math.floor(w/80),20);
   sc+=(eq>0?10:0)+(refs.length>0?10:0);
-  sc+=(/:::(theorem|definition|lemma)/m.test(t)?10:0);
-  sc+=(s>=4?10:0)+(/\[cite:\d+\]/m.test(t)?10:0);
+  sc+=(/:::(theorem|definition|lemma|algorithm)/m.test(t)?8:0);
+  sc+=(s>=5?8:0)+(/\[cite:\d+\]/m.test(t)?8:0);
+  sc+=(/threat|OWASP|MITRE|ATLAS/i.test(t)?8:0);
+  sc+=(/ethic|disclosure/i.test(t)?8:0);
   sc=Math.min(sc,100);
   const el=document.getElementById('qs');el.textContent=sc;el.className='score '+(sc>=75?'sh':sc>=50?'sm':'sl');
 }
 
-// === PUBLISH / EXPORT ===
+// === EXPORT ===
 function publish(){
-  const ti=document.getElementById('ti').value||'Untitled Paper';
+  const ti=document.getElementById('ti').value||'Untitled';
   const au=document.getElementById('au').value||'AICRA';
   const coau=document.getElementById('coau').value;
   const ab=document.getElementById('ab').value;
   const kw=document.getElementById('kw').value;
+  const dm=document.getElementById('dm').value;
   const status=document.getElementById('st-sel').value;
   const collab=document.getElementById('collab').checked;
-  const body=inp.value;
-  const today=new Date().toISOString().split('T')[0];
+  const body=inp.value;const today=new Date().toISOString().split('T')[0];
   if(!body.trim())return alert('Content is empty.');
   const authors=coau?'\nauthors: ['+coau.split(',').map(s=>'"'+s.trim()+'"').join(', ')+']':'';
   const kwLine=kw?'\nkeywords: ['+kw.split(',').map(s=>'"'+s.trim()+'"').join(', ')+']':'';
-  // Build references section
-  let refSection='';
-  if(refs.length){
-    refSection='\n\n---\n\n## References\n\n<div class="bib-list">\n'+refs.map(r=>'<p>'+r+'</p>').join('\n')+'\n</div>';
-  }
-  const fm='---\nlayout: paper\ntitle: "'+ti+'"\nauthor: '+au+authors+'\ndate: '+today+'\nstatus: '+status+'\nabstract: "'+ab+'"'+kwLine+'\ncollaborative: '+collab+'\nlang: ko\n---\n\n'+body+refSection;
-
-  // Copy and offer options
+  let refSec='';if(refs.length){refSec='\n\n---\n\n## References\n\n<div class="bib-list">\n'+refs.map(r=>'<p>'+r+'</p>').join('\n')+'\n</div>';}
+  const fm='---\nlayout: paper\ntitle: "'+ti+'"\nauthor: '+au+authors+'\ndate: '+today+'\nstatus: '+status+'\ndomain: "'+dm+'"\nabstract: "'+ab+'"'+kwLine+'\ncollaborative: '+collab+'\nlang: ko\n---\n\n'+body+refSec;
   navigator.clipboard.writeText(fm).then(()=>{
-    const choice=confirm('Clipboard copied!\n\nOK = Open CMS (papers)\nCancel = Download as .md file');
-    if(choice){
-      window.open('/admin/#/collections/papers/new','_blank');
-    }else{
-      const blob=new Blob([fm],{type:'text/markdown'});
-      const a=document.createElement('a');
-      a.href=URL.createObjectURL(blob);
-      a.download=today+'-'+ti.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9가-힣-]/g,'')+'.md';
-      a.click();
-    }
+    const c=confirm('Copied to clipboard!\n\nOK = Open CMS\nCancel = Download .md');
+    if(c)window.open('/admin/#/collections/papers/new','_blank');
+    else{const b=new Blob([fm],{type:'text/markdown'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=today+'-'+ti.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'')+'.md';a.click();}
   });
 }
 
-// === 2-COLUMN TOGGLE ===
-function toggleCol(two){
-  if(two){pv.classList.add('two-col');document.getElementById('col2btn').classList.add('active');document.getElementById('col1btn').classList.remove('active');}
-  else{pv.classList.remove('two-col');document.getElementById('col1btn').classList.add('active');document.getElementById('col2btn').classList.remove('active');}
-}
+// === 2-COLUMN ===
+function toggleCol(two){pv.classList.toggle('two-col',two);document.getElementById('col1btn').classList.toggle('active',!two);document.getElementById('col2btn').classList.toggle('active',two);}
 
 // === AUTOSAVE ===
-function save(){
-  localStorage.setItem('aicra.paper.v2',JSON.stringify({
-    ti:document.getElementById('ti').value,au:document.getElementById('au').value,
-    coau:document.getElementById('coau').value,ab:document.getElementById('ab').value,
-    kw:document.getElementById('kw').value,status:document.getElementById('st-sel').value,
-    collab:document.getElementById('collab').checked,body:inp.value,refs:refs,at:Date.now()
-  }));
-}
-function restore(){
-  const d=localStorage.getItem('aicra.paper.v2');if(!d)return;
-  const s=JSON.parse(d);if(Date.now()-s.at>604800000)return;// 7 days
-  inp.value=s.body||'';
-  document.getElementById('ti').value=s.ti||'';
-  document.getElementById('au').value=s.au||'AICRA';
-  document.getElementById('coau').value=s.coau||'';
-  document.getElementById('ab').value=s.ab||'';
-  document.getElementById('kw').value=s.kw||'';
-  if(s.status)document.getElementById('st-sel').value=s.status;
-  if(s.collab)document.getElementById('collab').checked=s.collab;
-  if(s.refs){refs=s.refs;renderRefs();}
-  if(s.body){inp.dispatchEvent(new Event('input'));}
-  document.getElementById('as').textContent='Draft restored';
-}
+function save(){localStorage.setItem('aicra.paper.v3',JSON.stringify({ti:document.getElementById('ti').value,au:document.getElementById('au').value,coau:document.getElementById('coau').value,ab:document.getElementById('ab').value,kw:document.getElementById('kw').value,dm:document.getElementById('dm').value,status:document.getElementById('st-sel').value,collab:document.getElementById('collab').checked,body:inp.value,refs:refs,at:Date.now()}));}
+function restore(){const d=localStorage.getItem('aicra.paper.v3');if(!d)return;const s=JSON.parse(d);if(Date.now()-s.at>604800000)return;inp.value=s.body||'';document.getElementById('ti').value=s.ti||'';document.getElementById('au').value=s.au||'AICRA';document.getElementById('coau').value=s.coau||'';document.getElementById('ab').value=s.ab||'';document.getElementById('kw').value=s.kw||'';if(s.dm)document.getElementById('dm').value=s.dm;if(s.status)document.getElementById('st-sel').value=s.status;if(s.collab)document.getElementById('collab').checked=s.collab;if(s.refs){refs=s.refs;renderRefs();}if(s.body)inp.dispatchEvent(new Event('input'));document.getElementById('as').textContent='Draft restored';}
 setInterval(save,30000);restore();
 
 // === DARK MODE ===
 function toggleDark(){document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'':'dark';localStorage.setItem('aicra.dark',document.documentElement.dataset.theme);}
 if(localStorage.getItem('aicra.dark')==='dark')document.documentElement.dataset.theme='dark';
 
-// === FOCUS MODE ===
-function toggleFocus(){
-  focusMode=!focusMode;
-  ['metaBar','metaBar2','insBar','stBar'].forEach(id=>document.getElementById(id).style.display=focusMode?'none':'');
-}
+// === FOCUS ===
+function toggleFocus(){focusMode=!focusMode;['metaBar','metaBar2','insBar','stBar'].forEach(id=>document.getElementById(id).style.display=focusMode?'none':'');}
 
 // === RESIZE ===
 let rs=false;document.getElementById('dv').addEventListener('mousedown',()=>rs=true);
-document.addEventListener('mousemove',e=>{if(!rs)return;const ed=document.querySelector('.ed'),r=ed.getBoundingClientRect(),p=((e.clientX-r.left)/r.width)*100,pn=ed.querySelectorAll('.pn');pn[0].style.flex='0 0 '+p+'%';pn[1].style.flex='0 0 '+(100-p)+'%';});
+document.addEventListener('mousemove',e=>{if(!rs)return;const ed=document.querySelector('.ed'),r=ed.getBoundingClientRect(),p=((e.clientX-r.left)/r.width)*100;const pn=ed.querySelectorAll('.pn');pn[0].style.flex='0 0 '+p+'%';pn[1].style.flex='0 0 '+(100-p)+'%';});
 document.addEventListener('mouseup',()=>rs=false);
-
-// === ABSTRACT ENV ===
-// Process :::abstract blocks in render
-const origProcess=processEnvs;
-const _origProcessEnvs=processEnvs;
-function processEnvsWithAbstract(t){
-  // Handle abstract
-  t=t.replace(/:::abstract\n([\s\S]*?)\n:::/g,(m,body)=>{
-    const ph='\x00ENV'+envPlaceholders.length+'\x00';
-    envPlaceholders.push('<div class="abstract-box"><strong>Abstract</strong>'+marked.parse(body.trim())+'</div>');
-    return ph;
-  });
-  return _origProcessEnvs(t);
-}
-// Override
-window.processEnvs=processEnvsWithAbstract;
 </script>
 </body>
 </html>
