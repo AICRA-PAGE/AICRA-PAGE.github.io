@@ -114,6 +114,16 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
 .help .hitem b{color:var(--brand);display:block;font-size:.7rem}
 .help .hitem em{color:var(--muted);font-size:.64rem}
 .help pre{background:var(--surface);padding:6px;border-radius:3px;font-size:.62rem;margin:4px 0;overflow-x:auto}
+.help .io-label{font-size:.52rem;font-weight:700;color:var(--muted);margin:4px 0 1px;text-transform:uppercase;letter-spacing:.3px}
+.help .out{font-family:'Noto Serif KR',Georgia,serif;font-size:.66rem;line-height:1.5;padding:6px 8px;margin:3px 0;border-top:1px solid #999;border-bottom:1px solid #999;background:#fff;color:#111;border-radius:2px}
+[data-theme=dark] .help .out{background:#1e1e1e;color:#ddd;border-color:#555}
+.help .out b{font-weight:700;font-variant:small-caps}
+.help .out table{width:100%;border-collapse:collapse;font-size:.6rem;margin:3px 0}
+.help .out th{border-top:1.5px solid #111;border-bottom:.75px solid #111;padding:2px 4px;text-align:left;font-weight:700;font-size:.58rem}
+.help .out td{padding:2px 4px;border-bottom:.5px solid #ccc;font-size:.6rem}
+.help .out .qed{float:right}
+.help .out .eq{text-align:center;margin:3px 0;font-style:italic}
+.help .out .fig-c{text-align:center;font-size:.58rem;color:#555;font-style:italic}
 
 /* Print/Export - journal-grade monochrome */
 @media print{
@@ -255,54 +265,107 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
 
 <!-- Help Panel -->
 <div class="help" id="helpPanel">
-  <h3>Formatting Guide</h3>
-  <div class="hitem"><b>Theorem / Definition / Lemma</b><em>Formally stated claims</em>
-  <pre>:::theorem Convergence
-Under condition X, algorithm A converges in O(n).
-:::</pre></div>
-  <div class="hitem"><b>Proof</b><em>Formal reasoning, ends with QED square</em>
+  <h3>논문 작성 가이드</h3>
+
+  <div class="hitem"><b>정리 / 정의 / 보조정리</b><em>형식적으로 증명 가능한 명제를 기술합니다</em>
+  <div class="io-label">입력</div>
+  <pre>:::theorem 수렴성
+조건 X 하에서 알고리즘 A는 O(n)에 수렴한다.
+:::</pre>
+  <div class="io-label">출력</div>
+  <div class="out"><b>Theorem 1 (수렴성).</b> 조건 X 하에서 알고리즘 A는 O(n)에 수렴한다.</div></div>
+
+  <div class="hitem"><b>증명</b><em>정리의 증명 과정을 기술하며, QED(&#9633;)로 마칩니다</em>
+  <div class="io-label">입력</div>
   <pre>:::proof
-By contradiction, assume ...
-:::</pre></div>
-  <div class="hitem"><b>Algorithm</b><em>Numbered pseudocode steps</em>
-  <pre>:::algorithm Name
-Input: dataset D, parameter k
-Output: model M
-1. Initialize weights w
-2. For each epoch t:
-   a. Compute gradient
-   b. Update w
-3. Return trained M
-:::</pre></div>
-  <div class="hitem"><b>Equation</b><em>Display math with auto-numbering</em>
+귀류법에 의해 가정에서 모순이 발생한다.
+:::</pre>
+  <div class="io-label">출력</div>
+  <div class="out"><i><b style="font-style:normal">Proof.</b> 귀류법에 의해 가정에서 모순이 발생한다.</i> <span class="qed">&#9633;</span></div></div>
+
+  <div class="hitem"><b>알고리즘</b><em>번호가 매겨진 의사코드(pseudocode) 단계</em>
+  <div class="io-label">입력</div>
+  <pre>:::algorithm 학습 절차
+Input: 데이터셋 D, 파라미터 k
+Output: 모델 M
+1. 가중치 w 초기화
+2. 각 에폭 t에 대해:
+   a. 그래디언트 계산
+   b. w 업데이트
+3. 학습된 M 반환
+:::</pre>
+  <div class="io-label">출력</div>
+  <div class="out"><b>Algorithm 1 (학습 절차).</b><br><code style="font-size:.6rem;background:transparent">Input: 데이터셋 D, 파라미터 k<br>Output: 모델 M<br>1. 가중치 w 초기화<br>2. 각 에폭 t에 대해:<br>&nbsp;&nbsp;a. 그래디언트 계산<br>&nbsp;&nbsp;b. w 업데이트<br>3. 학습된 M 반환</code></div></div>
+
+  <div class="hitem"><b>수식</b><em>$$로 감싸면 번호가 자동 매겨집니다</em>
+  <div class="io-label">입력</div>
   <pre>$$
 \mathcal{L} = \sum_{i} \ell(f(x_i), y_i)
-$$</pre></div>
-  <div class="hitem"><b>Figure</b><em>Caption BELOW figure (academic convention)</em>
-  <pre>![](path/to/figure.pdf)
-*Fig. 1. Description of what the figure shows.*</pre></div>
-  <div class="hitem"><b>Table</b><em>Caption ABOVE table (academic convention)</em>
-  <pre>*Table 1. Comparison of approaches.*
-| Method | Metric A | Metric B |
-|--------|----------|----------|
-| A      | 0.95     | 0.88     |</pre></div>
-  <div class="hitem"><b>Threat Model</b><em>Assets, adversary, surface, assumptions</em></div>
-  <div class="hitem"><b>Citation</b><em>Use [cite:N] for numbered references</em>
-  <pre>As shown in [cite:1], the approach...
-Add references in the Refs panel.</pre></div>
-  <div class="hitem"><b>Confusion Matrix</b><em>Classification results layout</em>
-  <pre>*Table N. Confusion matrix on test set.*
-|  | Pred + | Pred - |
+$$</pre>
+  <div class="io-label">출력</div>
+  <div class="out"><div class="eq" id="helpEq1">$$\mathcal{L} = \sum_{i} \ell(f(x_i), y_i)$$</div><div style="text-align:right;font-size:.6rem;color:#555">(1)</div></div></div>
+
+  <div class="hitem"><b>표</b><em>캡션은 표 위에 배치합니다 (학술 관례)</em>
+  <div class="io-label">입력</div>
+  <pre>*Table 1. 방법별 성능 비교.*
+| 방법 | 정확도 | F1 |
+|------|--------|-----|
+| A    | 0.95   | 0.88|</pre>
+  <div class="io-label">출력</div>
+  <div class="out"><div style="font-size:.58rem;font-weight:700;margin-bottom:2px">Table 1. 방법별 성능 비교.</div><table><tr><th>방법</th><th>정확도</th><th>F1</th></tr><tr><td>A</td><td>0.95</td><td>0.88</td></tr></table></div></div>
+
+  <div class="hitem"><b>그림</b><em>캡션은 그림 아래에 배치합니다 (학술 관례)</em>
+  <div class="io-label">입력</div>
+  <pre>![시스템 구조](figures/arch.pdf)
+*Fig. 1. 제안 시스템의 전체 아키텍처.*</pre>
+  <div class="io-label">출력</div>
+  <div class="out"><div style="background:#f0f0f0;height:30px;border:1px solid #ddd;border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:.55rem;color:#999">[이미지]</div><div class="fig-c">Fig. 1. 제안 시스템의 전체 아키텍처.</div></div></div>
+
+  <div class="hitem"><b>위협 모델</b><em>자산, 공격자 능력, 공격 표면, 가정을 구조화합니다</em>
+  <div class="io-label">입력</div>
+  <pre>### Threat Model
+**Assets**
+- 모델 가중치, API 키
+**Adversary**
+- **Goal:** 안전 정렬 우회
+- **Access:** black-box</pre>
+  <div class="io-label">출력</div>
+  <div class="out"><b style="font-size:.62rem">Threat Model</b><br><b style="font-size:.58rem">Assets</b> - 모델 가중치, API 키<br><b style="font-size:.58rem">Adversary</b> - Goal: 안전 정렬 우회 / Access: black-box</div></div>
+
+  <div class="hitem"><b>인용</b><em>[cite:N]으로 번호 참조. Refs 패널에서 문헌 추가</em>
+  <div class="io-label">입력</div>
+  <pre>선행연구 [cite:1]에서 보인
+바와 같이...</pre>
+  <div class="io-label">출력</div>
+  <div class="out">선행연구 <b>[1]</b>에서 보인 바와 같이...</div></div>
+
+  <div class="hitem"><b>혼동 행렬</b><em>분류 결과를 표 형식으로 정리합니다</em>
+  <div class="io-label">입력</div>
+  <pre>|  | Pred + | Pred - |
 |--|--------|--------|
 | Actual + | TP | FN |
-| Actual - | FP | TN |</pre></div>
-  <div class="hitem"><b>Architecture Diagram</b><em>System overview via Mermaid</em>
+| Actual - | FP | TN |</pre>
+  <div class="io-label">출력</div>
+  <div class="out"><table><tr><th></th><th>Pred +</th><th>Pred -</th></tr><tr><td><b>Actual +</b></td><td>TP</td><td>FN</td></tr><tr><td><b>Actual -</b></td><td>FP</td><td>TN</td></tr></table></div></div>
+
+  <div class="hitem"><b>아키텍처 다이어그램</b><em>Mermaid 문법으로 시스템 구조를 그립니다</em>
+  <div class="io-label">입력</div>
   <pre>```mermaid
 graph LR
-  A[Input] --> B[Module]
-  B --> C[Output]
-```</pre></div>
-  <button class="bt" onclick="toggleHelp()" style="width:100%;margin-top:8px">Close</button>
+  A[입력] --> B[처리]
+  B --> C[출력]
+```</pre>
+  <div class="io-label">출력</div>
+  <div class="out" style="text-align:center;font-size:.6rem;color:#555">[입력] ---> [처리] ---> [출력]</div></div>
+
+  <div class="hitem"><b>단축키</b>
+  <div class="out" style="font-family:'Pretendard',sans-serif;font-size:.6rem;border:none">
+  <b>Ctrl+B</b> 굵게 | <b>Ctrl+I</b> 기울임 | <b>Ctrl+K</b> 링크<br>
+  <b>Ctrl+M</b> 수식 | <b>Ctrl+S</b> 저장 | <b>Tab</b> 들여쓰기<br>
+  <b>Ctrl+Z</b> 되돌리기 | <b>Ctrl+Y</b> 다시 실행
+  </div></div>
+
+  <button class="bt" onclick="toggleHelp()" style="width:100%;margin-top:8px">닫기</button>
 </div>
 
 <!-- Abstract Modal -->
@@ -1226,7 +1289,7 @@ function addRef(){const i=document.getElementById('refInput');const v=i.value.tr
 function removeRef(idx){refs.splice(idx,1);renderRefs();render();}
 function renderRefs(){const l=document.getElementById('refList');document.getElementById('rc').textContent=refs.length;l.innerHTML=refs.map((r,i)=>'<div class="ref-item"><b>['+(i+1)+']</b>'+r+' <span style="cursor:pointer;color:#b42318;float:right" onclick="removeRef('+i+')">x</span></div>').join('');}
 function toggleRef(){document.getElementById('refPanel').classList.toggle('open');}
-function toggleHelp(){document.getElementById('helpPanel').classList.toggle('show');}
+function toggleHelp(){const hp=document.getElementById('helpPanel');hp.classList.toggle('show');if(hp.classList.contains('show'))renderMathInElement(hp,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false});}
 
 // === VALIDATE ===
 function validatePaper(){
