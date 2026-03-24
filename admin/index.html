@@ -11,7 +11,6 @@
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       min-height: 100vh; padding: 2rem; text-align: center;
     }
-    .landing.hidden { display: none; }
     .logo { width: 72px; height: 72px; margin-bottom: 1.2rem; }
     h1 { font-size: 1.4rem; font-weight: 700; color: #2F5D50; margin-bottom: 0.2rem; }
     .subtitle { font-size: 0.85rem; color: #6B665C; margin-bottom: 2rem; }
@@ -24,12 +23,16 @@
     .card li { padding: 0.45rem 0; border-bottom: 1px solid #f0ede6; font-size: 0.82rem; color: #44403C; }
     .card li:last-child { border-bottom: none; }
     .card li strong { color: #2F5D50; }
-    .btn-enter {
-      display: inline-block; padding: 12px 32px; background: #2F5D50; color: white;
-      border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600;
-      cursor: pointer; transition: background 0.2s; margin-top: 0.5rem;
+    .btn {
+      display: inline-block; padding: 12px 32px; color: white; border: none;
+      border-radius: 8px; font-size: 0.95rem; font-weight: 600;
+      cursor: pointer; transition: background 0.2s; margin: 0.3rem;
+      text-decoration: none;
     }
-    .btn-enter:hover { background: #245045; }
+    .btn-github { background: #24292e; }
+    .btn-github:hover { background: #1b1f23; }
+    .btn-token { background: #2F5D50; }
+    .btn-token:hover { background: #245045; }
     .note { font-size: 0.75rem; color: #8B8580; max-width: 440px; line-height: 1.5; margin-top: 1rem; }
     .note a { color: #2F5D50; }
   </style>
@@ -49,7 +52,14 @@
       </ul>
     </div>
 
-    <button class="btn-enter" onclick="startCMS()">CMS 시작하기</button>
+    <div>
+      <a class="btn btn-github" href="https://auth.aicra.workers.dev/auth?provider=github&site_id=aicra-page.github.io">
+        GitHub로 로그인
+      </a>
+      <button class="btn btn-token" onclick="startCMSToken()">
+        Token으로 로그인
+      </button>
+    </div>
 
     <p class="note">
       GitHub 리포지토리 collaborator 권한이 필요합니다.<br>
@@ -60,11 +70,16 @@
   </div>
 
   <script>
-    function startCMS() {
-      document.getElementById('landing').classList.add('hidden');
+    function startCMSToken() {
+      document.getElementById('landing').style.display = 'none';
       var s = document.createElement('script');
       s.src = 'https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js';
       document.body.appendChild(s);
+    }
+
+    // If returning from OAuth callback, auto-load CMS
+    if (document.referrer.includes('auth.aicra.workers.dev') || window.location.hash) {
+      startCMSToken();
     }
   </script>
 </body>
