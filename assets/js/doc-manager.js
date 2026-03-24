@@ -109,6 +109,7 @@
     if(meta.keywords)fm+='\nkeywords: ['+meta.keywords.split(',').map(s=>'"'+s.trim()+'"').join(', ')+']';
     if(meta.abstract)fm+='\nabstract: "'+meta.abstract.replace(/"/g,"'")+'"';
     if(meta.collaborative)fm+='\ncollaborative: true';
+    if(meta.reviewers)fm+='\nreviewers: ['+meta.reviewers.split(',').map(s=>'"'+s.trim()+'"').join(', ')+']';
     if(meta.locked)fm+='\nlocked: true\nlocked_by: "'+login+'"';
     fm+='\nlang: ko\n---\n\n';
     return fm+body;
@@ -177,7 +178,96 @@
     if(lc===corresponding)return'corresponding';
     if(coauthors.includes(lc))return'coauthor';
     if(meta.collaborative)return'collaborator';
+    // Check reviewer role
+    const reviewers=Array.isArray(meta.reviewers)?meta.reviewers.map(r=>(typeof r==='string'?r:r).toLowerCase()):[];
+    if(reviewers.includes(lc))return'reviewer';
     return'readonly';
+  }
+
+  // === REVIEW SYSTEM ===
+  async function createReview(paperPath,reviewerLogin){
+    const user=await getUser();if(!user)throw new Error('Not logged in');
+    // Load original paper
+    const r=await fetch(API+paperPath,{headers:headers()});
+    if(!r.ok)throw new Error('Paper not found');
+    const d=await r.json();
+    const content=b64decode(d.content);
+    // Create review copy
+    const slug=paperPath.split('/').pop().replace('.md','');
+    const reviewPath='_reviews/'+slug+'/'+reviewerLogin+'.md';
+    const encoded=b64encode(content);
+    // Check if already exists
+    let sha=null;
+    try{const r2=await fetch(API+reviewPath,{headers:headers()});if(r2.ok){const d2=await r2.json();sha=d2.sha;}}catch(e){}
+    const payload={message:'review: create copy for '+reviewerLogin,content:encoded};
+    if(sha)payload.sha=sha;
+    await fetch(API+reviewPath,{method:'PUT',headers:headers(),body:JSON.stringify(payload)});
+    // Create empty annotations file
+    const annPath='_reviews/'+slug+'/'+reviewerLogin+'-annotations.json';
+    let annSha=null;
+    try{const r3=await fetch(API+annPath,{headers:headers()});if(r3.ok){const d3=await r3.json();annSha=d3.sha;}}catch(e){}
+    if(!annSha){
+      const annPayload={message:'review: init annotations for '+reviewerLogin,content:b64encode('[]')};
+      await fetch(API+annPath,{method:'PUT',headers:headers(),body:JSON.stringify(annPayload)});
+    }
+    return reviewPath;
+  }
+
+  async function loadAnnotations(paperPath,reviewerLogin){
+    const slug=paperPath.split('/').pop().replace('.md','');
+    const annPath='_reviews/'+slug+'/'+reviewerLogin+'-annotations.json';
+    try{
+      const r=await fetch(API+annPath,{headers:headers()});
+      if(!r.ok)return[];
+      const d=await r.json();
+      return JSON.parse(b64decode(d.content));
+    }catch(e){return[];}
+  }
+
+  async function saveAnnotation(paperPath,reviewerLogin,annotation){
+    const slug=paperPath.split('/').pop().replace('.md','');
+    const annPath='_reviews/'+slug+'/'+reviewerLogin+'-annotations.json';
+    // Load current
+    const r=await fetch(API+annPath,{headers:headers()});
+    let annotations=[],sha=null;
+    if(r.ok){const d=await r.json();sha=d.sha;try{annotations=JSON.parse(b64decode(d.content));}catch(e){}}
+    // Add new annotation
+    annotation.id=Date.now().toString(36);
+    annotation.reviewer=reviewerLogin;
+    annotation.timestamp=new Date().toISOString();
+    annotation.status='pending';
+    annotations.push(annotation);
+    // Save
+    const payload={message:'review: annotation by '+reviewerLogin,content:b64encode(JSON.stringify(annotations,null,2))};
+    if(sha)payload.sha=sha;
+    await fetch(API+annPath,{method:'PUT',headers:headers(),body:JSON.stringify(payload)});
+    return annotation;
+  }
+
+  async function updateAnnotationStatus(paperPath,reviewerLogin,annotationId,status){
+    const slug=paperPath.split('/').pop().replace('.md','');
+    const annPath='_reviews/'+slug+'/'+reviewerLogin+'-annotations.json';
+    const r=await fetch(API+annPath,{headers:headers()});
+    if(!r.ok)return;
+    const d=await r.json();
+    const sha=d.sha;
+    const annotations=JSON.parse(b64decode(d.content));
+    const ann=annotations.find(a=>a.id===annotationId);
+    if(ann)ann.status=status;
+    const payload={message:'review: '+status+' annotation',content:b64encode(JSON.stringify(annotations,null,2)),sha:sha};
+    await fetch(API+annPath,{method:'PUT',headers:headers(),body:JSON.stringify(payload)});
+    return ann;
+  }
+
+  async function listReviewers(paperPath){
+    const slug=paperPath.split('/').pop().replace('.md','');
+    const reviewDir='_reviews/'+slug;
+    try{
+      const r=await fetch(API+reviewDir,{headers:headers()});
+      if(!r.ok)return[];
+      const files=await r.json();
+      return files.filter(f=>f.name.endsWith('.md')).map(f=>f.name.replace('.md',''));
+    }catch(e){return[];}
   }
 
   // === LOCK ===
@@ -271,6 +361,11 @@
     checkConflict:checkConflict,
     getCurrentFile:function(){return _currentFile;},
     getCurrentSha:function(){return _currentSha;},
-    slugify:slugify
+    slugify:slugify,
+    createReview:createReview,
+    loadAnnotations:loadAnnotations,
+    saveAnnotation:saveAnnotation,
+    updateAnnotationStatus:updateAnnotationStatus,
+    listReviewers:listReviewers
   };
 })();

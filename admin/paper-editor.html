@@ -269,6 +269,9 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
   <button class="bt" onclick="ghLoad()" title="저장된 문서 불러오기">불러오기</button>
   <button class="bt" onclick="ghLock()" title="문서 잠금/해제 (저자만)" id="lockBtn">잠금</button>
   <button class="bt" onclick="showNameMapModal()" title="GitHub ID에 실명/소속을 매핑">저자 정보</button>
+  <div class="sep"></div>
+  <button class="bt" onclick="requestReview()" title="검토자에게 리뷰를 요청합니다">리뷰 요청</button>
+  <button class="bt" onclick="showReviewPanel()" title="검토자의 첨삭/주석을 확인합니다">리뷰 확인</button>
   <div class="spacer"></div>
   <button class="bt" onclick="genAbstract()" title="논문 본문에서 구조화 초록을 자동 생성합니다">초록 생성</button>
   <button class="bt" onclick="genPPT()" title="논문 내용으로 발표용 슬라이드(.pptx)를 생성합니다">발표자료</button>
@@ -294,7 +297,7 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
   <div><label>키워드</label><input id="kw" placeholder="키워드1, 키워드2"></div>
 </div>
 
-<div class="meta2" id="metaBar2" style="grid-template-columns:1.2fr 1.5fr 1.2fr 1fr .8fr">
+<div class="meta2" id="metaBar2" style="grid-template-columns:1fr 1.2fr 1fr .8fr .7fr .7fr">
   <div>
     <label>1저자 (주저자)</label>
     <select id="au" class="meta-sel" onchange="updateAuthorDDs()"><option value="">-- 선택 --</option></select>
@@ -318,6 +321,12 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
   <div>
     <label>외부 저자</label>
     <div style="display:flex;gap:2px"><input id="ext-name" placeholder="이름" style="flex:1;padding:2px 5px;border:1px solid var(--line);border-radius:3px;font-size:.65rem;background:var(--panel);color:var(--text)"><button class="bt" onclick="addExtAuthor()" style="font-size:.52rem;padding:2px 4px">+</button></div>
+  </div>
+  <div>
+    <label>검토자</label>
+    <select id="rev-add" class="meta-sel" onchange="addReviewer(this.value);this.value=''"><option value="">-- 추가 --</option></select>
+    <div class="chip-area" id="rev-chips" style="margin-top:2px"></div>
+    <input type="hidden" id="reviewers">
   </div>
 </div>
 
@@ -3417,6 +3426,46 @@ document.addEventListener('mousemove',e=>{if(!rs)return;const ed=document.queryS
 document.addEventListener('mouseup',()=>rs=false);
 </script>
 
+<!-- Review Panel Modal -->
+<div class="modal-overlay" id="reviewModal">
+  <div class="modal-box" style="max-width:720px">
+    <div class="modal-head"><span>리뷰 확인</span><button class="bt" onclick="closeModal('reviewModal')" style="padding:1px 6px">X</button></div>
+    <div class="modal-body" style="max-height:450px;overflow-y:auto">
+      <div id="reviewContent" style="font-size:.75rem"><p style="color:var(--muted);text-align:center;padding:20px">로딩 중...</p></div>
+    </div>
+    <div class="modal-foot">
+      <button class="bt" onclick="closeModal('reviewModal')">닫기</button>
+    </div>
+  </div>
+</div>
+
+<!-- Annotation Input Modal -->
+<div class="modal-overlay" id="annotModal">
+  <div class="modal-box" style="max-width:480px">
+    <div class="modal-head"><span>첨삭/주석 입력</span><button class="bt" onclick="closeModal('annotModal')" style="padding:1px 6px">X</button></div>
+    <div class="modal-body">
+      <p id="annot-context" style="font-size:.7rem;color:var(--muted);margin-bottom:8px;padding:6px;background:var(--surface);border-radius:4px"></p>
+      <label>유형</label>
+      <select id="annot-type" style="width:100%;padding:4px;border:1px solid var(--line);border-radius:4px;font-size:.72rem;margin-bottom:6px">
+        <option value="comment">코멘트 (의견)</option>
+        <option value="suggest">수정 제안 (첨삭)</option>
+        <option value="question">질문</option>
+        <option value="error">오류 지적</option>
+      </select>
+      <label>내용</label>
+      <textarea id="annot-text" rows="3" style="width:100%;padding:6px;border:1px solid var(--line);border-radius:4px;font-size:.75rem;font-family:inherit" placeholder="코멘트 또는 수정 제안을 입력하세요..."></textarea>
+      <div id="annot-suggest-area" style="display:none;margin-top:6px">
+        <label>수정 제안 텍스트</label>
+        <textarea id="annot-suggest" rows="2" style="width:100%;padding:6px;border:1px solid var(--line);border-radius:4px;font-size:.75rem;font-family:inherit" placeholder="이 문단을 이렇게 수정하면..."></textarea>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="bt" onclick="closeModal('annotModal')">취소</button>
+      <button class="bt p" onclick="submitAnnotation()">주석 저장</button>
+    </div>
+  </div>
+</div>
+
 <!-- Load Modal -->
 <div class="modal-overlay" id="loadModal">
   <div class="modal-box" style="max-width:600px">
@@ -3513,7 +3562,7 @@ function populateAuthorUI(){
   const sel=document.getElementById('au');
   sel.innerHTML='<option value="">-- 선택 --</option>';
   for(const c of collabList)sel.innerHTML+='<option value="'+c.login+'">'+getDisplayName(c.login)+'</option>';
-  docManager.getUser().then(u=>{if(u)sel.value=u.login;updateAuthorDDs();});
+  docManager.getUser().then(u=>{if(u)sel.value=u.login;updateAuthorDDs();updateReviewerDD();});
 }
 
 function updateAuthorDDs(){
@@ -3586,6 +3635,152 @@ function addExtAuthor(){
   document.getElementById('coau').value=selectedCoauthors.join(', ');
   document.getElementById('ext-name').value='';
   updateAuthorDDs();
+}
+
+// === REVIEWER SYSTEM ===
+let selectedReviewers=[];
+
+function addReviewer(login){
+  if(!login||selectedReviewers.includes(login))return;
+  selectedReviewers.push(login);
+  renderChips('rev-chips',selectedReviewers,'removeReviewer');
+  document.getElementById('reviewers').value=selectedReviewers.join(', ');
+  updateReviewerDD();
+}
+function removeReviewer(login){
+  selectedReviewers=selectedReviewers.filter(l=>l!==login);
+  renderChips('rev-chips',selectedReviewers,'removeReviewer');
+  document.getElementById('reviewers').value=selectedReviewers.join(', ');
+  updateReviewerDD();
+}
+function updateReviewerDD(){
+  const sel=document.getElementById('rev-add');
+  const author=document.getElementById('au').value;
+  sel.innerHTML='<option value="">-- 추가 --</option>';
+  for(const c of collabList){
+    if(c.login===author||selectedCoauthors.includes(c.login)||selectedReviewers.includes(c.login))continue;
+    sel.innerHTML+='<option value="'+c.login+'">'+getDisplayName(c.login)+'</option>';
+  }
+}
+
+async function requestReview(){
+  const path=docManager.getCurrentFile();
+  if(!path){alert('먼저 문서를 저장해 주세요.');return;}
+  if(!selectedReviewers.length){alert('검토자를 추가해 주세요.');return;}
+  const user=await docManager.getUser();
+  if(!user)return;
+  document.getElementById('as').textContent='리뷰 요청 중...';
+  try{
+    for(const rev of selectedReviewers){
+      await docManager.createReview(path,rev);
+    }
+    document.getElementById('as').textContent='리뷰 요청 완료 ('+selectedReviewers.length+'명)';
+    alert('리뷰 요청이 완료되었습니다.\n검토자: '+selectedReviewers.join(', ')+'\n\n검토자가 에디터에서 이 문서를 불러오면 첨삭을 추가할 수 있습니다.');
+  }catch(e){
+    alert('리뷰 요청 실패: '+e.message);
+    document.getElementById('as').textContent='리뷰 요청 실패';
+  }
+}
+
+async function showReviewPanel(){
+  const path=docManager.getCurrentFile();
+  if(!path){alert('먼저 문서를 저장하거나 불러와 주세요.');return;}
+  document.getElementById('reviewModal').classList.add('show');
+  const rc=document.getElementById('reviewContent');
+  rc.innerHTML='<p style="color:var(--muted);text-align:center;padding:20px">검토 내역 로딩 중...</p>';
+  try{
+    const reviewers=await docManager.listReviewers(path);
+    if(!reviewers.length){rc.innerHTML='<p style="color:var(--muted);text-align:center;padding:20px">아직 리뷰가 없습니다.</p>';return;}
+    let html='';
+    for(const rev of reviewers){
+      const anns=await docManager.loadAnnotations(path,rev);
+      const dn=getDisplayName(rev);
+      html+='<div style="margin-bottom:12px;border:1px solid var(--line);border-radius:6px;overflow:hidden">';
+      html+='<div style="padding:6px 10px;background:var(--surface);font-weight:700;font-size:.72rem;color:var(--brand)">'+dn+' ('+anns.length+'개 주석)</div>';
+      if(!anns.length){
+        html+='<div style="padding:8px 10px;font-size:.68rem;color:var(--muted)">아직 주석이 없습니다.</div>';
+      }else{
+        for(const a of anns){
+          const typeLabel={comment:'코멘트',suggest:'수정 제안',question:'질문',error:'오류 지적'}[a.type]||a.type;
+          const statusColor={pending:'var(--accent)',accepted:'var(--brand)',rejected:'#b42318'}[a.status]||'var(--muted)';
+          const statusLabel={pending:'대기',accepted:'적용됨',rejected:'거절됨'}[a.status]||a.status;
+          html+='<div style="padding:6px 10px;border-top:1px solid var(--line);font-size:.66rem">';
+          html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">';
+          html+='<span style="font-weight:600">'+typeLabel+'</span>';
+          html+='<span style="color:'+statusColor+';font-size:.58rem;font-weight:600">'+statusLabel+'</span>';
+          html+='</div>';
+          if(a.paragraph)html+='<div style="color:var(--muted);font-size:.58rem;margin-bottom:2px">위치: '+a.paragraph+'</div>';
+          html+='<div style="margin-bottom:3px">'+a.text+'</div>';
+          if(a.suggestion)html+='<div style="background:#e8f5e9;padding:3px 6px;border-radius:3px;font-size:.62rem;margin-bottom:3px"><b>제안:</b> '+a.suggestion+'</div>';
+          if(a.status==='pending'){
+            html+='<div style="display:flex;gap:4px">';
+            html+='<button class="bt" style="font-size:.52rem;padding:1px 5px;background:var(--brand);color:#fff;border-color:var(--brand)" onclick="resolveAnnotation(\''+rev+'\',\''+a.id+'\',\'accepted\')">적용</button>';
+            html+='<button class="bt" style="font-size:.52rem;padding:1px 5px;color:#b42318" onclick="resolveAnnotation(\''+rev+'\',\''+a.id+'\',\'rejected\')">거절</button>';
+            html+='</div>';
+          }
+          html+='</div>';
+        }
+      }
+      html+='</div>';
+    }
+    rc.innerHTML=html;
+  }catch(e){
+    rc.innerHTML='<p style="color:#b42318;text-align:center;padding:20px">로딩 실패: '+e.message+'</p>';
+  }
+}
+
+async function resolveAnnotation(reviewer,annotationId,status){
+  const path=docManager.getCurrentFile();
+  if(!path)return;
+  try{
+    const ann=await docManager.updateAnnotationStatus(path,reviewer,annotationId,status);
+    if(status==='accepted'&&ann&&ann.suggestion){
+      // Apply suggestion to text (simple: append as comment for now)
+      document.getElementById('as').textContent='제안 적용됨 - 본문에서 해당 부분을 수정해 주세요';
+    }
+    showReviewPanel(); // Refresh
+  }catch(e){alert('처리 실패: '+e.message);}
+}
+
+// Annotation input (for reviewers)
+let _annotParagraph='';
+function openAnnotInput(paragraph){
+  _annotParagraph=paragraph;
+  document.getElementById('annot-context').textContent='대상: '+paragraph.substring(0,100)+'...';
+  document.getElementById('annot-text').value='';
+  document.getElementById('annot-suggest').value='';
+  document.getElementById('annotModal').classList.add('show');
+}
+document.getElementById('annot-type').addEventListener('change',function(){
+  document.getElementById('annot-suggest-area').style.display=this.value==='suggest'?'block':'none';
+});
+async function submitAnnotation(){
+  const path=docManager.getCurrentFile();
+  if(!path){alert('문서가 로드되지 않았습니다.');return;}
+  const user=await docManager.getUser();
+  if(!user)return;
+  const ann={
+    paragraph:_annotParagraph.substring(0,200),
+    type:document.getElementById('annot-type').value,
+    text:document.getElementById('annot-text').value.trim()
+  };
+  if(!ann.text){alert('내용을 입력해 주세요.');return;}
+  if(ann.type==='suggest')ann.suggestion=document.getElementById('annot-suggest').value.trim();
+  try{
+    await docManager.saveAnnotation(path,user.login,ann);
+    closeModal('annotModal');
+    document.getElementById('as').textContent='주석 저장됨';
+  }catch(e){alert('저장 실패: '+e.message);}
+}
+
+// Make preview paragraphs clickable for annotation (reviewer mode)
+function enableReviewMode(){
+  document.getElementById('pv').addEventListener('click',function(e){
+    const p=e.target.closest('p,li,td,div.env-block,blockquote');
+    if(p&&inp.readOnly){
+      openAnnotInput(p.textContent);
+    }
+  });
 }
 
 // === ACADEMIC DB SEARCH ===
@@ -3738,7 +3933,8 @@ function getEditorMeta(){
     keywords:document.getElementById('kw').value,
     domain:document.getElementById('dm').value,
     status:document.getElementById('st-sel').value,
-    collaborative:document.getElementById('collab').checked
+    collaborative:document.getElementById('collab').checked,
+    reviewers:document.getElementById('reviewers').value
   };
 }
 
@@ -3891,6 +4087,7 @@ aicraAuth.checkAccess(
     document.getElementById('editor-content').style.display='flex';
     fetchCollaborators();
     initAutoSave();
+    enableReviewMode();
   },
   function(login){
     document.getElementById('gate-title').textContent='접근이 거부되었습니다';
