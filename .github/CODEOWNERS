@@ -1,0 +1,11 @@
+# AICRA Blog - Post Ownership
+# Each post is owned by its author. Changes require the author's review.
+# Admin (@AICRA-PAGE) can review all changes.
+
+# Default: admin reviews everything
+* @AICRA-PAGE
+
+# Posts: require original author review
+# Format: path @github-username
+# Add new entries when collaborators publish posts:
+# _posts/2026-*-*-post-slug.md @author-github-id
