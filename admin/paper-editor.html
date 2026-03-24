@@ -141,11 +141,13 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
 
 /* Print/Export - journal-grade monochrome */
 @media print{
-  .tb,.meta,.meta2,.ins,.st,.dv,.ref-panel,#input,.pn-label,.help{display:none!important}
+  .tb,.meta,.meta2,.ins,.st,.dv,.ref-panel,#input,.pn-label,.help,#auth-gate,#ext-author-bar,#checkResult,.modal-overlay{display:none!important}
   .ed{display:block!important}
   .pn:first-child{display:none!important}
   .pn:last-child{display:block!important;overflow:visible!important}
   body{height:auto;overflow:visible;background:#fff}
+  @page{margin:20mm 15mm;size:A4}
+  title{display:none!important}
   #pv{padding:0!important;font-family:'Times New Roman','Noto Serif KR',serif!important;font-size:10pt!important;line-height:1.3!important;color:#000!important;background:#fff!important;column-count:2;column-gap:18pt;column-rule:none}
   #pv h1{font-size:14pt!important;margin-bottom:6pt}
   #pv h2{font-size:10pt!important;text-transform:uppercase;border-bottom:.5pt solid #000;margin:12pt 0 4pt}
