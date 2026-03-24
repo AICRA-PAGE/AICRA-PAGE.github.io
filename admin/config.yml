@@ -4,72 +4,97 @@ backend:
   branch: main
   base_url: https://sveltia-cms-auth.piser.workers.dev
 
-media_folder: "assets/images/posts"
-public_folder: "/assets/images/posts"
+site_url: https://aicra-page.github.io
+display_url: https://aicra-page.github.io
+logo_url: /assets/img/logo.svg
+
+media_folder: assets/img
+public_folder: /assets/img
 
 collections:
-  - name: "posts"
+  - name: posts
     label: "Blog Posts"
     label_singular: "Post"
-    folder: "_posts"
+    folder: _posts
     create: true
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
-    sortable_fields: ["date", "title"]
-    summary: "{{title}} ({{date}})"
+    summary: "{{title}} | {{categories}} | {{date}}"
+    sortable_fields: [date, title, author]
+    view_groups:
+      - label: "By Category"
+        field: categories
+      - label: "By Author"
+        field: author
     fields:
-      - { label: "Layout", name: "layout", widget: "hidden", default: "post" }
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Description", name: "description", widget: "text", required: false }
-      - { label: "Date", name: "date", widget: "datetime" }
-      - { label: "Author", name: "author", widget: "string", default: "AICRA" }
+      - { label: "Layout", name: layout, widget: hidden, default: post }
+      - { label: "Title", name: title, widget: string }
+      - { label: "Description", name: description, widget: text, required: false }
+      - { label: "Date", name: date, widget: datetime }
+      - label: "Author"
+        name: author
+        widget: select
+        options: ["AICRA", "Guest"]
+        default: "AICRA"
       - label: "Categories"
-        name: "categories"
-        widget: "select"
+        name: categories
+        widget: select
         multiple: true
-        options: ["Research", "Analysis", "Tutorial", "News"]
+        options: ["Research", "Analysis", "Tutorial", "News", "Events"]
       - label: "Tags"
-        name: "tags"
-        widget: "list"
+        name: tags
+        widget: list
         allow_add: true
-        field: { label: "Tag", name: "tag", widget: "string" }
-      - { label: "Featured", name: "featured", widget: "boolean", default: false, required: false }
-      - { label: "Table of Contents", name: "toc", widget: "boolean", default: true, required: false }
-      - { label: "Language", name: "lang", widget: "select", options: ["ko", "en"], default: "ko" }
-      - { label: "Thumbnail", name: "thumbnail", widget: "image", required: false }
-      - { label: "Body", name: "body", widget: "markdown" }
+        field: { label: "Tag", name: tag, widget: string }
+      - { label: "Featured", name: featured, widget: boolean, default: false, required: false }
+      - { label: "Table of Contents", name: toc, widget: boolean, default: true, required: false }
+      - { label: "Language", name: lang, widget: select, options: ["ko", "en"], default: "ko" }
+      - label: "Thumbnail"
+        name: thumbnail
+        widget: image
+        required: false
+        media_folder: "assets/img/posts"
+      - { label: "Body", name: body, widget: markdown }
 
-  - name: "pages"
-    label: "Pages"
+  - name: pages
+    label: "Site Pages"
     files:
       - label: "About"
-        name: "about"
-        file: "_pages/about.md"
+        name: about
+        file: _pages/about.md
         fields:
-          - { label: "Layout", name: "layout", widget: "hidden", default: "page" }
-          - { label: "Title", name: "title", widget: "string" }
-          - { label: "Permalink", name: "permalink", widget: "string" }
-          - { label: "Body", name: "body", widget: "markdown" }
+          - { label: "Layout", name: layout, widget: hidden, default: page }
+          - { label: "Title", name: title, widget: string }
+          - { label: "Permalink", name: permalink, widget: string }
+          - { label: "Body", name: body, widget: markdown }
       - label: "Team"
-        name: "team"
-        file: "_pages/team.md"
+        name: team
+        file: _pages/team.md
         fields:
-          - { label: "Layout", name: "layout", widget: "hidden", default: "page" }
-          - { label: "Title", name: "title", widget: "string" }
-          - { label: "Permalink", name: "permalink", widget: "string" }
-          - { label: "Body", name: "body", widget: "markdown" }
-      - label: "News"
-        name: "news"
-        file: "_pages/news.md"
+          - { label: "Layout", name: layout, widget: hidden, default: page }
+          - { label: "Title", name: title, widget: string }
+          - { label: "Permalink", name: permalink, widget: string }
+          - { label: "Body", name: body, widget: markdown }
+      - label: "News & Activities"
+        name: news
+        file: _pages/news.md
         fields:
-          - { label: "Layout", name: "layout", widget: "hidden", default: "page" }
-          - { label: "Title", name: "title", widget: "string" }
-          - { label: "Permalink", name: "permalink", widget: "string" }
-          - { label: "Body", name: "body", widget: "markdown" }
+          - { label: "Layout", name: layout, widget: hidden, default: page }
+          - { label: "Title", name: title, widget: string }
+          - { label: "Permalink", name: permalink, widget: string }
+          - { label: "Body", name: body, widget: markdown }
       - label: "Community"
-        name: "community"
-        file: "_pages/community.md"
+        name: community
+        file: _pages/community.md
         fields:
-          - { label: "Layout", name: "layout", widget: "hidden", default: "page" }
-          - { label: "Title", name: "title", widget: "string" }
-          - { label: "Permalink", name: "permalink", widget: "string" }
-          - { label: "Body", name: "body", widget: "markdown" }
+          - { label: "Layout", name: layout, widget: hidden, default: page }
+          - { label: "Title", name: title, widget: string }
+          - { label: "Permalink", name: permalink, widget: string }
+          - { label: "Body", name: body, widget: markdown }
+      - label: "Publications"
+        name: publications
+        file: _pages/publications.md
+        fields:
+          - { label: "Layout", name: layout, widget: hidden, default: page }
+          - { label: "Title", name: title, widget: string }
+          - { label: "Permalink", name: permalink, widget: string }
+          - { label: "Body", name: body, widget: markdown }
