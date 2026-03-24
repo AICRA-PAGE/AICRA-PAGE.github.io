@@ -5,98 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AICRA Content Management</title>
   <style>
-    :root { --bg:#f5f3ed; --text:#1c1917; --muted:#6b665c; --brand:#2f5d50; --brand-dark:#244b40; --card:#fff; --line:#ece7dd; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       min-height: 100vh; font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', sans-serif;
-      color: var(--text); background: radial-gradient(circle at 20% 10%, #fff 0%, var(--bg) 45%);
+      color: #1c1917; background: #f5f3ed;
       display: grid; place-items: center; padding: 24px;
     }
-    .wrap { width: 100%; max-width: 520px; text-align: center; }
-    .logo { width: 64px; height: 64px; margin-bottom: 10px; }
-    h1 { font-size: 1.3rem; color: var(--brand); margin-bottom: 4px; }
-    .sub { color: var(--muted); font-size: 0.85rem; margin-bottom: 20px; }
-    .section { margin-bottom: 16px; }
-    .section-title { font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-    .card {
-      background: var(--card); border: 1px solid var(--line); border-radius: 10px;
-      overflow: hidden; text-align: left;
-    }
-    .card a {
-      display: flex; align-items: center; padding: 14px 18px;
-      text-decoration: none; color: var(--text); border-bottom: 1px solid var(--line);
-      transition: background 0.15s;
-    }
-    .card a:last-child { border-bottom: none; }
-    .card a:hover { background: #f8f6f0; }
-    .card .icon { width: 36px; height: 36px; border-radius: 8px; display: grid; place-items: center; margin-right: 14px; font-size: 1.1rem; flex-shrink: 0; }
-    .icon-write { background: #e8f5e9; color: #2e7d32; }
-    .icon-page { background: #e3f2fd; color: #1565c0; }
-    .icon-media { background: #fff3e0; color: #e65100; }
-    .icon-cms { background: #f3e5f5; color: #7b1fa2; }
-    .card .label { font-size: 0.88rem; font-weight: 600; }
-    .card .desc { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
-    .card .arrow { margin-left: auto; color: #ccc; font-size: 1.2rem; }
-    .access-box {
-      background: #fff8f0; border: 1px solid #f0e0cc; border-radius: 8px;
-      padding: 12px 16px; font-size: 0.78rem; color: #6B665C; text-align: left;
-    }
-    .access-box strong { color: #B5422C; }
-    .access-box a { color: var(--brand); font-weight: 600; }
-    .footer { font-size: 0.72rem; color: #aaa; margin-top: 16px; }
-    .footer a { color: var(--brand); text-decoration: none; }
+    .wrap { max-width: 400px; text-align: center; }
+    .logo { width: 64px; height: 64px; margin-bottom: 12px; }
+    h1 { font-size: 1.2rem; color: #2f5d50; margin-bottom: 4px; }
+    .sub { color: #6b665c; font-size: 0.85rem; margin-bottom: 24px; }
+    .info { font-size: 0.8rem; color: #6b665c; line-height: 1.6; margin-bottom: 20px; }
+    .info a { color: #2f5d50; font-weight: 600; }
   </style>
 </head>
 <body>
   <main class="wrap">
     <img src="/assets/img/logo.svg" alt="AICRA" class="logo">
-    <h1>AICRA Content Management</h1>
-    <p class="sub">AI Security Research Association</p>
-
-    <div class="section">
-      <div class="section-title">Collaborator</div>
-      <div class="card">
-        <a href="/admin/cms.html#/collections/posts/new">
-          <div class="icon icon-write">+</div>
-          <div><div class="label">New Post</div><div class="desc">AI 보안 연구 블로그 포스트 작성</div></div>
-          <div class="arrow">&rsaquo;</div>
-        </a>
-        <a href="/admin/cms.html#/collections/posts">
-          <div class="icon icon-page">&#9776;</div>
-          <div><div class="label">Posts</div><div class="desc">기존 포스트 편집/삭제</div></div>
-          <div class="arrow">&rsaquo;</div>
-        </a>
-        <a href="/admin/cms.html#/collections/pages">
-          <div class="icon icon-page">&#9998;</div>
-          <div><div class="label">Pages</div><div class="desc">About, Team, News, Community, Publications</div></div>
-          <div class="arrow">&rsaquo;</div>
-        </a>
-        <a href="/admin/cms.html#/media">
-          <div class="icon icon-media">&#128247;</div>
-          <div><div class="label">Media</div><div class="desc">이미지, SVG, 사진 업로드</div></div>
-          <div class="arrow">&rsaquo;</div>
-        </a>
-        <a href="/admin/cms.html">
-          <div class="icon icon-cms">&#9881;</div>
-          <div><div class="label">Dashboard</div><div class="desc">전체 콘텐츠 관리</div></div>
-          <div class="arrow">&rsaquo;</div>
-        </a>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="access-box">
-        <strong>처음이신가요?</strong><br>
-        GitHub collaborator 권한이 필요합니다. CMS 접속 시 GitHub 로그인이 진행됩니다.<br>
-        권한이 없다면
-        <a href="https://github.com/AICRA-PAGE/AICRA-PAGE.github.io/issues/new?template=access-request.md" target="_blank">접근 권한 요청</a>을 해주세요.
-      </div>
-    </div>
-
-    <div class="footer">
-      <a href="https://aicra-page.github.io">Blog</a> &middot;
-      <a href="https://github.com/AICRA-PAGE/AICRA-PAGE.github.io">GitHub</a>
-    </div>
+    <h1>AICRA CMS</h1>
+    <p class="sub">잠시 후 편집기가 로드됩니다...</p>
+    <p class="info">
+      GitHub 로그인이 필요합니다. 권한이 없다면
+      <a href="https://github.com/AICRA-PAGE/AICRA-PAGE.github.io/issues/new?template=access-request.md" target="_blank">접근 권한 요청</a>을 해주세요.<br><br>
+      <a href="https://aicra-page.github.io">블로그로 돌아가기</a>
+    </p>
   </main>
+  <script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>
 </body>
 </html>
