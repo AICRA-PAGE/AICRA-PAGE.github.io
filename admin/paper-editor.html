@@ -209,6 +209,12 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
       <option value="phd_kr">박사학위논문</option>
       <option value="phd_en">PhD Dissertation</option>
     </optgroup>
+    <optgroup label="법/정책/거버넌스">
+      <option value="legal">법학 논문 (AI 규제/책임)</option>
+      <option value="compliance">컴플라이언스 (ISO/규제 매핑)</option>
+      <option value="governance">AI 거버넌스/위험관리</option>
+      <option value="policy">정책 제안/영향평가</option>
+    </optgroup>
   </select>
   <button class="bt" onclick="toggleRef()">참고문헌</button>
   <button class="bt" onclick="toggleHelp()">?</button>
@@ -228,7 +234,7 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
 <div class="meta" id="metaBar">
   <div><label>제목</label><input id="ti" placeholder="논문 제목"></div>
   <div><label>저자</label><input id="au" placeholder="제1저자" value="AICRA"></div>
-  <div><label>분야</label><select id="dm"><option>LLM Security</option><option>Adversarial ML</option><option>Prompt Injection</option><option>AI Red Teaming</option><option>MCP Security</option><option>Agentic AI</option><option>Privacy / FL</option><option>AI Governance</option><option>Network Security</option><option>Malware Analysis</option><option>Cryptography</option><option>Other</option></select></div>
+  <div><label>분야</label><select id="dm"><option>LLM Security</option><option>Adversarial ML</option><option>Prompt Injection</option><option>AI Red Teaming</option><option>MCP Security</option><option>Agentic AI</option><option>Privacy / FL</option><option>AI Governance</option><option>Network Security</option><option>Malware Analysis</option><option>Cryptography</option><option>AI Governance</option><option>AI Policy</option><option>AI Law / Regulation</option><option>Compliance</option><option>AI Ethics</option><option>Other</option></select></div>
   <div><label>상태</label><select id="st-sel"><option value="draft">초안</option><option value="review">심사중</option><option value="published">게재</option></select></div>
   <div><label>키워드</label><input id="kw" placeholder="키워드1, 키워드2"></div>
 </div>
@@ -275,6 +281,14 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
   <button onclick="ins('flowchart')" title="프로토콜 시퀀스 다이어그램">시퀀스</button>
   <button onclick="ins('timeline')" title="타임라인 다이어그램">타임라인</button>
   <button onclick="ins('ethics')" title="윤리 및 책임 공개 섹션">윤리</button>
+
+  <span class="gl">법/정책</span>
+  <button onclick="ins('statute')" title="규제조문-통제항목 매핑표">조문매핑</button>
+  <button onclick="ins('case_law')" title="판례/행정해석 분석 블록">판례분석</button>
+  <button onclick="ins('risk_matrix')" title="위험 매트릭스 (영향도 x 발생가능성)">위험매트릭스</button>
+  <button onclick="ins('stakeholder')" title="이해관계자 분석표">이해관계자</button>
+  <button onclick="ins('comp_law')" title="비교법 분석표 (EU/US/KR)">비교법</button>
+  <button onclick="ins('glossary')" title="한영 법률/거버넌스 용어집">용어집</button>
 </div>
 
 <div class="ed">
@@ -431,6 +445,18 @@ sequenceDiagram
 ```</pre>
   <div class="io-label">출력</div>
   <div class="out" style="text-align:center;font-size:.58rem;color:#555">Client --Request--> Server<br>Attacker --Injection--> Server</div></div>
+
+  <div class="hitem"><b>조문 매핑</b><em>규제 조문과 통제항목을 매핑하는 표</em>
+  <div class="io-label">입력</div>
+  <pre>| 규제 | 조문 | 요구사항 | 통제항목 |
+|------|------|---------|---------|
+| EU AI Act | Art.6 | 고위험 분류 | ISO A.5 |</pre>
+  <div class="io-label">출력</div>
+  <div class="out"><table><tr><th>규제</th><th>조문</th><th>요구사항</th><th>통제항목</th></tr><tr><td>EU AI Act</td><td>Art.6</td><td>고위험 분류</td><td>ISO A.5</td></tr></table></div></div>
+
+  <div class="hitem"><b>위험 매트릭스</b><em>영향도 x 발생가능성으로 위험등급을 산정합니다</em>
+  <div class="io-label">출력</div>
+  <div class="out"><table><tr><th>위험</th><th>영향(1-5)</th><th>발생(1-5)</th><th>등급</th><th>대응</th></tr><tr><td>데이터 유출</td><td>5</td><td>3</td><td>15(높음)</td><td>완화</td></tr></table></div></div>
 
   <div class="hitem"><b>단축키</b>
   <div class="out" style="font-family:'Pretendard',sans-serif;font-size:.6rem;border:none">
@@ -1957,6 +1983,289 @@ $^*$교신저자
 ## 참고문헌
 
 <!-- 정보보호학회논문지: 일반논문/짧은논문(4쪽) 구분. 공동저자 학회 회원 요건. -->
+`,
+
+legal:`# [논문 제목]
+
+# [English Title]
+
+**[저자1]**$^1$, **[저자2]**$^{2,*}$
+$^1$[대학교 법학전문대학원] $^2$[소속]
+$^*$교신저자
+
+:::abstract
+[국문초록: AI 규제/책임/개인정보 등 법적 쟁점에 대한 분석]
+:::
+
+**주요어:** [AI 규제], [법적 책임], [개인정보보호]
+
+---
+
+## I. 문제제기
+
+### 1. 연구의 배경
+### 2. 연구의 목적 및 범위
+### 3. 선행연구 검토
+
+---
+
+## II. 기술적 배경
+
+### 1. 관련 AI/보안 기술 개요
+### 2. 기술적 메커니즘과 법적 함의
+
+---
+
+## III. 법적 쟁점 분석
+
+### 1. 쟁점 1: [책임 소재]
+#### 가. 현행법 검토
+#### 나. 판례 및 행정해석
+#### 다. 소결
+
+### 2. 쟁점 2: [개인정보/지식재산]
+#### 가. 현행법 검토
+#### 나. 판례 및 행정해석
+#### 다. 소결
+
+---
+
+## IV. 비교법적 분석
+
+### 1. EU (AI Act, GDPR)
+### 2. 미국
+### 3. 한국 (개인정보보호법, 인공지능기본법)
+### 4. 비교 소결
+
+---
+
+## V. 입법론/해석론 제안
+
+### 1. 현행법 해석론
+### 2. 입법적 개선방안
+
+---
+
+## VI. 결론
+
+---
+
+## 참고문헌
+
+<!-- 법학 논문: 각주 중심 인용 체계. [^1] 형식 사용. -->
+`,
+
+compliance:`# [논문 제목]
+
+**[저자1]**, **[저자2]**
+[소속]
+
+:::abstract
+[규제 준수 현황 분석, 통제 설계, 갭 분석 및 시정조치 방안]
+:::
+
+**주요어:** [컴플라이언스], [ISO 42001], [AI 규제]
+
+---
+
+## 1. 서론
+
+### 1.1 연구 배경
+### 1.2 컴플라이언스 범위 및 시스템 경계
+
+---
+
+## 2. 규제/표준 프레임워크
+
+### 2.1 적용 규제 (EU AI Act / K-PIPA / GDPR)
+### 2.2 적용 표준 (ISO 27001 / ISO 42001 / SOC 2)
+
+---
+
+## 3. 규제조문-통제항목 매핑
+
+*표 1. 규제조문-통제항목 매핑.*
+| 규제 조문 | 요구사항 | 통제항목 (ISO) | 구현 현황 | 증적 |
+|-----------|---------|---------------|----------|------|
+| | | | | |
+
+---
+
+## 4. 통제 설계 및 책임체계
+
+### 4.1 RACI 매트릭스
+
+*표 2. RACI 매트릭스.*
+| 활동 | 책임(R) | 승인(A) | 협의(C) | 통보(I) |
+|------|---------|---------|---------|---------|
+| | | | | |
+
+### 4.2 기술적 통제
+### 4.3 관리적 통제
+
+---
+
+## 5. 갭 분석
+
+*표 3. 갭 분석 결과.*
+| 통제항목 | 요구 수준 | 현재 수준 | 갭 | 우선순위 | 시정조치 |
+|---------|---------|---------|-----|---------|---------|
+| | | | | | |
+
+---
+
+## 6. 시정조치 계획 (CAPA)
+
+---
+
+## 7. 결론
+
+---
+
+## 참고문헌
+`,
+
+governance:`# [논문 제목]
+
+**[저자1]**, **[저자2]**
+[소속]
+
+:::abstract
+[AI 거버넌스 체계 설계, 위험관리, 이해관계자 분석에 대한 연구]
+:::
+
+**주요어:** [AI 거버넌스], [위험관리], [책임성]
+
+---
+
+## 1. 서론
+
+---
+
+## 2. 이론적 배경
+
+### 2.1 AI 거버넌스 프레임워크
+### 2.2 위험관리 이론
+### 2.3 선행연구
+
+---
+
+## 3. 거버넌스 원칙 및 목표
+
+---
+
+## 4. 이해관계자 분석
+
+*표 1. 이해관계자 분석.*
+| 이해관계자 | 역할 | 관심사 | 영향력 | 참여 수준 |
+|-----------|------|--------|--------|----------|
+| | | | 높음/중간/낮음 | |
+
+---
+
+## 5. 위험 매트릭스
+
+*표 2. AI 위험 매트릭스.*
+| 위험 | 영향도 | 발생가능성 | 위험등급 | 대응전략 |
+|------|--------|-----------|---------|---------|
+| | 1-5 | 1-5 | | |
+
+---
+
+## 6. 의사결정 구조 및 책임체계
+
+### 6.1 거버넌스 위원회 구성
+### 6.2 역할 및 책임 (R&R)
+
+---
+
+## 7. 통제수단 및 모니터링
+
+### 7.1 KPI 설계
+### 7.2 모니터링 체계
+
+---
+
+## 8. 사건 대응 및 책임성 메커니즘
+
+---
+
+## 9. 결론
+
+---
+
+## 참고문헌
+`,
+
+policy:`# [논문 제목]
+
+**[저자1]**, **[저자2]**
+[소속]
+
+:::abstract
+[AI 정책 문제 정의, 대안 분석, 권고안 및 이행 로드맵에 관한 연구]
+:::
+
+**주요어:** [AI 정책], [규제영향평가], [이행 로드맵]
+
+---
+
+## I. 정책문제 정의
+
+### 1. 문제의 배경
+### 2. 정책창 (Policy Window) 분석
+
+---
+
+## II. 현행 정책/규범 분석
+
+### 1. 국내 현황
+### 2. 해외 동향
+### 3. 국제 규범 (OECD AI Principles 등)
+
+---
+
+## III. 정책대안 비교
+
+*표 1. 정책대안 비교.*
+| 대안 | 내용 | 실행가능성 | 효과성 | 형평성 | 부작용 |
+|------|------|-----------|--------|--------|--------|
+| 대안 A | | | | | |
+| 대안 B | | | | | |
+| 대안 C | | | | | |
+
+---
+
+## IV. 정책 권고안
+
+### 1. 핵심 권고사항
+### 2. 세부 권고사항
+
+---
+
+## V. 이행 로드맵
+
+*표 2. 이행 로드맵.*
+| 단계 | 기간 | 과제 | 주체 | 성과지표 |
+|------|------|------|------|---------|
+| 단기 | 0-6개월 | | | |
+| 중기 | 6-18개월 | | | |
+| 장기 | 18개월+ | | | |
+
+---
+
+## VI. 정책영향평가
+
+### 1. 규제영향 분석
+### 2. 사회경제적 영향
+
+---
+
+## VII. 결론
+
+---
+
+## 참고문헌
 `
   };
   if(T[type]){replaceAll(T[type]);inp.dispatchEvent(new Event('input'));document.getElementById('tplSel').value='';}
@@ -2001,7 +2310,19 @@ function ins(type){
 
     trustbnd:'```mermaid\nflowchart TB\n    subgraph Untrusted[비신뢰 영역]\n      A[External Client]\n    end\n    subgraph DMZ[DMZ]\n      B[WAF / API Gateway]\n    end\n    subgraph Trusted[신뢰 영역]\n      C[Application]\n      D[(Database)]\n    end\n    A --> B --> C --> D\n```\n*Fig. N. [신뢰 경계 다이어그램.]*\n\n',
 
-    dfd:'```mermaid\nflowchart TB\n    EX[External Entity] --> P1((Process 1))\n    P1 --> DS1[(Data Store)]\n    DS1 --> P2((Process 2))\n    P2 --> EX2[Output Entity]\n```\n*Fig. N. [데이터 흐름도 (DFD).]*\n\n'
+    dfd:'```mermaid\nflowchart TB\n    EX[External Entity] --> P1((Process 1))\n    P1 --> DS1[(Data Store)]\n    DS1 --> P2((Process 2))\n    P2 --> EX2[Output Entity]\n```\n*Fig. N. [데이터 흐름도 (DFD).]*\n\n',
+
+    statute:'*표 N. 규제조문-통제항목 매핑.*\n| 규제/법률 | 조문 | 요구사항 | 통제항목 | 구현 현황 | 증적 |\n|----------|------|---------|---------|----------|------|\n| EU AI Act | Art. X | | | 충족/미충족 | |\n| 개인정보보호법 | 제X조 | | | | |\n| ISO 42001 | A.X.X | | | | |\n\n',
+
+    case_law:'### 판례/행정해석 분석\n\n**사건명:** [사건명]\n**법원/기관:** [법원/위원회]\n**사건번호:** [연도-번호]\n**판결일:** [YYYY-MM-DD]\n\n**사실관계:**\n\n\n**쟁점:**\n\n\n**판시사항:**\n\n\n**의의 및 시사점:**\n\n\n',
+
+    risk_matrix:'*표 N. 위험 매트릭스.*\n| 위험 항목 | 영향도 (1-5) | 발생가능성 (1-5) | 위험등급 | 대응전략 |\n|----------|:-----------:|:---------------:|:-------:|----------|\n| | | | | 수용/완화/전가/회피 |\n| | | | | |\n| | | | | |\n\n<!-- 위험등급: 영향도 x 발생가능성. 1-6 낮음, 7-14 중간, 15-25 높음 -->\n\n',
+
+    stakeholder:'*표 N. 이해관계자 분석.*\n| 이해관계자 | 역할 | 관심사/요구 | 영향력 | 참여 수준 |\n|-----------|------|-----------|:------:|:---------:|\n| 규제기관 | | | 높음 | 결정자 |\n| 개발팀 | | | 중간 | 실행자 |\n| 사용자 | | | 낮음 | 수혜자 |\n| | | | | |\n\n',
+
+    comp_law:'*표 N. 비교법 분석.*\n| 비교 항목 | EU | 미국 | 한국 | 일본 |\n|----------|-----|------|------|------|\n| 근거 법률 | AI Act | [해당 없음/주법] | 인공지능기본법 | |\n| 규제 방식 | 위험 기반 | 자율 규제 | | |\n| 적용 범위 | | | | |\n| 제재 수준 | | | | |\n| 시행 시기 | | | | |\n\n',
+
+    glossary:'### 용어집 (Glossary)\n\n| 국문 | 영문 | 정의 |\n|------|------|------|\n| 인공지능 | Artificial Intelligence (AI) | |\n| 개인정보 | Personal Data / PII | |\n| 위험 평가 | Risk Assessment | |\n| 적합성 | Conformity | |\n| 설명가능성 | Explainability | |\n| | | |\n\n'
   };
   inp.focus();
   typeText(T[type]||'');
