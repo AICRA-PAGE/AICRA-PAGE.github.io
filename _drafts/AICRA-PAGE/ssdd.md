@@ -9,53 +9,129 @@ domain: "LLM Security"
 lang: ko
 ---
 
-# [Paper Title]
+# [PhD Dissertation Title]
 
-[Author 1], [Author 2]
-[Affiliations]
+**[Author Name]**
+
+A dissertation submitted in partial fulfillment of the requirements for the degree of
+**Doctor of Philosophy**
+in [Department/Program]
+
+**[University Name]**
+[Year]
+
+---
+
+## Dissertation Committee
+
+- [Chair Name], Chair
+- [Member Name]
+- [Member Name]
+- [Member Name]
+
+---
 
 :::abstract
-[150-250 words]
+[Abstract: 300-500 words. Comprehensive summary of the dissertation.]
 :::
 
----
-
-## 1. Introduction
+**Keywords:**
 
 ---
 
-## 2. Related Work
+## Acknowledgments
 
 ---
 
-## 3. Preliminaries
+## Table of Contents
 
 ---
 
-## 4. Method
+## List of Tables
 
 ---
 
-## 5. Theoretical Analysis
+## List of Figures
 
 ---
 
-## 6. Experiments
+## List of Abbreviations
 
-### 6.1 Setup
-### 6.2 Main Results
-### 6.3 Ablation
-
----
-
-## 7. Conclusion
+| Abbreviation | Full Form |
+|-------------|-----------|
+| | |
 
 ---
 
-## Acknowledgements
+## Chapter 1. Introduction
+
+### 1.1 Motivation
+### 1.2 Problem Statement
+### 1.3 Research Questions
+### 1.4 Contributions
+### 1.5 Dissertation Outline
 
 ---
 
-## References
+## Chapter 2. Literature Review
 
-<!-- ICML: 8 pages main, single PDF with appendices. Double-blind. -->
+### 2.1 [Theoretical Foundations]
+### 2.2 [Related Techniques]
+### 2.3 [Existing Approaches]
+### 2.4 [Research Gaps]
+
+---
+
+## Chapter 3. Methodology
+
+### 3.1 Research Design
+### 3.2 System Model
+### 3.3 Threat Model
+### 3.4 Formal Framework
+
+---
+
+## Chapter 4. [Contribution 1]
+
+### 4.1 Design
+### 4.2 Analysis
+### 4.3 Evaluation
+
+---
+
+## Chapter 5. [Contribution 2]
+
+### 5.1 Design
+### 5.2 Analysis
+### 5.3 Evaluation
+
+---
+
+## Chapter 6. [Contribution 3]
+
+---
+
+## Chapter 7. Discussion
+
+### 7.1 Summary of Findings
+### 7.2 Limitations
+### 7.3 Implications
+
+---
+
+## Chapter 8. Conclusion and Future Work
+
+### 8.1 Conclusions
+### 8.2 Future Directions
+
+---
+
+## Bibliography
+
+---
+
+## Appendix A
+
+---
+
+## Appendix B
