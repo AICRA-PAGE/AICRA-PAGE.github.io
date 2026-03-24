@@ -305,6 +305,22 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
   </div>
 </div>
 
+<div id="optBar" style="display:flex;gap:8px;padding:3px 12px;background:var(--surface);border-bottom:1px solid var(--line);flex-shrink:0;align-items:center;flex-wrap:wrap">
+  <span style="font-size:.55rem;color:var(--brand);font-weight:700">논문 유형:</span>
+  <select id="paperType" class="meta-sel" style="width:auto;padding:2px 5px" onchange="applyPaperType(this.value)">
+    <option value="">자유형식</option>
+    <option value="short">소논문 (4-6p)</option>
+    <option value="journal">학술지</option>
+    <option value="conf">학회</option>
+    <option value="symp">학술대회</option>
+  </select>
+  <span style="width:1px;height:14px;background:var(--line)"></span>
+  <span style="font-size:.55rem;color:var(--brand);font-weight:700">투고 옵션:</span>
+  <label style="font-size:.52rem;display:flex;align-items:center;gap:2px;cursor:pointer"><input type="checkbox" id="opt-cover" style="width:auto" onchange="toggleOption('cover',this.checked)"> 표지</label>
+  <label style="font-size:.52rem;display:flex;align-items:center;gap:2px;cursor:pointer"><input type="checkbox" id="opt-coverletter" style="width:auto" onchange="toggleOption('coverletter',this.checked)"> 커버레터</label>
+  <label style="font-size:.52rem;display:flex;align-items:center;gap:2px;cursor:pointer"><input type="checkbox" id="opt-enabs" style="width:auto" onchange="toggleOption('enabs',this.checked)"> 영문 초록</label>
+</div>
+
 <div class="ins" id="insBar">
   <span class="gl">구조</span>
   <button onclick="ins('sec')" title="## 섹션 제목 삽입">섹션</button>
@@ -313,7 +329,10 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
   <button onclick="ins('fig')" title="그림 + 캡션 (캡션은 아래)">그림</button>
   <button onclick="ins('tbl')" title="표 + 캡션 (캡션은 위, 학술 관례)">표</button>
   <button onclick="ins('code')" title="코드 블록 (언어 태그 포함)">코드</button>
-  <button onclick="ins('cite')" title="인용: [cite:N] -> [N]">인용</button>
+  <button onclick="ins('cite')" title="번호 인용: [cite:N] -> [N]">인용</button>
+  <button onclick="ins('dquote')" title="직접인용: 원문 그대로 따옴표로 인용">직접인용</button>
+  <button onclick="ins('iquote')" title="간접인용: 내용을 재서술하여 인용">간접인용</button>
+  <button onclick="ins('fn')" title="각주: [^N] 본문 참조 (Alt+N)" style="background:var(--surface)">각주</button>
 
   <span class="gl">환경</span>
   <button onclick="ins('thm')" title="정리: 증명 가능한 형식적 명제">정리</button>
@@ -328,7 +347,6 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
   <button onclick="ins('framework')" title="프레임워크 매핑: MITRE/OWASP/NIST 참조">프레임워크</button>
 
   <span class="gl">시각자료</span>
-  <button onclick="ins('fn')" title="각주: [^1] 본문 참조 + [^1]: 설명 (Ctrl+Shift+F)">각주</button>
   <button onclick="ins('subfig')" title="서브피겨: (a)(b) 2열 이미지 배치">서브피겨</button>
   <button onclick="ins('imgfmt')" title="이미지 크기/정렬: {width=50%}">이미지</button>
   <button onclick="ins('perf')" title="성능 비교 테이블 (통계치 포함)">성능표</button>
@@ -369,6 +387,12 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
   </div>
   <div class="ref-panel" id="refPanel">
     <div class="ref-head"><span>참고문헌</span><button class="bt" style="padding:1px 4px;font-size:.5rem" onclick="toggleRef()">X</button></div>
+    <div style="padding:4px 6px;border-bottom:1px solid var(--line);display:flex;gap:2px;flex-shrink:0">
+      <input id="schQuery" placeholder="논문 검색..." style="flex:1;padding:3px 5px;border:1px solid var(--line);border-radius:3px;font-size:.6rem;background:var(--panel);color:var(--text)">
+      <button class="bt" onclick="searchScholar()" style="font-size:.52rem;padding:2px 4px">검색</button>
+      <button class="bt" onclick="openGScholar()" style="font-size:.52rem;padding:2px 4px" title="Google Scholar에서 열기">G</button>
+    </div>
+    <div id="schResults" style="max-height:120px;overflow-y:auto;font-size:.6rem;display:none;border-bottom:1px solid var(--line)"></div>
     <div class="ref-list" id="refList"></div>
     <div class="ref-add">
       <input id="refInput" placeholder="저자, 제목, 학회/저널, 연도">
@@ -522,7 +546,7 @@ sequenceDiagram
   <div class="out" style="font-family:'Pretendard',sans-serif;font-size:.6rem;border:none">
   <b>Ctrl+B</b> 굵게 | <b>Ctrl+I</b> 기울임 | <b>Ctrl+K</b> 링크<br>
   <b>Ctrl+M</b> 수식 | <b>Ctrl+S</b> 저장 | <b>Tab</b> 들여쓰기<br>
-  <b>Ctrl+Shift+F</b> 각주 삽입 (자동 번호)<br>
+  <b>Alt+N</b> 각주 삽입 (자동 번호)<br>
   <b>Ctrl+Z</b> 되돌리기 | <b>Ctrl+Y</b> 다시 실행
   </div></div>
 
@@ -711,7 +735,7 @@ inp.addEventListener('keydown',e=>{
   if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();wrap('[','](url)');}
   if((e.ctrlKey||e.metaKey)&&e.key==='m'){e.preventDefault();wrap('$','$');}
   if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();save();document.getElementById('as').textContent='Saved';}
-  if((e.ctrlKey||e.metaKey)&&e.shiftKey&&(e.key==='f'||e.key==='F')){e.preventDefault();insertFootnote();}
+  if(e.altKey&&(e.key==='n'||e.key==='N')){e.preventDefault();insertFootnote();}
   if((e.ctrlKey||e.metaKey)&&e.key==='z'){/* native undo */}
   if((e.ctrlKey||e.metaKey)&&e.key==='y'){/* native redo */}
 });
@@ -2404,7 +2428,11 @@ function ins(type){
 
     comp_law:'*표 N. 비교법 분석.*\n| 비교 항목 | EU | 미국 | 한국 | 일본 |\n|----------|-----|------|------|------|\n| 근거 법률 | AI Act | [해당 없음/주법] | 인공지능기본법 | |\n| 규제 방식 | 위험 기반 | 자율 규제 | | |\n| 적용 범위 | | | | |\n| 제재 수준 | | | | |\n| 시행 시기 | | | | |\n\n',
 
-    glossary:'### 용어집 (Glossary)\n\n| 국문 | 영문 | 정의 |\n|------|------|------|\n| 인공지능 | Artificial Intelligence (AI) | |\n| 개인정보 | Personal Data / PII | |\n| 위험 평가 | Risk Assessment | |\n| 적합성 | Conformity | |\n| 설명가능성 | Explainability | |\n| | | |\n\n'
+    glossary:'### 용어집 (Glossary)\n\n| 국문 | 영문 | 정의 |\n|------|------|------|\n| 인공지능 | Artificial Intelligence (AI) | |\n| 개인정보 | Personal Data / PII | |\n| 위험 평가 | Risk Assessment | |\n| 적합성 | Conformity | |\n| 설명가능성 | Explainability | |\n| | | |\n\n',
+
+    dquote:'> "[직접 인용할 원문 내용]" [cite:'+(refs.length+1)+']\n\n',
+
+    iquote:'[저자/연구]에 따르면, [간접 인용 내용을 자신의 말로 재서술] [cite:'+(refs.length+1)+'].\n\n'
   };
   inp.focus();
   typeText(T[type]||'');
@@ -3068,6 +3096,84 @@ function addExtAuthor(){
   document.getElementById('coau').value=selectedCoauthors.join(', ');
   document.getElementById('ext-name').value='';
   updateAuthorDDs();
+}
+
+// === ACADEMIC DB SEARCH ===
+async function searchScholar(){
+  const q=document.getElementById('schQuery').value.trim();
+  if(!q)return;
+  const results=document.getElementById('schResults');
+  results.style.display='block';
+  results.innerHTML='<p style="padding:6px;color:var(--muted)">검색 중...</p>';
+  try{
+    // Semantic Scholar API
+    const r=await fetch('https://api.semanticscholar.org/graph/v1/paper/search?query='+encodeURIComponent(q)+'&limit=5&fields=title,authors,year,venue,citationCount');
+    if(!r.ok)throw new Error('API error');
+    const d=await r.json();
+    if(!d.data||!d.data.length){results.innerHTML='<p style="padding:6px;color:var(--muted)">결과 없음</p>';return;}
+    results.innerHTML=d.data.map(p=>{
+      const authors=(p.authors||[]).map(a=>a.name).join(', ');
+      const ref=authors+'. "'+p.title+'." '+(p.venue||'')+', '+(p.year||'')+'.';
+      return '<div style="padding:4px 6px;border-bottom:1px dotted var(--line);cursor:pointer" onclick="addScholarRef(this)" data-ref="'+ref.replace(/"/g,'&quot;')+'"><b style="color:var(--brand);font-size:.58rem">'+p.title+'</b><br><span style="color:var(--muted);font-size:.52rem">'+authors+' ('+p.year+') '+(p.venue||'')+' | 인용:'+p.citationCount+'</span></div>';
+    }).join('');
+  }catch(e){
+    // Fallback to CrossRef
+    try{
+      const r=await fetch('https://api.crossref.org/works?query='+encodeURIComponent(q)+'&rows=5');
+      if(!r.ok)throw new Error();
+      const d=await r.json();
+      results.innerHTML=d.message.items.map(p=>{
+        const authors=(p.author||[]).map(a=>(a.family||'')+' '+(a.given||'')).join(', ');
+        const title=(p.title||[''])[0];
+        const year=p.published&&p.published['date-parts']?p.published['date-parts'][0][0]:'';
+        const venue=(p['container-title']||[''])[0];
+        const ref=authors+'. "'+title+'." '+venue+', '+year+'.';
+        return '<div style="padding:4px 6px;border-bottom:1px dotted var(--line);cursor:pointer" onclick="addScholarRef(this)" data-ref="'+ref.replace(/"/g,'&quot;')+'"><b style="color:var(--brand);font-size:.58rem">'+title+'</b><br><span style="color:var(--muted);font-size:.52rem">'+authors+' ('+year+') '+venue+'</span></div>';
+      }).join('');
+    }catch(e2){results.innerHTML='<p style="padding:6px;color:#b42318">검색 실패</p>';}
+  }
+}
+function addScholarRef(el){
+  const ref=el.dataset.ref;if(!ref)return;
+  refs.push(ref);renderRefs();render();
+  el.style.background='var(--surface)';el.style.opacity='.5';
+  document.getElementById('as').textContent='참고문헌 추가됨 ['+refs.length+']';
+}
+function openGScholar(){
+  const q=document.getElementById('schQuery').value.trim();
+  if(q)window.open('https://scholar.google.com/scholar?q='+encodeURIComponent(q),'_blank');
+}
+
+// === PAPER TYPE + SUBMISSION OPTIONS ===
+function applyPaperType(type){
+  if(!type)return;
+  const hints={short:'소논문: 4-6페이지, 간결한 구조 (서론-방법-결과-결론)',journal:'학술지: 전체 구조, 상세한 실험/분석, 참고문헌 충실',conf:'학회: 발표용, 명확한 기여, 제한된 페이지',symp:'학술대회: 포스터/구두 발표, 핵심 아이디어 중심'};
+  document.getElementById('as').textContent=hints[type]||'';
+}
+
+function toggleOption(opt,checked){
+  const t=inp.value;
+  const templates={
+    cover:'\n\n---\n\n# 표지\n\n**[논문 제목]**\n\n**[저자명]**\n\n[소속 기관]\n\n[제출일: '+new Date().toISOString().split('T')[0]+']\n\n---\n\n',
+    coverletter:'\n\n---\n\n## Cover Letter\n\nDear Editor,\n\nWe hereby submit our manuscript entitled "[제목]" for consideration in [저널/학회명].\n\n**Significance:** [연구의 중요성 1-2문장]\n\n**Novelty:** [새로운 기여 1-2문장]\n\n**Suitability:** [이 저널/학회에 적합한 이유]\n\nWe confirm that this manuscript has not been published elsewhere and is not under consideration by another journal.\n\nSincerely,\n[교신저자명]\n\n---\n\n',
+    enabs:'\n\n:::abstract\n[English Abstract: 150-250 words. Background, objective, method, results, conclusion.]\n:::\n\n**Keywords:** [keyword1], [keyword2], [keyword3]\n\n'
+  };
+  if(checked&&templates[opt]){
+    // Insert at appropriate position
+    if(opt==='cover'){
+      replaceAll(templates[opt]+t); // Cover at beginning
+    }else if(opt==='enabs'){
+      // Insert after first :::abstract block or at beginning
+      const absEnd=t.indexOf(':::\n',t.indexOf(':::abstract'));
+      if(absEnd>-1){
+        const pos=absEnd+4;
+        replaceAll(t.slice(0,pos)+templates[opt]+t.slice(pos));
+      }else{typeText(templates[opt]);}
+    }else{
+      typeText(templates[opt]); // At cursor
+    }
+    inp.dispatchEvent(new Event('input'));
+  }
 }
 
 // === GITHUB DOCUMENT MANAGEMENT ===
