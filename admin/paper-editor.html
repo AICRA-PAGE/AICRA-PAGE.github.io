@@ -1,132 +1,362 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AICRA Paper Editor</title>
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
-  <style>
-    :root{--b:#2f5d50;--bg:#f5f3ed;--c:#fff;--l:#e0ddd5;--t:#1c1917;--m:#6b665c}
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:-apple-system,BlinkMacSystemFont,'Pretendard',sans-serif;background:var(--bg);color:var(--t);height:100vh;display:flex;flex-direction:column;overflow:hidden}
-    .hd{display:flex;align-items:center;padding:6px 12px;background:var(--c);border-bottom:1px solid var(--l);gap:6px;flex-wrap:wrap}
-    .hd img{width:24px;height:24px}.hd h1{font-size:.88rem;color:var(--b);margin-right:auto}
-    .hd .badge{background:#7b1fa2;color:#fff;font-size:.6rem;padding:1px 6px;border-radius:8px;margin-left:4px}
-    .bt{padding:6px 12px;border:none;border-radius:5px;font-size:.75rem;font-weight:600;cursor:pointer;color:#fff}
-    .bg{background:var(--b)}.bg:hover{background:#244b40}
-    .bb{background:#1565c0}.bb:hover{background:#0d47a1}
-    .bo{background:transparent;color:var(--b);border:1px solid var(--l);text-decoration:none;display:inline-block}
-    .mt{display:flex;gap:6px;padding:6px 12px;background:#fafaf7;border-bottom:1px solid var(--l);flex-shrink:0;flex-wrap:wrap}
-    .mt label{font-size:.63rem;color:var(--m);font-weight:600}
-    .mt input,.mt select,.mt textarea{width:100%;padding:4px 6px;border:1px solid var(--l);border-radius:3px;font-size:.76rem;font-family:inherit}
-    .mt textarea{resize:vertical;min-height:36px}
-    .f1{flex:1;min-width:80px}.f2{flex:2;min-width:140px}.f3{flex:3;min-width:180px}
-    .ed{display:flex;flex:1;overflow:hidden}
-    .pn{flex:1;display:flex;flex-direction:column;overflow:hidden}
-    .pl{padding:4px 12px;font-size:.65rem;font-weight:700;color:var(--m);text-transform:uppercase;letter-spacing:.8px;background:#f0ede6;border-bottom:1px solid var(--l);flex-shrink:0}
-    .dv{width:3px;background:var(--l);cursor:col-resize;flex-shrink:0}
-    #input{flex:1;padding:12px;border:none;resize:none;font-size:.82rem;line-height:1.7;font-family:'JetBrains Mono',Consolas,monospace;background:var(--c);outline:none}
-    #pv{flex:1;padding:16px 24px;overflow-y:auto;background:var(--c);font-size:.88rem;line-height:1.9}
-    #pv h1,#pv h2,#pv h3{color:var(--b);margin:.7em 0 .3em}
-    #pv h2{border-bottom:1px solid var(--l);padding-bottom:2px}
-    #pv table{border-collapse:collapse;width:100%;margin:.7em 0;font-size:.8rem}
-    #pv th,#pv td{border:1px solid var(--l);padding:5px 8px}#pv th{background:#f0ede6}
-    #pv code{background:#f0ede6;padding:1px 3px;border-radius:2px;font-size:.8rem}
-    #pv pre{background:#292524;color:#e9e4da;padding:10px;border-radius:5px;overflow-x:auto;margin:.7em 0}
-    #pv pre code{background:none;color:inherit}
-    #pv blockquote{border-left:3px solid var(--b);padding:6px 12px;margin:.5em 0;background:#f8f6f0}
-    #pv .theorem,#pv .lemma,#pv .definition{background:#f8f6f0;border-left:4px solid var(--b);padding:10px 14px;margin:.8em 0;border-radius:0 6px 6px 0}
-    #pv .proof{background:#fafafa;border-left:3px solid #8b8580;padding:8px 14px;margin:.5em 0}
-    #pv .abstract-box{background:#f5f3ed;border:1px solid var(--l);border-radius:8px;padding:14px 18px;margin:1rem 0}
-    .st{padding:4px 12px;font-size:.68rem;color:var(--m);background:#f0ede6;border-top:1px solid var(--l);flex-shrink:0;display:flex;gap:10px}
-    .st b{color:var(--t)}
-    .tmpl{font-size:.7rem;color:#1565c0;cursor:pointer;text-decoration:underline;margin-left:8px}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AICRA Paper Editor</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&family=Pretendard:wght@400;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<style>
+:root{--bg:#f9f8f5;--panel:#fff;--text:#2a2a2a;--muted:#7a756c;--brand:#2f5d50;--brand2:#245045;--line:#e8e5de;--surface:#f3f1ec;--code-bg:#0f172a;--radius:8px;--accent:#b7791f}
+[data-theme=dark]{--bg:#1a1d23;--panel:#22262e;--text:#d4d0c8;--muted:#8a8578;--brand:#4da89a;--brand2:#3d8a7e;--line:#333840;--surface:#2a2e36;--code-bg:#0d1117}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Pretendard',sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden}
+
+/* Toolbar */
+.tb{display:flex;align-items:center;padding:8px 14px;background:var(--panel);border-bottom:1px solid var(--line);gap:8px;flex-shrink:0}
+.tb img{width:22px;height:22px}
+.tb h1{font-size:.85rem;color:var(--brand);font-weight:700;margin-right:4px}
+.tb .badge{font-size:.6rem;background:var(--accent);color:#fff;padding:1px 6px;border-radius:4px;font-weight:600}
+.tb .sep{width:1px;height:20px;background:var(--line);margin:0 4px}
+.bt{padding:5px 12px;border:none;border-radius:6px;font-size:.72rem;font-weight:600;cursor:pointer;background:var(--surface);color:var(--text);border:1px solid var(--line);transition:.15s}
+.bt:hover{background:var(--line)}
+.bt.p{background:var(--brand);color:#fff;border-color:var(--brand)}
+.bt.p:hover{background:var(--brand2)}
+.spacer{flex:1}
+.bt.icon{font-size:.8rem;padding:5px 8px}
+
+/* Meta */
+.meta{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:6px;padding:6px 14px;background:var(--surface);border-bottom:1px solid var(--line);flex-shrink:0}
+.meta label{font-size:.6rem;color:var(--muted);font-weight:600;display:block;margin-bottom:2px}
+.meta input,.meta select{width:100%;padding:5px 8px;border:1px solid var(--line);border-radius:5px;font-size:.78rem;background:var(--panel);color:var(--text);font-family:inherit}
+.meta2{display:grid;grid-template-columns:2fr 2fr 1fr;gap:6px;padding:6px 14px;background:var(--surface);border-bottom:1px solid var(--line);flex-shrink:0}
+.meta2 label{font-size:.6rem;color:var(--muted);font-weight:600;display:block;margin-bottom:2px}
+.meta2 input{width:100%;padding:5px 8px;border:1px solid var(--line);border-radius:5px;font-size:.78rem;background:var(--panel);color:var(--text);font-family:inherit}
+.meta2 .chk{display:flex;align-items:center;gap:6px;padding-top:14px}
+.meta2 .chk input{width:auto}
+.meta2 .chk span{font-size:.72rem;color:var(--muted)}
+
+/* Insert bar */
+.ins{display:flex;gap:4px;padding:4px 14px;background:var(--panel);border-bottom:1px solid var(--line);flex-shrink:0;flex-wrap:wrap}
+.ins button{padding:3px 10px;border:1px solid var(--line);border-radius:5px;font-size:.65rem;background:var(--panel);color:var(--muted);cursor:pointer}
+.ins button:hover{background:var(--surface);color:var(--text)}
+.ins .grp{display:flex;gap:3px;padding-left:6px;border-left:1px solid var(--line)}
+
+/* Editor */
+.ed{display:flex;flex:1;overflow:hidden}
+.pn{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.pn-label{padding:4px 14px;font-size:.62rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;background:var(--surface);border-bottom:1px solid var(--line);flex-shrink:0;display:flex;justify-content:space-between;align-items:center}
+.pn-label .opts{display:flex;gap:6px}
+.pn-label .opts button{font-size:.58rem;padding:2px 6px;border:1px solid var(--line);border-radius:4px;background:transparent;color:var(--muted);cursor:pointer}
+.pn-label .opts button.active{background:var(--brand);color:#fff;border-color:var(--brand)}
+#input{flex:1;padding:16px;border:none;resize:none;font-size:14px;line-height:1.8;font-family:'JetBrains Mono',monospace;background:var(--panel);color:var(--text);outline:none;tab-size:2}
+.dv{width:3px;background:var(--line);cursor:col-resize;flex-shrink:0}
+
+/* Preview - academic paper style */
+#pv{flex:1;padding:32px 40px;overflow-y:auto;background:var(--panel);font-family:'Noto Serif KR','Pretendard',serif;font-size:.95rem;line-height:1.9;color:var(--text);max-width:100%}
+#pv.two-col{column-count:2;column-gap:28px;column-rule:1px solid var(--line);font-size:.82rem;line-height:1.7;padding:24px 28px}
+#pv h1{font-size:1.5rem;font-weight:700;text-align:center;margin-bottom:.3rem;color:var(--text)}
+#pv h2{font-size:1.2rem;font-weight:700;padding-bottom:4px;border-bottom:2px solid var(--brand);margin:1.8rem 0 .8rem;color:var(--brand)}
+#pv h3{font-size:1.05rem;font-weight:600;margin:1.2rem 0 .5rem}
+#pv h4{font-size:.95rem;font-weight:600;margin:.8rem 0 .4rem}
+#pv p{margin-bottom:1rem;text-align:justify}
+#pv ul,#pv ol{margin-bottom:1rem;padding-left:1.5rem}
+#pv li{line-height:1.8;margin-bottom:.3rem}
+#pv strong{font-weight:700}
+#pv pre{background:var(--code-bg);border-radius:var(--radius);padding:1rem;margin:1rem 0;overflow-x:auto;border:1px solid var(--line)}
+#pv pre code{font-family:'JetBrains Mono',monospace;font-size:.82rem;color:#e2e8f0;background:none;padding:0}
+#pv code{font-family:'JetBrains Mono',monospace;background:var(--surface);padding:2px 5px;border-radius:3px;font-size:.85em;color:var(--brand)}
+#pv table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.85rem}
+#pv th{background:var(--brand);color:#fff;padding:.5rem .6rem;text-align:left;font-weight:600;font-size:.82rem}
+#pv td{padding:.5rem .6rem;border-bottom:1px solid var(--line);font-size:.85rem}
+#pv blockquote{border-left:3px solid var(--brand);padding:.6rem 1rem;margin:.8rem 0;background:var(--surface);font-style:italic;font-size:.9rem}
+#pv hr{border:none;border-top:1px solid var(--line);margin:1.5rem 0}
+#pv img{max-width:100%;border-radius:var(--radius)}
+#pv .katex-display{margin:.8rem 0}
+
+/* Academic environments */
+#pv .env-block{border:1px solid var(--line);border-radius:6px;padding:12px 16px;margin:1rem 0;background:var(--surface);page-break-inside:avoid}
+#pv .env-block.theorem{border-left:4px solid var(--brand)}
+#pv .env-block.lemma{border-left:4px solid #6366f1}
+#pv .env-block.definition{border-left:4px solid #0891b2}
+#pv .env-block.corollary{border-left:4px solid #7c3aed}
+#pv .env-block.proposition{border-left:4px solid #059669}
+#pv .env-block.algorithm{border-left:4px solid var(--accent);font-family:'JetBrains Mono',monospace;font-size:.82rem;white-space:pre-wrap}
+#pv .env-label{font-weight:700;color:var(--brand);margin-bottom:4px;font-size:.88rem}
+#pv .env-block.lemma .env-label{color:#6366f1}
+#pv .env-block.definition .env-label{color:#0891b2}
+#pv .env-block.corollary .env-label{color:#7c3aed}
+#pv .env-block.proposition .env-label{color:#059669}
+#pv .env-block.algorithm .env-label{color:var(--accent);font-family:'Pretendard',sans-serif}
+#pv .proof{margin:1rem 0;font-style:italic}
+#pv .proof::after{content:' \25A1';float:right;color:var(--brand)}
+#pv .proof-label{font-weight:700;font-style:normal;margin-right:6px}
+#pv .eq-row{display:flex;align-items:center;margin:.5rem 0}
+#pv .eq-row .katex-display{flex:1;margin:0}
+#pv .eq-num{color:var(--muted);font-size:.82rem;min-width:40px;text-align:right}
+#pv .abstract-box{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:14px 18px;margin:1rem 0;font-size:.88rem;line-height:1.7}
+#pv .abstract-box strong{display:block;margin-bottom:4px;color:var(--brand)}
+#pv .bib-list{font-size:.82rem;line-height:1.6;counter-reset:bib}
+#pv .bib-list p{padding-left:2.2rem;text-indent:-2.2rem;margin-bottom:.4rem}
+#pv .bib-list p::before{counter-increment:bib;content:'[' counter(bib) '] ';font-weight:600;color:var(--brand)}
+#pv .cite{color:var(--brand);font-weight:600;cursor:help}
+
+/* Status bar */
+.st{display:flex;gap:14px;padding:4px 14px;font-size:.65rem;color:var(--muted);background:var(--surface);border-top:1px solid var(--line);flex-shrink:0;align-items:center}
+.st b{color:var(--text)}
+.score{padding:2px 8px;border-radius:10px;color:#fff;font-size:.62rem}
+.sh{background:var(--brand)}.sm{background:var(--accent)}.sl{background:#b42318}
+
+/* Ref sidebar */
+.ref-panel{width:0;overflow:hidden;transition:width .2s;border-left:1px solid var(--line);background:var(--panel);display:flex;flex-direction:column}
+.ref-panel.open{width:280px}
+.ref-head{padding:8px 12px;font-size:.72rem;font-weight:700;color:var(--brand);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.ref-list{flex:1;overflow-y:auto;padding:8px}
+.ref-item{padding:6px 8px;font-size:.7rem;border-bottom:1px solid var(--line);line-height:1.5;color:var(--text)}
+.ref-item b{color:var(--brand);margin-right:4px}
+.ref-add{display:flex;gap:4px;padding:8px;border-top:1px solid var(--line);flex-shrink:0}
+.ref-add input{flex:1;padding:4px 8px;border:1px solid var(--line);border-radius:4px;font-size:.68rem;background:var(--panel);color:var(--text)}
+.ref-add button{padding:4px 10px;background:var(--brand);color:#fff;border:none;border-radius:4px;font-size:.65rem;cursor:pointer}
+
+/* Print */
+@media print{
+  .tb,.meta,.meta2,.ins,.st,.dv,.ref-panel,#input,.pn-label{display:none!important}
+  .ed{display:block!important}
+  .pn:first-child{display:none!important}
+  .pn:last-child{display:block!important;overflow:visible!important}
+  #pv{padding:0!important;font-size:11pt!important;column-count:2;column-gap:20pt}
+  #pv h1{font-size:14pt}#pv h2{font-size:12pt}
+  body{height:auto;overflow:visible}
+}
+
+/* Responsive */
+@media(max-width:1024px){.ed{flex-direction:column}.meta{grid-template-columns:1fr 1fr}.meta2{grid-template-columns:1fr 1fr 1fr}.ref-panel.open{width:220px}}
+</style>
 </head>
 <body>
-<div class="hd">
-  <img src="/assets/img/logo.svg" alt="">
-  <h1>AICRA Paper Editor <span class="badge">LaTeX</span></h1>
-  <button class="bt bg" onclick="renderPaper()">렌더링</button>
-  <button class="bt bb" onclick="publishPaper()">발행하기</button>
-  <a class="bt bo" href="/admin/editor.html">Blog Editor</a>
-  <a class="bt bo" href="/papers/">Papers</a>
+
+<div class="tb">
+  <img src="/assets/img/logo.svg" alt=""><h1>Paper Editor</h1><span class="badge">Academic</span>
+  <div class="sep"></div>
+  <button class="bt" onclick="ins('tpl')">Paper Template</button>
+  <button class="bt" onclick="toggleRef()">References</button>
+  <div class="spacer"></div>
+  <button class="bt" onclick="validatePaper()">Validate</button>
+  <button class="bt p" onclick="publish()">Export</button>
+  <div class="sep"></div>
+  <button class="bt icon" onclick="toggleDark()" title="Dark mode">&#9684;</button>
+  <button class="bt icon" onclick="toggleFocus()" title="Focus mode">&#9974;</button>
+  <button class="bt icon" onclick="window.print()" title="Print/PDF">&#9113;</button>
+  <a class="bt" href="/admin/" style="text-decoration:none">CMS</a>
+  <a class="bt" href="/admin/editor.html" style="text-decoration:none">Blog Editor</a>
 </div>
-<div class="mt">
-  <div class="f3"><label>Title</label><input id="ti" placeholder="논문 제목"></div>
-  <div class="f2"><label>Author (GitHub ID)</label><input id="au" placeholder="1저자"></div>
-  <div class="f2"><label>Co-Authors (쉼표)</label><input id="co" placeholder="co-author1, co-author2"></div>
-  <div class="f1"><label>Status</label><select id="st"><option>draft</option><option>review</option><option>published</option></select></div>
+
+<div class="meta" id="metaBar">
+  <div><label>Title</label><input id="ti" placeholder="Paper title"></div>
+  <div><label>Author</label><input id="au" placeholder="First Author" value="AICRA"></div>
+  <div><label>Status</label><select id="st-sel"><option value="draft">Draft</option><option value="review">Under Review</option><option value="published">Published</option></select></div>
+  <div><label>Keywords</label><input id="kw" placeholder="AI, Security, OWASP"></div>
 </div>
-<div class="mt">
-  <div class="f3"><label>Abstract</label><textarea id="ab" placeholder="초록 (200자 이내)"></textarea></div>
-  <div class="f2"><label>Keywords (쉼표)</label><input id="kw" placeholder="AI Security, LLM"></div>
-  <div class="f1"><label>Collaborative</label><select id="cl"><option value="false">No (작성자만)</option><option value="true">Yes (공동)</option></select></div>
+
+<div class="meta2" id="metaBar2">
+  <div><label>Co-authors</label><input id="coau" placeholder="Author2, Author3 (comma-separated)"></div>
+  <div><label>Abstract (one line)</label><input id="ab" placeholder="Brief abstract"></div>
+  <div class="chk"><input type="checkbox" id="collab"><span>Collaborative editing</span></div>
 </div>
+
+<div class="ins" id="insBar">
+  <button onclick="ins('sec')">Section</button>
+  <button onclick="ins('subsec')">Subsec</button>
+  <button onclick="ins('eq')">Equation</button>
+  <button onclick="ins('eqn')">Eq (numbered)</button>
+  <div class="grp">
+    <button onclick="ins('thm')">Theorem</button>
+    <button onclick="ins('lem')">Lemma</button>
+    <button onclick="ins('def')">Definition</button>
+    <button onclick="ins('cor')">Corollary</button>
+    <button onclick="ins('prop')">Proposition</button>
+    <button onclick="ins('proof')">Proof</button>
+    <button onclick="ins('algo')">Algorithm</button>
+  </div>
+  <div class="grp">
+    <button onclick="ins('table')">Table</button>
+    <button onclick="ins('fig')">Figure</button>
+    <button onclick="ins('code')">Code</button>
+    <button onclick="ins('cite')">Cite [n]</button>
+    <button onclick="ins('hr')">---</button>
+  </div>
+</div>
+
 <div class="ed">
-  <div class="pn">
-    <div class="pl">Paper Body (Markdown + LaTeX)
-      <span class="tmpl" onclick="insertTemplate()">템플릿 삽입</span>
-    </div>
-    <textarea id="input" spellcheck="true" lang="ko" placeholder="LaTeX 수식: $E=mc^2$ 또는 $$\sum_{i=1}^{n} x_i$$
-
-학술 블록 (HTML 태그 사용):
-<div class='theorem'>정리 내용</div>
-<div class='proof'>증명 내용</div>
-<div class='definition'>정의 내용</div>
-<div class='algorithm'>알고리즘 단계</div>
-
-'템플릿 삽입' 클릭으로 논문 구조를 자동 생성합니다."></textarea>
+  <div class="pn"><div class="pn-label">LaTeX + Markdown</div>
+    <textarea id="input" spellcheck="true" lang="ko" placeholder="LaTeX + Markdown. Use $...$ for inline math, $$...$$ for display math.&#10;&#10;'Paper Template' to start with a full academic structure."></textarea>
   </div>
   <div class="dv" id="dv"></div>
   <div class="pn">
-    <div class="pl">Paper Preview (KaTeX + Academic)</div>
-    <div id="pv"><p style="color:#bbb;padding:20px;text-align:center">논문 본문을 입력하고 '렌더링' 버튼을 클릭하세요.<br>LaTeX 수식이 실시간으로 렌더링됩니다.</p></div>
+    <div class="pn-label">
+      <span>Preview</span>
+      <div class="opts">
+        <button onclick="toggleCol(false)" class="active" id="col1btn">1-Col</button>
+        <button onclick="toggleCol(true)" id="col2btn">2-Col</button>
+      </div>
+    </div>
+    <div id="pv"><p style="color:var(--muted);text-align:center;padding:40px">Enter text to see live preview with KaTeX rendering</p></div>
+  </div>
+  <div class="ref-panel" id="refPanel">
+    <div class="ref-head"><span>References</span><button class="bt" style="padding:2px 6px;font-size:.6rem" onclick="toggleRef()">X</button></div>
+    <div class="ref-list" id="refList"></div>
+    <div class="ref-add">
+      <input id="refInput" placeholder="Author. Title. Year.">
+      <button onclick="addRef()">Add</button>
+    </div>
   </div>
 </div>
-<div class="st">
-  <span>Length: <b id="wc">0</b> words</span>
+
+<div class="st" id="stBar">
+  <span><b id="wc">0</b> chars <b id="ww">0</b> words</span>
   <span>Sections: <b id="sc">0</b></span>
-  <span>Equations: <b id="ec">0</b></span>
+  <span>Equations: <b id="eqc">0</b></span>
+  <span>Refs: <b id="rc">0</b></span>
+  <span>~<b id="pg">0</b> pages</span>
+  <span style="margin-left:auto">Score: <span class="score sl" id="qs">0</span></span>
+  <span id="as" style="color:var(--brand)"></span>
 </div>
+
 <script>
 const inp=document.getElementById('input'),pv=document.getElementById('pv');
+let focusMode=false,refs=[];
 
-// Live preview
-inp.addEventListener('input',()=>{
-  const t=inp.value;
-  pv.innerHTML=marked.parse(t);
-  renderMathInElement(pv,{delimiters:[{left:"$$",right:"$$",display:true},{left:"$",right:"$",display:false}],throwOnError:false});
-  document.getElementById('wc').textContent=t.trim()?t.trim().split(/\s+/).length:0;
-  document.getElementById('sc').textContent=(t.match(/^##\s/gm)||[]).length;
-  document.getElementById('ec').textContent=(t.match(/\$\$/g)||[]).length/2+(t.match(/(?<!\$)\$(?!\$)/g)||[]).length/2;
-});
+// === COUNTERS ===
+let envCounters={theorem:0,lemma:0,definition:0,corollary:0,proposition:0,algorithm:0};
+let eqCounter=0;
 
-function renderPaper(){
-  const t=inp.value;
-  const ti=document.getElementById('ti').value;
-  const ab=document.getElementById('ab').value;
-  let html='';
-  if(ti)html+='<h1 style="text-align:center;color:#2f5d50">'+ti+'</h1>';
-  if(ab)html+='<div class="abstract-box"><strong>Abstract:</strong> '+ab+'</div>';
-  html+=marked.parse(t);
+// === LIVE PREVIEW ===
+inp.addEventListener('input',debounce(()=>{render();},150));
+
+function debounce(fn,ms){let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms);};}
+
+function render(){
+  const raw=inp.value;
+  if(!raw.trim()){pv.innerHTML='<p style="color:var(--muted);text-align:center;padding:40px">Enter text to see live preview</p>';updateStats(raw);return;}
+  envCounters={theorem:0,lemma:0,definition:0,corollary:0,proposition:0,algorithm:0};
+  eqCounter=0;
+  let t=raw;
+  // Process academic environments before Markdown
+  t=processEnvs(t);
+  // Process numbered equations $$...$$ {#eq}
+  t=processNumberedEq(t);
+  // Process citations [cite:n]
+  t=processCitations(t);
+  // Parse Markdown
+  let html=marked.parse(t);
+  // Restore environments
+  html=restoreEnvs(html);
   pv.innerHTML=html;
-  renderMathInElement(pv,{delimiters:[{left:"$$",right:"$$",display:true},{left:"$",right:"$",display:false}],throwOnError:false});
+  // Render KaTeX
+  renderMath(pv);
+  updateStats(raw);
 }
 
-function insertTemplate(){
-  inp.value=`## 1. Introduction
+// === ACADEMIC ENVIRONMENTS ===
+const envPlaceholders=[];
+function processEnvs(t){
+  envPlaceholders.length=0;
+  const types=['theorem','lemma','definition','corollary','proposition','algorithm','proof'];
+  for(const ty of types){
+    const re=new RegExp(':::'+ty+'(?:\\s+(.+?))?\\n([\\s\\S]*?)\\n:::','g');
+    t=t.replace(re,(m,title,body)=>{
+      let label='';
+      if(ty==='proof'){
+        label='<div class="proof"><span class="proof-label">Proof.</span> '+(title?'('+title+') ':'')+body.trim()+'</div>';
+      }else{
+        envCounters[ty]++;
+        const names={theorem:'Theorem',lemma:'Lemma',definition:'Definition',corollary:'Corollary',proposition:'Proposition',algorithm:'Algorithm'};
+        const num=envCounters[ty];
+        label='<div class="env-block '+ty+'"><div class="env-label">'+names[ty]+' '+num+(title?' ('+title+')':'')+'</div>'+body.trim()+'</div>';
+      }
+      const ph='\x00ENV'+envPlaceholders.length+'\x00';
+      envPlaceholders.push(label);
+      return ph;
+    });
+  }
+  return t;
+}
+function restoreEnvs(html){
+  for(let i=0;i<envPlaceholders.length;i++){
+    html=html.replace('\x00ENV'+i+'\x00',envPlaceholders[i]);
+    // Also handle when Markdown wraps it in <p>
+    html=html.replace('<p>\x00ENV'+i+'\x00</p>',envPlaceholders[i]);
+  }
+  return html;
+}
 
-연구 배경과 목적을 기술합니다.
+// === NUMBERED EQUATIONS ===
+function processNumberedEq(t){
+  // $$...$$ on its own line -> numbered
+  return t.replace(/^\$\$\s*\n?([\s\S]*?)\n?\$\$\s*(?:\{#(eq\d*)\})?$/gm,(m,eq,label)=>{
+    eqCounter++;
+    return '<div class="eq-row"><div class="katex-display">$$'+eq.trim()+'$$</div><div class="eq-num">('+eqCounter+')</div></div>';
+  });
+}
+
+// === CITATIONS ===
+function processCitations(t){
+  return t.replace(/\[cite:(\d+)\]/g,(m,n)=>{
+    const idx=parseInt(n)-1;
+    const ref=refs[idx];
+    return '<span class="cite" title="'+(ref||'Reference '+n)+'">['+n+']</span>';
+  });
+}
+
+// === KATEX RENDER ===
+function renderMath(el){
+  renderMathInElement(el,{
+    delimiters:[
+      {left:'$$',right:'$$',display:true},
+      {left:'$',right:'$',display:false},
+      {left:'\\(',right:'\\)',display:false},
+      {left:'\\[',right:'\\]',display:true}
+    ],
+    throwOnError:false
+  });
+}
+
+// === KEYBOARD SHORTCUTS ===
+inp.addEventListener('keydown',e=>{
+  if(e.key==='Tab'){e.preventDefault();const s=inp.selectionStart;inp.setRangeText('  ',s,s,'end');}
+  if((e.ctrlKey||e.metaKey)&&e.key==='b'){e.preventDefault();wrap('**','**');}
+  if((e.ctrlKey||e.metaKey)&&e.key==='i'){e.preventDefault();wrap('*','*');}
+  if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();wrap('[','](url)');}
+  if((e.ctrlKey||e.metaKey)&&e.key==='m'){e.preventDefault();wrap('$','$');}
+  if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();save();document.getElementById('as').textContent='Saved!';}
+});
+function wrap(a,b){const s=inp.selectionStart,e=inp.selectionEnd,sel=inp.value.substring(s,e);inp.setRangeText(a+sel+b,s,e,'end');inp.dispatchEvent(new Event('input'));}
+
+// === INSERT TEMPLATES ===
+function ins(type){
+  const T={
+    tpl:`# Paper Title
+
+**Authors:** Author1, Author2
+
+:::abstract
+Brief summary of the paper's main contributions.
+:::
+
+---
+
+## 1. Introduction
+
+Background and motivation.
 
 ---
 
 ## 2. Related Work
 
-관련 연구를 정리합니다.
+Prior research summary.
 
 ---
 
@@ -134,33 +364,23 @@ function insertTemplate(){
 
 ### 3.1 Problem Formulation
 
-문제를 수식으로 정의합니다:
-
 $$
-\\min_{\\theta} \\mathcal{L}(\\theta) = \\frac{1}{N}\\sum_{i=1}^{N} l(f_\\theta(x_i), y_i)
+\\mathcal{L} = \\sum_{i=1}^{N} \\ell(f(x_i), y_i)
 $$
 
 ### 3.2 Proposed Approach
 
-제안하는 방법론을 설명합니다.
+:::definition Formal Definition
+Content of the definition.
+:::
 
-<div class="theorem">
-<strong>Theorem 1.</strong> 제안 방법의 수렴성을 보장한다.
-</div>
+:::theorem Main Result
+Statement of the theorem.
+:::
 
-<div class="proof">
-증명 내용을 기술합니다. $\\square$
-</div>
-
-<div class="algorithm">
-<strong>Algorithm 1: Training Procedure</strong><br>
-1. Initialize parameters $\\theta_0$<br>
-2. For $t = 1, 2, \\ldots, T$:<br>
-&nbsp;&nbsp;a. Sample mini-batch $B_t$<br>
-&nbsp;&nbsp;b. Compute gradient $g_t = \\nabla \\mathcal{L}(\\theta_t; B_t)$<br>
-&nbsp;&nbsp;c. Update $\\theta_{t+1} = \\theta_t - \\eta g_t$<br>
-3. Return $\\theta_T$
-</div>
+:::proof
+Proof goes here.
+:::
 
 ---
 
@@ -168,72 +388,245 @@ $$
 
 ### 4.1 Setup
 
-| Parameter | Value |
-|-----------|-------|
-| Learning Rate | 0.001 |
-| Batch Size | 64 |
-| Epochs | 100 |
+| Dataset | Samples | Classes |
+|---------|---------|---------|
+| A | 10,000 | 10 |
+| B | 50,000 | 100 |
 
 ### 4.2 Results
-
-실험 결과를 분석합니다.
 
 ---
 
 ## 5. Discussion
 
-연구의 시사점과 한계를 논의합니다.
-
 ---
 
 ## 6. Conclusion
-
-결론 및 향후 연구 방향을 제시합니다.
 
 ---
 
 ## References
 
-[1] Author et al., "Title," Venue, Year.
-[2] Author et al., "Title," Venue, Year.
-`;
+`,
+    sec:'## Section Title\n\n',
+    subsec:'### Subsection Title\n\n',
+    eq:'\n$$\n\\mathcal{L} = \n$$\n\n',
+    eqn:'\n$$\nx = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}\n$$\n\n',
+    thm:':::theorem Title\nStatement of the theorem.\n:::\n\n',
+    lem:':::lemma Title\nStatement of the lemma.\n:::\n\n',
+    def:':::definition Name\nFormal definition.\n:::\n\n',
+    cor:':::corollary\nConsequence statement.\n:::\n\n',
+    prop:':::proposition\nProposition statement.\n:::\n\n',
+    proof:':::proof\nProof content.\n:::\n\n',
+    algo:':::algorithm Algorithm Name\nInput: data X\nOutput: model M\n1. Initialize parameters\n2. For each epoch:\n   a. Forward pass\n   b. Compute loss\n   c. Backpropagation\n3. Return trained model\n:::\n\n',
+    table:'| Column 1 | Column 2 | Column 3 |\n|----------|----------|----------|\n|  |  |  |\n|  |  |  |\n',
+    fig:'![Figure caption](/assets/img/papers/figure.svg)\n*Figure N. Description.*\n\n',
+    code:'```python\n# code\n```\n',
+    cite:'[cite:'+(refs.length+1)+']',
+    hr:'\n---\n\n'
+  };
+  const s=inp.selectionStart;
+  inp.setRangeText(T[type]||'',s,s,'end');
+  inp.focus();
   inp.dispatchEvent(new Event('input'));
 }
 
-function publishPaper(){
-  const ti=document.getElementById('ti').value||'Untitled Paper';
-  const au=document.getElementById('au').value||'AICRA';
-  const co=document.getElementById('co').value;
-  const st=document.getElementById('st').value;
-  const ab=document.getElementById('ab').value;
-  const kw=document.getElementById('kw').value;
-  const cl=document.getElementById('cl').value;
-  const body=inp.value;
-  const today=new Date().toISOString().split('T')[0];
-  const authors=co?'\nauthors: ['+co.split(',').map(s=>'"'+s.trim()+'"').join(', ')+']':'';
-  const keywords=kw?'\nkeywords: ['+kw.split(',').map(s=>'"'+s.trim()+'"').join(', ')+']':'';
-  const fm=`---
-layout: paper
-title: "${ti}"
-author: ${au}${authors}
-collaborative: ${cl}
-date: ${today}
-status: ${st}
-abstract: "${ab}"${keywords}
----
-
-${body}`;
-  navigator.clipboard.writeText(fm).then(()=>{
-    alert('클립보드에 복사되었습니다!\nCMS에서 Research Papers > 새 Paper 생성 후 붙여넣기');
-    window.open('/admin/#/collections/papers/new','_blank');
-  }).catch(()=>{const w=window.open('','_blank');w.document.write('<pre style="white-space:pre-wrap">'+fm.replace(/</g,'&lt;')+'</pre>');});
+// === REFERENCE MANAGER ===
+function addRef(){
+  const input=document.getElementById('refInput');
+  const val=input.value.trim();
+  if(!val)return;
+  refs.push(val);
+  input.value='';
+  renderRefs();
+  render();
+}
+function removeRef(idx){
+  refs.splice(idx,1);
+  renderRefs();
+  render();
+}
+function renderRefs(){
+  const list=document.getElementById('refList');
+  document.getElementById('rc').textContent=refs.length;
+  list.innerHTML=refs.map((r,i)=>
+    '<div class="ref-item"><b>['+(i+1)+']</b>'+r+
+    ' <span style="cursor:pointer;color:#b42318;float:right" onclick="removeRef('+i+')">x</span></div>'
+  ).join('');
 }
 
-// Resize
-let rs=false;
-document.getElementById('dv').addEventListener('mousedown',()=>rs=true);
+function toggleRef(){
+  document.getElementById('refPanel').classList.toggle('open');
+}
+
+// === VALIDATE PAPER ===
+function validatePaper(){
+  const t=inp.value;
+  const issues=[];
+  // Structure checks
+  if(!t.match(/^#\s/m))issues.push('[-] Missing title (H1)');
+  else issues.push('[+] Title present');
+  const secs=(t.match(/^##\s/gm)||[]).length;
+  if(secs<3)issues.push('[-] Only '+secs+' sections (recommend 5+)');
+  else issues.push('[+] '+secs+' sections');
+  if(!t.includes('Introduction')&&!t.includes('서론'))issues.push('[!] No Introduction section');
+  if(!t.includes('Conclusion')&&!t.includes('결론'))issues.push('[!] No Conclusion section');
+  if(!t.includes('Reference')&&!t.includes('참고'))issues.push('[!] No References section');
+  // Math
+  const eqs=(t.match(/\$\$/g)||[]).length/2;
+  if(eqs>0)issues.push('[+] '+Math.floor(eqs)+' equations');
+  else issues.push('[!] No equations found');
+  // Environments
+  const envs=(t.match(/:::(theorem|lemma|definition|corollary|proposition|algorithm|proof)/g)||[]).length;
+  if(envs>0)issues.push('[+] '+envs+' academic environments');
+  // Citations
+  const cites=(t.match(/\[cite:\d+\]/g)||[]).length;
+  if(cites>0)issues.push('[+] '+cites+' citations');
+  else issues.push('[!] No citations');
+  if(refs.length===0)issues.push('[-] Reference list empty');
+  else issues.push('[+] '+refs.length+' references in list');
+  // Word count
+  const wc=t.trim().split(/\s+/).length;
+  if(wc<500)issues.push('[!] Only '+wc+' words (short for a paper)');
+  else issues.push('[+] '+wc+' words');
+  // Abstract
+  if(!document.getElementById('ab').value&&!t.includes(':::abstract'))issues.push('[-] No abstract');
+  else issues.push('[+] Abstract present');
+  // Score
+  let sc=0;
+  sc+=secs>=5?20:secs*4;
+  sc+=eqs>0?15:0;
+  sc+=envs>0?15:0;
+  sc+=cites>0?10:0;
+  sc+=refs.length>0?10:0;
+  sc+=wc>=1000?15:Math.floor(wc/100)*1.5;
+  sc+=(t.includes('Introduction')||t.includes('서론'))?5:0;
+  sc+=(t.includes('Conclusion')||t.includes('결론'))?5:0;
+  sc+=(document.getElementById('ab').value||t.includes(':::abstract'))?5:0;
+  sc=Math.min(Math.round(sc),100);
+  const el=document.getElementById('qs');el.textContent=sc;el.className='score '+(sc>=75?'sh':sc>=50?'sm':'sl');
+
+  pv.innerHTML='<div style="background:var(--surface);border-radius:8px;padding:16px;margin-bottom:16px;font-size:.82rem;line-height:1.8"><strong style="color:var(--brand)">Paper Validation (Score: '+sc+')</strong><br>'+issues.join('<br>')+'</div>'+pv.innerHTML;
+}
+
+// === STATS ===
+function updateStats(t){
+  const w=t.trim()?t.trim().split(/\s+/).length:0;
+  const s=(t.match(/^##\s/gm)||[]).length;
+  const eq=Math.floor((t.match(/\$\$/g)||[]).length/2);
+  document.getElementById('wc').textContent=t.length;
+  document.getElementById('ww').textContent=w;
+  document.getElementById('sc').textContent=s;
+  document.getElementById('eqc').textContent=eq;
+  document.getElementById('rc').textContent=refs.length;
+  document.getElementById('pg').textContent=Math.max(1,Math.ceil(w/300));
+  // Auto quality
+  let sc=0;sc+=Math.min(s*5,25);sc+=Math.min(Math.floor(w/80),25);
+  sc+=(eq>0?10:0)+(refs.length>0?10:0);
+  sc+=(/:::(theorem|definition|lemma)/m.test(t)?10:0);
+  sc+=(s>=4?10:0)+(/\[cite:\d+\]/m.test(t)?10:0);
+  sc=Math.min(sc,100);
+  const el=document.getElementById('qs');el.textContent=sc;el.className='score '+(sc>=75?'sh':sc>=50?'sm':'sl');
+}
+
+// === PUBLISH / EXPORT ===
+function publish(){
+  const ti=document.getElementById('ti').value||'Untitled Paper';
+  const au=document.getElementById('au').value||'AICRA';
+  const coau=document.getElementById('coau').value;
+  const ab=document.getElementById('ab').value;
+  const kw=document.getElementById('kw').value;
+  const status=document.getElementById('st-sel').value;
+  const collab=document.getElementById('collab').checked;
+  const body=inp.value;
+  const today=new Date().toISOString().split('T')[0];
+  if(!body.trim())return alert('Content is empty.');
+  const authors=coau?'\nauthors: ['+coau.split(',').map(s=>'"'+s.trim()+'"').join(', ')+']':'';
+  const kwLine=kw?'\nkeywords: ['+kw.split(',').map(s=>'"'+s.trim()+'"').join(', ')+']':'';
+  // Build references section
+  let refSection='';
+  if(refs.length){
+    refSection='\n\n---\n\n## References\n\n<div class="bib-list">\n'+refs.map(r=>'<p>'+r+'</p>').join('\n')+'\n</div>';
+  }
+  const fm='---\nlayout: paper\ntitle: "'+ti+'"\nauthor: '+au+authors+'\ndate: '+today+'\nstatus: '+status+'\nabstract: "'+ab+'"'+kwLine+'\ncollaborative: '+collab+'\nlang: ko\n---\n\n'+body+refSection;
+
+  // Copy and offer options
+  navigator.clipboard.writeText(fm).then(()=>{
+    const choice=confirm('Clipboard copied!\n\nOK = Open CMS (papers)\nCancel = Download as .md file');
+    if(choice){
+      window.open('/admin/#/collections/papers/new','_blank');
+    }else{
+      const blob=new Blob([fm],{type:'text/markdown'});
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(blob);
+      a.download=today+'-'+ti.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9가-힣-]/g,'')+'.md';
+      a.click();
+    }
+  });
+}
+
+// === 2-COLUMN TOGGLE ===
+function toggleCol(two){
+  if(two){pv.classList.add('two-col');document.getElementById('col2btn').classList.add('active');document.getElementById('col1btn').classList.remove('active');}
+  else{pv.classList.remove('two-col');document.getElementById('col1btn').classList.add('active');document.getElementById('col2btn').classList.remove('active');}
+}
+
+// === AUTOSAVE ===
+function save(){
+  localStorage.setItem('aicra.paper.v2',JSON.stringify({
+    ti:document.getElementById('ti').value,au:document.getElementById('au').value,
+    coau:document.getElementById('coau').value,ab:document.getElementById('ab').value,
+    kw:document.getElementById('kw').value,status:document.getElementById('st-sel').value,
+    collab:document.getElementById('collab').checked,body:inp.value,refs:refs,at:Date.now()
+  }));
+}
+function restore(){
+  const d=localStorage.getItem('aicra.paper.v2');if(!d)return;
+  const s=JSON.parse(d);if(Date.now()-s.at>604800000)return;// 7 days
+  inp.value=s.body||'';
+  document.getElementById('ti').value=s.ti||'';
+  document.getElementById('au').value=s.au||'AICRA';
+  document.getElementById('coau').value=s.coau||'';
+  document.getElementById('ab').value=s.ab||'';
+  document.getElementById('kw').value=s.kw||'';
+  if(s.status)document.getElementById('st-sel').value=s.status;
+  if(s.collab)document.getElementById('collab').checked=s.collab;
+  if(s.refs){refs=s.refs;renderRefs();}
+  if(s.body){inp.dispatchEvent(new Event('input'));}
+  document.getElementById('as').textContent='Draft restored';
+}
+setInterval(save,30000);restore();
+
+// === DARK MODE ===
+function toggleDark(){document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'':'dark';localStorage.setItem('aicra.dark',document.documentElement.dataset.theme);}
+if(localStorage.getItem('aicra.dark')==='dark')document.documentElement.dataset.theme='dark';
+
+// === FOCUS MODE ===
+function toggleFocus(){
+  focusMode=!focusMode;
+  ['metaBar','metaBar2','insBar','stBar'].forEach(id=>document.getElementById(id).style.display=focusMode?'none':'');
+}
+
+// === RESIZE ===
+let rs=false;document.getElementById('dv').addEventListener('mousedown',()=>rs=true);
 document.addEventListener('mousemove',e=>{if(!rs)return;const ed=document.querySelector('.ed'),r=ed.getBoundingClientRect(),p=((e.clientX-r.left)/r.width)*100,pn=ed.querySelectorAll('.pn');pn[0].style.flex='0 0 '+p+'%';pn[1].style.flex='0 0 '+(100-p)+'%';});
 document.addEventListener('mouseup',()=>rs=false);
+
+// === ABSTRACT ENV ===
+// Process :::abstract blocks in render
+const origProcess=processEnvs;
+const _origProcessEnvs=processEnvs;
+function processEnvsWithAbstract(t){
+  // Handle abstract
+  t=t.replace(/:::abstract\n([\s\S]*?)\n:::/g,(m,body)=>{
+    const ph='\x00ENV'+envPlaceholders.length+'\x00';
+    envPlaceholders.push('<div class="abstract-box"><strong>Abstract</strong>'+marked.parse(body.trim())+'</div>');
+    return ph;
+  });
+  return _origProcessEnvs(t);
+}
+// Override
+window.processEnvs=processEnvsWithAbstract;
 </script>
 </body>
 </html>

@@ -1,418 +1,290 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AICRA Post Editor</title>
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <style>
-    :root{--b:#2f5d50;--bd:#244b40;--bg:#f5f3ed;--c:#fff;--l:#e0ddd5;--t:#1c1917;--m:#6b665c;--r:#B5422C}
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:-apple-system,BlinkMacSystemFont,'Pretendard',sans-serif;background:var(--bg);color:var(--t);height:100vh;display:flex;flex-direction:column;overflow:hidden}
-    .hd{display:flex;align-items:center;padding:6px 12px;background:var(--c);border-bottom:1px solid var(--l);gap:6px;flex-shrink:0;flex-wrap:wrap}
-    .hd img{width:24px;height:24px}.hd h1{font-size:.88rem;color:var(--b);margin-right:auto}
-    .bt{padding:6px 12px;border:none;border-radius:5px;font-size:.75rem;font-weight:600;cursor:pointer;color:#fff}
-    .bg{background:var(--b)}.bg:hover{background:var(--bd)}
-    .br{background:var(--r)}.br:hover{background:#932d1e}
-    .bb{background:#1565c0}.bb:hover{background:#0d47a1}
-    .bo{background:transparent;color:var(--b);border:1px solid var(--l);text-decoration:none;display:inline-block}
-    .mt{display:flex;gap:6px;padding:6px 12px;background:#fafaf7;border-bottom:1px solid var(--l);flex-shrink:0;flex-wrap:wrap}
-    .mt label{font-size:.65rem;color:var(--m);font-weight:600}
-    .mt input,.mt select{width:100%;padding:4px 6px;border:1px solid var(--l);border-radius:3px;font-size:.78rem;font-family:inherit}
-    .f1{flex:1;min-width:100px}.f2{flex:2;min-width:160px}.f3{flex:3;min-width:200px}
-    .ed{display:flex;flex:1;overflow:hidden}
-    .pn{flex:1;display:flex;flex-direction:column;overflow:hidden}
-    .pl{padding:4px 12px;font-size:.65rem;font-weight:700;color:var(--m);text-transform:uppercase;letter-spacing:.8px;background:#f0ede6;border-bottom:1px solid var(--l);flex-shrink:0;display:flex;align-items:center;gap:8px}
-    .pl select{font-size:.65rem;padding:1px 4px;border:1px solid var(--l);border-radius:3px;background:var(--c)}
-    .dv{width:3px;background:var(--l);cursor:col-resize;flex-shrink:0}
-    #input{flex:1;padding:12px;border:none;resize:none;font-size:.82rem;line-height:1.7;font-family:'JetBrains Mono',Consolas,monospace;background:var(--c);outline:none}
-    #pv{flex:1;padding:12px 18px;overflow-y:auto;background:var(--c);font-size:.82rem;line-height:1.8}
-    #pv h1,#pv h2,#pv h3{color:var(--b);margin:.7em 0 .3em}#pv h2{border-bottom:1px solid var(--l);padding-bottom:2px}
-    #pv table{border-collapse:collapse;width:100%;margin:.7em 0;font-size:.78rem}
-    #pv th,#pv td{border:1px solid var(--l);padding:4px 8px}#pv th{background:#f0ede6}
-    #pv code{background:#f0ede6;padding:1px 3px;border-radius:2px;font-size:.78rem}
-    #pv pre{background:#292524;color:#e9e4da;padding:10px;border-radius:5px;overflow-x:auto;margin:.7em 0}#pv pre code{background:none;color:inherit}
-    #pv blockquote{border-left:3px solid var(--b);padding:6px 12px;margin:.5em 0;background:#f8f6f0;color:#555}
-    #pv hr{border:none;border-top:1px solid var(--l);margin:1em 0}
-    #pv img{max-width:100%;border-radius:4px}
-    #pv .callout{background:#fff8f0;border:1px solid #f0e0cc;border-radius:6px;padding:10px 14px;margin:.5em 0}
-    #pv .post-header{border-bottom:2px solid var(--b);padding-bottom:12px;margin-bottom:16px}
-    #pv .post-header h1{font-size:1.3rem;margin:0 0 4px}
-    #pv .post-meta{font-size:.72rem;color:var(--m)}
-    #pv .post-meta span{margin-right:10px}
-    .tone-report{background:#f8f6ff;border:1px solid #d8d0f0;border-radius:8px;padding:10px 14px;margin:10px 18px;font-size:.78rem;line-height:1.6}
-    .tone-report h4{color:#7b1fa2;margin-bottom:6px;font-size:.82rem}
-    .tone-ok{color:var(--b);font-weight:600}
-    .tone-warn{color:var(--r);font-weight:600}
-    .st{padding:4px 12px;font-size:.68rem;color:var(--m);background:#f0ede6;border-top:1px solid var(--l);flex-shrink:0;display:flex;gap:10px;flex-wrap:wrap}
-    .st b{color:var(--t)}.qa{margin-left:auto;font-weight:600}
-    .score{padding:2px 8px;border-radius:10px;color:#fff;font-size:.68rem}
-    .s-h{background:var(--b)}.s-m{background:#b7791f}.s-l{background:var(--r)}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AICRA Blog Editor</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&family=Pretendard:wght@400;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+:root{--bg:#f9f8f5;--panel:#fff;--text:#2a2a2a;--muted:#7a756c;--brand:#2f5d50;--brand2:#245045;--line:#e8e5de;--surface:#f3f1ec;--code-bg:#0f172a;--radius:8px}
+[data-theme=dark]{--bg:#1a1d23;--panel:#22262e;--text:#d4d0c8;--muted:#8a8578;--brand:#4da89a;--brand2:#3d8a7e;--line:#333840;--surface:#2a2e36;--code-bg:#0d1117}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Pretendard',sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden}
+
+/* Toolbar */
+.tb{display:flex;align-items:center;padding:8px 14px;background:var(--panel);border-bottom:1px solid var(--line);gap:8px;flex-shrink:0}
+.tb img{width:22px;height:22px}
+.tb h1{font-size:.85rem;color:var(--brand);font-weight:700;margin-right:8px}
+.tb .sep{width:1px;height:20px;background:var(--line);margin:0 4px}
+.tb select{padding:4px 8px;border:1px solid var(--line);border-radius:6px;font-size:.72rem;background:var(--panel);color:var(--text)}
+.bt{padding:5px 12px;border:none;border-radius:6px;font-size:.72rem;font-weight:600;cursor:pointer;background:var(--surface);color:var(--text);border:1px solid var(--line);transition:.15s}
+.bt:hover{background:var(--line)}
+.bt.p{background:var(--brand);color:#fff;border-color:var(--brand)}
+.bt.p:hover{background:var(--brand2)}
+.spacer{flex:1}
+.bt.icon{font-size:.8rem;padding:5px 8px}
+
+/* Meta */
+.meta{display:grid;grid-template-columns:2fr 2fr 1fr 1fr;gap:6px;padding:6px 14px;background:var(--surface);border-bottom:1px solid var(--line);flex-shrink:0}
+.meta label{font-size:.6rem;color:var(--muted);font-weight:600;display:block;margin-bottom:2px}
+.meta input,.meta select{width:100%;padding:5px 8px;border:1px solid var(--line);border-radius:5px;font-size:.78rem;background:var(--panel);color:var(--text);font-family:inherit}
+
+/* Insert bar */
+.ins{display:flex;gap:4px;padding:4px 14px;background:var(--panel);border-bottom:1px solid var(--line);flex-shrink:0}
+.ins button{padding:3px 10px;border:1px solid var(--line);border-radius:5px;font-size:.65rem;background:var(--panel);color:var(--muted);cursor:pointer}
+.ins button:hover{background:var(--surface);color:var(--text)}
+
+/* Editor */
+.ed{display:flex;flex:1;overflow:hidden}
+.pn{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.pn-label{padding:4px 14px;font-size:.62rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;background:var(--surface);border-bottom:1px solid var(--line);flex-shrink:0}
+#input{flex:1;padding:16px;border:none;resize:none;font-size:15px;line-height:1.8;font-family:'JetBrains Mono',monospace;background:var(--panel);color:var(--text);outline:none}
+.dv{width:3px;background:var(--line);cursor:col-resize;flex-shrink:0}
+
+/* Preview - matches actual AICRA blog */
+#pv{flex:1;padding:20px 28px;overflow-y:auto;background:var(--panel);font-family:'Noto Serif KR','Pretendard',sans-serif;font-size:1rem;line-height:1.8;color:var(--text)}
+#pv h2{font-size:1.65rem;font-weight:700;padding-bottom:8px;border-bottom:2px solid var(--brand);margin:2rem 0 1rem}
+#pv h3{font-size:1.3rem;font-weight:600;margin:1.5rem 0 .75rem}
+#pv h4{font-size:1.1rem;font-weight:600;margin:1rem 0 .5rem}
+#pv p{margin-bottom:1.5rem}
+#pv ul,#pv ol{margin-bottom:1.5rem;padding-left:1.5rem}
+#pv li{line-height:1.8;margin-bottom:.5rem}
+#pv strong{font-weight:700}
+#pv pre{background:var(--code-bg);border-radius:var(--radius);padding:1.2rem;margin:1.5rem 0;overflow-x:auto;border:1px solid var(--line)}
+#pv pre code{font-family:'JetBrains Mono',monospace;font-size:.875rem;color:#e2e8f0;background:none;padding:0}
+#pv code{font-family:'JetBrains Mono',monospace;background:var(--surface);padding:2px 6px;border-radius:4px;font-size:.88em;color:var(--brand)}
+#pv table{width:100%;border-collapse:collapse;margin:1.5rem 0;border:1px solid var(--line)}
+#pv th{background:var(--brand);color:#fff;padding:.6rem .8rem;text-align:left;font-weight:600;font-size:.9rem}
+#pv td{padding:.6rem .8rem;border-bottom:1px solid var(--line);font-size:.9rem}
+#pv blockquote{border-left:4px solid var(--brand);padding:.8rem 1.2rem;margin:1rem 0;background:var(--surface);font-style:italic}
+#pv hr{border:none;border-top:2px solid var(--line);margin:2rem 0}
+#pv img{max-width:100%;border-radius:var(--radius)}
+
+/* Status bar */
+.st{display:flex;gap:14px;padding:4px 14px;font-size:.65rem;color:var(--muted);background:var(--surface);border-top:1px solid var(--line);flex-shrink:0;align-items:center}
+.st b{color:var(--text)}
+.score{padding:2px 8px;border-radius:10px;color:#fff;font-size:.62rem}
+.sh{background:var(--brand)}.sm{background:#b7791f}.sl{background:#b42318}
+
+/* Responsive */
+@media(max-width:1024px){.ed{flex-direction:column}.meta{grid-template-columns:1fr 1fr}}
+</style>
 </head>
 <body>
-<div class="hd">
-  <img src="/assets/img/logo.svg" alt="">
-  <h1>AICRA Post Editor</h1>
-  <button class="bt bg" onclick="convert()">정리하기</button>
-  <button class="bt br" onclick="spellOnly()">맞춤법</button>
-  <button class="bt" style="background:#7b1fa2" onclick="toneCheck()">톤 검사</button>
-  <button class="bt bb" onclick="publish()">발행하기</button>
-  <a class="bt bo" href="/admin/">CMS</a>
-  <a class="bt bo" href="/blog/">Blog</a>
+
+<div class="tb">
+  <img src="/assets/img/logo.svg" alt=""><h1>Blog Editor</h1>
+  <div class="sep"></div>
+  <select id="src"><option value="md">Markdown</option><option value="plain">Plain Text</option><option value="notion">Notion</option><option value="obsidian">Obsidian</option></select>
+  <div class="spacer"></div>
+  <button class="bt" onclick="format()">정리하기</button>
+  <button class="bt" onclick="spell()">맞춤법</button>
+  <button class="bt" onclick="tone()">톤검사</button>
+  <button class="bt p" onclick="publish()">발행</button>
+  <div class="sep"></div>
+  <button class="bt icon" onclick="toggleDark()" title="Dark mode">◐</button>
+  <button class="bt icon" onclick="toggleFocus()" title="Focus mode">⛶</button>
+  <a class="bt" href="/admin/" style="text-decoration:none">CMS</a>
 </div>
-<div class="mt">
-  <div class="f3"><label>Title</label><input id="ti" placeholder="자동 추출 또는 직접 입력"></div>
-  <div class="f2"><label>Description</label><input id="de" placeholder="자동 추출 또는 직접 입력"></div>
-  <div class="f1"><label>Category</label><select id="ca"><option>Research</option><option>Analysis</option><option>Tutorial</option><option>News</option><option>Events</option></select></div>
-  <div class="f1"><label>Tags</label><input id="ta" placeholder="AI, OWASP"></div>
+
+<div class="meta" id="metaBar">
+  <div><label>Title</label><input id="ti" placeholder="제목"></div>
+  <div><label>Description</label><input id="de" placeholder="한 줄 설명"></div>
+  <div><label>Category</label><select id="ca"><option>Research</option><option>Analysis</option><option>Tutorial</option><option>News</option><option>Events</option></select></div>
+  <div><label>Tags</label><input id="ta" placeholder="AI, OWASP"></div>
 </div>
+
+<div class="ins" id="insBar">
+  <button onclick="ins('tpl')">AICRA 양식</button>
+  <button onclick="ins('table')">Table</button>
+  <button onclick="ins('code')">Code</button>
+  <button onclick="ins('mermaid')">Mermaid</button>
+  <button onclick="ins('img')">Image</button>
+  <button onclick="ins('hr')">---</button>
+  <button onclick="ins('link')">Link</button>
+</div>
+
 <div class="ed">
-  <div class="pn">
-    <div class="pl">
-      Input
-      <select id="srcType" onchange="updatePlaceholder()">
-        <option value="plain">Plain Text</option>
-        <option value="markdown">Markdown</option>
-        <option value="notion">Notion 복사</option>
-        <option value="obsidian">Obsidian MD</option>
-      </select>
-    </div>
-    <textarea id="input" spellcheck="true" lang="ko" placeholder="아무 텍스트나 붙여넣으세요.
-
-Notion에서 복사 붙여넣기 OK
-Obsidian 마크다운 OK
-Plain Text OK
-
-'정리하기' -> 블로그 포스트로 변환
-'맞춤법' -> 한국어 교정
-오른쪽에서 실시간 미리보기"></textarea>
+  <div class="pn"><div class="pn-label">Input</div>
+    <textarea id="input" spellcheck="true" lang="ko" placeholder="텍스트를 입력하세요. 'AICRA 양식' 버튼으로 템플릿을 삽입할 수 있습니다."></textarea>
   </div>
   <div class="dv" id="dv"></div>
-  <div class="pn">
-    <div class="pl">Preview</div>
-    <div id="pv"><p style="color:#bbb;padding:20px;text-align:center;line-height:1.8">왼쪽에 텍스트를 입력하면<br>실시간 미리보기가 표시됩니다</p></div>
+  <div class="pn"><div class="pn-label">Preview</div>
+    <div id="pv"><p style="color:var(--muted);text-align:center;padding:40px">입력하면 실시간 미리보기가 표시됩니다</p></div>
   </div>
 </div>
-<div class="st">
-  <span>In: <b id="ic">0</b>자 <b id="iw">0</b>w</span>
-  <span>Out: <b id="oc">0</b>자 <b id="ow">0</b>w</span>
+
+<div class="st" id="stBar">
+  <span><b id="wc">0</b>자 <b id="ww">0</b>단어</span>
   <span>Sections: <b id="sc">0</b></span>
-  <span class="qa">Quality: <span class="score s-l" id="qs">-</span></span>
+  <span>읽기: ~<b id="rt">0</b>분</span>
+  <span style="margin-left:auto">Quality: <span class="score sl" id="qs">0</span></span>
+  <span id="as" style="color:var(--brand)"></span>
 </div>
+
 <script>
 const inp=document.getElementById('input'),pv=document.getElementById('pv');
-let out='';
+let out='',focusMode=false;
 
-function updatePlaceholder(){
-  const m={
-    plain:'아무 텍스트나 붙여넣으세요.\n\n메모, 보고서, 초안 등\n정리하기 버튼으로 블로그 포맷 변환',
-    markdown:'마크다운을 붙여넣으세요.\n\n## 제목\n본문...\n\n정리하기로 AICRA 양식에 맞게 정규화',
-    notion:'Notion 페이지에서 Ctrl+A -> Ctrl+C 후\n여기에 Ctrl+V\n\nNotion 토글, 콜아웃, 표 자동 변환\n데이터베이스 속성은 제외됩니다',
-    obsidian:'Obsidian 노트를 복사하거나\n.md 파일 내용을 붙여넣으세요\n\n[[위키링크]], ![[임베드]], ==하이라이트== 변환\n태그(#tag) 자동 추출'
-  };
-  inp.placeholder=m[document.getElementById('srcType').value]||m.plain;
-}
-
-// Live preview
+// === LIVE PREVIEW ===
 inp.addEventListener('input',()=>{
   const t=inp.value;
-  document.getElementById('ic').textContent=t.length;
-  document.getElementById('iw').textContent=t.trim()?t.trim().split(/\s+/).length:0;
-  if(t.trim()){pv.innerHTML=marked.parse(t);stats(t);}
+  if(t.trim())pv.innerHTML=marked.parse(t);
+  updateStats(t);
 });
 
-// ========== MAIN CONVERT ==========
-function convert(){
-  let t=inp.value.trim();
-  if(!t)return alert('텍스트를 입력해 주세요.');
-  const src=document.getElementById('srcType').value;
+// === KEYBOARD ===
+inp.addEventListener('keydown',e=>{
+  if(e.key==='Tab'){e.preventDefault();const s=inp.selectionStart;inp.setRangeText('  ',s,s,'end');}
+  if((e.ctrlKey||e.metaKey)&&e.key==='b'){e.preventDefault();wrap('**','**');}
+  if((e.ctrlKey||e.metaKey)&&e.key==='i'){e.preventDefault();wrap('*','*');}
+  if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();wrap('[','](url)');}
+  if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();save();document.getElementById('as').textContent='Saved!';}
+});
+function wrap(a,b){const s=inp.selectionStart,e=inp.selectionEnd,sel=inp.value.substring(s,e);inp.setRangeText(a+sel+b,s,e,'end');inp.dispatchEvent(new Event('input'));}
 
-  // Step 0: Source-specific preprocessing
-  if(src==='notion') t=notionClean(t);
-  if(src==='obsidian') t=obsidianClean(t);
+// === INSERT TEMPLATES ===
+function ins(type){
+  const T={
+    tpl:`## 한 줄 요약\n\n(핵심 내용 한 문장)\n\n---\n\n## 1. 배경\n\n\n\n---\n\n## 2. 본론\n\n### 2.1 \n\n### 2.2 \n\n---\n\n## 3. 정리 및 제언\n\n\n\n---\n\n## 참고 자료\n\n- [출처 1](URL)\n- [출처 2](URL)\n`,
+    table:'| 항목 | 설명 |\n|------|------|\n|  |  |\n|  |  |\n',
+    code:'```js\n// code\n```\n',
+    mermaid:'```mermaid\ngraph TD\n  A[Start] --> B[End]\n```\n',
+    img:'![설명](/assets/img/posts/filename.svg)\n',
+    hr:'\n---\n\n',
+    link:'[텍스트](URL)'
+  };
+  const s=inp.selectionStart;
+  inp.setRangeText(T[type]||'',s,s,'end');
+  inp.focus();
+  inp.dispatchEvent(new Event('input'));
+}
 
-  // Step 1: Normalize
+// === FORMAT (50+ rules) ===
+function format(){
+  let t=inp.value.trim();if(!t)return;
+  const src=document.getElementById('src').value;
+  if(src==='notion')t=notionClean(t);
+  if(src==='obsidian')t=obsidianClean(t);
   t=t.replace(/\r\n/g,'\n').replace(/[ \t]{2,}/g,' ').replace(/\n{3,}/g,'\n\n');
-
-  // Step 2: Structure
-  t=structure(t);
-
-  // Step 3: Korean fix
-  t=kFix(t);
-
-  // Step 4: Blog format
-  t=blogFmt(t);
-
-  // Step 5: Enhance
-  t=enhance(t);
-
+  t=structFix(t);t=spellFix(t);t=blogFmt(t);t=enhance(t);
   // Extract meta
   const lines=t.split('\n').filter(l=>l.trim());
-  let ti='',de='';
-  for(const l of lines){if(l.startsWith('#')){ti=l.replace(/^#+\s*/,'');break;}if(!ti&&l.trim().length>2&&l.trim().length<100){ti=l.trim();break;}}
+  for(const l of lines){if(l.startsWith('#')){document.getElementById('ti').value=l.replace(/^#+\s*/,'');break;}}
   const ps=t.split(/\n\n+/).filter(p=>p.trim()&&!p.startsWith('#'));
-  if(ps[0])de=ps[0].replace(/\n/g,' ').substring(0,200);
-  if(ti)document.getElementById('ti').value=ti;
-  if(de)document.getElementById('de').value=de;
-
-  out=t;
-  blogPreview(t);
+  if(ps[0])document.getElementById('de').value=ps[0].replace(/\n/g,' ').substring(0,200);
+  out=t;pv.innerHTML=marked.parse(t);updateStats(t);
 }
 
-// ========== NOTION CLEANUP ==========
+// === NOTION ===
 function notionClean(t){
-  // Notion toggle -> details or heading
   t=t.replace(/^▶\s*(.+)$/gm,'### $1');
-  // Notion callout (emoji prefix)
   t=t.replace(/^([💡📌⚠️🔥ℹ️📝🚀✅❌])\s*(.+)$/gm,'> **$2**');
-  // Notion checkbox
-  t=t.replace(/^☐\s*/gm,'- [ ] ');
-  t=t.replace(/^☑\s*/gm,'- [x] ');
-  t=t.replace(/^✅\s*/gm,'- [x] ');
-  // Notion divider
+  t=t.replace(/^☐\s*/gm,'- [ ] ');t=t.replace(/^[☑✅]\s*/gm,'- [x] ');
   t=t.replace(/^—{3,}$/gm,'---');
-  // Notion mention @name -> plain text
-  t=t.replace(/@([^\s]+)/g,'$1');
-  // Notion page link (usually just text after copy)
-  // Remove Notion database header rows
-  t=t.replace(/^(Name|Tags|Status|Created|Last edited)[\t|].*$/gm,'');
-  // Tab-separated -> table attempt
-  const lines=t.split('\n');
-  let tableLines=[];
-  let result=[];
+  const lines=t.split('\n'),res=[];let tbl=[];
   for(const l of lines){
-    if(l.includes('\t')&&l.split('\t').length>=2){
-      tableLines.push(l);
-    }else{
-      if(tableLines.length>=2){
-        result.push(tabToTable(tableLines));
-        tableLines=[];
-      }else if(tableLines.length===1){
-        result.push(tableLines[0].replace(/\t/g,' | '));
-        tableLines=[];
-      }
-      result.push(l);
-    }
+    if(l.includes('\t')&&l.split('\t').length>=2){tbl.push(l);}
+    else{if(tbl.length>=2){res.push(tabToTbl(tbl));tbl=[];}else if(tbl.length===1){res.push(tbl[0].replace(/\t/g,' | '));tbl=[];}res.push(l);}
   }
-  if(tableLines.length>=2)result.push(tabToTable(tableLines));
-  return result.join('\n');
+  if(tbl.length>=2)res.push(tabToTbl(tbl));
+  return res.join('\n');
 }
+function tabToTbl(lines){const rows=lines.map(l=>l.split('\t'));const c=Math.max(...rows.map(r=>r.length));let m='| '+rows[0].map(x=>x.trim()||' ').join(' | ')+' |\n| '+Array(c).fill('---').join(' | ')+' |\n';for(let i=1;i<rows.length;i++){const r=rows[i];while(r.length<c)r.push('');m+='| '+r.map(x=>x.trim()||' ').join(' | ')+' |\n';}return m;}
 
-function tabToTable(lines){
-  const rows=lines.map(l=>l.split('\t'));
-  const cols=Math.max(...rows.map(r=>r.length));
-  let md='| '+rows[0].map(c=>c.trim()||' ').join(' | ')+' |\n';
-  md+='| '+Array(cols).fill('---').join(' | ')+' |\n';
-  for(let i=1;i<rows.length;i++){
-    const r=rows[i];while(r.length<cols)r.push('');
-    md+='| '+r.map(c=>c.trim()||' ').join(' | ')+' |\n';
-  }
-  return md;
-}
-
-// ========== OBSIDIAN CLEANUP ==========
+// === OBSIDIAN ===
 function obsidianClean(t){
-  // [[wikilink]] -> plain text
-  t=t.replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g,'$2');
-  t=t.replace(/\[\[([^\]]+)\]\]/g,'$1');
-  // ![[embed]] -> image or remove
-  t=t.replace(/!\[\[([^\]]+\.(png|jpg|jpeg|gif|svg))\]\]/gi,'![$1](/assets/img/$1)');
-  t=t.replace(/!\[\[([^\]]+)\]\]/g,'');
-  // ==highlight== -> **bold**
-  t=t.replace(/==([^=]+)==/g,'**$1**');
-  // %%comment%% -> remove
-  t=t.replace(/%%[^%]*%%/g,'');
-  // Obsidian callout > [!type] -> blockquote
-  t=t.replace(/^>\s*\[!(note|tip|warning|danger|info|example)\]\s*(.*)$/gmi,(m,type,title)=>{
-    return '> **'+type.toUpperCase()+(title?': '+title:'')+'**';
-  });
-  // Extract #tags -> add to tag field
-  const tags=new Set();
-  t=t.replace(/(^|\s)#([가-힣a-zA-Z][\w가-힣-]*)/g,(m,sp,tag)=>{tags.add(tag);return sp;});
-  if(tags.size>0){
-    const existing=document.getElementById('ta').value;
-    const all=new Set(existing.split(',').map(s=>s.trim()).filter(Boolean));
-    tags.forEach(tag=>all.add(tag));
-    document.getElementById('ta').value=[...all].join(', ');
-  }
-  // Obsidian YAML frontmatter -> extract and remove
-  const fmMatch=t.match(/^---\n([\s\S]*?)\n---\n/);
-  if(fmMatch){
-    const fm=fmMatch[1];
-    const titleMatch=fm.match(/title:\s*["']?(.+?)["']?\s*$/m);
-    const tagsMatch=fm.match(/tags:\s*\[(.+?)\]/);
-    if(titleMatch)document.getElementById('ti').value=titleMatch[1];
-    if(tagsMatch){
-      const existing=document.getElementById('ta').value;
-      const combined=existing?(existing+', '+tagsMatch[1]):tagsMatch[1];
-      document.getElementById('ta').value=combined;
-    }
-    t=t.replace(/^---\n[\s\S]*?\n---\n/,'');
-  }
+  t=t.replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g,'$2');t=t.replace(/\[\[([^\]]+)\]\]/g,'$1');
+  t=t.replace(/!\[\[([^\]]+\.(png|jpg|svg))\]\]/gi,'![$1](/assets/img/$1)');t=t.replace(/!\[\[([^\]]+)\]\]/g,'');
+  t=t.replace(/==([^=]+)==/g,'**$1**');t=t.replace(/%%[^%]*%%/g,'');
+  t=t.replace(/^>\s*\[!(note|tip|warning|danger|info)\]\s*(.*)$/gmi,(m,ty,ti)=>'> **'+ty.toUpperCase()+(ti?': '+ti:'')+'**');
+  const tags=new Set();t=t.replace(/(^|\s)#([가-힣a-zA-Z][\w가-힣-]*)/g,(m,s,tag)=>{tags.add(tag);return s;});
+  if(tags.size)document.getElementById('ta').value=[...tags].join(', ');
+  const fm=t.match(/^---\n([\s\S]*?)\n---\n/);
+  if(fm){const ti=fm[1].match(/title:\s*["']?(.+?)["']?\s*$/m);if(ti)document.getElementById('ti').value=ti[1];t=t.replace(/^---\n[\s\S]*?\n---\n/,'');}
   return t;
 }
 
-// ========== STRUCTURE DETECT ==========
-function structure(t){
-  let lines=t.split('\n'),res=[],hasH=/^#{1,6}\s/m.test(t);
-  for(let l of lines){
-    l=l.replace(/^(#{1,6})([^\s#])/,'$1 $2');
-    if(!hasH){
-      l=l.replace(/^(\d+)\.\s+(.{2,60})$/,(m,n,x)=>parseInt(n)<20&&x.length<60&&!x.includes('.')?'## '+x:m);
-      l=l.replace(/^(\d+)\.(\d+)\s+(.{2,50})$/,'### $3');
-    }
-    l=l.replace(/^\[(서론|본론|결론|요약|배경|문제|대응|방법|참고|참고자료)\]\s*$/,'## $1');
-    l=l.replace(/^\s*[•·▪▸►]\s+/,'- ');
-    l=l.replace(/^(\s*\d+)\)\s+/,'$1. ');
-    l=l.replace(/^\s*([가-하])[.)]\s+/,'- ');
-    res.push(l);
-  }
-  return res.join('\n');
-}
+// === STRUCTURE ===
+function structFix(t){let lines=t.split('\n'),res=[];for(let l of lines){l=l.replace(/^(#{1,6})([^\s#])/,'$1 $2');l=l.replace(/^\s*[•·▪▸►]\s+/,'- ');l=l.replace(/^(\s*\d+)\)\s+/,'$1. ');l=l.replace(/^\s*([가-하])[.)]\s+/,'- ');res.push(l);}return res.join('\n');}
 
-// ========== KOREAN SPELL ==========
-function kFix(t){
-  const cb=[];
-  t=t.replace(/```[\s\S]*?```/g,m=>{cb.push(m);return'\x00C'+cb.length+'\x00';});
-  t=t.replace(/`[^`]+`/g,m=>{cb.push(m);return'\x00C'+cb.length+'\x00';});
-  t=t.replace(/되요/g,'돼요');
-  t=t.replace(/안되/g,'안 되');
-  t=t.replace(/않되/g,'안 되');
-  t=t.replace(/하지\s*안([는을])/g,'하지 않$1');
-  t=t.replace(/([가-힣]+)지않/g,'$1지 않');
-  t=t.replace(/할수\s*(있|없)/g,'할 수 $1');
-  t=t.replace(/될수\s*(있|없)/g,'될 수 $1');
-  t=t.replace(/한것이/g,'한 것이');
-  t=t.replace(/몇일/g,'며칠');
-  t=t.replace(/금새/g,'금세');
-  t=t.replace(/어의없/g,'어이없');
-  t=t.replace(/([!?.,])\1{1,}/g,'$1');
-  t=t.replace(/\s+([)\]}])/g,'$1');
-  t=t.replace(/([(\\[{])\s+/g,'$1');
-  t=t.replace(/\x00C(\d+)\x00/g,(m,n)=>cb[parseInt(n)-1]||m);
-  return t;
-}
+// === KOREAN SPELL ===
+function spellFix(t){const cb=[];t=t.replace(/```[\s\S]*?```/g,m=>{cb.push(m);return'\x00C'+cb.length+'\x00';});t=t.replace(/`[^`]+`/g,m=>{cb.push(m);return'\x00C'+cb.length+'\x00';});
+t=t.replace(/되요/g,'돼요');t=t.replace(/안되/g,'안 되');t=t.replace(/않되/g,'안 되');t=t.replace(/하지\s*안([는을])/g,'하지 않$1');t=t.replace(/([가-힣]+)지않/g,'$1지 않');
+t=t.replace(/할수\s*(있|없)/g,'할 수 $1');t=t.replace(/될수\s*(있|없)/g,'될 수 $1');t=t.replace(/한것이/g,'한 것이');t=t.replace(/몇일/g,'며칠');t=t.replace(/금새/g,'금세');t=t.replace(/어의없/g,'어이없');
+t=t.replace(/([!?.,])\1{1,}/g,'$1');t=t.replace(/\x00C(\d+)\x00/g,(m,n)=>cb[parseInt(n)-1]||m);return t;}
+function spell(){let t=inp.value.trim();if(!t)return;out=spellFix(t);pv.innerHTML=marked.parse(out);updateStats(out);}
 
-// ========== BLOG FORMAT ==========
-function blogFmt(t){
-  let lines=t.split('\n'),res=[],prev=false;
-  for(let i=0;i<lines.length;i++){
-    const l=lines[i],isH=/^##\s/.test(l);
-    if(isH&&i>0&&!prev&&res.length&&res[res.length-1]!=='---'&&res[res.length-1]!==''){
-      res.push('');res.push('---');res.push('');
-    }
-    if(isH&&res.length&&res[res.length-1]!=='')res.push('');
-    res.push(l);prev=isH;
-  }
-  return res.join('\n');
-}
+// === BLOG FORMAT ===
+function blogFmt(t){let lines=t.split('\n'),res=[];for(let i=0;i<lines.length;i++){const l=lines[i];if(/^##\s/.test(l)&&i>0&&res.length&&res[res.length-1]!=='---'&&res[res.length-1]!==''){res.push('');res.push('---');res.push('');}if(/^#{1,3}\s/.test(l)&&res.length&&res[res.length-1]!=='')res.push('');res.push(l);}return res.join('\n');}
 
-// ========== ENHANCE ==========
+// === ENHANCE ===
 function enhance(t){
   t=t.replace(/(?<!\[|\()(https?:\/\/[^\s<>()]+)/g,'[$1]($1)');
   t=t.replace(/\b(CVE-\d{4}-\d{4,7})\b/g,'`$1`');
   const ab={'LLM':'LLM(Large Language Model)','RAG':'RAG(Retrieval-Augmented Generation)','OWASP':'OWASP(Open Worldwide Application Security Project)','MCP':'MCP(Model Context Protocol)'};
   for(const[k,v]of Object.entries(ab)){const r=new RegExp('\\b'+k+'\\b');if(r.test(t))t=t.replace(r,v);}
-  const kw=['프롬프트 인젝션','에이전틱 AI','디지털 트윈','제로트러스트','공격 표면','위협 모델','벡터 데이터베이스'];
+  const kw=['프롬프트 인젝션','에이전틱 AI','디지털 트윈','제로트러스트','공격 표면','위협 모델'];
   for(const w of kw){const r=new RegExp(w);if(r.test(t))t=t.replace(r,'**'+w+'**');}
   return t;
 }
 
-// ========== STATS ==========
-function stats(t){
+// === TONE CHECK ===
+function tone(){
+  const t=out||inp.value;if(!t.trim())return;
+  const issues=[];
+  ['SOC','SIEM','SOAR','분석관','관제'].forEach(w=>{if(t.includes(w))issues.push('[!] SOC 용어: "'+w+'" -> 연구 톤 권장');});
+  ['권장사항','도입을 권고','컨설팅','ROI'].forEach(w=>{if(t.includes(w))issues.push('[!] 컨설팅 톤: "'+w+'"');});
+  ['본 연구','본 논문','본고에서'].forEach(w=>{if(t.includes(w))issues.push('[!] 학술 톤: "'+w+'" -> 블로그 톤으로');});
+  ['매우 중요','반드시 필요','획기적인'].forEach(w=>{if(t.includes(w))issues.push('[!] 모호한 표현: "'+w+'"');});
+  if(/^##\s/m.test(t))issues.push('[OK] 섹션 구조');
+  if(/^-\s/m.test(t))issues.push('[OK] 리스트 활용');
+  const s=t.split(/[.!?]\s+/);let f=0,i=0;s.forEach(x=>{if(/합니다|입니다/.test(x))f++;if(/이다|한다/.test(x))i++;});
+  if(f&&i)issues.push('[!] 종결어미 혼용 (합니다 '+f+' / 이다 '+i+')');
+  else issues.push('[OK] 종결어미 일관');
+  pv.innerHTML='<div style="background:var(--surface);border-radius:8px;padding:14px;margin-bottom:16px;font-size:.85rem;line-height:1.7"><strong style="color:var(--brand)">AICRA Tone Check</strong><br>'+issues.join('<br>')+'</div>'+pv.innerHTML;
+}
+
+// === STATS ===
+function updateStats(t){
   const w=t.trim()?t.trim().split(/\s+/).length:0;
   const s=(t.match(/^##\s/gm)||[]).length;
-  document.getElementById('oc').textContent=t.length;
-  document.getElementById('ow').textContent=w;
+  document.getElementById('wc').textContent=t.length;
+  document.getElementById('ww').textContent=w;
   document.getElementById('sc').textContent=s;
-  let sc=0;
-  sc+=Math.min(s*6,30);
-  sc+=Math.min(Math.floor(w/80),25);
+  document.getElementById('rt').textContent=Math.max(1,Math.ceil(t.length/500));
+  let sc=0;sc+=Math.min(s*6,30);sc+=Math.min(Math.floor(w/80),25);
   sc+=(/^-\s/m.test(t)?8:0)+(/^\|/m.test(t)?8:0)+(/^```/m.test(t)?9:0);
-  sc+=(/참고|ref/i.test(t)?10:0)+(s>=3?10:0);
-  sc=Math.min(sc,100);
-  const el=document.getElementById('qs');
-  el.textContent=sc+'/100';
-  el.className='score '+(sc>=75?'s-h':sc>=50?'s-m':'s-l');
+  sc+=(/참고|ref/i.test(t)?10:0)+(s>=3?10:0);sc=Math.min(sc,100);
+  const el=document.getElementById('qs');el.textContent=sc;el.className='score '+(sc>=75?'sh':sc>=50?'sm':'sl');
 }
 
-// ========== BLOG-STYLE PREVIEW ==========
-function blogPreview(md){
-  const ti=document.getElementById('ti').value||'Untitled';
-  const de=document.getElementById('de').value||'';
-  const ca=document.getElementById('ca').value;
-  const today=new Date().toISOString().split('T')[0];
-  const header=`<div class="post-header"><h1>${ti}</h1><div class="post-meta"><span>${today}</span><span>${ca}</span><span>AICRA</span></div>${de?'<p style="color:#555;font-size:.82rem;margin-top:6px">'+de+'</p>':''}</div>`;
-  pv.innerHTML=header+marked.parse(md);
-  stats(md);
-}
-
-// ========== TONE CHECK ==========
-function toneCheck(){
-  const t=out||inp.value;
-  if(!t.trim())return alert('텍스트를 입력해 주세요.');
-  const issues=[];
-
-  // AICRA tone rules
-  const socTerms=['SOC','SIEM','SOAR','분석관','관제','인시던트 대응팀','보안 관제'];
-  const consultTerms=['권장사항','도입을 권고','컨설팅','ROI','투자 대비'];
-  const academicTerms=['본 연구','본 논문','본고에서','연구 결과에 따르면'];
-  const vagueTerms=['매우 중요','반드시 필요','절대적으로','획기적인'];
-
-  socTerms.forEach(w=>{if(t.includes(w))issues.push({type:'warn',msg:`SOC 용어 "${w}" -> 연구 블로그 톤으로 변환 권장`});});
-  consultTerms.forEach(w=>{if(t.includes(w))issues.push({type:'warn',msg:`컨설팅 톤 "${w}" -> 연구/분석 톤으로 변환 권장`});});
-  academicTerms.forEach(w=>{if(t.includes(w))issues.push({type:'warn',msg:`학술 논문 톤 "${w}" -> 블로그 톤으로 완화 권장`});});
-  vagueTerms.forEach(w=>{if(t.includes(w))issues.push({type:'warn',msg:`모호한 표현 "${w}" -> 구체적 근거로 대체 권장`});});
-
-  // Positive checks
-  if(/^##\s/m.test(t))issues.push({type:'ok',msg:'섹션 구조 있음'});
-  if(/^-\s/m.test(t))issues.push({type:'ok',msg:'리스트 활용 있음'});
-  if(/\*\*.+\*\*/m.test(t))issues.push({type:'ok',msg:'강조 표현 사용'});
-  if(/참고|reference/i.test(t))issues.push({type:'ok',msg:'참고자료 섹션 있음'});
-  if(t.trim().split(/\s+/).length>=500)issues.push({type:'ok',msg:'충분한 분량'});
-  else issues.push({type:'warn',msg:`분량 부족 (${t.trim().split(/\s+/).length}단어, 권장 1000+)`});
-
-  // Check ending style consistency
-  const sentences=t.split(/[.!?]\s+/);
-  let formal=0,informal=0;
-  sentences.forEach(s=>{if(/합니다|입니다|됩니다/.test(s))formal++;if(/이다|한다|된다/.test(s))informal++;});
-  if(formal>0&&informal>0)issues.push({type:'warn',msg:`종결어미 혼용 (합니다체 ${formal}회, 이다체 ${informal}회) -> 통일 권장`});
-  else issues.push({type:'ok',msg:'종결어미 일관성 유지'});
-
-  const report=document.createElement('div');
-  report.className='tone-report';
-  report.innerHTML='<h4>AICRA Tone Check</h4>'+issues.map(i=>`<div class="tone-${i.type}">${i.type==='ok'?'[OK]':'[!]'} ${i.msg}</div>`).join('');
-  pv.prepend(report);
-}
-
-// ========== SPELL ONLY ==========
-function spellOnly(){
-  let t=inp.value.trim();
-  if(!t)return alert('텍스트를 입력해 주세요.');
-  t=kFix(t);out=t;pv.innerHTML=marked.parse(t);stats(t);
-}
-
-// ========== PUBLISH ==========
+// === PUBLISH ===
 function publish(){
-  const ti=document.getElementById('ti').value||'Untitled';
-  const de=document.getElementById('de').value||'';
-  const ca=document.getElementById('ca').value;
-  const ta=document.getElementById('ta').value;
-  const body=out||inp.value;
-  const today=new Date().toISOString().split('T')[0];
+  const ti=document.getElementById('ti').value||'Untitled';const de=document.getElementById('de').value;
+  const ca=document.getElementById('ca').value;const ta=document.getElementById('ta').value;
+  const body=out||inp.value;const today=new Date().toISOString().split('T')[0];
   if(!body.trim())return alert('콘텐츠를 입력해 주세요.');
   const tags=ta?'['+ta.split(',').map(s=>'"'+s.trim()+'"').join(', ')+']':'[]';
-  const fm=`---\nlayout: post\ntitle: "${ti}"\ndescription: "${de}"\ndate: ${today}\ncategories: [${ca}]\ntags: ${tags}\nauthor: AICRA\ntoc: true\nlang: ko\n---\n\n${body}`;
-  navigator.clipboard.writeText(fm).then(()=>{
-    alert('클립보드에 복사되었습니다!\nCMS에서 새 포스트 > Body에 붙여넣기');
-    window.open('/admin/#/collections/posts/new','_blank');
-  }).catch(()=>{const w=window.open('','_blank');w.document.write('<pre style="white-space:pre-wrap">'+fm.replace(/</g,'&lt;')+'</pre>');});
+  const fm='---\nlayout: post\ntitle: "'+ti+'"\ndescription: "'+de+'"\ndate: '+today+'\ncategories: ['+ca+']\ntags: '+tags+'\nauthor: AICRA\ntoc: true\nlang: ko\n---\n\n'+body;
+  navigator.clipboard.writeText(fm).then(()=>{alert('클립보드에 복사됨! CMS에서 새 포스트에 붙여넣기');window.open('/admin/#/collections/posts/new','_blank');});
 }
 
-// Resize
-let rs=false;
-document.getElementById('dv').addEventListener('mousedown',()=>rs=true);
+// === AUTOSAVE ===
+function save(){localStorage.setItem('aicra.blog.v2',JSON.stringify({ti:document.getElementById('ti').value,de:document.getElementById('de').value,ca:document.getElementById('ca').value,ta:document.getElementById('ta').value,body:inp.value,at:Date.now()}));}
+function restore(){const d=localStorage.getItem('aicra.blog.v2');if(!d)return;const s=JSON.parse(d);if(Date.now()-s.at>86400000)return;inp.value=s.body||'';document.getElementById('ti').value=s.ti||'';document.getElementById('de').value=s.de||'';document.getElementById('ta').value=s.ta||'';if(s.body)inp.dispatchEvent(new Event('input'));document.getElementById('as').textContent='Draft restored';}
+setInterval(save,30000);restore();
+
+// === DARK MODE ===
+function toggleDark(){document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'':'dark';localStorage.setItem('aicra.dark',document.documentElement.dataset.theme);}
+if(localStorage.getItem('aicra.dark')==='dark')document.documentElement.dataset.theme='dark';
+
+// === FOCUS MODE ===
+function toggleFocus(){focusMode=!focusMode;['metaBar','insBar','stBar'].forEach(id=>document.getElementById(id).style.display=focusMode?'none':'');}
+
+// === RESIZE ===
+let rs=false;document.getElementById('dv').addEventListener('mousedown',()=>rs=true);
 document.addEventListener('mousemove',e=>{if(!rs)return;const ed=document.querySelector('.ed'),r=ed.getBoundingClientRect(),p=((e.clientX-r.left)/r.width)*100,pn=ed.querySelectorAll('.pn');pn[0].style.flex='0 0 '+p+'%';pn[1].style.flex='0 0 '+(100-p)+'%';});
 document.addEventListener('mouseup',()=>rs=false);
 </script>
