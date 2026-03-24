@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img">
+  <title>AICRA</title>
+  <!-- Simplified favicon: cross-analysis geometric mark -->
+  <g transform="translate(32,32)">
+    <rect x="-6" y="-24" width="12" height="48" rx="6" transform="rotate(35)" fill="#2F5D50"/>
+    <rect x="-6" y="-24" width="12" height="48" rx="6" transform="rotate(145)" fill="#B5422C"/>
+    <circle cx="0" cy="0" r="6" fill="#2F5D50"/>
+    <circle cx="0" cy="0" r="3" fill="#F5F3ED"/>
+  </g>
+</svg>
