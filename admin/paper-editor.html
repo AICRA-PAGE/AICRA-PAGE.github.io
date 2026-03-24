@@ -148,17 +148,20 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
   body{height:auto;overflow:visible;background:#fff}
   @page{margin:20mm 15mm;size:A4}
   title{display:none!important}
-  #pv{padding:0!important;font-family:'Times New Roman','Noto Serif KR',serif!important;font-size:10pt!important;line-height:1.3!important;color:#000!important;background:#fff!important;column-count:2;column-gap:18pt;column-rule:none}
-  #pv h1{font-size:14pt!important;margin-bottom:6pt}
-  #pv h2{font-size:10pt!important;text-transform:uppercase;border-bottom:.5pt solid #000;margin:12pt 0 4pt}
-  #pv h3{font-size:10pt!important;font-style:italic}
-  #pv table{font-size:8pt!important}
+  #pv{padding:10mm 0 0 0!important;font-family:'Times New Roman','Noto Serif KR',serif!important;font-size:11pt!important;line-height:1.5!important;color:#000!important;background:#fff!important;column-count:auto!important;overflow:visible!important;max-width:100%!important}
+  #pv *{page-break-inside:avoid;orphans:3;widows:3}
+  #pv h1{font-size:14pt!important;margin-bottom:6pt;page-break-after:avoid}
+  #pv h2{font-size:11pt!important;text-transform:uppercase;border-bottom:.5pt solid #000;margin:14pt 0 6pt;page-break-after:avoid}
+  #pv h3{font-size:10.5pt!important;font-style:italic;page-break-after:avoid}
+  #pv p{text-align:justify;margin-bottom:6pt}
+  #pv table{font-size:9pt!important;page-break-inside:avoid;width:100%}
   #pv th{border-top:1.5pt solid #000;border-bottom:.75pt solid #000}
   #pv tr:last-child td{border-bottom:1.5pt solid #000}
-  #pv pre{background:#fff!important;border:1px solid #ccc;font-size:8pt!important}
-  #pv .env-block{border-top:.5pt solid #000;border-bottom:.5pt solid #000;background:transparent!important}
-  #pv .abstract-box{border-top:.75pt solid #000;border-bottom:.75pt solid #000}
+  #pv pre{background:#f8f8f8!important;border:1px solid #ccc;font-size:8.5pt!important;page-break-inside:avoid;white-space:pre-wrap;word-wrap:break-word}
+  #pv .env-block{border-top:.5pt solid #000;border-bottom:.5pt solid #000;background:transparent!important;page-break-inside:avoid}
+  #pv .abstract-box{border-top:.75pt solid #000;border-bottom:.75pt solid #000;page-break-inside:avoid}
   #pv code{background:transparent!important;border:none}
+  #pv img{max-width:100%!important;page-break-inside:avoid}
 }
 /* Author chips + dropdowns */
 .meta-sel{width:100%;padding:3px 6px;border:1px solid var(--line);border-radius:4px;font-size:.68rem;background:var(--panel);color:var(--text)}
@@ -1267,20 +1270,6 @@ phd_kr:`# [박사학위논문]
 **[저자명]**
 
 **지도교수: [교수명]**
-
----
-
-## 인준서
-
-이 논문을 [학과] [공학/이학] 박사학위 논문으로 인준함.
-
-심사위원장: _______________
-심사위원: _______________
-심사위원: _______________
-심사위원: _______________
-심사위원: _______________
-
-[연도]년 [월]월 [일]일
 
 ---
 
