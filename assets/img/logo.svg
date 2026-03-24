@@ -1,14 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 220" role="img" aria-label="AICRA logo">
-  <title>AICRA</title>
-  <desc>Abstract geometric mark - intersecting analysis structure</desc>
-
-  <!-- Cross-analysis geometric icon -->
-  <g transform="translate(110,110)">
-    <rect x="-18" y="-76" width="36" height="152" rx="18" transform="rotate(35)" fill="#2F5D50"/>
-    <rect x="-18" y="-76" width="36" height="152" rx="18" transform="rotate(145)" fill="#B5422C"/>
-    <rect x="-12" y="-58" width="24" height="116" rx="12" transform="rotate(35)" fill="#F5F3ED" opacity="0.9"/>
-    <rect x="-12" y="-58" width="24" height="116" rx="12" transform="rotate(145)" fill="#F5F3ED" opacity="0.9"/>
-    <circle cx="0" cy="0" r="18" fill="#2F5D50"/>
-    <circle cx="0" cy="0" r="8" fill="#F5F3ED"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 220" width="220" height="220" role="img" aria-label="AICRA logo">
+  <title>AICRA - AI Security Research Association</title>
+  <g transform="translate(110 110)">
+    <path d="M0 -86 L66 -48 L54 40 L0 88 L-54 40 L-66 -48 Z"
+          fill="none" stroke="#2F5D50" stroke-width="14" stroke-linejoin="round"/>
+    <path d="M-34 44 L0 -44 L34 44 M-20 8 H20"
+          fill="none" stroke="#2F5D50" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M-20 8 H-44 M20 8 H44 M0 -44 V-62"
+          fill="none" stroke="#B5422C" stroke-width="8" stroke-linecap="round"/>
+    <circle cx="-52" cy="8" r="6" fill="#B5422C"/>
+    <circle cx="52" cy="8" r="6" fill="#B5422C"/>
+    <circle cx="0" cy="-70" r="6" fill="#B5422C"/>
   </g>
 </svg>
