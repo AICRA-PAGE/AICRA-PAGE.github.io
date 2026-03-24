@@ -257,7 +257,12 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
   <button class="bt" onclick="genAbstract()" title="논문 본문에서 구조화 초록을 자동 생성합니다">초록 생성</button>
   <button class="bt" onclick="genPPT()" title="논문 내용으로 발표용 슬라이드(.pptx)를 생성합니다">발표자료</button>
   <button class="bt" onclick="validatePaper()">검증</button>
-  <button class="bt p" onclick="publish()">내보내기</button>
+  <select class="sel" style="background:var(--brand);color:#fff;font-weight:600;border-color:var(--brand)" onchange="if(this.value){window['export'+this.value]();this.value=''}">
+    <option value="">내보내기</option>
+    <option value="MD">Markdown (.md)</option>
+    <option value="TeX">LaTeX (.tex)</option>
+    <option value="PPT">발표자료 (.pptx)</option>
+  </select>
   <div class="sep"></div>
   <button class="bt icon" onclick="toggleDark()" title="다크 모드">&#9684;</button>
   <button class="bt icon" onclick="toggleFocus()" title="집중 모드">&#9974;</button>
@@ -2411,7 +2416,7 @@ function addRef(){const i=document.getElementById('refInput');const v=i.value.tr
 function removeRef(idx){refs.splice(idx,1);renderRefs();render();}
 function renderRefs(){const l=document.getElementById('refList');document.getElementById('rc').textContent=refs.length;l.innerHTML=refs.map((r,i)=>'<div class="ref-item"><b>['+(i+1)+']</b>'+r+' <span style="cursor:pointer;color:#b42318;float:right" onclick="removeRef('+i+')">x</span></div>').join('');}
 function toggleRef(){document.getElementById('refPanel').classList.toggle('open');}
-function toggleHelp(){const hp=document.getElementById('helpPanel');hp.classList.toggle('show');if(hp.classList.contains('show'))renderMathInElement(hp,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false});}
+function toggleHelp(){const hp=document.getElementById('helpPanel');hp.classList.toggle('show');if(hp.classList.contains('show')){hp.scrollTop=0;renderMathInElement(hp,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false});}}
 
 // === VALIDATE ===
 function validatePaper(){
@@ -2494,6 +2499,133 @@ function publish(){
     else{const b=new Blob([fm],{type:'text/markdown'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=today+'-'+ti.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'')+'.md';a.click();}
   });
 }
+
+// === EXPORT ALIASES ===
+function exportMD(){publish();}
+function exportPPT(){genPPT();}
+
+// === TEX EXPORT ===
+function exportTeX(){
+  const ti=document.getElementById('ti').value||'Untitled';
+  const au=document.getElementById('au').value||'AICRA';
+  const coau=document.getElementById('coau').value;
+  const ab=document.getElementById('ab').value;
+  const kw=document.getElementById('kw').value;
+  const corr=document.getElementById('corr').value;
+  const body=inp.value;
+  if(!body.trim())return alert('내용을 입력해 주세요.');
+
+  // Select venue class
+  const venue=prompt('LaTeX 클래스를 선택하세요:\n1) IEEEtran (IEEE 학회/저널)\n2) acmart (ACM 학회)\n3) article (일반)\n\n번호 입력:','1');
+  const classes={'1':'IEEEtran','2':'acmart','3':'article'};
+  const cls=classes[venue]||'article';
+
+  // Build preamble
+  let tex='';
+  if(cls==='IEEEtran'){
+    tex+='\\documentclass[conference]{IEEEtran}\n';
+    tex+='\\usepackage{amsmath,amssymb,amsfonts}\n\\usepackage{algorithmic}\n\\usepackage{graphicx}\n\\usepackage{textcomp}\n\\usepackage{kotex}\n\\usepackage{hyperref}\n';
+  }else if(cls==='acmart'){
+    tex+='\\documentclass[sigconf]{acmart}\n';
+    tex+='\\usepackage{amsmath,amssymb}\n\\usepackage{graphicx}\n\\usepackage{kotex}\n';
+  }else{
+    tex+='\\documentclass[11pt,a4paper]{article}\n';
+    tex+='\\usepackage{amsmath,amssymb}\n\\usepackage{graphicx}\n\\usepackage{hyperref}\n\\usepackage{kotex}\n\\usepackage{amsthm}\n\\newtheorem{theorem}{Theorem}\n\\newtheorem{definition}{Definition}\n\\newtheorem{lemma}{Lemma}\n';
+  }
+  tex+='\\usepackage[utf8]{inputenc}\n\n';
+
+  // Title, authors
+  tex+='\\title{'+escTeX(ti)+'}\n';
+  const allAuthors=[au,...(coau?coau.split(',').map(s=>s.trim()):[])].filter(Boolean);
+  const authorNames=allAuthors.map(a=>{const m=nameMap[a];return m&&m.name?m.name:a;});
+  if(cls==='IEEEtran'){
+    tex+='\\author{'+authorNames.join(' \\and ')+'}\n';
+  }else if(cls==='acmart'){
+    authorNames.forEach(n=>{tex+='\\author{'+escTeX(n)+'}\n';});
+  }else{
+    tex+='\\author{'+authorNames.join(', ');
+    if(corr)tex+='\\\\\\small Corresponding: '+corr;
+    tex+='}\n';
+  }
+  tex+='\\date{'+new Date().toISOString().split('T')[0]+'}\n\n';
+  tex+='\\begin{document}\n\\maketitle\n\n';
+
+  // Abstract
+  if(ab){tex+='\\begin{abstract}\n'+escTeX(ab)+'\n\\end{abstract}\n\n';}
+  const absMatch=body.match(/:::abstract\n([\s\S]*?)\n:::/);
+  if(absMatch&&!ab){tex+='\\begin{abstract}\n'+escTeX(absMatch[1].trim())+'\n\\end{abstract}\n\n';}
+
+  // Keywords
+  if(kw){tex+='\\textbf{Keywords:} '+escTeX(kw)+'\n\n';}
+
+  // Convert body
+  let b=body;
+  // Remove :::abstract block (already handled)
+  b=b.replace(/:::abstract\n[\s\S]*?\n:::\n*/g,'');
+  // Sections
+  b=b.replace(/^# (.+)$/gm,''); // Title already in \\title
+  b=b.replace(/^## (?:\d+\.?\s*|[IVX]+\.?\s*)?(.+)$/gm,'\\\\section{$1}');
+  b=b.replace(/^### (?:\d+\.\d+\.?\s*)?(.+)$/gm,'\\\\subsection{$1}');
+  b=b.replace(/^#### (.+)$/gm,'\\\\subsubsection{$1}');
+  // Environments
+  b=b.replace(/:::theorem\s*(.*?)\n([\s\S]*?)\n:::/g,'\\\\begin{theorem}[$1]\n$2\n\\\\end{theorem}');
+  b=b.replace(/:::definition\s*(.*?)\n([\s\S]*?)\n:::/g,'\\\\begin{definition}[$1]\n$2\n\\\\end{definition}');
+  b=b.replace(/:::lemma\s*(.*?)\n([\s\S]*?)\n:::/g,'\\\\begin{lemma}[$1]\n$2\n\\\\end{lemma}');
+  b=b.replace(/:::proof\n([\s\S]*?)\n:::/g,'\\\\begin{proof}\n$1\n\\\\end{proof}');
+  b=b.replace(/:::algorithm\s*(.*?)\n([\s\S]*?)\n:::/g,'\\\\begin{algorithm}\n\\\\caption{$1}\n\\\\begin{algorithmic}\n$2\n\\\\end{algorithmic}\n\\\\end{algorithm}');
+  // Citations
+  b=b.replace(/\[cite:(\d+)\]/g,'\\\\cite{ref$1}');
+  // Footnotes
+  const fnDefs={};
+  b=b.replace(/^\[\^(\w+)\]:\s*(.+)$/gm,(m,id,text)=>{fnDefs[id]=text;return '';});
+  b=b.replace(/\[\^(\w+)\]/g,(m,id)=>fnDefs[id]?'\\\\footnote{'+escTeX(fnDefs[id])+'}':m);
+  // Bold/italic
+  b=b.replace(/\*\*(.+?)\*\*/g,'\\\\textbf{$1}');
+  b=b.replace(/\*(.+?)\*/g,'\\\\textit{$1}');
+  // Code blocks
+  b=b.replace(/```\w*\n([\s\S]*?)```/g,'\\\\begin{verbatim}\n$1\\\\end{verbatim}');
+  b=b.replace(/`([^`]+)`/g,'\\\\texttt{$1}');
+  // Images
+  b=b.replace(/!\[([^\]]*)\]\(([^)]+)\)/g,'\\\\begin{figure}[h]\n\\\\centering\n\\\\includegraphics[width=0.8\\\\textwidth]{$2}\n\\\\caption{$1}\n\\\\end{figure}');
+  // Tables (basic)
+  b=b.replace(/\*Table.*?\.\s*(.*?)\*/g,'% Table: $1');
+  b=b.replace(/^\|(.+)\|\s*$/gm,(line)=>{
+    const cells=line.split('|').filter(Boolean).map(c=>c.trim());
+    if(cells.every(c=>/^[-:]+$/.test(c)))return '\\\\hline';
+    return cells.join(' & ')+' \\\\\\\\';
+  });
+  // Horizontal rules
+  b=b.replace(/^---$/gm,'');
+  // Lists
+  b=b.replace(/^- (.+)$/gm,'\\\\item $1');
+  // Clean up
+  b=b.replace(/\n{3,}/g,'\n\n');
+
+  tex+=b+'\n\n';
+
+  // References
+  if(refs.length){
+    tex+='\\\\begin{thebibliography}{'+refs.length+'}\n';
+    refs.forEach((r,i)=>{tex+='\\\\bibitem{ref'+(i+1)+'} '+escTeX(r)+'\n';});
+    tex+='\\\\end{thebibliography}\n';
+  }
+
+  tex+='\\\\end{document}\n';
+
+  // Fix double escapes from string literals
+  tex=tex.replace(/\\\\\\\\/g,'\\');
+
+  // Download
+  const fn=ti.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'')||'paper';
+  const blob=new Blob([tex],{type:'application/x-tex'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=fn+'.tex';
+  a.click();
+  document.getElementById('as').textContent='.tex 내보내기 완료';
+}
+
+function escTeX(s){return s.replace(/[&%$#_{}~^]/g,m=>'\\'+m);}
 
 function toggleCol(two){pv.classList.toggle('two-col',two);document.getElementById('col1btn').classList.toggle('active',!two);document.getElementById('col2btn').classList.toggle('active',two);}
 function save(){localStorage.setItem('aicra.paper.v4',JSON.stringify({ti:document.getElementById('ti').value,au:document.getElementById('au').value,coau:document.getElementById('coau').value,ab:document.getElementById('ab').value,kw:document.getElementById('kw').value,dm:document.getElementById('dm').value,status:document.getElementById('st-sel').value,collab:document.getElementById('collab').checked,body:inp.value,refs:refs,at:Date.now()}));}
