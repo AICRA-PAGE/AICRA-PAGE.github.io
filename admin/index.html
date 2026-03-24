@@ -2,85 +2,80 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AICRA - Content Management</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AICRA Content Management</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', 'Segoe UI', sans-serif; background: #F5F3ED; color: #1C1917; }
-    .landing {
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      min-height: 100vh; padding: 2rem; text-align: center;
+    :root { --bg:#f5f3ed; --text:#1c1917; --muted:#6b665c; --brand:#2f5d50; --brand-dark:#244b40; --card:#fff; --line:#ece7dd; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh; font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', sans-serif;
+      color: var(--text); background: radial-gradient(circle at 20% 10%, #fff 0%, var(--bg) 45%);
+      display: grid; place-items: center; padding: 24px;
     }
-    .logo { width: 72px; height: 72px; margin-bottom: 1.2rem; }
-    h1 { font-size: 1.4rem; font-weight: 700; color: #2F5D50; margin-bottom: 0.2rem; }
-    .subtitle { font-size: 0.85rem; color: #6B665C; margin-bottom: 2rem; }
+    .wrap { width: 100%; max-width: 480px; text-align: center; }
+    .logo { width: 72px; height: 72px; margin-bottom: 12px; }
+    h1 { font-size: 1.35rem; color: var(--brand); margin-bottom: 4px; }
+    .sub { color: var(--muted); font-size: 0.88rem; margin-bottom: 24px; }
     .card {
-      background: white; border-radius: 12px; padding: 1.8rem 2rem; max-width: 440px; width: 100%;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 1.5rem;
+      background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+      padding: 20px; margin-bottom: 16px; text-align: left;
     }
-    .card h3 { font-size: 0.95rem; color: #2F5D50; margin-bottom: 1rem; }
-    .card ul { text-align: left; list-style: none; padding: 0; }
-    .card li { padding: 0.45rem 0; border-bottom: 1px solid #f0ede6; font-size: 0.82rem; color: #44403C; }
+    .card h3 { font-size: 0.92rem; color: var(--brand); margin-bottom: 10px; }
+    .card ul { list-style: none; padding: 0; }
+    .card li { padding: 6px 0; border-bottom: 1px solid #f0ede6; font-size: 0.82rem; color: #44403C; }
     .card li:last-child { border-bottom: none; }
-    .card li strong { color: #2F5D50; }
+    .card li strong { color: var(--brand); }
+    .actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 16px; }
     .btn {
-      display: inline-block; padding: 12px 32px; color: white; border: none;
-      border-radius: 8px; font-size: 0.95rem; font-weight: 600;
-      cursor: pointer; transition: background 0.2s; margin: 0.3rem;
-      text-decoration: none;
+      border: 0; border-radius: 8px; padding: 11px 22px; color: #fff;
+      text-decoration: none; cursor: pointer; font-weight: 600; font-size: 0.9rem;
     }
-    .btn-github { background: #24292e; }
-    .btn-github:hover { background: #1b1f23; }
-    .btn-token { background: #2F5D50; }
-    .btn-token:hover { background: #245045; }
-    .note { font-size: 0.75rem; color: #8B8580; max-width: 440px; line-height: 1.5; margin-top: 1rem; }
-    .note a { color: #2F5D50; }
+    .btn-primary { background: var(--brand); }
+    .btn-primary:hover { background: var(--brand-dark); }
+    .btn-outline { background: transparent; color: var(--brand); border: 1.5px solid var(--brand); }
+    .btn-outline:hover { background: var(--brand); color: #fff; }
+    .access-box {
+      background: #fff8f0; border: 1px solid #f0e0cc; border-radius: 8px;
+      padding: 14px 16px; font-size: 0.8rem; color: #6B665C; text-align: left; margin-bottom: 12px;
+    }
+    .access-box strong { color: #B5422C; }
+    .access-box a { color: var(--brand); font-weight: 600; }
+    .note { font-size: 0.75rem; color: #8b8580; line-height: 1.6; }
+    .note a { color: var(--brand); }
   </style>
 </head>
 <body>
-  <div class="landing" id="landing">
+  <main class="wrap">
     <img src="/assets/img/logo.svg" alt="AICRA" class="logo">
     <h1>AICRA Content Management</h1>
-    <p class="subtitle">AI Security Research Association</p>
+    <p class="sub">AI Security Research Association</p>
 
     <div class="card">
-      <h3>Collaborator Guide</h3>
+      <h3>편집 가능한 콘텐츠</h3>
       <ul>
         <li><strong>Blog Posts</strong> - AI 보안 연구 포스트 작성/편집</li>
-        <li><strong>Pages</strong> - About, Team, News, Community, Publications 편집</li>
-        <li><strong>Media</strong> - 이미지, SVG, 사진 업로드 관리</li>
+        <li><strong>Pages</strong> - About, Team, News, Community, Publications</li>
+        <li><strong>Media</strong> - 이미지, SVG, 사진 업로드</li>
       </ul>
     </div>
 
-    <div>
-      <a class="btn btn-github" href="https://auth.aicra.workers.dev/auth?provider=github&site_id=aicra-page.github.io">
-        GitHub로 로그인
+    <div class="actions">
+      <a class="btn btn-primary" href="/admin/cms.html">편집기 열기</a>
+      <a class="btn btn-outline" href="https://aicra-page.github.io" target="_blank">블로그 보기</a>
+    </div>
+
+    <div class="access-box">
+      <strong>접근 권한 안내</strong><br>
+      GitHub collaborator 권한이 필요합니다. 권한이 없다면 아래에서 요청해 주세요.<br><br>
+      <a href="https://github.com/AICRA-PAGE/AICRA-PAGE.github.io/issues/new?title=%5B접근%20요청%5D%20GitHub%20ID:%20&body=GitHub%20ID:%20%0A소속:%20%0A요청%20사유:%20&labels=access-request" target="_blank">
+        접근 권한 요청하기
       </a>
-      <button class="btn btn-token" onclick="startCMSToken()">
-        Token으로 로그인
-      </button>
     </div>
 
     <p class="note">
-      GitHub 리포지토리 collaborator 권한이 필요합니다.<br>
-      권한 요청: <a href="https://github.com/AICRA-PAGE/AICRA-PAGE.github.io/issues" target="_blank">GitHub Issues</a>
-      &nbsp;|&nbsp;
-      <a href="https://aicra-page.github.io" target="_blank">블로그 바로가기</a>
+      편집기에서 GitHub 로그인 후 콘텐츠를 편집할 수 있습니다.<br>
+      <a href="https://github.com/AICRA-PAGE/AICRA-PAGE.github.io" target="_blank">GitHub Repository</a>
     </p>
-  </div>
-
-  <script>
-    function startCMSToken() {
-      document.getElementById('landing').style.display = 'none';
-      var s = document.createElement('script');
-      s.src = 'https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js';
-      document.body.appendChild(s);
-    }
-
-    // If returning from OAuth callback, auto-load CMS
-    if (document.referrer.includes('auth.aicra.workers.dev') || window.location.hash) {
-      startCMSToken();
-    }
-  </script>
+  </main>
 </body>
 </html>
