@@ -283,6 +283,7 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
     <option value="PPT">발표자료 (.pptx)</option>
   </select>
   <div class="sep"></div>
+  <button class="bt" onclick="startTutorial()" title="기능 체험 튜토리얼" style="background:var(--accent);color:#fff;border-color:var(--accent)">튜토리얼</button>
   <button class="bt icon" onclick="toggleDark()" title="다크 모드">&#9684;</button>
   <button class="bt icon" onclick="toggleFocus()" title="집중 모드">&#9974;</button>
   <button class="bt icon" onclick="window.print()" title="인쇄 / PDF">&#9113;</button>
@@ -3498,6 +3499,7 @@ document.addEventListener('mouseup',()=>rs=false);
 </div><!-- /editor-content -->
 
 <script src="/assets/js/doc-manager.js"></script>
+<script src="/assets/js/tutorial.js"></script>
 <script src="/assets/js/auth-guard.js"></script>
 <script>
 // === COLLABORATOR AUTHOR SYSTEM (all-dropdown + name mapping) ===
