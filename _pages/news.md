@@ -16,6 +16,7 @@ description: "AICRA 연구회 동향, 세미나, 활동 소식"
 | 시기 | 활동 | 상태 |
 |------|------|------|
 | 1월 | AICRA 블로그 오픈 | 완료 |
+| 1월 | 1월 정기 모임 (노코드 AD보안 + AI Red Teaming LABS) | 완료 |
 | 2월 | AI 보안 위협 분석 시리즈 발행 | 진행중 |
 | 3월 | OWASP LLM/Agentic Top 10 분석 | 완료 |
 | 3월 | 3월 정기 모임 | 완료 |
@@ -42,6 +43,14 @@ description: "AICRA 연구회 동향, 세미나, 활동 소식"
   <img src="/assets/img/events/2026-03/KakaoTalk_20260322_115550454_09.jpg" alt="활동 3" style="width:100%; border-radius:6px;">
   <img src="/assets/img/events/2026-03/KakaoTalk_20260322_115550454.jpg" alt="발표 화면" style="width:100%; border-radius:6px;">
 </div>
+
+---
+
+### 2026년 1월 정기 모임 (2026.01.24)
+
+노코드를 이용한 AD(Active Directory) 보안 취약점 솔루션 개발과 AI Red Teaming Playground LABS에 대한 소개가 진행되었습니다.
+
+*사진 준비 중*
 
 ---
 
