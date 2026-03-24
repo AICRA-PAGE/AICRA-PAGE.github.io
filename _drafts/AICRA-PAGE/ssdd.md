@@ -9,54 +9,51 @@ domain: "LLM Security"
 lang: ko
 ---
 
-
 # [Paper Title]
 
-[Author 1], [Author 2]
+**[Author 1]**, **[Author 2]**
 [Affiliations]
 
 :::abstract
-[150 words max]
+[200-300 words]
 :::
 
----
-
-## Introduction
+**Index Terms:** [term1], [term2]
 
 ---
 
-## Related Work
+## 1. Introduction
 
 ---
 
-## Problem Formulation
+## 2. Preliminaries
 
 ---
 
-## Approach
+## 3. Related Work
 
 ---
 
-## Experiments
+## 4. Proposed Method
 
 ---
 
-## Results and Analysis
+## 5. Security Analysis
 
 ---
 
-## Conclusion
+## 6. Experimental Results
 
 ---
 
-## Acknowledgments
+## 7. Discussion
+
+---
+
+## 8. Conclusion
 
 ---
 
 ## References
 
----
-
-## Reproducibility Checklist
-
-<!-- AAAI: 7 pages technical content + references. Checklist after references. Double-blind. -->
+<!-- IEEE TIFS: Journal, reproducibility encouraged (code/data). -->
