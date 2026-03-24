@@ -276,6 +276,8 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
   <button class="bt" onclick="genAbstract()" title="논문 본문에서 구조화 초록을 자동 생성합니다">초록 생성</button>
   <button class="bt" onclick="genPPT()" title="논문 내용으로 발표용 슬라이드(.pptx)를 생성합니다">발표자료</button>
   <button class="bt" onclick="validatePaper()">검증</button>
+  <button class="bt" onclick="diagnosePaper()" title="구조/인용/문단/어휘 상세 진단">진단</button>
+  <button class="bt" onclick="analyzeStyle()" title="문체 일관성/용어 통일 분석">문체</button>
   <select class="sel" style="background:var(--brand);color:#fff;font-weight:600;border-color:var(--brand)" onchange="if(this.value){window['export'+this.value]();this.value=''}">
     <option value="">내보내기</option>
     <option value="MD">Markdown (.md)</option>
@@ -2886,7 +2888,7 @@ function ins(type){
     fig:'![Alt text](/assets/img/papers/figure.pdf)\n*Fig. N. [Caption describing what the figure shows.]*\n\n',
     tbl:'*Table N. [Caption describing what the table compares.]*\n| Column A | Column B | Column C |\n|----------|----------|----------|\n|  |  |  |\n\n',
     code:'```python\n# code\n```\n',
-    cite:'[cite:'+(refs.length+1)+']',
+    cite:'__CITE_FLOW__',
     threat:`### Threat Model\n\n**Assets**\n- [What needs protection]\n\n**Adversary**\n- **Goal:** [adversary objective]\n- **Access:** [black-box / gray-box / white-box]\n- **Capabilities:** [what the adversary can do]\n- **Knowledge:** [what the adversary knows]\n\n**Trust Boundaries**\n- [boundary description]\n\n**Assumptions**\n- [assumption 1]\n\n**Out-of-Scope**\n- [exclusion 1]\n\n`,
     eval:'*Table N. Evaluation results (mean +/- std, N runs).*\n| Method | Metric A | Metric B | Metric C | Overhead |\n|--------|----------|----------|----------|----------|\n| Baseline | | | | |\n| Proposed | | | | |\n\n',
     framework:'*Table N. Framework mapping.*\n| Finding | Framework | ID / Category | Notes |\n|---------|-----------|--------------|-------|\n| | | | |\n\n<!-- Frameworks: MITRE ATLAS (AML.Txxxx), OWASP LLM Top 10 (LLM01-10), NIST AI RMF, CWE, ISO 27001/42001 -->\n\n',
@@ -2925,17 +2927,43 @@ function ins(type){
 
     glossary:'### 용어집 (Glossary)\n\n| 국문 | 영문 | 정의 |\n|------|------|------|\n| 인공지능 | Artificial Intelligence (AI) | |\n| 개인정보 | Personal Data / PII | |\n| 위험 평가 | Risk Assessment | |\n| 적합성 | Conformity | |\n| 설명가능성 | Explainability | |\n| | | |\n\n',
 
-    dquote:'> "[직접 인용할 원문 내용]" [cite:'+(refs.length+1)+']\n\n',
+    dquote:'> "[직접 인용할 원문 내용]" [cite:N]\n\n',
 
-    iquote:'[저자/연구]에 따르면, [간접 인용 내용을 자신의 말로 재서술] [cite:'+(refs.length+1)+'].\n\n'
+    iquote:'[저자/연구]에 따르면, [간접 인용 내용을 자신의 말로 재서술] [cite:N].\n\n'
   };
+  // Citation flow: open ref panel first, auto-insert after ref is added
+  if(type==='cite'){handleCiteInsert();return;}
   inp.focus();
   typeText(T[type]||'');
   inp.dispatchEvent(new Event('input'));
 }
 
+let _pendingCite=false;
+function handleCiteInsert(){
+  // Save cursor position
+  _pendingCite=true;
+  // Open reference panel
+  const rp=document.getElementById('refPanel');
+  if(!rp.classList.contains('open'))rp.classList.add('open');
+  // Show guidance
+  document.getElementById('as').textContent='[*] 참고문헌을 먼저 등록하세요. 등록 후 인용 [cite:N]이 자동 삽입됩니다.';
+  document.getElementById('as').style.color='var(--accent)';
+  // Focus search input
+  const sq=document.getElementById('schQuery');
+  if(sq)sq.focus();
+}
+function _completeCiteInsert(){
+  if(!_pendingCite)return;
+  _pendingCite=false;
+  inp.focus();
+  typeText('[cite:'+refs.length+']');
+  inp.dispatchEvent(new Event('input'));
+  document.getElementById('as').textContent='[+] 참고문헌 ['+refs.length+'] 등록 + 인용 삽입 완료';
+  document.getElementById('as').style.color='var(--brand)';
+}
+
 // === REFS ===
-function addRef(){const i=document.getElementById('refInput');const v=i.value.trim();if(!v)return;refs.push(v);i.value='';renderRefs();render();}
+function addRef(){const i=document.getElementById('refInput');const v=i.value.trim();if(!v)return;refs.push(v);i.value='';renderRefs();render();_completeCiteInsert();}
 function removeRef(idx){refs.splice(idx,1);renderRefs();render();}
 function renderRefs(){const l=document.getElementById('refList');document.getElementById('rc').textContent=refs.length;l.innerHTML=refs.map((r,i)=>'<div class="ref-item"><b>['+(i+1)+']</b>'+r+' <span style="cursor:pointer;color:#b42318;float:right" onclick="removeRef('+i+')">x</span></div>').join('');}
 function toggleRef(){document.getElementById('refPanel').classList.toggle('open');}
@@ -2992,6 +3020,163 @@ function validatePaper(){
   const cr=document.getElementById('checkResult');
   cr.innerHTML='<strong style="color:var(--brand)">논문 검증 ('+sc+'/100)</strong> <button onclick="document.getElementById(\'checkResult\').style.display=\'none\'" style="position:absolute;right:8px;top:8px;border:none;background:none;cursor:pointer;font-size:.8rem;color:var(--muted)">X</button><br>'+issues.join('<br>');
   cr.style.display='block';
+}
+
+// === DIAGNOSTIC REPORT ===
+function diagnosePaper(){
+  const t=inp.value;if(!t.trim()){alert('본문이 비어 있습니다.');return;}
+  const lines=t.split('\n');const wc=t.trim().split(/\s+/).length;
+  // Section analysis
+  const sections=[];let curSec=null;
+  lines.forEach((line,i)=>{
+    const m=line.match(/^(#{2,3})\s+(.+)/);
+    if(m){if(curSec)curSec.end=i;curSec={level:m[1].length,title:m[2],start:i,end:lines.length,words:0,cites:0,paras:0};sections.push(curSec);}
+  });
+  if(curSec)curSec.end=lines.length;
+  sections.forEach(s=>{
+    const block=lines.slice(s.start,s.end).join('\n');
+    s.words=block.trim().split(/\s+/).length;
+    s.cites=(block.match(/\[cite:\d+\]/g)||[]).length;
+    s.paras=(block.match(/\n\n/g)||[]).length;
+  });
+  // Paragraph length analysis
+  const paras=t.split(/\n{2,}/).filter(p=>p.trim()&&!p.startsWith('#')&&!p.startsWith('|')&&!p.startsWith('```'));
+  const paraLens=paras.map(p=>p.trim().split(/\s+/).length);
+  const avgPara=paraLens.length?Math.round(paraLens.reduce((a,b)=>a+b,0)/paraLens.length):0;
+  const maxPara=paraLens.length?Math.max(...paraLens):0;
+  const shortParas=paraLens.filter(l=>l<15).length;
+  // Vocabulary diversity (unique words / total words)
+  const words=t.toLowerCase().replace(/[^a-z가-힣\s]/g,' ').trim().split(/\s+/).filter(w=>w.length>1);
+  const uniqueWords=new Set(words);
+  const diversity=words.length?Math.round((uniqueWords.size/words.length)*100):0;
+  // Abstract quality
+  const absText=document.getElementById('ab').value||'';
+  const absMatch=t.match(/:::abstract\n([\s\S]*?)\n:::/);
+  const absContent=absText||(absMatch?absMatch[1]:'');
+  const absWords=absContent.trim().split(/\s+/).length;
+  // Build report
+  let rpt='<strong style="color:var(--brand);font-size:.85rem">논문 진단 리포트</strong>';
+  rpt+='<button onclick="document.getElementById(\'checkResult\').style.display=\'none\'" style="position:absolute;right:8px;top:8px;border:none;background:none;cursor:pointer;font-size:.8rem;color:var(--muted)">X</button>';
+  rpt+='<div style="margin-top:8px">';
+  // Overall stats
+  rpt+='<div style="font-size:.68rem;font-weight:700;color:var(--brand);margin:6px 0 3px">전체 통계</div>';
+  rpt+='<div style="font-size:.62rem">총 '+wc+'단어 | '+sections.length+'섹션 | '+paras.length+'문단 | 추정 '+(Math.ceil(wc/300))+'페이지</div>';
+  // Section balance
+  rpt+='<div style="font-size:.68rem;font-weight:700;color:var(--brand);margin:8px 0 3px">섹션별 분석</div>';
+  if(sections.length===0){rpt+='<div style="font-size:.62rem;color:#b42318">[!] 섹션이 없습니다</div>';}
+  else{
+    rpt+='<table style="width:100%;font-size:.58rem;border-collapse:collapse;margin:2px 0"><tr style="background:var(--surface)"><th style="padding:2px 4px;text-align:left">섹션</th><th>단어</th><th>비중</th><th>인용</th><th>진단</th></tr>';
+    const avgSec=Math.round(wc/sections.length);
+    sections.forEach(s=>{
+      const pct=wc?Math.round(s.words/wc*100):0;
+      const bar='<div style="background:var(--brand);height:4px;width:'+Math.min(pct*2,100)+'%;border-radius:2px"></div>';
+      let diag='';
+      if(s.words<30)diag='<span style="color:#b42318">너무 짧음</span>';
+      else if(s.words<avgSec*0.3)diag='<span style="color:var(--accent)">보충 필요</span>';
+      else diag='<span style="color:var(--brand)">적정</span>';
+      rpt+='<tr><td style="padding:2px 4px">'+(s.level===2?'':' - ')+s.title+'</td><td style="text-align:center">'+s.words+'</td><td>'+bar+' '+pct+'%</td><td style="text-align:center">'+s.cites+'</td><td>'+diag+'</td></tr>';
+    });
+    rpt+='</table>';
+  }
+  // Paragraph analysis
+  rpt+='<div style="font-size:.68rem;font-weight:700;color:var(--brand);margin:8px 0 3px">문단 분석</div>';
+  rpt+='<div style="font-size:.62rem">평균 '+avgPara+'단어/문단 | 최대 '+maxPara+'단어 | 짧은 문단(15단어 미만): '+shortParas+'개</div>';
+  if(maxPara>200)rpt+='<div style="font-size:.6rem;color:#b42318">[!] 200단어 초과 문단 발견 - 분할 권장</div>';
+  if(shortParas>5)rpt+='<div style="font-size:.6rem;color:var(--accent)">[!] 짧은 문단이 많음 - 통합 검토</div>';
+  // Vocabulary
+  rpt+='<div style="font-size:.68rem;font-weight:700;color:var(--brand);margin:8px 0 3px">어휘 다양성</div>';
+  rpt+='<div style="font-size:.62rem">고유 어휘: '+uniqueWords.size+'개 / 전체 '+words.length+'개 ('+diversity+'%)</div>';
+  if(diversity<30)rpt+='<div style="font-size:.6rem;color:var(--accent)">[!] 어휘 반복이 많습니다. 동의어 사용을 검토하세요.</div>';
+  // Abstract
+  rpt+='<div style="font-size:.68rem;font-weight:700;color:var(--brand);margin:8px 0 3px">초록 진단</div>';
+  if(!absContent.trim()){rpt+='<div style="font-size:.6rem;color:#b42318">[-] 초록이 없습니다</div>';}
+  else{
+    rpt+='<div style="font-size:.62rem">초록 '+absWords+'단어';
+    if(absWords<100)rpt+=' <span style="color:var(--accent)">(100단어 이상 권장)</span>';
+    else if(absWords>300)rpt+=' <span style="color:var(--accent)">(300단어 이하 권장)</span>';
+    else rpt+=' <span style="color:var(--brand)">(적정)</span>';
+    rpt+='</div>';
+    const hasObj=/목적|objective|aim|goal/i.test(absContent);
+    const hasMethod=/방법|method|approach|기법/i.test(absContent);
+    const hasResult=/결과|result|성능|accuracy|감소|증가/i.test(absContent);
+    rpt+='<div style="font-size:.6rem">';
+    rpt+=(hasObj?'[+]':'[-]')+' 연구 목적 '+(hasObj?'포함':'누락')+' | ';
+    rpt+=(hasMethod?'[+]':'[-]')+' 방법론 '+(hasMethod?'포함':'누락')+' | ';
+    rpt+=(hasResult?'[+]':'[-]')+' 결과 '+(hasResult?'포함':'누락');
+    rpt+='</div>';
+  }
+  // Citation density
+  const totalCites=(t.match(/\[cite:\d+\]/g)||[]).length;
+  rpt+='<div style="font-size:.68rem;font-weight:700;color:var(--brand);margin:8px 0 3px">인용 밀도</div>';
+  rpt+='<div style="font-size:.62rem">총 '+totalCites+'회 인용 | 참고문헌 '+refs.length+'편 | '+(wc>0?Math.round(totalCites/wc*1000)/10:'0')+' 인용/100단어</div>';
+  rpt+='</div>';
+  const cr=document.getElementById('checkResult');
+  cr.innerHTML=rpt;cr.style.display='block';
+}
+
+// === STYLE CONSISTENCY ===
+function analyzeStyle(){
+  const t=inp.value;if(!t.trim()){alert('본문이 비어 있습니다.');return;}
+  const sentences=t.replace(/\n/g,' ').split(/(?<=[.!?다요함임됨음])\s+/).filter(s=>s.trim().length>5);
+  // Korean style endings
+  const formal=[];const informal=[];const mixed=[];
+  const formalPat=/(?:합니다|됩니다|있습니다|했습니다|됩니다|봅니다|겠습니다)[.!?]?\s*$/;
+  const informalPat=/(?:한다|된다|있다|했다|이다|된다|보인다|나타난다|보았다)[.!?]?\s*$/;
+  sentences.forEach((s,i)=>{
+    if(formalPat.test(s))formal.push({idx:i,text:s.trim().slice(-20)});
+    else if(informalPat.test(s))informal.push({idx:i,text:s.trim().slice(-20)});
+  });
+  // Passive vs active (Korean)
+  const passive=sentences.filter(s=>/(?:되었다|되었으며|되어|되고|된다|된 것)/i.test(s)).length;
+  const active=sentences.length-passive;
+  // Term consistency check
+  const termPairs=[
+    ['인공지능','AI'],['딥러닝','deep learning'],['머신러닝','machine learning'],
+    ['모델','model'],['알고리즘','algorithm'],['프레임워크','framework'],
+    ['데이터셋','dataset'],['정확도','accuracy'],['취약점','vulnerability']
+  ];
+  const termIssues=[];
+  termPairs.forEach(([kr,en])=>{
+    const krCount=(t.match(new RegExp(kr,'gi'))||[]).length;
+    const enCount=(t.match(new RegExp(en,'gi'))||[]).length;
+    if(krCount>0&&enCount>0)termIssues.push(kr+'/'+en+' 혼용 ('+kr+':'+krCount+', '+en+':'+enCount+')');
+  });
+  // Sentence length analysis
+  const sentLens=sentences.map(s=>s.trim().split(/\s+/).length);
+  const avgSent=sentLens.length?Math.round(sentLens.reduce((a,b)=>a+b,0)/sentLens.length):0;
+  const longSent=sentLens.filter(l=>l>40).length;
+  // Build report
+  let rpt='<strong style="color:var(--brand);font-size:.85rem">문체 일관성 분석</strong>';
+  rpt+='<button onclick="document.getElementById(\'checkResult\').style.display=\'none\'" style="position:absolute;right:8px;top:8px;border:none;background:none;cursor:pointer;font-size:.8rem;color:var(--muted)">X</button>';
+  rpt+='<div style="margin-top:8px">';
+  // Writing style
+  rpt+='<div style="font-size:.68rem;font-weight:700;color:var(--brand);margin:6px 0 3px">문체 분석 ('+sentences.length+'문장)</div>';
+  const fCount=formal.length,iCount=informal.length;
+  const dominant=fCount>iCount?'합쇼체 (격식체)':'해라체 (비격식체)';
+  const minor=fCount>iCount?iCount:fCount;
+  rpt+='<div style="font-size:.62rem">합쇼체: '+fCount+'문장 | 해라체: '+iCount+'문장 | 기타: '+(sentences.length-fCount-iCount)+'문장</div>';
+  if(fCount>0&&iCount>0){
+    rpt+='<div style="font-size:.6rem;color:#b42318">[!] 문체 혼용 감지: 주 문체 "'+dominant+'" 중 '+minor+'문장이 다른 문체</div>';
+    const examples=(fCount>iCount?informal:formal).slice(0,3);
+    rpt+='<div style="font-size:.55rem;color:var(--muted);margin:2px 0">예시: '+examples.map(e=>'...'+e.text).join(' | ')+'</div>';
+  }else{
+    rpt+='<div style="font-size:.6rem;color:var(--brand)">[+] 문체 일관 ('+dominant+')</div>';
+  }
+  // Passive/Active
+  rpt+='<div style="font-size:.68rem;font-weight:700;color:var(--brand);margin:8px 0 3px">능동/수동태</div>';
+  rpt+='<div style="font-size:.62rem">수동태: '+passive+'문장 ('+Math.round(passive/sentences.length*100)+'%) | 능동태: '+active+'문장</div>';
+  if(passive/sentences.length>0.6)rpt+='<div style="font-size:.6rem;color:var(--accent)">[!] 수동태 비율이 높습니다. 능동태 전환 검토.</div>';
+  // Term consistency
+  rpt+='<div style="font-size:.68rem;font-weight:700;color:var(--brand);margin:8px 0 3px">용어 일관성</div>';
+  if(termIssues.length===0){rpt+='<div style="font-size:.6rem;color:var(--brand)">[+] 한영 용어 혼용 없음</div>';}
+  else{termIssues.forEach(ti=>{rpt+='<div style="font-size:.6rem;color:var(--accent)">[!] '+ti+'</div>';});}
+  // Sentence length
+  rpt+='<div style="font-size:.68rem;font-weight:700;color:var(--brand);margin:8px 0 3px">문장 길이</div>';
+  rpt+='<div style="font-size:.62rem">평균 '+avgSent+'단어/문장 | 장문(40단어+): '+longSent+'개</div>';
+  if(longSent>3)rpt+='<div style="font-size:.6rem;color:var(--accent)">[!] 장문이 많습니다. 분할하여 가독성을 높이세요.</div>';
+  rpt+='</div>';
+  const cr=document.getElementById('checkResult');
+  cr.innerHTML=rpt;cr.style.display='block';
 }
 
 // === STATS ===
@@ -3824,7 +4009,8 @@ function addScholarRef(el){
   const ref=el.dataset.ref;if(!ref)return;
   refs.push(ref);renderRefs();render();
   el.style.background='var(--surface)';el.style.opacity='.5';
-  document.getElementById('as').textContent='참고문헌 추가됨 ['+refs.length+']';
+  if(_pendingCite){_completeCiteInsert();}
+  else{document.getElementById('as').textContent='참고문헌 추가됨 ['+refs.length+']';}
 }
 function openGScholar(){
   const q=document.getElementById('schQuery').value.trim();
@@ -3878,7 +4064,8 @@ function addFormattedRef(){
   refs.push(formatted);renderRefs();render();
   ['rf-author','rf-title','rf-venue','rf-year','rf-vol','rf-pages','rf-doi'].forEach(id=>{document.getElementById(id).value='';});
   document.getElementById('rf-preview').textContent='';
-  document.getElementById('as').textContent='참고문헌 ['+refs.length+'] 추가됨';
+  if(_pendingCite){_completeCiteInsert();}
+  else{document.getElementById('as').textContent='참고문헌 ['+refs.length+'] 추가됨';}
 }
 
 function showRefGuide(){
@@ -3945,18 +4132,47 @@ async function ghSave(){
   if(!title){alert('제목을 입력해 주세요.');return;}
   const body=inp.value;
   if(!body.trim()){alert('내용을 입력해 주세요.');return;}
-  try{
-    document.getElementById('as').textContent='저장 중...';
-    const result=await docManager.save(title,body,getEditorMeta());
-    document.getElementById('as').textContent='저장됨: '+result.path.split('/').pop()+' ('+new Date().toLocaleTimeString()+')';
-  }catch(e){
-    if(e.message==='CONFLICT'){
-      document.getElementById('conflictModal').classList.add('show');
-    }else{
-      alert('저장 실패: '+e.message);
-      document.getElementById('as').textContent='저장 실패';
+  // Force filename prompt
+  const defaultName=docManager.slugify(title);
+  const fileName=prompt('파일명을 지정하세요 (.md 확장자 자동 추가)',defaultName);
+  if(!fileName)return; // cancelled
+  const cleanName=fileName.replace(/\.md$/,'').replace(/[^a-z0-9가-힣_-]/gi,'-').replace(/-+/g,'-');
+  // Show save mode selection
+  const mode=prompt('저장 방식을 선택하세요:\n1 = GitHub 리포지토리 저장\n2 = 로컬 다운로드\n3 = 둘 다','3');
+  if(!mode)return;
+  const saveGH=mode==='1'||mode==='3';
+  const saveLocal=mode==='2'||mode==='3';
+  // GitHub save
+  if(saveGH){
+    try{
+      document.getElementById('as').textContent='GitHub 저장 중...';
+      const result=await docManager.save(title,body,getEditorMeta(),{fileName:cleanName});
+      document.getElementById('as').textContent='GitHub 저장됨: '+cleanName+'.md ('+new Date().toLocaleTimeString()+')';
+    }catch(e){
+      if(e.message==='CONFLICT'){document.getElementById('conflictModal').classList.add('show');}
+      else{alert('GitHub 저장 실패: '+e.message);document.getElementById('as').textContent='GitHub 저장 실패';}
     }
   }
+  // Local download
+  if(saveLocal){
+    const md=buildExportContent(title,body);
+    const blob=new Blob([md],{type:'text/markdown;charset=utf-8'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download=cleanName+'.md';
+    a.click();URL.revokeObjectURL(a.href);
+    document.getElementById('as').textContent=(saveGH?document.getElementById('as').textContent+' + ':'')+'로컬 저장: '+cleanName+'.md';
+  }
+}
+function buildExportContent(title,body){
+  const au=document.getElementById('au').value;const coau=document.getElementById('coau').value;
+  const ab=document.getElementById('ab').value;const kw=document.getElementById('kw').value;
+  const dm=document.getElementById('dm').value;const status=document.getElementById('st-sel').value;
+  const today=new Date().toISOString().split('T')[0];
+  const authors=coau?'\nauthors: ['+coau.split(',').map(s=>'"'+s.trim()+'"').join(', ')+']':'';
+  const kwLine=kw?'\nkeywords: ['+kw.split(',').map(s=>'"'+s.trim()+'"').join(', ')+']':'';
+  let refSec='';if(refs.length){refSec='\n\n---\n\n## References\n\n'+refs.map((r,i)=>'['+(i+1)+'] '+r).join('\n');}
+  return'---\nlayout: paper\ntitle: "'+title+'"\nauthor: '+(au||'AICRA')+authors+'\ndate: '+today+'\nstatus: '+status+'\ndomain: "'+dm+'"\nabstract: "'+(ab||'')+'"'+kwLine+'\nlang: ko\n---\n\n'+body+refSec;
 }
 
 async function ghLoad(){
@@ -4090,6 +4306,8 @@ aicraAuth.checkAccess(
     fetchCollaborators();
     initAutoSave();
     enableReviewMode();
+    // First-visit tutorial
+    if(window._tutorialFirstVisit)window._tutorialFirstVisit();
   },
   function(login){
     document.getElementById('gate-title').textContent='접근이 거부되었습니다';

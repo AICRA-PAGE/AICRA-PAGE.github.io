@@ -69,7 +69,7 @@
   // === SAVE ===
   async function saveToGitHub(title,body,meta,opts){
     const user=await getUser();if(!user)throw new Error('Not logged in');
-    const slug=slugify(title);
+    const slug=opts&&opts.fileName?opts.fileName:slugify(title);
     const folder=opts&&opts.publish?'_papers':'_drafts/'+user.login;
     const path=folder+'/'+slug+'.md';
     const content=buildContent(title,body,meta,user.login);
