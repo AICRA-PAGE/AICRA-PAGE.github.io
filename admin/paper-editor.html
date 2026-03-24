@@ -178,10 +178,26 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
   <div class="sep"></div>
   <select class="sel" id="tplSel" onchange="insTpl(this.value)">
     <option value="">-- Format --</option>
-    <optgroup label="영문 양식">
+    <optgroup label="AI/ML 학회">
+      <option value="neurips">NeurIPS</option>
+      <option value="icml">ICML</option>
+      <option value="iclr">ICLR</option>
+      <option value="aaai">AAAI</option>
+    </optgroup>
+    <optgroup label="보안 학회">
+      <option value="ccs">ACM CCS</option>
+      <option value="ndss">NDSS</option>
+      <option value="sp">IEEE S&amp;P</option>
+      <option value="usenix_en">USENIX Security</option>
+    </optgroup>
+    <optgroup label="보안 저널">
+      <option value="tdsc">IEEE TDSC</option>
+      <option value="tifs">IEEE TIFS</option>
+      <option value="kiisc">정보보호학회논문지</option>
+    </optgroup>
+    <optgroup label="일반 양식">
       <option value="ieee_en">IEEE Conference</option>
       <option value="acm_en">ACM Conference</option>
-      <option value="usenix_en">USENIX Security</option>
       <option value="journal_en">Journal (Full)</option>
       <option value="short_en">Short Paper</option>
     </optgroup>
@@ -251,9 +267,13 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
   <button onclick="ins('imgfmt')" title="이미지 크기/정렬: {width=50%}">이미지</button>
   <button onclick="ins('perf')" title="성능 비교 테이블 (통계치 포함)">성능표</button>
   <button onclick="ins('confmat')" title="혼동 행렬 (분류 결과)">혼동행렬</button>
-  <button onclick="ins('arch')" title="아키텍처 다이어그램 (Mermaid)">구조도</button>
-  <button onclick="ins('timeline')" title="타임라인 다이어그램 (Mermaid)">타임라인</button>
-  <button onclick="ins('flowchart')" title="프로토콜/공격 흐름도 (Mermaid)">흐름도</button>
+  <button onclick="ins('arch')" title="시스템 아키텍처 (계층형)">구조도</button>
+  <button onclick="ins('nettopo')" title="네트워크 토폴로지 (방화벽/IDS/서버)">네트워크</button>
+  <button onclick="ins('killchain')" title="공격 흐름 / Kill Chain">공격흐름</button>
+  <button onclick="ins('trustbnd')" title="신뢰 경계 다이어그램 (Trusted/Untrusted)">신뢰경계</button>
+  <button onclick="ins('dfd')" title="데이터 흐름도 (DFD)">DFD</button>
+  <button onclick="ins('flowchart')" title="프로토콜 시퀀스 다이어그램">시퀀스</button>
+  <button onclick="ins('timeline')" title="타임라인 다이어그램">타임라인</button>
   <button onclick="ins('ethics')" title="윤리 및 책임 공개 섹션">윤리</button>
 </div>
 
@@ -270,6 +290,7 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
         <button onclick="toggleCol(true)" id="col2btn">2단</button>
       </div>
     </div>
+    <div id="checkResult" style="display:none;padding:10px 14px;font-size:.75rem;line-height:1.6;background:var(--surface);border-bottom:1px solid var(--line);font-family:'Pretendard',sans-serif;max-height:200px;overflow-y:auto;flex-shrink:0;position:relative"></div>
     <div id="pv"><p style="color:#999;text-align:center;padding:40px;font-family:sans-serif;font-size:.85rem">양식을 선택하거나 직접 작성을 시작하세요</p></div>
   </div>
   <div class="ref-panel" id="refPanel">
@@ -1387,6 +1408,555 @@ in [Department/Program]
 ---
 
 ## Appendix B
+`,
+
+neurips:`# [Paper Title]
+
+[Author 1], [Author 2] ([Affiliations])
+
+:::abstract
+[150-250 words]
+:::
+
+---
+
+## 1. Introduction
+
+---
+
+## 2. Related Work
+
+---
+
+## 3. Method
+
+---
+
+## 4. Experiments
+
+### 4.1 Setup
+### 4.2 Results
+### 4.3 Ablation Study
+
+---
+
+## 5. Discussion
+
+---
+
+## 6. Conclusion
+
+---
+
+## Broader Impact Statement
+
+---
+
+## References
+
+---
+
+## Appendix
+
+---
+
+## NeurIPS Paper Checklist
+
+<!-- Main paper: 9 pages max. Checklist is mandatory but excluded from page limit. -->
+- [ ] Claims: Do main claims match theory/experiments?
+- [ ] Limitations: Are limitations discussed?
+- [ ] Theory: Are all assumptions stated?
+- [ ] Experiments: Code/data availability?
+- [ ] Reproducibility: Seeds, hyperparameters, error bars?
+- [ ] Ethics: IRB, consent, privacy?
+`,
+
+icml:`# [Paper Title]
+
+[Author 1], [Author 2]
+[Affiliations]
+
+:::abstract
+[150-250 words]
+:::
+
+---
+
+## 1. Introduction
+
+---
+
+## 2. Related Work
+
+---
+
+## 3. Preliminaries
+
+---
+
+## 4. Method
+
+---
+
+## 5. Theoretical Analysis
+
+---
+
+## 6. Experiments
+
+### 6.1 Setup
+### 6.2 Main Results
+### 6.3 Ablation
+
+---
+
+## 7. Conclusion
+
+---
+
+## Acknowledgements
+
+---
+
+## References
+
+<!-- ICML: 8 pages main, single PDF with appendices. Double-blind. -->
+`,
+
+iclr:`# [Paper Title]
+
+Anonymous Authors
+
+:::abstract
+[150-250 words]
+:::
+
+---
+
+## 1. Introduction
+
+---
+
+## 2. Related Work
+
+---
+
+## 3. Method
+
+---
+
+## 4. Experiments
+
+### 4.1 Setup
+### 4.2 Results
+
+---
+
+## 5. Analysis
+
+---
+
+## 6. Conclusion
+
+---
+
+## Reproducibility Statement
+
+---
+
+## Ethics Statement
+
+---
+
+## References
+
+<!-- ICLR: OpenReview submission. Public discussion phase. Anonymous. -->
+`,
+
+aaai:`# [Paper Title]
+
+[Author 1], [Author 2]
+[Affiliations]
+
+:::abstract
+[150 words max]
+:::
+
+---
+
+## Introduction
+
+---
+
+## Related Work
+
+---
+
+## Problem Formulation
+
+---
+
+## Approach
+
+---
+
+## Experiments
+
+---
+
+## Results and Analysis
+
+---
+
+## Conclusion
+
+---
+
+## Acknowledgments
+
+---
+
+## References
+
+---
+
+## Reproducibility Checklist
+
+<!-- AAAI: 7 pages technical content + references. Checklist after references. Double-blind. -->
+`,
+
+ccs:`# [Paper Title]
+
+[Author 1] ([affiliation]), [Author 2] ([affiliation])
+
+:::abstract
+[150-250 words]
+:::
+
+**CCS Concepts:** Security and privacy -> [specific concept]
+**Keywords:** [keyword1]; [keyword2]
+
+---
+
+## 1. Introduction
+
+---
+
+## 2. Background
+
+---
+
+## 3. Threat Model
+
+---
+
+## 4. System Design
+
+---
+
+## 5. Implementation
+
+---
+
+## 6. Evaluation
+
+### 6.1 Setup
+### 6.2 Results
+
+---
+
+## 7. Discussion
+
+---
+
+## 8. Related Work
+
+---
+
+## 9. Conclusion
+
+---
+
+## Acknowledgments
+
+---
+
+## References
+
+---
+
+## Appendix A: Ethics and Open Science
+
+<!-- ACM CCS: 12 pages (sigconf). Open Science appendix encouraged. -->
+`,
+
+ndss:`# [Paper Title]
+
+[Author 1] ([Institution]), [Author 2] ([Institution])
+
+:::abstract
+[200 words]
+:::
+
+---
+
+## 1. Introduction
+
+---
+
+## 2. Background and Related Work
+
+---
+
+## 3. Threat Model
+
+---
+
+## 4. Design
+
+---
+
+## 5. Implementation
+
+---
+
+## 6. Evaluation
+
+---
+
+## 7. Discussion
+
+### 7.1 Limitations
+### 7.2 Ethical Considerations
+
+---
+
+## 8. Conclusion
+
+---
+
+## References
+
+<!-- NDSS: 13 pages (ethics/refs/appendix excluded). 2-cycle review. -->
+`,
+
+sp:`# [Paper Title]
+
+[Author 1], [Author 2]
+[Affiliations]
+
+:::abstract
+[200-250 words]
+:::
+
+---
+
+## 1. Introduction
+
+---
+
+## 2. Background
+
+---
+
+## 3. Problem Statement
+
+---
+
+## 4. Threat Model
+
+---
+
+## 5. Design
+
+---
+
+## 6. Implementation
+
+---
+
+## 7. Evaluation
+
+### 7.1 Setup
+### 7.2 Results
+### 7.3 Comparison
+
+---
+
+## 8. Discussion
+
+---
+
+## 9. Related Work
+
+---
+
+## 10. Conclusion
+
+---
+
+## References
+
+<!-- IEEE S&P: 2-cycle review, SoK track available, interactive rebuttal. -->
+`,
+
+tdsc:`# [Paper Title]
+
+**[Author 1]**$^{1,*}$, **[Author 2]**$^2$
+$^1$[Affiliation] $^2$[Affiliation]
+$^*$Corresponding author
+
+:::abstract
+[200-300 words]
+:::
+
+**Index Terms:** [term1], [term2], [term3]
+
+---
+
+## 1. Introduction
+
+### 1.1 Motivation
+### 1.2 Contributions
+
+---
+
+## 2. Related Work
+
+---
+
+## 3. System Model and Threat Model
+
+---
+
+## 4. Proposed Approach
+
+---
+
+## 5. Formal Analysis
+
+---
+
+## 6. Implementation
+
+---
+
+## 7. Experimental Evaluation
+
+### 7.1 Setup
+### 7.2 Results
+### 7.3 Comparison
+
+---
+
+## 8. Discussion
+
+---
+
+## 9. Conclusion
+
+---
+
+## References
+
+<!-- IEEE TDSC: Journal format, Code Ocean reproducibility. -->
+`,
+
+tifs:`# [Paper Title]
+
+**[Author 1]**, **[Author 2]**
+[Affiliations]
+
+:::abstract
+[200-300 words]
+:::
+
+**Index Terms:** [term1], [term2]
+
+---
+
+## 1. Introduction
+
+---
+
+## 2. Preliminaries
+
+---
+
+## 3. Related Work
+
+---
+
+## 4. Proposed Method
+
+---
+
+## 5. Security Analysis
+
+---
+
+## 6. Experimental Results
+
+---
+
+## 7. Discussion
+
+---
+
+## 8. Conclusion
+
+---
+
+## References
+
+<!-- IEEE TIFS: Journal, reproducibility encouraged (code/data). -->
+`,
+
+kiisc:`# [국문 제목]
+
+# [English Title]
+
+**[저자1]**$^1$, **[저자2]**$^{2,*}$
+$^1$[소속] $^2$[소속]
+$^*$교신저자
+
+:::abstract
+[국문초록 200-300자]
+:::
+
+**주요어:** [키워드1], [키워드2]
+
+:::abstract
+[English Abstract 150-200 words]
+:::
+
+**Keywords:** [keyword1], [keyword2]
+
+---
+
+## I. 서론
+
+---
+
+## II. 관련 연구
+
+---
+
+## III. 제안 기법
+
+---
+
+## IV. 실험 및 분석
+
+---
+
+## V. 결론
+
+---
+
+## 참고문헌
+
+<!-- 정보보호학회논문지: 일반논문/짧은논문(4쪽) 구분. 공동저자 학회 회원 요건. -->
 `
   };
   if(T[type]){replaceAll(T[type]);inp.dispatchEvent(new Event('input'));document.getElementById('tplSel').value='';}
@@ -1423,7 +1993,15 @@ function ins(type){
 
     timeline:'```mermaid\ntimeline\n    title [타임라인 제목]\n    section Phase 1\n        Step 1 : Description\n        Step 2 : Description\n    section Phase 2\n        Step 3 : Description\n        Step 4 : Description\n```\n*Fig. N. [타임라인 설명.]*\n\n',
 
-    flowchart:'```mermaid\nsequenceDiagram\n    participant C as Client\n    participant S as Server\n    participant A as Attacker\n    C->>S: Request\n    A->>S: Injected payload\n    S->>C: Compromised response\n```\n*Fig. N. [프로토콜/공격 흐름도.]*\n\n'
+    flowchart:'```mermaid\nsequenceDiagram\n    participant C as Client\n    participant S as Server\n    participant A as Attacker\n    C->>S: Request\n    A->>S: Injected payload\n    S->>C: Compromised response\n```\n*Fig. N. [프로토콜/공격 흐름도.]*\n\n',
+
+    nettopo:'```mermaid\nflowchart LR\n    I[Internet] --> FW[Firewall]\n    FW --> IDS[IDS/IPS]\n    IDS --> WEB[Web Tier]\n    WEB --> APP[App Tier]\n    APP --> DB[(Database)]\n```\n*Fig. N. [네트워크 토폴로지.]*\n\n',
+
+    killchain:'```mermaid\nflowchart LR\n    R[Reconnaissance] --> W[Weaponization]\n    W --> D[Delivery]\n    D --> E[Exploitation]\n    E --> I[Installation]\n    I --> C2[C2]\n    C2 --> A[Actions on Objectives]\n```\n*Fig. N. [공격 Kill Chain.]*\n\n',
+
+    trustbnd:'```mermaid\nflowchart TB\n    subgraph Untrusted[비신뢰 영역]\n      A[External Client]\n    end\n    subgraph DMZ[DMZ]\n      B[WAF / API Gateway]\n    end\n    subgraph Trusted[신뢰 영역]\n      C[Application]\n      D[(Database)]\n    end\n    A --> B --> C --> D\n```\n*Fig. N. [신뢰 경계 다이어그램.]*\n\n',
+
+    dfd:'```mermaid\nflowchart TB\n    EX[External Entity] --> P1((Process 1))\n    P1 --> DS1[(Data Store)]\n    DS1 --> P2((Process 2))\n    P2 --> EX2[Output Entity]\n```\n*Fig. N. [데이터 흐름도 (DFD).]*\n\n'
   };
   inp.focus();
   typeText(T[type]||'');
@@ -1464,7 +2042,9 @@ function validatePaper(){
   sc+=(t.match(/:::(theorem|definition|algorithm)/)?5:0);sc+=((t.match(/\*Table/g)||[]).length>0?5:0);sc+=((t.match(/\*Fig/g)||[]).length>0?5:0);
   sc=Math.min(Math.round(sc),100);
   const el=document.getElementById('qs');el.textContent=sc;el.className='score '+(sc>=75?'sh':sc>=50?'sm':'sl');
-  pv.innerHTML='<div style="border:1px solid #ccc;padding:12px;margin-bottom:12px;font-size:.78rem;line-height:1.7;font-family:sans-serif"><strong>Paper Checklist ('+sc+'/100)</strong><br>'+issues.join('<br>')+'</div>'+pv.innerHTML;
+  const cr=document.getElementById('checkResult');
+  cr.innerHTML='<strong style="color:var(--brand)">논문 검증 ('+sc+'/100)</strong> <button onclick="document.getElementById(\'checkResult\').style.display=\'none\'" style="position:absolute;right:8px;top:8px;border:none;background:none;cursor:pointer;font-size:.8rem;color:var(--muted)">X</button><br>'+issues.join('<br>');
+  cr.style.display='block';
 }
 
 // === STATS ===
