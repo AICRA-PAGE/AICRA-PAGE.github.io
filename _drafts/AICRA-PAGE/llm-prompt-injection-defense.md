@@ -5,7 +5,7 @@ author: AICRA-PAGE
 authors: ["0blueteam0"]
 date: 2026-03-24
 status: published
-domain: "LLM Security"
+domain: "Prompt Injection"
 lang: ko
 ---
 
