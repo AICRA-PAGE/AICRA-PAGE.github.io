@@ -9,6 +9,7 @@
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 <style>
 :root{--bg:#f9f8f5;--panel:#fff;--text:#2a2a2a;--muted:#7a756c;--brand:#2f5d50;--brand2:#245045;--line:#e8e5de;--surface:#f3f1ec;--code-bg:#0f172a;--radius:6px;--accent:#b7791f}
 [data-theme=dark]{--bg:#1a1d23;--panel:#22262e;--text:#d4d0c8;--muted:#8a8578;--brand:#4da89a;--brand2:#3d8a7e;--line:#333840;--surface:#2a2e36;--code-bg:#0d1117}
@@ -133,6 +134,16 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
   #pv .abstract-box{border-top:.75pt solid #000;border-bottom:.75pt solid #000}
   #pv code{background:transparent!important;border:none}
 }
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal-box{background:var(--panel);border-radius:8px;width:90%;max-width:640px;max-height:80vh;display:flex;flex-direction:column;box-shadow:0 8px 30px rgba(0,0,0,.25)}
+.modal-head{padding:12px 16px;font-size:.82rem;font-weight:700;color:var(--brand);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.modal-body{flex:1;overflow-y:auto;padding:14px 16px}
+.modal-body label{display:block;font-size:.65rem;font-weight:600;color:var(--muted);margin:8px 0 3px;text-transform:uppercase}
+.modal-body textarea{width:100%;min-height:50px;padding:6px 8px;border:1px solid var(--line);border-radius:4px;font-size:.78rem;font-family:inherit;background:var(--panel);color:var(--text);resize:vertical;line-height:1.5}
+.modal-foot{padding:10px 16px;border-top:1px solid var(--line);display:flex;gap:6px;justify-content:flex-end;flex-shrink:0}
+
 @media(max-width:1024px){.ed{flex-direction:column}.meta{grid-template-columns:1fr 1fr 1fr}.ref-panel.open{width:200px}}
 </style>
 </head>
@@ -162,6 +173,8 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
   <button class="bt" onclick="toggleRef()">Refs</button>
   <button class="bt" onclick="toggleHelp()">?</button>
   <div class="spacer"></div>
+  <button class="bt" onclick="genAbstract()" title="Auto-generate structured abstract from paper content">Abstract</button>
+  <button class="bt" onclick="genPPT()" title="Generate presentation slides (.pptx) from paper">PPT</button>
   <button class="bt" onclick="validatePaper()">Check</button>
   <button class="bt p" onclick="publish()">Export</button>
   <div class="sep"></div>
@@ -290,6 +303,30 @@ graph LR
   B --> C[Output]
 ```</pre></div>
   <button class="bt" onclick="toggleHelp()" style="width:100%;margin-top:8px">Close</button>
+</div>
+
+<!-- Abstract Modal -->
+<div class="modal-overlay" id="absModal">
+  <div class="modal-box">
+    <div class="modal-head"><span>Auto Abstract</span><button class="bt" onclick="closeModal('absModal')" style="padding:1px 6px">X</button></div>
+    <div class="modal-body">
+      <p style="font-size:.68rem;color:var(--muted);margin-bottom:8px">Extracted from paper sections. Edit each field, then insert.</p>
+      <label>Background / Context</label>
+      <textarea id="abs-bg" rows="2"></textarea>
+      <label>Objective / Purpose</label>
+      <textarea id="abs-obj" rows="2"></textarea>
+      <label>Method / Approach</label>
+      <textarea id="abs-met" rows="2"></textarea>
+      <label>Results / Findings</label>
+      <textarea id="abs-res" rows="2"></textarea>
+      <label>Conclusion / Significance</label>
+      <textarea id="abs-con" rows="2"></textarea>
+    </div>
+    <div class="modal-foot">
+      <button class="bt" onclick="closeModal('absModal')">Cancel</button>
+      <button class="bt p" onclick="insertAbstract()">Insert Abstract</button>
+    </div>
+  </div>
 </div>
 
 <div class="st" id="stBar">
@@ -1255,6 +1292,194 @@ setInterval(save,30000);restore();
 function toggleDark(){document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'':'dark';localStorage.setItem('aicra.dark',document.documentElement.dataset.theme);}
 if(localStorage.getItem('aicra.dark')==='dark')document.documentElement.dataset.theme='dark';
 function toggleFocus(){focusMode=!focusMode;['metaBar','metaBar2','insBar','stBar'].forEach(id=>document.getElementById(id).style.display=focusMode?'none':'');}
+// === ABSTRACT GENERATOR (rule-based) ===
+function parseSections(text){
+  const lines=text.split('\n');const secs=[];let cur=null;
+  for(const l of lines){
+    const m=l.match(/^##\s+(?:\d+\.?\s*|[IVX]+\.?\s*|제?\d+장\s*)?(.+)/i);
+    if(m){if(cur)secs.push(cur);cur={title:m[1].trim(),body:''};} else if(cur){cur.body+=l+'\n';}
+  }
+  if(cur)secs.push(cur);return secs;
+}
+function splitSentences(text){
+  // Clean markdown artifacts
+  let t=text.replace(/```[\s\S]*?```/g,'').replace(/\|[^\n]+\|/g,'').replace(/^\s*[-*]\s+/gm,'').replace(/:::[\s\S]*?:::/g,'').replace(/\$\$[\s\S]*?\$\$/g,'').replace(/\$[^$]+\$/g,'').replace(/!\[.*?\]\(.*?\)/g,'').replace(/\[.*?\]\(.*?\)/g,'').replace(/[#*_>`|]/g,'').replace(/---/g,'').trim();
+  if(!t)return[];
+  // Split by sentence endings
+  const sents=t.split(/(?<=[.!?。])\s+/).filter(s=>s.trim().length>10);
+  return sents;
+}
+function matchSection(title,aliases){
+  const t=title.toLowerCase();
+  for(const[key,patterns]of Object.entries(aliases)){
+    for(const p of patterns){if(t.includes(p))return key;}
+  }
+  return null;
+}
+function scoreSentence(s){
+  let score=0;
+  const cues=['we propose','this paper','본 논문','제안','results show','실험 결과','demonstrate','보인다','achieved','달성','contribut','기여','novel','새로운','outperform','우수'];
+  for(const c of cues){if(s.toLowerCase().includes(c))score+=2;}
+  if(/\d+%|\d+\.\d+/.test(s))score+=1; // has numbers
+  if(s.length>30&&s.length<200)score+=1; // good length
+  return score;
+}
+function getBestSentence(text,n=2){
+  const sents=splitSentences(text);if(!sents.length)return'';
+  const scored=sents.map(s=>({s,score:scoreSentence(s)})).sort((a,b)=>b.score-a.score);
+  return scored.slice(0,n).map(x=>x.s.trim()).join(' ');
+}
+function genAbstract(){
+  const text=inp.value;if(!text.trim())return alert('Write paper content first.');
+  const secs=parseSections(text);
+  const aliases={
+    bg:['introduction','서론','background','배경','motivation','동기','problem'],
+    obj:['objective','purpose','목적','research question','연구 목적','scope','범위','problem statement','문제 정의'],
+    met:['method','approach','방법','제안','proposed','design','설계','기법','methodology','implementation','구현','system','architecture'],
+    res:['result','evaluation','실험','결과','평가','experiment','analysis','분석','finding','performance'],
+    con:['conclusion','결론','discussion','고찰','토의','summary','요약','future','향후']
+  };
+  const slots={bg:'',obj:'',met:'',res:'',con:''};
+  for(const sec of secs){
+    const key=matchSection(sec.title,aliases);
+    if(key&&!slots[key])slots[key]=getBestSentence(sec.body);
+  }
+  // Fallback: use section order if matching failed
+  if(!slots.bg&&secs.length>0)slots.bg=getBestSentence(secs[0].body);
+  if(!slots.met&&secs.length>2)slots.met=getBestSentence(secs[Math.floor(secs.length/2)].body);
+  if(!slots.con&&secs.length>1)slots.con=getBestSentence(secs[secs.length-1].body);
+
+  document.getElementById('abs-bg').value=slots.bg;
+  document.getElementById('abs-obj').value=slots.obj;
+  document.getElementById('abs-met').value=slots.met;
+  document.getElementById('abs-res').value=slots.res;
+  document.getElementById('abs-con').value=slots.con;
+  document.getElementById('absModal').classList.add('show');
+}
+function insertAbstract(){
+  const parts=[
+    document.getElementById('abs-bg').value.trim(),
+    document.getElementById('abs-obj').value.trim(),
+    document.getElementById('abs-met').value.trim(),
+    document.getElementById('abs-res').value.trim(),
+    document.getElementById('abs-con').value.trim()
+  ].filter(Boolean);
+  const absText=parts.join(' ');
+  if(!absText)return;
+  // Find existing :::abstract and replace, or insert after title
+  let t=inp.value;
+  if(t.includes(':::abstract')){
+    t=t.replace(/:::abstract\n[\s\S]*?\n:::/,':::abstract\n'+absText+'\n:::');
+  }else{
+    // Insert after first heading
+    const idx=t.indexOf('\n',t.indexOf('#'));
+    if(idx>-1)t=t.slice(0,idx+1)+'\n:::abstract\n'+absText+'\n:::\n'+t.slice(idx+1);
+    else t=':::abstract\n'+absText+'\n:::\n\n'+t;
+  }
+  inp.value=t;inp.dispatchEvent(new Event('input'));
+  closeModal('absModal');
+  // Also update metadata abstract field
+  document.getElementById('ab').value=absText.substring(0,200);
+}
+function closeModal(id){document.getElementById(id).classList.remove('show');}
+
+// === PPT GENERATOR (PptxGenJS) ===
+function genPPT(){
+  const text=inp.value;if(!text.trim())return alert('Write paper content first.');
+  if(typeof PptxGenJS==='undefined')return alert('PptxGenJS not loaded. Check network.');
+  const pptx=new PptxGenJS();
+  pptx.defineLayout({name:'AICRA',width:13.333,height:7.5});
+  pptx.layout='AICRA';
+
+  const title=document.getElementById('ti').value||'Untitled Paper';
+  const author=document.getElementById('au').value||'AICRA';
+  const coau=document.getElementById('coau').value;
+  const allAuthors=coau?author+', '+coau:author;
+  const domain=document.getElementById('dm').value;
+  const brandColor='2f5d50';
+  const secs=parseSections(text);
+
+  // Slide 1: Title
+  let slide=pptx.addSlide();
+  slide.background={color:'FFFFFF'};
+  slide.addShape(pptx.shapes.RECTANGLE,{x:0,y:0,w:'100%',h:0.8,fill:{color:brandColor}});
+  slide.addText('AICRA',{x:0.5,y:0.15,fontSize:14,color:'FFFFFF',fontFace:'Arial',bold:true});
+  slide.addText(title,{x:0.8,y:2.0,w:11.7,fontSize:28,color:'222222',fontFace:'Arial',bold:true,align:'center'});
+  slide.addText(allAuthors,{x:0.8,y:3.8,w:11.7,fontSize:16,color:'666666',fontFace:'Arial',align:'center'});
+  if(domain)slide.addText(domain,{x:0.8,y:4.5,w:11.7,fontSize:13,color:brandColor,fontFace:'Arial',align:'center'});
+  slide.addShape(pptx.shapes.RECTANGLE,{x:0,y:6.7,w:'100%',h:0.8,fill:{color:brandColor}});
+
+  // Extract abstract for slide 2
+  const absMatch=text.match(/:::abstract\n([\s\S]*?)\n:::/);
+  if(absMatch){
+    slide=pptx.addSlide();
+    slide.addShape(pptx.shapes.RECTANGLE,{x:0,y:0,w:'100%',h:0.6,fill:{color:brandColor}});
+    slide.addText('Abstract',{x:0.3,y:0.1,fontSize:16,color:'FFFFFF',fontFace:'Arial',bold:true});
+    slide.addText(absMatch[1].trim(),{x:0.8,y:1.2,w:11.7,fontSize:14,color:'333333',fontFace:'Arial',lineSpacingMultiple:1.4});
+  }
+
+  // Section slides
+  for(const sec of secs){
+    const secTitle=sec.title;
+    // Skip references, appendix, etc.
+    if(/reference|참고문헌|appendix|부록|acknowledge|감사/i.test(secTitle))continue;
+    slide=pptx.addSlide();
+    slide.addShape(pptx.shapes.RECTANGLE,{x:0,y:0,w:'100%',h:0.6,fill:{color:brandColor}});
+    slide.addText(secTitle,{x:0.3,y:0.1,fontSize:16,color:'FFFFFF',fontFace:'Arial',bold:true});
+
+    // Extract bullet points from section body
+    const bullets=extractBullets(sec.body);
+    if(bullets.length){
+      const textRows=bullets.map(b=>({text:b,options:{fontSize:13,color:'333333',bullet:{type:'bullet'},lineSpacingMultiple:1.3,breakLine:true}}));
+      slide.addText(textRows,{x:0.8,y:1.0,w:11.7,h:5.5,fontFace:'Arial',valign:'top'});
+    }
+
+    // Check for tables in section
+    const tableData=extractTable(sec.body);
+    if(tableData&&tableData.length>1){
+      const tblSlide=pptx.addSlide();
+      tblSlide.addShape(pptx.shapes.RECTANGLE,{x:0,y:0,w:'100%',h:0.6,fill:{color:brandColor}});
+      tblSlide.addText(secTitle+' (Table)',{x:0.3,y:0.1,fontSize:16,color:'FFFFFF',fontFace:'Arial',bold:true});
+      const rows=tableData.map((row,ri)=>row.map(cell=>({text:cell,options:{fontSize:10,color:ri===0?'FFFFFF':'333333',fill:{color:ri===0?brandColor:'F5F5F5'},bold:ri===0,align:'left'}})));
+      tblSlide.addTable(rows,{x:0.5,y:1.0,w:12.3,border:{pt:0.5,color:'CCCCCC'}});
+    }
+  }
+
+  // Final slide
+  slide=pptx.addSlide();
+  slide.background={fill:{color:brandColor}};
+  slide.addText('Thank You',{x:0,y:2.5,w:'100%',fontSize:36,color:'FFFFFF',fontFace:'Arial',bold:true,align:'center'});
+  slide.addText(allAuthors+'\n'+domain,{x:0,y:4.0,w:'100%',fontSize:16,color:'CCDDCC',fontFace:'Arial',align:'center'});
+
+  // Download
+  const fn=title.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'')||'presentation';
+  pptx.writeFile({fileName:fn+'.pptx'});
+}
+
+function extractBullets(body){
+  const lines=body.split('\n');const bullets=[];
+  for(const l of lines){
+    const cl=l.replace(/^\s*[-*]\s+/,'').replace(/[#*_>`|]/g,'').replace(/\$[^$]*\$/g,'[math]').replace(/:::.*|```[\s\S]*?```/g,'').trim();
+    if(cl.length>15&&cl.length<300&&!/^\|/.test(l)&&!/^---/.test(l)&&!/^:::/.test(l)){
+      bullets.push(cl);
+    }
+    if(bullets.length>=8)break;
+  }
+  return bullets;
+}
+
+function extractTable(body){
+  const lines=body.split('\n');const rows=[];let inTable=false;
+  for(const l of lines){
+    if(/^\|.+\|$/.test(l.trim())){
+      if(/^\|[-:\s|]+\|$/.test(l.trim()))continue; // separator
+      rows.push(l.trim().split('|').filter(Boolean).map(c=>c.trim()));
+      inTable=true;
+    }else if(inTable)break;
+  }
+  return rows.length>1?rows:null;
+}
+
 let rs=false;document.getElementById('dv').addEventListener('mousedown',()=>rs=true);
 document.addEventListener('mousemove',e=>{if(!rs)return;const ed=document.querySelector('.ed'),r=ed.getBoundingClientRect(),p=((e.clientX-r.left)/r.width)*100;const pn=ed.querySelectorAll('.pn');pn[0].style.flex='0 0 '+p+'%';pn[1].style.flex='0 0 '+(100-p)+'%';});
 document.addEventListener('mouseup',()=>rs=false);
