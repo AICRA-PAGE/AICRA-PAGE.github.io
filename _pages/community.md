@@ -30,26 +30,9 @@ description: "AICRA 멤버 커뮤니티 - 연구 토론, Q&A, 공지사항"
 
 ---
 
-### 최근 토론
+### 토론 참여
 
-<script src="https://giscus.app/client.js"
-  data-repo="AICRA-PAGE/AICRA-PAGE.github.io"
-  data-repo-id="R_kgDOQsfbOQ"
-  data-category="General"
-  data-category-id=""
-  <!-- TODO: Create "General" discussion category at https://github.com/AICRA-PAGE/AICRA-PAGE.github.io/settings then paste category_id here -->
-  data-mapping="pathname"
-  data-strict="0"
-  data-reactions-enabled="1"
-  data-emit-metadata="0"
-  data-input-position="top"
-  data-theme="preferred_color_scheme"
-  data-lang="ko"
-  crossorigin="anonymous"
-  async>
-</script>
-
-> **참고**: Giscus 댓글을 사용하려면 GitHub Discussions가 활성화되어 있어야 합니다. 리포지토리 Settings > Features > Discussions를 켜주세요.
+[GitHub Discussions에서 토론하기](https://github.com/AICRA-PAGE/AICRA-PAGE.github.io/discussions){: .btn .btn-primary style="display: inline-block; padding: 10px 24px; background: #2C5F2D; color: white; text-decoration: none; border-radius: 4px; margin: 10px 0;"}
 
 ---
 
