@@ -2,17 +2,13 @@ backend:
   name: github
   repo: AICRA-PAGE/AICRA-PAGE.github.io
   branch: main
-  # OAuth proxy required for GitHub Pages (static hosting cannot do server-side token exchange)
+  # OAuth proxy required for GitHub Pages
   # Deploy sveltia-cms-auth on Cloudflare Workers: https://github.com/sveltia/sveltia-cms-auth
-  # Then set base_url to your worker URL (e.g., https://aicra-cms-auth.your-subdomain.workers.dev)
+  # Then uncomment and set base_url to your worker URL:
   # base_url: https://YOUR-WORKER.workers.dev
-
-publish_mode: editorial_workflow
 
 media_folder: "assets/images/posts"
 public_folder: "/assets/images/posts"
-
-locale: "ko"
 
 collections:
   - name: "posts"
