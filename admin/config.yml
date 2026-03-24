@@ -2,7 +2,7 @@ backend:
   name: github
   repo: AICRA-PAGE/AICRA-PAGE.github.io
   branch: main
-  base_url: https://sveltia-cms-auth.piser.workers.dev
+  base_url: https://auth.aicra.workers.dev
 
 site_url: https://aicra-page.github.io
 display_url: https://aicra-page.github.io
