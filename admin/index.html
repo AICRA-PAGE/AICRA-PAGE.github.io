@@ -12,36 +12,39 @@
       color: var(--text); background: radial-gradient(circle at 20% 10%, #fff 0%, var(--bg) 45%);
       display: grid; place-items: center; padding: 24px;
     }
-    .wrap { width: 100%; max-width: 480px; text-align: center; }
-    .logo { width: 72px; height: 72px; margin-bottom: 12px; }
-    h1 { font-size: 1.35rem; color: var(--brand); margin-bottom: 4px; }
-    .sub { color: var(--muted); font-size: 0.88rem; margin-bottom: 24px; }
+    .wrap { width: 100%; max-width: 520px; text-align: center; }
+    .logo { width: 64px; height: 64px; margin-bottom: 10px; }
+    h1 { font-size: 1.3rem; color: var(--brand); margin-bottom: 4px; }
+    .sub { color: var(--muted); font-size: 0.85rem; margin-bottom: 20px; }
+    .section { margin-bottom: 16px; }
+    .section-title { font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
     .card {
-      background: var(--card); border: 1px solid var(--line); border-radius: 12px;
-      padding: 20px; margin-bottom: 16px; text-align: left;
+      background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+      overflow: hidden; text-align: left;
     }
-    .card h3 { font-size: 0.92rem; color: var(--brand); margin-bottom: 10px; }
-    .card ul { list-style: none; padding: 0; }
-    .card li { padding: 6px 0; border-bottom: 1px solid #f0ede6; font-size: 0.82rem; color: #44403C; }
-    .card li:last-child { border-bottom: none; }
-    .card li strong { color: var(--brand); }
-    .actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 16px; }
-    .btn {
-      border: 0; border-radius: 8px; padding: 11px 22px; color: #fff;
-      text-decoration: none; cursor: pointer; font-weight: 600; font-size: 0.9rem;
+    .card a {
+      display: flex; align-items: center; padding: 14px 18px;
+      text-decoration: none; color: var(--text); border-bottom: 1px solid var(--line);
+      transition: background 0.15s;
     }
-    .btn-primary { background: var(--brand); }
-    .btn-primary:hover { background: var(--brand-dark); }
-    .btn-outline { background: transparent; color: var(--brand); border: 1.5px solid var(--brand); }
-    .btn-outline:hover { background: var(--brand); color: #fff; }
+    .card a:last-child { border-bottom: none; }
+    .card a:hover { background: #f8f6f0; }
+    .card .icon { width: 36px; height: 36px; border-radius: 8px; display: grid; place-items: center; margin-right: 14px; font-size: 1.1rem; flex-shrink: 0; }
+    .icon-write { background: #e8f5e9; color: #2e7d32; }
+    .icon-page { background: #e3f2fd; color: #1565c0; }
+    .icon-media { background: #fff3e0; color: #e65100; }
+    .icon-cms { background: #f3e5f5; color: #7b1fa2; }
+    .card .label { font-size: 0.88rem; font-weight: 600; }
+    .card .desc { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+    .card .arrow { margin-left: auto; color: #ccc; font-size: 1.2rem; }
     .access-box {
       background: #fff8f0; border: 1px solid #f0e0cc; border-radius: 8px;
-      padding: 14px 16px; font-size: 0.8rem; color: #6B665C; text-align: left; margin-bottom: 12px;
+      padding: 12px 16px; font-size: 0.78rem; color: #6B665C; text-align: left;
     }
     .access-box strong { color: #B5422C; }
     .access-box a { color: var(--brand); font-weight: 600; }
-    .note { font-size: 0.75rem; color: #8b8580; line-height: 1.6; }
-    .note a { color: var(--brand); }
+    .footer { font-size: 0.72rem; color: #aaa; margin-top: 16px; }
+    .footer a { color: var(--brand); text-decoration: none; }
   </style>
 </head>
 <body>
@@ -50,32 +53,50 @@
     <h1>AICRA Content Management</h1>
     <p class="sub">AI Security Research Association</p>
 
-    <div class="card">
-      <h3>편집 가능한 콘텐츠</h3>
-      <ul>
-        <li><strong>Blog Posts</strong> - AI 보안 연구 포스트 작성/편집</li>
-        <li><strong>Pages</strong> - About, Team, News, Community, Publications</li>
-        <li><strong>Media</strong> - 이미지, SVG, 사진 업로드</li>
-      </ul>
+    <div class="section">
+      <div class="section-title">Collaborator</div>
+      <div class="card">
+        <a href="/admin/cms.html#/collections/posts/new">
+          <div class="icon icon-write">+</div>
+          <div><div class="label">New Post</div><div class="desc">AI 보안 연구 블로그 포스트 작성</div></div>
+          <div class="arrow">&rsaquo;</div>
+        </a>
+        <a href="/admin/cms.html#/collections/posts">
+          <div class="icon icon-page">&#9776;</div>
+          <div><div class="label">Posts</div><div class="desc">기존 포스트 편집/삭제</div></div>
+          <div class="arrow">&rsaquo;</div>
+        </a>
+        <a href="/admin/cms.html#/collections/pages">
+          <div class="icon icon-page">&#9998;</div>
+          <div><div class="label">Pages</div><div class="desc">About, Team, News, Community, Publications</div></div>
+          <div class="arrow">&rsaquo;</div>
+        </a>
+        <a href="/admin/cms.html#/media">
+          <div class="icon icon-media">&#128247;</div>
+          <div><div class="label">Media</div><div class="desc">이미지, SVG, 사진 업로드</div></div>
+          <div class="arrow">&rsaquo;</div>
+        </a>
+        <a href="/admin/cms.html">
+          <div class="icon icon-cms">&#9881;</div>
+          <div><div class="label">Dashboard</div><div class="desc">전체 콘텐츠 관리</div></div>
+          <div class="arrow">&rsaquo;</div>
+        </a>
+      </div>
     </div>
 
-    <div class="actions">
-      <a class="btn btn-primary" href="/admin/cms.html">편집기 열기</a>
-      <a class="btn btn-outline" href="https://aicra-page.github.io" target="_blank">블로그 보기</a>
+    <div class="section">
+      <div class="access-box">
+        <strong>처음이신가요?</strong><br>
+        GitHub collaborator 권한이 필요합니다. CMS 접속 시 GitHub 로그인이 진행됩니다.<br>
+        권한이 없다면
+        <a href="https://github.com/AICRA-PAGE/AICRA-PAGE.github.io/issues/new?template=access-request.md" target="_blank">접근 권한 요청</a>을 해주세요.
+      </div>
     </div>
 
-    <div class="access-box">
-      <strong>접근 권한 안내</strong><br>
-      GitHub collaborator 권한이 필요합니다. 권한이 없다면 아래에서 요청해 주세요.<br><br>
-      <a href="https://github.com/AICRA-PAGE/AICRA-PAGE.github.io/issues/new?title=%5B접근%20요청%5D%20GitHub%20ID:%20&body=GitHub%20ID:%20%0A소속:%20%0A요청%20사유:%20&labels=access-request" target="_blank">
-        접근 권한 요청하기
-      </a>
+    <div class="footer">
+      <a href="https://aicra-page.github.io">Blog</a> &middot;
+      <a href="https://github.com/AICRA-PAGE/AICRA-PAGE.github.io">GitHub</a>
     </div>
-
-    <p class="note">
-      편집기에서 GitHub 로그인 후 콘텐츠를 편집할 수 있습니다.<br>
-      <a href="https://github.com/AICRA-PAGE/AICRA-PAGE.github.io" target="_blank">GitHub Repository</a>
-    </p>
   </main>
 </body>
 </html>
