@@ -64,6 +64,33 @@ collections:
         media_folder: "assets/img/posts"
       - { label: "Body", name: body, widget: markdown }
 
+  - name: papers
+    label: "Research Papers"
+    label_singular: "Paper"
+    folder: _papers
+    create: true
+    slug: "{{slug}}"
+    summary: "{{title}} | {{author}} | {{status}}"
+    fields:
+      - { label: "Layout", name: layout, widget: hidden, default: paper }
+      - { label: "Title", name: title, widget: string }
+      - { label: "Author (GitHub ID)", name: author, widget: string }
+      - label: "Co-Authors"
+        name: authors
+        widget: list
+        required: false
+        field: { label: "GitHub ID", name: id, widget: string }
+      - { label: "Collaborative", name: collaborative, widget: boolean, default: false, required: false }
+      - { label: "Date", name: date, widget: datetime }
+      - { label: "Status", name: status, widget: select, options: ["draft", "review", "published"], default: "draft" }
+      - { label: "Abstract", name: abstract, widget: text, required: false }
+      - label: "Keywords"
+        name: keywords
+        widget: list
+        required: false
+        field: { label: "Keyword", name: keyword, widget: string }
+      - { label: "Body", name: body, widget: markdown }
+
   - name: pages
     label: "Site Pages"
     files:

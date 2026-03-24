@@ -1,0 +1,62 @@
+---
+layout: default
+title: Papers
+permalink: /papers/
+description: "AICRA 연구 논문 및 기술 보고서"
+---
+
+<div style="max-width:800px;margin:0 auto;padding:20px;">
+  <header style="text-align:center;margin-bottom:2rem;">
+    <h1 style="font-size:1.5rem;color:#2f5d50;">Research Papers</h1>
+    <p style="color:#6b665c;font-size:0.88rem;">AICRA 연구 논문 및 기술 보고서</p>
+    <a href="/admin/editor.html?type=paper" style="display:inline-block;margin-top:12px;padding:8px 20px;background:#2f5d50;color:#fff;border-radius:6px;text-decoration:none;font-size:0.85rem;font-weight:600;">
+      논문 작성하기
+    </a>
+  </header>
+
+  {% assign published = site.papers | where: "status", "published" | sort: "date" | reverse %}
+  {% assign drafts = site.papers | where: "status", "draft" | sort: "date" | reverse %}
+  {% assign reviews = site.papers | where: "status", "review" | sort: "date" | reverse %}
+
+  {% if published.size > 0 %}
+  <h2 style="font-size:1.1rem;color:#2f5d50;border-bottom:1px solid #e0ddd5;padding-bottom:4px;">Published</h2>
+  {% for paper in published %}
+  <div style="background:#fff;border:1px solid #e0ddd5;border-radius:8px;padding:16px;margin:12px 0;">
+    <a href="{{ paper.url }}" style="text-decoration:none;color:#1c1917;">
+      <h3 style="font-size:0.95rem;color:#2f5d50;margin-bottom:4px;">{{ paper.title }}</h3>
+    </a>
+    <p style="font-size:0.75rem;color:#6b665c;">
+      {{ paper.author }}{% if paper.authors and paper.authors.size > 0 %}, {{ paper.authors | join: ", " }}{% endif %}
+      | {{ paper.date | date: "%Y-%m-%d" }}
+      {% if paper.collaborative %} | <span style="color:#b7791f;">Collaborative</span>{% endif %}
+    </p>
+    {% if paper.abstract %}
+    <p style="font-size:0.8rem;color:#44403C;margin-top:6px;line-height:1.5;">{{ paper.abstract | truncate: 200 }}</p>
+    {% endif %}
+    {% if paper.keywords %}
+    <p style="font-size:0.7rem;color:#8b8580;margin-top:4px;">{{ paper.keywords | join: " | " }}</p>
+    {% endif %}
+  </div>
+  {% endfor %}
+  {% endif %}
+
+  {% if reviews.size > 0 %}
+  <h2 style="font-size:1.1rem;color:#b7791f;border-bottom:1px solid #e0ddd5;padding-bottom:4px;margin-top:2rem;">Under Review</h2>
+  {% for paper in reviews %}
+  <div style="background:#fff8f0;border:1px solid #f0e0cc;border-radius:8px;padding:16px;margin:12px 0;">
+    <h3 style="font-size:0.95rem;color:#b7791f;">{{ paper.title }}</h3>
+    <p style="font-size:0.75rem;color:#6b665c;">{{ paper.author }} | {{ paper.date | date: "%Y-%m-%d" }}</p>
+  </div>
+  {% endfor %}
+  {% endif %}
+
+  {% if drafts.size > 0 %}
+  <h2 style="font-size:1.1rem;color:#8b8580;border-bottom:1px solid #e0ddd5;padding-bottom:4px;margin-top:2rem;">Drafts</h2>
+  {% for paper in drafts %}
+  <div style="background:#f5f3ed;border:1px solid #e0ddd5;border-radius:8px;padding:16px;margin:12px 0;">
+    <h3 style="font-size:0.95rem;color:#6b665c;">{{ paper.title }}</h3>
+    <p style="font-size:0.75rem;color:#8b8580;">{{ paper.author }} | {{ paper.date | date: "%Y-%m-%d" }}</p>
+  </div>
+  {% endfor %}
+  {% endif %}
+</div>

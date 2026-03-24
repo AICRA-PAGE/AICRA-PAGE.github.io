@@ -43,6 +43,8 @@ nav_links:
     url: /news/
   - name: Community
     url: /community/
+  - name: Papers
+    url: /papers/
   - name: Publications
     url: /publications/
   - name: Team
@@ -113,6 +115,9 @@ collections:
       layout: post
     output: true
     permalink: /news/:path/
+  papers:
+    output: true
+    permalink: /papers/:path/
 
 announcements:
   enabled: true
