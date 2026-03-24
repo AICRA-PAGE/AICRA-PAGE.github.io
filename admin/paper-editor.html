@@ -10,205 +10,214 @@
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
 <style>
-:root{--bg:#f9f8f5;--panel:#fff;--text:#2a2a2a;--muted:#7a756c;--brand:#2f5d50;--brand2:#245045;--line:#e8e5de;--surface:#f3f1ec;--code-bg:#0f172a;--radius:8px;--accent:#b7791f}
+:root{--bg:#f9f8f5;--panel:#fff;--text:#2a2a2a;--muted:#7a756c;--brand:#2f5d50;--brand2:#245045;--line:#e8e5de;--surface:#f3f1ec;--code-bg:#0f172a;--radius:6px;--accent:#b7791f}
 [data-theme=dark]{--bg:#1a1d23;--panel:#22262e;--text:#d4d0c8;--muted:#8a8578;--brand:#4da89a;--brand2:#3d8a7e;--line:#333840;--surface:#2a2e36;--code-bg:#0d1117}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Pretendard',sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden}
-
-/* Toolbar */
-.tb{display:flex;align-items:center;padding:8px 14px;background:var(--panel);border-bottom:1px solid var(--line);gap:6px;flex-shrink:0}
-.tb img{width:22px;height:22px}
-.tb h1{font-size:.85rem;color:var(--brand);font-weight:700;margin-right:2px}
-.tb .badge{font-size:.58rem;background:var(--accent);color:#fff;padding:1px 6px;border-radius:4px;font-weight:600}
-.tb .sep{width:1px;height:20px;background:var(--line);margin:0 3px}
-.bt{padding:4px 10px;border:none;border-radius:6px;font-size:.7rem;font-weight:600;cursor:pointer;background:var(--surface);color:var(--text);border:1px solid var(--line);transition:.15s}
+.tb{display:flex;align-items:center;padding:6px 12px;background:var(--panel);border-bottom:1px solid var(--line);gap:5px;flex-shrink:0}
+.tb img{width:20px;height:20px}
+.tb h1{font-size:.8rem;color:var(--brand);font-weight:700}
+.tb .sep{width:1px;height:18px;background:var(--line);margin:0 3px}
+.bt{padding:3px 9px;border:none;border-radius:5px;font-size:.67rem;font-weight:600;cursor:pointer;background:var(--surface);color:var(--text);border:1px solid var(--line);transition:.15s;position:relative}
 .bt:hover{background:var(--line)}
 .bt.p{background:var(--brand);color:#fff;border-color:var(--brand)}
 .bt.p:hover{background:var(--brand2)}
 .spacer{flex:1}
-.bt.icon{font-size:.78rem;padding:4px 7px}
-
-/* Meta */
-.meta{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:6px;padding:6px 14px;background:var(--surface);border-bottom:1px solid var(--line);flex-shrink:0}
-.meta label{font-size:.58rem;color:var(--muted);font-weight:600;display:block;margin-bottom:1px}
-.meta input,.meta select{width:100%;padding:4px 7px;border:1px solid var(--line);border-radius:5px;font-size:.75rem;background:var(--panel);color:var(--text);font-family:inherit}
-.meta2{display:grid;grid-template-columns:2fr 2fr 1fr;gap:6px;padding:5px 14px;background:var(--surface);border-bottom:1px solid var(--line);flex-shrink:0}
-.meta2 label{font-size:.58rem;color:var(--muted);font-weight:600;display:block;margin-bottom:1px}
-.meta2 input{width:100%;padding:4px 7px;border:1px solid var(--line);border-radius:5px;font-size:.75rem;background:var(--panel);color:var(--text);font-family:inherit}
-.meta2 .chk{display:flex;align-items:center;gap:6px;padding-top:12px}
+.bt.icon{font-size:.75rem;padding:3px 6px}
+.bt[title]:hover::after{content:attr(title);position:absolute;top:100%;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:4px 8px;border-radius:4px;font-size:.58rem;white-space:nowrap;z-index:99;margin-top:4px;font-weight:400;pointer-events:none}
+select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-size:.65rem;background:var(--panel);color:var(--text)}
+.meta{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:5px;padding:5px 12px;background:var(--surface);border-bottom:1px solid var(--line);flex-shrink:0}
+.meta label{font-size:.55rem;color:var(--muted);font-weight:600;display:block;margin-bottom:1px}
+.meta input,.meta select{width:100%;padding:3px 6px;border:1px solid var(--line);border-radius:4px;font-size:.72rem;background:var(--panel);color:var(--text);font-family:inherit}
+.meta2{display:grid;grid-template-columns:2fr 2fr 1fr;gap:5px;padding:4px 12px;background:var(--surface);border-bottom:1px solid var(--line);flex-shrink:0}
+.meta2 label{font-size:.55rem;color:var(--muted);font-weight:600;display:block;margin-bottom:1px}
+.meta2 input{width:100%;padding:3px 6px;border:1px solid var(--line);border-radius:4px;font-size:.72rem;background:var(--panel);color:var(--text);font-family:inherit}
+.meta2 .chk{display:flex;align-items:center;gap:5px;padding-top:10px}
 .meta2 .chk input{width:auto}
-.meta2 .chk span{font-size:.7rem;color:var(--muted)}
-
-/* Insert bar - grouped */
-.ins{display:flex;gap:3px;padding:4px 14px;background:var(--panel);border-bottom:1px solid var(--line);flex-shrink:0;flex-wrap:wrap;align-items:center}
-.ins button{padding:3px 8px;border:1px solid var(--line);border-radius:4px;font-size:.62rem;background:var(--panel);color:var(--muted);cursor:pointer;white-space:nowrap}
+.meta2 .chk span{font-size:.65rem;color:var(--muted)}
+.ins{display:flex;gap:2px;padding:3px 12px;background:var(--panel);border-bottom:1px solid var(--line);flex-shrink:0;flex-wrap:wrap;align-items:center}
+.ins button{padding:2px 7px;border:1px solid var(--line);border-radius:3px;font-size:.58rem;background:var(--panel);color:var(--muted);cursor:pointer;white-space:nowrap}
 .ins button:hover{background:var(--surface);color:var(--text)}
-.ins .gl{font-size:.55rem;color:var(--brand);font-weight:700;padding:0 4px 0 6px;border-left:2px solid var(--brand);margin-left:4px}
+.ins .gl{font-size:.5rem;color:var(--brand);font-weight:700;padding:0 3px 0 5px;border-left:2px solid var(--brand);margin-left:3px}
 .ins .gl:first-child{border-left:none;margin-left:0}
-
-/* Editor */
 .ed{display:flex;flex:1;overflow:hidden}
 .pn{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.pn-label{padding:3px 14px;font-size:.6rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;background:var(--surface);border-bottom:1px solid var(--line);flex-shrink:0;display:flex;justify-content:space-between;align-items:center}
-.pn-label .opts{display:flex;gap:5px}
-.pn-label .opts button{font-size:.56rem;padding:2px 5px;border:1px solid var(--line);border-radius:3px;background:transparent;color:var(--muted);cursor:pointer}
+.pn-label{padding:3px 12px;font-size:.56rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;background:var(--surface);border-bottom:1px solid var(--line);flex-shrink:0;display:flex;justify-content:space-between;align-items:center}
+.pn-label .opts{display:flex;gap:4px}
+.pn-label .opts button{font-size:.52rem;padding:1px 5px;border:1px solid var(--line);border-radius:3px;background:transparent;color:var(--muted);cursor:pointer}
 .pn-label .opts button.active{background:var(--brand);color:#fff;border-color:var(--brand)}
-#input{flex:1;padding:14px;border:none;resize:none;font-size:13.5px;line-height:1.75;font-family:'JetBrains Mono',monospace;background:var(--panel);color:var(--text);outline:none;tab-size:2}
+#input{flex:1;padding:12px;border:none;resize:none;font-size:13px;line-height:1.7;font-family:'JetBrains Mono',monospace;background:var(--panel);color:var(--text);outline:none;tab-size:2}
 .dv{width:3px;background:var(--line);cursor:col-resize;flex-shrink:0}
 
-/* Preview - IEEE/ACM engineering paper style */
-#pv{flex:1;padding:28px 36px;overflow-y:auto;background:var(--panel);font-family:'Noto Serif KR','Pretendard',serif;font-size:.92rem;line-height:1.85;color:var(--text);max-width:100%}
-#pv.two-col{column-count:2;column-gap:24px;column-rule:1px solid var(--line);font-size:.8rem;line-height:1.65;padding:20px 24px}
-#pv h1{font-size:1.4rem;font-weight:700;text-align:center;margin-bottom:.2rem;color:var(--text)}
-#pv h2{font-size:1.05rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding-bottom:3px;border-bottom:1.5px solid var(--brand);margin:1.6rem 0 .7rem;color:var(--brand)}
-#pv h3{font-size:.95rem;font-weight:600;margin:1rem 0 .4rem;color:var(--text)}
-#pv h4{font-size:.88rem;font-weight:600;margin:.7rem 0 .3rem;font-style:italic}
-#pv p{margin-bottom:.8rem;text-align:justify;hyphens:auto}
-#pv ul,#pv ol{margin-bottom:.8rem;padding-left:1.4rem}
-#pv li{line-height:1.7;margin-bottom:.2rem}
+/* Preview - clean academic style (readable on screen) */
+#pv{flex:1;padding:28px 36px;overflow-y:auto;background:#fff;font-family:'Noto Serif KR',Georgia,'Times New Roman',serif;font-size:.9rem;line-height:1.85;color:#1a1a1a;max-width:100%}
+[data-theme=dark] #pv{background:#1e1e1e;color:#d8d8d8}
+#pv.two-col{column-count:2;column-gap:22px;column-rule:.5px solid #ccc;font-size:.78rem;line-height:1.6;padding:20px 24px}
+#pv h1{font-size:1.35rem;font-weight:700;text-align:center;margin-bottom:.2rem;color:#111}
+#pv h2{font-size:1rem;font-weight:700;text-transform:uppercase;letter-spacing:.3px;padding-bottom:2px;border-bottom:1px solid #999;margin:1.5rem 0 .6rem;color:#111}
+#pv h3{font-size:.9rem;font-weight:700;margin:.9rem 0 .35rem;color:#222}
+#pv h4{font-size:.85rem;font-weight:600;margin:.6rem 0 .25rem;font-style:italic;color:#333}
+#pv p{margin-bottom:.7rem;text-align:justify;hyphens:auto}
+#pv ul,#pv ol{margin-bottom:.7rem;padding-left:1.3rem}
+#pv li{line-height:1.7;margin-bottom:.15rem}
 #pv strong{font-weight:700}
-#pv pre{background:var(--code-bg);border-radius:var(--radius);padding:.9rem;margin:.8rem 0;overflow-x:auto;border:1px solid var(--line)}
-#pv pre code{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:#e2e8f0;background:none;padding:0}
-#pv code{font-family:'JetBrains Mono',monospace;background:var(--surface);padding:1px 4px;border-radius:3px;font-size:.83em;color:var(--brand)}
-#pv table{width:100%;border-collapse:collapse;margin:.8rem 0;font-size:.8rem}
-#pv th{background:var(--brand);color:#fff;padding:.4rem .5rem;text-align:left;font-weight:600;font-size:.78rem}
-#pv td{padding:.4rem .5rem;border-bottom:1px solid var(--line);font-size:.8rem}
-#pv tr:nth-child(even){background:var(--surface)}
-#pv blockquote{border-left:3px solid var(--brand);padding:.5rem .8rem;margin:.6rem 0;background:var(--surface);font-style:italic;font-size:.85rem}
-#pv hr{border:none;border-top:1px solid var(--line);margin:1.2rem 0}
-#pv img{max-width:100%;border-radius:var(--radius)}
-#pv .katex-display{margin:.6rem 0}
 #pv em{font-style:italic}
-
-/* Academic environments */
-#pv .env-block{border:1px solid var(--line);border-radius:6px;padding:10px 14px;margin:.8rem 0;background:var(--surface);page-break-inside:avoid}
-#pv .env-block.theorem{border-left:4px solid var(--brand)}
-#pv .env-block.lemma{border-left:4px solid #6366f1}
-#pv .env-block.definition{border-left:4px solid #0891b2}
-#pv .env-block.corollary{border-left:4px solid #7c3aed}
-#pv .env-block.proposition{border-left:4px solid #059669}
-#pv .env-block.algorithm{border-left:4px solid var(--accent);font-family:'JetBrains Mono',monospace;font-size:.78rem;white-space:pre-wrap}
-#pv .env-label{font-weight:700;color:var(--brand);margin-bottom:3px;font-size:.84rem}
-#pv .env-block.lemma .env-label{color:#6366f1}
-#pv .env-block.definition .env-label{color:#0891b2}
-#pv .env-block.corollary .env-label{color:#7c3aed}
-#pv .env-block.proposition .env-label{color:#059669}
-#pv .env-block.algorithm .env-label{color:var(--accent);font-family:'Pretendard',sans-serif}
-#pv .proof{margin:.8rem 0;font-style:italic}
-#pv .proof::after{content:' \25A1';float:right;color:var(--brand)}
+#pv pre{background:#f4f4f4;border:1px solid #ddd;border-radius:3px;padding:.8rem;margin:.7rem 0;overflow-x:auto}
+[data-theme=dark] #pv pre{background:#2a2a2a;border-color:#444}
+#pv pre code{font-family:'JetBrains Mono',monospace;font-size:.76rem;color:#333;background:none;padding:0}
+[data-theme=dark] #pv pre code{color:#ccc}
+#pv code{font-family:'JetBrains Mono',monospace;background:#f0f0f0;padding:1px 3px;border-radius:2px;font-size:.82em;color:#333}
+#pv table{width:100%;border-collapse:collapse;margin:.7rem 0;font-size:.78rem}
+#pv th{border-top:2px solid #111;border-bottom:1px solid #111;padding:.35rem .5rem;text-align:left;font-weight:700;font-size:.75rem}
+#pv td{padding:.3rem .5rem;border-bottom:.5px solid #ccc;font-size:.78rem}
+#pv tr:last-child td{border-bottom:1.5px solid #111}
+#pv blockquote{border-left:2px solid #999;padding:.4rem .8rem;margin:.5rem 0;color:#555;font-style:italic;font-size:.85rem}
+#pv hr{border:none;border-top:.5px solid #bbb;margin:1.2rem 0}
+#pv img{max-width:100%;display:block;margin:.5rem auto}
+#pv .katex-display{margin:.5rem 0}
+/* Academic environments - minimal, professional */
+#pv .env-block{border:none;border-top:1px solid #ccc;border-bottom:1px solid #ccc;padding:8px 12px;margin:.7rem 0;background:transparent;page-break-inside:avoid}
+#pv .env-label{font-weight:700;color:#111;margin-bottom:2px;font-size:.84rem;font-variant:small-caps}
+#pv .proof{margin:.7rem 0;font-style:italic}
+#pv .proof::after{content:' \25A1';float:right;color:#555}
 #pv .proof-label{font-weight:700;font-style:normal;margin-right:4px}
 #pv .eq-row{display:flex;align-items:center;margin:.4rem 0}
 #pv .eq-row .katex-display{flex:1;margin:0}
-#pv .eq-num{color:var(--muted);font-size:.78rem;min-width:36px;text-align:right}
-#pv .abstract-box{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:12px 16px;margin:.8rem 0;font-size:.85rem;line-height:1.65}
-#pv .abstract-box strong{display:block;margin-bottom:3px;color:var(--brand);font-size:.78rem;text-transform:uppercase;letter-spacing:.5px}
-#pv .bib-list{font-size:.78rem;line-height:1.55;counter-reset:bib}
-#pv .bib-list p{padding-left:2rem;text-indent:-2rem;margin-bottom:.3rem}
-#pv .bib-list p::before{counter-increment:bib;content:'[' counter(bib) '] ';font-weight:600;color:var(--brand)}
-#pv .cite{color:var(--brand);font-weight:600;cursor:help}
-#pv .fig-caption{text-align:center;font-size:.78rem;color:var(--muted);margin-top:4px;font-style:italic}
-
-/* Status bar */
-.st{display:flex;gap:12px;padding:3px 14px;font-size:.62rem;color:var(--muted);background:var(--surface);border-top:1px solid var(--line);flex-shrink:0;align-items:center}
+#pv .eq-num{color:#555;font-size:.78rem;min-width:36px;text-align:right}
+#pv .abstract-box{border-top:1px solid #111;border-bottom:1px solid #111;padding:10px 0;margin:.8rem 0;font-size:.84rem;line-height:1.6}
+#pv .abstract-box strong{display:block;margin-bottom:2px;font-size:.75rem;text-transform:uppercase;letter-spacing:.5px}
+#pv .bib-list{font-size:.76rem;line-height:1.5;counter-reset:bib}
+#pv .bib-list p{padding-left:1.8rem;text-indent:-1.8rem;margin-bottom:.25rem}
+#pv .bib-list p::before{counter-increment:bib;content:'[' counter(bib) '] ';font-weight:700}
+#pv .cite{font-weight:700;cursor:help}
+#pv .fig-caption{text-align:center;font-size:.75rem;color:#444;margin:4px 0 12px;line-height:1.4}
+#pv .tbl-caption{font-size:.75rem;color:#444;margin:12px 0 4px;font-weight:700;line-height:1.4}
+.st{display:flex;gap:10px;padding:3px 12px;font-size:.58rem;color:var(--muted);background:var(--surface);border-top:1px solid var(--line);flex-shrink:0;align-items:center}
 .st b{color:var(--text)}
-.score{padding:2px 7px;border-radius:10px;color:#fff;font-size:.6rem}
+.score{padding:1px 6px;border-radius:8px;color:#fff;font-size:.55rem}
 .sh{background:var(--brand)}.sm{background:var(--accent)}.sl{background:#b42318}
-
-/* Ref sidebar */
 .ref-panel{width:0;overflow:hidden;transition:width .2s;border-left:1px solid var(--line);background:var(--panel);display:flex;flex-direction:column}
-.ref-panel.open{width:280px}
-.ref-head{padding:7px 10px;font-size:.7rem;font-weight:700;color:var(--brand);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
-.ref-list{flex:1;overflow-y:auto;padding:6px}
-.ref-item{padding:5px 7px;font-size:.68rem;border-bottom:1px solid var(--line);line-height:1.45;color:var(--text)}
-.ref-item b{color:var(--brand);margin-right:3px}
-.ref-add{display:flex;gap:3px;padding:6px;border-top:1px solid var(--line);flex-shrink:0}
-.ref-add input{flex:1;padding:4px 7px;border:1px solid var(--line);border-radius:4px;font-size:.65rem;background:var(--panel);color:var(--text)}
-.ref-add button{padding:4px 8px;background:var(--brand);color:#fff;border:none;border-radius:4px;font-size:.62rem;cursor:pointer}
+.ref-panel.open{width:260px}
+.ref-head{padding:6px 8px;font-size:.68rem;font-weight:700;color:var(--brand);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.ref-list{flex:1;overflow-y:auto;padding:4px}
+.ref-item{padding:4px 6px;font-size:.64rem;border-bottom:1px solid var(--line);line-height:1.4;color:var(--text)}
+.ref-item b{color:var(--brand);margin-right:2px}
+.ref-add{display:flex;gap:3px;padding:5px;border-top:1px solid var(--line);flex-shrink:0}
+.ref-add input{flex:1;padding:3px 6px;border:1px solid var(--line);border-radius:3px;font-size:.62rem;background:var(--panel);color:var(--text)}
+.ref-add button{padding:3px 7px;background:var(--brand);color:#fff;border:none;border-radius:3px;font-size:.58rem;cursor:pointer}
+/* Help panel */
+.help{display:none;position:fixed;right:20px;top:50%;transform:translateY(-50%);width:280px;max-height:70vh;background:var(--panel);border:1px solid var(--line);border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.15);z-index:100;overflow-y:auto;padding:14px;font-size:.72rem;line-height:1.6}
+.help.show{display:block}
+.help h3{font-size:.8rem;color:var(--brand);margin-bottom:8px;border-bottom:1px solid var(--line);padding-bottom:4px}
+.help .hitem{margin-bottom:10px;padding-bottom:8px;border-bottom:1px dotted var(--line)}
+.help .hitem b{color:var(--brand);display:block;font-size:.7rem}
+.help .hitem em{color:var(--muted);font-size:.64rem}
+.help pre{background:var(--surface);padding:6px;border-radius:3px;font-size:.62rem;margin:4px 0;overflow-x:auto}
 
-/* Print - IEEE 2-column */
+/* Print/Export - journal-grade monochrome */
 @media print{
-  .tb,.meta,.meta2,.ins,.st,.dv,.ref-panel,#input,.pn-label{display:none!important}
+  .tb,.meta,.meta2,.ins,.st,.dv,.ref-panel,#input,.pn-label,.help{display:none!important}
   .ed{display:block!important}
   .pn:first-child{display:none!important}
   .pn:last-child{display:block!important;overflow:visible!important}
-  #pv{padding:0!important;font-size:10pt!important;column-count:2;column-gap:18pt;line-height:1.4}
-  #pv h1{font-size:13pt;margin-bottom:4pt}
-  #pv h2{font-size:10pt;text-transform:uppercase}
-  #pv table{font-size:8pt}
-  body{height:auto;overflow:visible}
+  body{height:auto;overflow:visible;background:#fff}
+  #pv{padding:0!important;font-family:'Times New Roman','Noto Serif KR',serif!important;font-size:10pt!important;line-height:1.3!important;color:#000!important;background:#fff!important;column-count:2;column-gap:18pt;column-rule:none}
+  #pv h1{font-size:14pt!important;margin-bottom:6pt}
+  #pv h2{font-size:10pt!important;text-transform:uppercase;border-bottom:.5pt solid #000;margin:12pt 0 4pt}
+  #pv h3{font-size:10pt!important;font-style:italic}
+  #pv table{font-size:8pt!important}
+  #pv th{border-top:1.5pt solid #000;border-bottom:.75pt solid #000}
+  #pv tr:last-child td{border-bottom:1.5pt solid #000}
+  #pv pre{background:#fff!important;border:1px solid #ccc;font-size:8pt!important}
+  #pv .env-block{border-top:.5pt solid #000;border-bottom:.5pt solid #000;background:transparent!important}
+  #pv .abstract-box{border-top:.75pt solid #000;border-bottom:.75pt solid #000}
+  #pv code{background:transparent!important;border:none}
 }
-@media(max-width:1024px){.ed{flex-direction:column}.meta{grid-template-columns:1fr 1fr 1fr}.ref-panel.open{width:220px}}
+@media(max-width:1024px){.ed{flex-direction:column}.meta{grid-template-columns:1fr 1fr 1fr}.ref-panel.open{width:200px}}
 </style>
 </head>
 <body>
 
 <div class="tb">
-  <img src="/assets/img/logo.svg" alt=""><h1>Paper Editor</h1><span class="badge">AI Security</span>
+  <img src="/assets/img/logo.svg" alt=""><h1>Paper Editor</h1>
   <div class="sep"></div>
-  <select id="tplSel" style="padding:3px 6px;border:1px solid var(--line);border-radius:5px;font-size:.68rem;background:var(--panel);color:var(--text)" onchange="insTpl(this.value)">
-    <option value="">-- Paper Format --</option>
-    <option value="ieee">IEEE Conference</option>
-    <option value="acm">ACM Conference</option>
-    <option value="usenix">USENIX Security</option>
-    <option value="journal">Journal (Full)</option>
-    <option value="short">Short Paper (4-6p)</option>
-    <option value="poster">Poster / Extended Abstract</option>
+  <select class="sel" id="tplSel" onchange="insTpl(this.value)">
+    <option value="">-- Format --</option>
+    <optgroup label="English">
+      <option value="ieee_en">IEEE Conference (EN)</option>
+      <option value="acm_en">ACM Conference (EN)</option>
+      <option value="usenix_en">USENIX Security (EN)</option>
+      <option value="journal_en">Journal Full (EN)</option>
+      <option value="short_en">Short Paper (EN)</option>
+    </optgroup>
+    <optgroup label="Korean">
+      <option value="kci_kr">KCI / 학회 논문 (KR)</option>
+      <option value="journal_kr">국내 저널 (KR)</option>
+    </optgroup>
+    <optgroup label="Dissertation">
+      <option value="phd_kr">박사학위논문 (KR)</option>
+      <option value="phd_en">PhD Dissertation (EN)</option>
+    </optgroup>
   </select>
   <button class="bt" onclick="toggleRef()">Refs</button>
+  <button class="bt" onclick="toggleHelp()">?</button>
   <div class="spacer"></div>
-  <button class="bt" onclick="validatePaper()">Validate</button>
+  <button class="bt" onclick="validatePaper()">Check</button>
   <button class="bt p" onclick="publish()">Export</button>
   <div class="sep"></div>
-  <button class="bt icon" onclick="toggleDark()" title="Dark mode">&#9684;</button>
-  <button class="bt icon" onclick="toggleFocus()" title="Focus mode">&#9974;</button>
-  <button class="bt icon" onclick="window.print()" title="Print/PDF">&#9113;</button>
-  <a class="bt" href="/admin/editor.html" style="text-decoration:none;font-size:.62rem">Blog</a>
-  <a class="bt" href="/admin/" style="text-decoration:none;font-size:.62rem">CMS</a>
+  <button class="bt icon" onclick="toggleDark()">&#9684;</button>
+  <button class="bt icon" onclick="toggleFocus()">&#9974;</button>
+  <button class="bt icon" onclick="window.print()">&#9113;</button>
+  <a class="bt" href="/admin/editor.html" style="text-decoration:none">Blog</a>
+  <a class="bt" href="/admin/" style="text-decoration:none">CMS</a>
 </div>
 
 <div class="meta" id="metaBar">
   <div><label>Title</label><input id="ti" placeholder="Paper title"></div>
   <div><label>Author</label><input id="au" placeholder="First Author" value="AICRA"></div>
-  <div><label>Domain</label><select id="dm"><option value="LLM Security">LLM Security</option><option value="Adversarial ML">Adversarial ML</option><option value="Prompt Injection">Prompt Injection</option><option value="AI Red Teaming">AI Red Teaming</option><option value="MCP Security">MCP Security</option><option value="Agentic AI Security">Agentic AI Security</option><option value="Privacy">Privacy / FL</option><option value="AI Governance">AI Governance</option></select></div>
+  <div><label>Domain</label><select id="dm"><option>LLM Security</option><option>Adversarial ML</option><option>Prompt Injection</option><option>AI Red Teaming</option><option>MCP Security</option><option>Agentic AI</option><option>Privacy / FL</option><option>AI Governance</option><option>Network Security</option><option>Malware Analysis</option><option>Cryptography</option><option>Other</option></select></div>
   <div><label>Status</label><select id="st-sel"><option value="draft">Draft</option><option value="review">Review</option><option value="published">Published</option></select></div>
-  <div><label>Keywords</label><input id="kw" placeholder="LLM, OWASP, jailbreak"></div>
+  <div><label>Keywords</label><input id="kw" placeholder="keyword1, keyword2"></div>
 </div>
 
 <div class="meta2" id="metaBar2">
   <div><label>Co-authors</label><input id="coau" placeholder="Author2, Author3"></div>
-  <div><label>Abstract</label><input id="ab" placeholder="One-line abstract"></div>
+  <div><label>Abstract</label><input id="ab" placeholder="One-line abstract for metadata"></div>
   <div class="chk"><input type="checkbox" id="collab"><span>Collaborative</span></div>
 </div>
 
 <div class="ins" id="insBar">
   <span class="gl">Structure</span>
-  <button onclick="ins('sec')">Section</button>
-  <button onclick="ins('subsec')">Subsec</button>
-  <button onclick="ins('eq')">Equation</button>
-  <button onclick="ins('fig')">Figure</button>
-  <button onclick="ins('table')">Table</button>
-  <button onclick="ins('code')">Code</button>
-  <button onclick="ins('cite')">Cite</button>
+  <button onclick="ins('sec')" title="## Section heading">Sec</button>
+  <button onclick="ins('subsec')" title="### Subsection heading">Subsec</button>
+  <button onclick="ins('eq')" title="Display equation: $$...$$">Eq</button>
+  <button onclick="ins('fig')" title="Figure with caption below">Fig</button>
+  <button onclick="ins('tbl')" title="Table with caption above (academic style)">Table</button>
+  <button onclick="ins('code')" title="Code block with language tag">Code</button>
+  <button onclick="ins('cite')" title="Citation: [cite:N] -> [N]">Cite</button>
 
   <span class="gl">Env</span>
-  <button onclick="ins('thm')">Thm</button>
-  <button onclick="ins('def')">Def</button>
-  <button onclick="ins('lem')">Lem</button>
-  <button onclick="ins('proof')">Proof</button>
-  <button onclick="ins('algo')">Algo</button>
+  <button onclick="ins('thm')" title="Theorem: formally stated, provable claim">Thm</button>
+  <button onclick="ins('def')" title="Definition: introduces formal terminology">Def</button>
+  <button onclick="ins('lem')" title="Lemma: supporting theorem, proven separately">Lem</button>
+  <button onclick="ins('proof')" title="Proof: formal reasoning ending with QED">Proof</button>
+  <button onclick="ins('algo')" title="Algorithm: numbered pseudocode steps">Algo</button>
 
   <span class="gl">Security</span>
-  <button onclick="ins('threat')">Threat Model</button>
-  <button onclick="ins('eval_tbl')">Eval Matrix</button>
-  <button onclick="ins('comparison')">Comparison</button>
-  <button onclick="ins('framework')">Framework Ref</button>
-  <button onclick="ins('disclosure')">Disclosure</button>
-  <button onclick="ins('ethics')">Ethics</button>
+  <button onclick="ins('threat')" title="Threat model: assets, adversary, surface, assumptions">Threat</button>
+  <button onclick="ins('eval')" title="Evaluation matrix: method vs metrics comparison">Eval</button>
+  <button onclick="ins('framework')" title="Framework mapping: MITRE/OWASP/NIST reference">FW Map</button>
+
+  <span class="gl">Data</span>
+  <button onclick="ins('perf')" title="Performance comparison table with statistical measures">Perf</button>
+  <button onclick="ins('confmat')" title="Confusion matrix layout for classification results">Conf.Mat</button>
+  <button onclick="ins('arch')" title="Architecture diagram description (Mermaid)">Arch</button>
+  <button onclick="ins('ethics')" title="Ethics & disclosure section">Ethics</button>
 </div>
 
 <div class="ed">
   <div class="pn"><div class="pn-label">LaTeX + Markdown</div>
-    <textarea id="input" spellcheck="true" lang="ko" placeholder="Select a template above to start, or write LaTeX + Markdown directly.&#10;&#10;$...$ for inline math, $$...$$ for display math.&#10;:::theorem, :::definition, :::proof for environments.&#10;[cite:1] for citations."></textarea>
+    <textarea id="input" spellcheck="true" lang="ko" placeholder="Select a paper format above to begin.&#10;&#10;$...$ inline math | $$...$$ display math&#10;:::theorem, :::definition, :::proof for environments&#10;[cite:1] for citations&#10;&#10;Press ? button for formatting guide."></textarea>
   </div>
   <div class="dv" id="dv"></div>
   <div class="pn">
@@ -219,10 +228,10 @@ body{font-family:'Pretendard',sans-serif;background:var(--bg);color:var(--text);
         <button onclick="toggleCol(true)" id="col2btn">2-Col</button>
       </div>
     </div>
-    <div id="pv"><p style="color:var(--muted);text-align:center;padding:40px">Select a template or start typing</p></div>
+    <div id="pv"><p style="color:#999;text-align:center;padding:40px;font-family:sans-serif;font-size:.85rem">Select a format or start writing</p></div>
   </div>
   <div class="ref-panel" id="refPanel">
-    <div class="ref-head"><span>References</span><button class="bt" style="padding:1px 5px;font-size:.55rem" onclick="toggleRef()">X</button></div>
+    <div class="ref-head"><span>References</span><button class="bt" style="padding:1px 4px;font-size:.5rem" onclick="toggleRef()">X</button></div>
     <div class="ref-list" id="refList"></div>
     <div class="ref-add">
       <input id="refInput" placeholder="Author, Title, Venue, Year">
@@ -231,13 +240,65 @@ body{font-family:'Pretendard',sans-serif;background:var(--bg);color:var(--text);
   </div>
 </div>
 
+<!-- Help Panel -->
+<div class="help" id="helpPanel">
+  <h3>Formatting Guide</h3>
+  <div class="hitem"><b>Theorem / Definition / Lemma</b><em>Formally stated claims</em>
+  <pre>:::theorem Convergence
+Under condition X, algorithm A converges in O(n).
+:::</pre></div>
+  <div class="hitem"><b>Proof</b><em>Formal reasoning, ends with QED square</em>
+  <pre>:::proof
+By contradiction, assume ...
+:::</pre></div>
+  <div class="hitem"><b>Algorithm</b><em>Numbered pseudocode steps</em>
+  <pre>:::algorithm Name
+Input: dataset D, parameter k
+Output: model M
+1. Initialize weights w
+2. For each epoch t:
+   a. Compute gradient
+   b. Update w
+3. Return trained M
+:::</pre></div>
+  <div class="hitem"><b>Equation</b><em>Display math with auto-numbering</em>
+  <pre>$$
+\mathcal{L} = \sum_{i} \ell(f(x_i), y_i)
+$$</pre></div>
+  <div class="hitem"><b>Figure</b><em>Caption BELOW figure (academic convention)</em>
+  <pre>![](path/to/figure.pdf)
+*Fig. 1. Description of what the figure shows.*</pre></div>
+  <div class="hitem"><b>Table</b><em>Caption ABOVE table (academic convention)</em>
+  <pre>*Table 1. Comparison of approaches.*
+| Method | Metric A | Metric B |
+|--------|----------|----------|
+| A      | 0.95     | 0.88     |</pre></div>
+  <div class="hitem"><b>Threat Model</b><em>Assets, adversary, surface, assumptions</em></div>
+  <div class="hitem"><b>Citation</b><em>Use [cite:N] for numbered references</em>
+  <pre>As shown in [cite:1], the approach...
+Add references in the Refs panel.</pre></div>
+  <div class="hitem"><b>Confusion Matrix</b><em>Classification results layout</em>
+  <pre>*Table N. Confusion matrix on test set.*
+|  | Pred + | Pred - |
+|--|--------|--------|
+| Actual + | TP | FN |
+| Actual - | FP | TN |</pre></div>
+  <div class="hitem"><b>Architecture Diagram</b><em>System overview via Mermaid</em>
+  <pre>```mermaid
+graph LR
+  A[Input] --> B[Module]
+  B --> C[Output]
+```</pre></div>
+  <button class="bt" onclick="toggleHelp()" style="width:100%;margin-top:8px">Close</button>
+</div>
+
 <div class="st" id="stBar">
   <span><b id="wc">0</b>c <b id="ww">0</b>w</span>
   <span>Sec:<b id="sc">0</b></span>
   <span>Eq:<b id="eqc">0</b></span>
   <span>Ref:<b id="rc">0</b></span>
   <span>~<b id="pg">0</b>p</span>
-  <span style="margin-left:auto">Score:<span class="score sl" id="qs">0</span></span>
+  <span style="margin-left:auto"><span class="score sl" id="qs">0</span></span>
   <span id="as" style="color:var(--brand)"></span>
 </div>
 
@@ -247,61 +308,41 @@ let focusMode=false,refs=[];
 let envCounters={theorem:0,lemma:0,definition:0,corollary:0,proposition:0,algorithm:0};
 let eqCounter=0;
 
-// === LIVE PREVIEW ===
 inp.addEventListener('input',debounce(()=>{render();},120));
 function debounce(fn,ms){let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms);};}
 
 function render(){
   const raw=inp.value;
-  if(!raw.trim()){pv.innerHTML='<p style="color:var(--muted);text-align:center;padding:40px">Select a template or start typing</p>';updateStats(raw);return;}
-  envCounters={theorem:0,lemma:0,definition:0,corollary:0,proposition:0,algorithm:0};
-  eqCounter=0;
-  let t=raw;
-  t=processEnvs(t);
-  t=processNumberedEq(t);
-  t=processCitations(t);
-  let html=marked.parse(t);
-  html=restoreEnvs(html);
+  if(!raw.trim()){pv.innerHTML='<p style="color:#999;text-align:center;padding:40px;font-family:sans-serif;font-size:.85rem">Select a format or start writing</p>';updateStats(raw);return;}
+  envCounters={theorem:0,lemma:0,definition:0,corollary:0,proposition:0,algorithm:0};eqCounter=0;
+  let t=raw;t=processEnvs(t);t=processNumberedEq(t);t=processCitations(t);
+  let html=marked.parse(t);html=restoreEnvs(html);
   pv.innerHTML=html;
   renderMathInElement(pv,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false},{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}],throwOnError:false});
   updateStats(raw);
 }
 
-// === ENVIRONMENTS ===
 const envPH=[];
 function processEnvs(t){
   envPH.length=0;
-  // Abstract
-  t=t.replace(/:::abstract\n([\s\S]*?)\n:::/g,(m,body)=>{
-    const ph='\x00E'+envPH.length+'\x00';
-    envPH.push('<div class="abstract-box"><strong>Abstract</strong>'+marked.parse(body.trim())+'</div>');
-    return ph;
-  });
+  t=t.replace(/:::abstract\n([\s\S]*?)\n:::/g,(m,body)=>{const ph='\x00E'+envPH.length+'\x00';envPH.push('<div class="abstract-box"><strong>Abstract</strong>'+marked.parse(body.trim())+'</div>');return ph;});
   const types=['theorem','lemma','definition','corollary','proposition','algorithm','proof'];
   for(const ty of types){
     const re=new RegExp(':::'+ty+'(?:\\s+(.+?))?\\n([\\s\\S]*?)\\n:::','g');
     t=t.replace(re,(m,title,body)=>{
       let html='';
-      if(ty==='proof'){
-        html='<div class="proof"><span class="proof-label">Proof.</span> '+(title?'('+title+') ':'')+body.trim()+'</div>';
-      }else{
-        envCounters[ty]++;
-        const N={theorem:'Theorem',lemma:'Lemma',definition:'Definition',corollary:'Corollary',proposition:'Proposition',algorithm:'Algorithm'};
-        html='<div class="env-block '+ty+'"><div class="env-label">'+N[ty]+' '+envCounters[ty]+(title?' ('+title+')':'')+'</div>'+body.trim()+'</div>';
-      }
-      const ph='\x00E'+envPH.length+'\x00';
-      envPH.push(html);
-      return ph;
+      if(ty==='proof'){html='<div class="proof"><span class="proof-label">Proof.</span> '+(title?'('+title+') ':'')+body.trim()+'</div>';}
+      else{envCounters[ty]++;const N={theorem:'Theorem',lemma:'Lemma',definition:'Definition',corollary:'Corollary',proposition:'Proposition',algorithm:'Algorithm'};
+      html='<div class="env-block"><div class="env-label">'+N[ty]+' '+envCounters[ty]+(title?'. '+title:'')+'.</div>'+body.trim()+'</div>';}
+      const ph='\x00E'+envPH.length+'\x00';envPH.push(html);return ph;
     });
   }
   return t;
 }
 function restoreEnvs(html){for(let i=0;i<envPH.length;i++){html=html.replace('<p>\x00E'+i+'\x00</p>',envPH[i]);html=html.replace('\x00E'+i+'\x00',envPH[i]);}return html;}
-
 function processNumberedEq(t){return t.replace(/^\$\$\s*\n?([\s\S]*?)\n?\$\$\s*$/gm,(m,eq)=>{eqCounter++;return '<div class="eq-row"><div class="katex-display">$$'+eq.trim()+'$$</div><div class="eq-num">('+eqCounter+')</div></div>';});}
 function processCitations(t){return t.replace(/\[cite:(\d+)\]/g,(m,n)=>'<span class="cite" title="'+(refs[parseInt(n)-1]||'Ref '+n)+'">['+n+']</span>');}
 
-// === KEYBOARD ===
 inp.addEventListener('keydown',e=>{
   if(e.key==='Tab'){e.preventDefault();inp.setRangeText('  ',inp.selectionStart,inp.selectionStart,'end');}
   if((e.ctrlKey||e.metaKey)&&e.key==='b'){e.preventDefault();wrap('**','**');}
@@ -312,42 +353,45 @@ inp.addEventListener('keydown',e=>{
 });
 function wrap(a,b){const s=inp.selectionStart,e=inp.selectionEnd,sel=inp.value.substring(s,e);inp.setRangeText(a+sel+b,s,e,'end');inp.dispatchEvent(new Event('input'));}
 
-// === VENUE FORMAT TEMPLATES (format-focused, not topic-prescriptive) ===
+// === VENUE FORMAT TEMPLATES ===
 function insTpl(type){
   if(!type)return;
-  const templates={
-ieee:`# [Paper Title]
+  const T={
+ieee_en:`# [Paper Title]
 
-**Authors:** [Author 1]$^1$, [Author 2]$^2$
-$^1$[Department, Institution] $^2$[Department, Institution]
+**[Author 1]**$^1$, **[Author 2]**$^2$
+$^1$[Department, University, City, Country] $^2$[Department, University]
 
 :::abstract
-[Context: 1-2 sentences on the problem domain]
-[Gap: what is missing or insufficient in current work]
-[Method: your approach in one sentence]
-[Result: key quantitative finding]
-[Implication: why it matters]
+[Context: 1-2 sentences establishing the problem domain.]
+[Gap: What is missing or insufficient in current approaches.]
+[Method: Your approach in one sentence.]
+[Result: Key quantitative finding, e.g., "improves X by Y%".]
+[Implication: Why this matters.]
 :::
 
-**Index Terms:** [term 1], [term 2], [term 3]
+**Index Terms:** [term 1], [term 2], [term 3], [term 4]
 
 ---
 
 ## 1. Introduction
 
-<!-- Guideline: Problem -> Motivation -> Gap -> Contribution list -->
+<!-- Structure: Problem -> Why it matters -> What's been tried -> Gap -> Your contribution -->
 
-**Contributions.** The main contributions of this paper are:
+**Contributions.** This paper makes the following contributions:
 - C1:
 - C2:
 - C3:
+
+**Organization.** The remainder of this paper is organized as follows. Section 2 provides background. Section 3 describes ... Section 4 presents ... Section 5 evaluates ... Section 6 discusses limitations. Section 7 concludes.
 
 ---
 
 ## 2. Background and Related Work
 
-### 2.1 [Background Topic]
+### 2.1 [Topic Area]
 ### 2.2 [Related Approaches]
+### 2.3 [Gap in Existing Work]
 
 ---
 
@@ -356,56 +400,63 @@ $^1$[Department, Institution] $^2$[Department, Institution]
 ### 3.1 Assets
 ### 3.2 Adversary Capabilities
 ### 3.3 Trust Boundaries
-### 3.4 Assumptions and Out-of-Scope
+### 3.4 Assumptions and Scope
 
 ---
 
 ## 4. Proposed Approach
 
 ### 4.1 Overview
-### 4.2 Design
+### 4.2 Design Details
 
-<!-- Insert equations, algorithms, definitions as needed -->
+<!-- Example equation: -->
+$$
+\\mathcal{L} = \\sum_{i=1}^{N} \\ell(f(x_i), y_i) + \\lambda \\|\\theta\\|_2^2
+$$
+
+:::algorithm [Procedure Name]
+Input: [input description]
+Output: [output description]
+1. [Step]
+2. [Step]
+3. Return [result]
+:::
 
 ---
 
-## 5. Implementation
+## 5. Evaluation
 
----
+### 5.1 Experimental Setup
 
-## 6. Evaluation
-
-### 6.1 Experimental Setup
-
-<!-- Table format: -->
-<!-- Table I: Experimental Environment -->
+*Table 1. Experimental environment.*
 | Component | Specification |
-|-----------|--------------|
-| | |
+|-----------|---------------|
+| Hardware | |
+| Software | |
+| Dataset | |
 
-### 6.2 Metrics
-### 6.3 Baselines
-### 6.4 Results
+### 5.2 Metrics
+### 5.3 Baselines
+### 5.4 Results
 
-<!-- Table format: -->
-<!-- Table II: Main Results -->
+*Table 2. Main results (mean +/- std over 5 runs).*
 | Method | Metric A | Metric B | Metric C |
 |--------|----------|----------|----------|
 | Baseline 1 | | | |
-| Ours | | | |
+| Proposed | | | |
 
-### 6.5 Ablation Study
-
----
-
-## 7. Discussion
-
-### 7.1 Limitations
-### 7.2 Broader Impact
+### 5.5 Ablation Study
 
 ---
 
-## 8. Conclusion
+## 6. Discussion
+
+### 6.1 Limitations
+### 6.2 Broader Impact
+
+---
+
+## 7. Conclusion
 
 ---
 
@@ -415,22 +466,18 @@ $^1$[Department, Institution] $^2$[Department, Institution]
 
 ## References
 
-<!-- IEEE numeric style: [1] A. Author, "Title," in Proc. Venue, Year, pp. xx-xx. -->
+<!-- IEEE style: [1] A. Author and B. Author, "Title," in Proc. Conf., Year, pp. xx-xx. -->
 `,
 
-acm:`# [Paper Title]
+acm_en:`# [Paper Title]
 
-**Authors:** [Author 1] ([affiliation], [email], ORCID: [0000-0000-0000-0000])
+[Author 1] ([affiliation], [email]), [Author 2] ([affiliation])
 
 :::abstract
-**Background:** [1-2 sentences]
-**Objective:** [what is being studied or built]
-**Method:** [approach taken]
-**Results:** [quantitative outcome]
-**Conclusion:** [takeaway]
+[Single paragraph, 150-250 words. Problem -> Approach -> Results -> Significance.]
 :::
 
-**CCS Concepts:** [Security and privacy -> specific concept]
+**CCS Concepts:** Security and privacy -> [specific concept]
 **Keywords:** [keyword 1]; [keyword 2]; [keyword 3]
 
 ---
@@ -439,15 +486,15 @@ acm:`# [Paper Title]
 
 ---
 
-## 2. Scope and Assumptions
+## 2. Background
 
 ---
 
-## 3. Related Work
+## 3. Scope and Assumptions
 
 ---
 
-## 4. System Model / Architecture
+## 4. System Model
 
 ---
 
@@ -484,24 +531,21 @@ acm:`# [Paper Title]
 
 ## 11. Conclusion
 
-**Artifact Availability:** [URL or N/A]
+**Data Availability:** [URL/DOI or statement]
 
 ---
 
 ## References
 
-<!-- ACM style: [1] Author. Year. Title. In Proc. Venue. Publisher, pages. DOI -->
+<!-- ACM style: [1] Author. Year. Title. In Proc. Venue. Publisher. DOI. -->
 `,
 
-usenix:`# [Paper Title]
+usenix_en:`# [Paper Title]
 
 [Author 1], [Institution]; [Author 2], [Institution]
 
 :::abstract
-[Problem statement]
-[Approach taken]
-[Main measured result with numbers]
-[Practical significance]
+[Problem] [Approach] [Key measured result with numbers] [Practical significance]
 :::
 
 ---
@@ -533,15 +577,10 @@ usenix:`# [Paper Title]
 ## 7. Evaluation
 
 ### 7.1 Experimental Environment
-### 7.2 Workloads / Inputs
+### 7.2 Workloads
 ### 7.3 Metrics
-### 7.4 Comparative Results
+### 7.4 Results
 ### 7.5 Sensitivity Analysis
-
-<!-- Table format: Table 1: [What is compared] -->
-| Configuration | Metric A | Metric B | Overhead |
-|---------------|----------|----------|----------|
-| | | | |
 
 ---
 
@@ -549,7 +588,7 @@ usenix:`# [Paper Title]
 
 ---
 
-## 9. Limitations and Future Work
+## 9. Limitations
 
 ---
 
@@ -557,25 +596,20 @@ usenix:`# [Paper Title]
 
 ---
 
-## Acknowledgments
-
----
-
 ## References
-
-<!-- USENIX style: [1] Author. Title. In Proc. USENIX Security, Year. -->
 `,
 
-journal:`# [Paper Title]
+journal_en:`# [Paper Title]
 
-**Authors:** [Author 1]$^{1,*}$, [Author 2]$^2$
-$^1$[Full affiliation] $^2$[Full affiliation] $^*$Corresponding author
+**[Author 1]**$^{1,*}$, **[Author 2]**$^2$
+$^1$[Full affiliation] $^2$[Full affiliation]
+$^*$Corresponding author: [email]
 
 :::abstract
-[200-300 words, single paragraph. Context -> Gap -> Objective -> Method -> Results -> Conclusion]
+[200-300 words. Context -> Gap -> Objective -> Method -> Results -> Conclusion]
 :::
 
-**Keywords:** [5-8 terms]
+**Keywords:** [5-8 terms separated by semicolons]
 
 ---
 
@@ -590,7 +624,7 @@ $^1$[Full affiliation] $^2$[Full affiliation] $^*$Corresponding author
 
 ## 2. Preliminaries
 
-### 2.1 Definitions and Notation
+### 2.1 Notation
 
 :::definition [Term]
 [Formal definition]
@@ -604,22 +638,21 @@ $^1$[Full affiliation] $^2$[Full affiliation] $^*$Corresponding author
 
 ---
 
-## 4. Threat Model and Problem Formulation
+## 4. Problem Formulation
 
 ### 4.1 System Model
 ### 4.2 Adversary Model
-### 4.3 Security Goals
+### 4.3 Security Objectives
 
 ---
 
-## 5. Proposed Approach
+## 5. Proposed Method
 
 ### 5.1 Overview
 ### 5.2 Detailed Design
-### 5.3 Formal Analysis
 
 :::theorem [Main Result]
-[Statement]
+[Formal statement]
 :::
 
 :::proof
@@ -632,13 +665,10 @@ $^1$[Full affiliation] $^2$[Full affiliation] $^*$Corresponding author
 
 ---
 
-## 7. Experimental Evaluation
+## 7. Evaluation
 
 ### 7.1 Setup
 ### 7.2 Research Questions
-- RQ1:
-- RQ2:
-- RQ3:
 ### 7.3 Results
 ### 7.4 Discussion
 
@@ -648,11 +678,7 @@ $^1$[Full affiliation] $^2$[Full affiliation] $^*$Corresponding author
 
 ---
 
-## 9. Related Work (Extended)
-
----
-
-## 10. Conclusion and Future Work
+## 9. Conclusion and Future Work
 
 ---
 
@@ -664,12 +690,12 @@ $^1$[Full affiliation] $^2$[Full affiliation] $^*$Corresponding author
 
 ---
 
-## Appendix A: [Additional Material]
+## Appendix A
 `,
 
-short:`# [Paper Title]
+short_en:`# [Paper Title]
 
-**Authors:** [Author 1], [Author 2]
+**[Author 1]**, **[Author 2]** ([Institution])
 
 :::abstract
 [100-150 words. Problem -> Approach -> Key result -> Significance]
@@ -677,7 +703,7 @@ short:`# [Paper Title]
 
 ---
 
-## 1. Introduction and Motivation
+## 1. Introduction
 
 ---
 
@@ -691,6 +717,7 @@ short:`# [Paper Title]
 
 ## 4. Evaluation
 
+*Table 1. Results.*
 | | Metric A | Metric B |
 |------|----------|----------|
 | Baseline | | |
@@ -705,215 +732,509 @@ short:`# [Paper Title]
 ## References
 `,
 
-poster:`# [Paper Title]
+kci_kr:`# [국문 제목]
 
-**Authors:** [Author 1], [Author 2] ([Institution])
+# [English Title]
+
+**[저자1]**$^1$, **[저자2]**$^{2,*}$
+$^1$[소속 1] $^2$[소속 2]
+$^*$교신저자: [이메일]
 
 :::abstract
-[80-120 words. One-paragraph summary.]
+[국문초록: 200-300자. 연구 배경, 목적, 방법, 결과, 의의를 포함하여 작성.]
 :::
 
----
+**주요어:** [키워드 1], [키워드 2], [키워드 3]
 
-## Problem
+:::abstract
+[English Abstract: 150-250 words. Background, objective, method, results, and significance.]
+:::
 
-## Approach
-
-## Key Results
-
-## Conclusion and Future Work
+**Keywords:** [keyword 1], [keyword 2], [keyword 3]
 
 ---
 
-## References
+## I. 서론
+
+---
+
+## II. 관련 연구
+
+### 2.1 [주제 영역]
+### 2.2 [기존 연구]
+
+---
+
+## III. 위협 모델 및 문제 정의
+
+---
+
+## IV. 제안 기법
+
+### 4.1 개요
+### 4.2 세부 설계
+
+---
+
+## V. 실험 및 평가
+
+### 5.1 실험 환경
+
+*표 1. 실험 환경.*
+| 구분 | 사양 |
+|------|------|
+| 하드웨어 | |
+| 데이터셋 | |
+
+### 5.2 평가 지표
+### 5.3 실험 결과
+
+*표 2. 주요 실험 결과.*
+| 기법 | 지표 A | 지표 B | 지표 C |
+|------|--------|--------|--------|
+| 기존 | | | |
+| 제안 | | | |
+
+---
+
+## VI. 고찰
+
+---
+
+## VII. 결론
+
+---
+
+## 감사의 글
+
+---
+
+## 참고문헌
+
+<!-- 한국정보보호학회 양식: [1] 저자명, "논문제목," 학회명, 권(호), pp.xx-xx, 연도. -->
+`,
+
+journal_kr:`# [국문 제목]
+
+# [English Title]
+
+**[저자1]**$^{1,*}$, **[저자2]**$^2$
+$^1$[대학교 학과] $^2$[연구기관]
+$^*$교신저자
+
+:::abstract
+[국문초록]
+:::
+
+**주요어:**
+
+:::abstract
+[English Abstract]
+:::
+
+**Keywords:**
+
+---
+
+## 1. 서론
+
+### 1.1 연구 배경
+### 1.2 연구 목적
+### 1.3 논문 구성
+
+---
+
+## 2. 이론적 배경 및 선행 연구
+
+---
+
+## 3. 연구 방법
+
+### 3.1 시스템 모델
+### 3.2 위협 모델
+
+---
+
+## 4. 제안 방법
+
+---
+
+## 5. 실험 및 결과
+
+### 5.1 실험 설계
+### 5.2 결과 분석
+
+---
+
+## 6. 토의
+
+---
+
+## 7. 결론
+
+---
+
+## 참고문헌
+`,
+
+phd_kr:`# [박사학위논문]
+
+# [국문 제목]
+
+# [English Title]
+
+---
+
+**[대학교 대학원]**
+**[학과/전공]**
+
+**[저자명]**
+
+**지도교수: [교수명]**
+
+---
+
+## 인준서
+
+이 논문을 [학과] [공학/이학] 박사학위 논문으로 인준함.
+
+심사위원장: _______________
+심사위원: _______________
+심사위원: _______________
+심사위원: _______________
+심사위원: _______________
+
+[연도]년 [월]월 [일]일
+
+---
+
+:::abstract
+[국문초록: 연구의 배경, 목적, 방법, 주요 결과 및 의의를 포함하여 작성. 1-2페이지 분량.]
+:::
+
+**주요어:**
+
+---
+
+:::abstract
+[English Abstract]
+:::
+
+**Keywords:**
+
+---
+
+## 목차
+
+---
+
+## 표 목차
+
+---
+
+## 그림 목차
+
+---
+
+## 약어 목록
+
+| 약어 | 설명 |
+|------|------|
+| | |
+
+---
+
+## 제1장 서론
+
+### 1.1 연구 배경 및 동기
+### 1.2 연구 목적
+### 1.3 연구 범위 및 방법
+### 1.4 논문 구성
+
+---
+
+## 제2장 이론적 배경 및 선행 연구
+
+### 2.1 [이론적 기초]
+### 2.2 [관련 기술]
+### 2.3 [선행 연구 분석]
+### 2.4 [기존 연구의 한계점]
+
+---
+
+## 제3장 문제 정의 및 위협 모델
+
+### 3.1 문제 정의
+### 3.2 위협 모델
+### 3.3 보안 목표
+
+---
+
+## 제4장 제안 기법
+
+### 4.1 설계 원칙
+### 4.2 시스템 아키텍처
+### 4.3 세부 알고리즘
+### 4.4 정형적 분석
+
+---
+
+## 제5장 구현
+
+### 5.1 구현 환경
+### 5.2 프로토타입
+
+---
+
+## 제6장 실험 및 평가
+
+### 6.1 실험 설계
+### 6.2 데이터셋
+### 6.3 평가 지표
+### 6.4 비교 대상
+### 6.5 실험 결과
+### 6.6 논의
+
+---
+
+## 제7장 결론 및 향후 연구
+
+### 7.1 연구 요약
+### 7.2 학술적 기여
+### 7.3 실무적 기여
+### 7.4 연구의 한계
+### 7.5 향후 연구 방향
+
+---
+
+## 참고문헌
+
+---
+
+## 부록 A
+
+---
+
+## 부록 B
+`,
+
+phd_en:`# [PhD Dissertation Title]
+
+**[Author Name]**
+
+A dissertation submitted in partial fulfillment of the requirements for the degree of
+**Doctor of Philosophy**
+in [Department/Program]
+
+**[University Name]**
+[Year]
+
+---
+
+## Dissertation Committee
+
+- [Chair Name], Chair
+- [Member Name]
+- [Member Name]
+- [Member Name]
+
+---
+
+:::abstract
+[Abstract: 300-500 words. Comprehensive summary of the dissertation.]
+:::
+
+**Keywords:**
+
+---
+
+## Acknowledgments
+
+---
+
+## Table of Contents
+
+---
+
+## List of Tables
+
+---
+
+## List of Figures
+
+---
+
+## List of Abbreviations
+
+| Abbreviation | Full Form |
+|-------------|-----------|
+| | |
+
+---
+
+## Chapter 1. Introduction
+
+### 1.1 Motivation
+### 1.2 Problem Statement
+### 1.3 Research Questions
+### 1.4 Contributions
+### 1.5 Dissertation Outline
+
+---
+
+## Chapter 2. Literature Review
+
+### 2.1 [Theoretical Foundations]
+### 2.2 [Related Techniques]
+### 2.3 [Existing Approaches]
+### 2.4 [Research Gaps]
+
+---
+
+## Chapter 3. Methodology
+
+### 3.1 Research Design
+### 3.2 System Model
+### 3.3 Threat Model
+### 3.4 Formal Framework
+
+---
+
+## Chapter 4. [Contribution 1]
+
+### 4.1 Design
+### 4.2 Analysis
+### 4.3 Evaluation
+
+---
+
+## Chapter 5. [Contribution 2]
+
+### 5.1 Design
+### 5.2 Analysis
+### 5.3 Evaluation
+
+---
+
+## Chapter 6. [Contribution 3]
+
+---
+
+## Chapter 7. Discussion
+
+### 7.1 Summary of Findings
+### 7.2 Limitations
+### 7.3 Implications
+
+---
+
+## Chapter 8. Conclusion and Future Work
+
+### 8.1 Conclusions
+### 8.2 Future Directions
+
+---
+
+## Bibliography
+
+---
+
+## Appendix A
+
+---
+
+## Appendix B
 `
   };
-  if(templates[type]){
-    inp.value=templates[type];
-    inp.dispatchEvent(new Event('input'));
-    document.getElementById('tplSel').value='';
-  }
+  if(T[type]){inp.value=T[type];inp.dispatchEvent(new Event('input'));document.getElementById('tplSel').value='';}
 }
 
 // === INSERT SNIPPETS ===
 function ins(type){
   const T={
-    sec:'## Section Title\n\n',
-    subsec:'### Subsection Title\n\n',
-    eq:'\n$$\n\\mathcal{L} = \n$$\n\n',
-    thm:':::theorem Title\nStatement.\n:::\n\n',
-    lem:':::lemma Title\nStatement.\n:::\n\n',
-    def:':::definition Name\nDefinition.\n:::\n\n',
-    cor:':::corollary\nStatement.\n:::\n\n',
-    prop:':::proposition\nStatement.\n:::\n\n',
-    proof:':::proof\nProof.\n:::\n\n',
-    algo:':::algorithm Name\nInput: X\nOutput: Y\n1. Step one\n2. Step two\n3. Return result\n:::\n\n',
-    table:'| Col 1 | Col 2 | Col 3 |\n|-------|-------|-------|\n|  |  |  |\n',
-    fig:'![Figure caption](/assets/img/papers/figure.svg)\n*Figure N. Description.*\n\n',
+    sec:'## [Section Title]\n\n',
+    subsec:'### [Subsection Title]\n\n',
+    eq:'\n$$\n\n$$\n\n',
+    thm:':::theorem [Name]\n[Formal statement of the theorem.]\n:::\n\n',
+    lem:':::lemma [Name]\n[Statement of the lemma.]\n:::\n\n',
+    def:':::definition [Term]\n[Formal definition.]\n:::\n\n',
+    proof:':::proof\n[Proof content.]\n:::\n\n',
+    algo:':::algorithm [Name]\nInput: [description]\nOutput: [description]\n1. [Step]\n2. [Step]\n3. Return [result]\n:::\n\n',
+    fig:'![Alt text](/assets/img/papers/figure.pdf)\n*Fig. N. [Caption describing what the figure shows.]*\n\n',
+    tbl:'*Table N. [Caption describing what the table compares.]*\n| Column A | Column B | Column C |\n|----------|----------|----------|\n|  |  |  |\n\n',
     code:'```python\n# code\n```\n',
     cite:'[cite:'+(refs.length+1)+']',
-    hr:'\n---\n\n',
-
-    // Security paper formatting elements (format guides, not topic-prescriptive)
-    threat:`### Threat Model
-
-**Assets**
-- [What is being protected]
-
-**Adversary**
-- **Goal:**
-- **Access level:** [black-box / gray-box / white-box]
-- **Capabilities:**
-- **Knowledge:**
-
-**Attack Surface**
-| Surface | Entry Point | Current Control | Residual Risk |
-|---------|-------------|-----------------|---------------|
-| | | | |
-
-**Trust Boundaries**
--
-
-**Assumptions and Out-of-Scope**
--
-
-`,
-
-    eval_tbl:`<!-- Table N: [What is measured] -->
-| Method | Metric A | Metric B | Metric C | Overhead |
-|--------|----------|----------|----------|----------|
-| Baseline | | | | |
-| Proposed | | | | |
-
-`,
-
-    comparison:`<!-- Table N: [Comparison of approaches] -->
-| Approach | Advantage | Limitation | Scope | Complexity |
-|----------|-----------|------------|-------|-----------|
-| | | | | |
-
-`,
-
-    framework:`### Framework Mapping
-
-| Finding | Framework | ID / Category | Relevant Function |
-|---------|-----------|--------------|-------------------|
-| | [MITRE ATLAS / OWASP / NIST / CWE / ISO] | | |
-
-<!-- Common framework references:
-  MITRE ATLAS: AML.Txxxx (adversarial ML techniques)
-  OWASP LLM Top 10: LLM01-LLM10
-  OWASP Agentic Top 10: AG01-AG10
-  NIST AI RMF: Govern / Map / Measure / Manage
-  CWE: CWE-xxx (common weakness enumeration)
-  ISO/IEC 27001 / 42001
--->
-
-`,
-
-    disclosure:`### Responsible Disclosure
-
-- **Discovery date:**
-- **Vendor / contacted party:**
-- **Initial report date:**
-- **Patch / mitigation date:**
-- **Public disclosure date:**
-
-`,
-
-    ethics:`### Ethics Statement
-
-- **Dual-use risk assessment:**
-- **Data / human subjects considerations:**
-- **Abuse prevention measures:**
-- **IRB / ethics review status:**
-- **Compliance notes:**
-
-`
+    threat:`### Threat Model\n\n**Assets**\n- [What needs protection]\n\n**Adversary**\n- **Goal:** [adversary objective]\n- **Access:** [black-box / gray-box / white-box]\n- **Capabilities:** [what the adversary can do]\n- **Knowledge:** [what the adversary knows]\n\n**Trust Boundaries**\n- [boundary description]\n\n**Assumptions**\n- [assumption 1]\n\n**Out-of-Scope**\n- [exclusion 1]\n\n`,
+    eval:'*Table N. Evaluation results (mean +/- std, N runs).*\n| Method | Metric A | Metric B | Metric C | Overhead |\n|--------|----------|----------|----------|----------|\n| Baseline | | | | |\n| Proposed | | | | |\n\n',
+    framework:'*Table N. Framework mapping.*\n| Finding | Framework | ID / Category | Notes |\n|---------|-----------|--------------|-------|\n| | | | |\n\n<!-- Frameworks: MITRE ATLAS (AML.Txxxx), OWASP LLM Top 10 (LLM01-10), NIST AI RMF, CWE, ISO 27001/42001 -->\n\n',
+    perf:'*Table N. Performance comparison.*\n| Method | Accuracy | Precision | Recall | F1 | AUC | Latency (ms) |\n|--------|----------|-----------|--------|-----|-----|-------------|\n| A | | | | | | |\n| B | | | | | | |\n\nStatistical significance: [test name], p < [value]\n\n',
+    confmat:'*Table N. Confusion matrix (test set, N samples).*\n|  | Predicted Positive | Predicted Negative |\n|--|-------------------|-------------------|\n| **Actual Positive** | TP = | FN = |\n| **Actual Negative** | FP = | TN = |\n\nAccuracy: , Precision: , Recall: , F1: \n\n',
+    arch:'```mermaid\ngraph LR\n  A[Input Layer] --> B[Processing Module]\n  B --> C[Security Check]\n  C --> D[Output]\n```\n*Fig. N. [System architecture overview.]*\n\n',
+    ethics:'### Ethics and Responsible Disclosure\n\n- **Dual-use considerations:**\n- **Data / human subjects:**\n- **Responsible disclosure:**\n  - Discovery date:\n  - Vendor notified:\n  - Patch date:\n  - Public disclosure:\n- **Compliance:** [ISO 27001 / 42001 / IRB / other]\n\n'
   };
   const s=inp.selectionStart;
   inp.setRangeText(T[type]||'',s,s,'end');
-  inp.focus();
-  inp.dispatchEvent(new Event('input'));
+  inp.focus();inp.dispatchEvent(new Event('input'));
 }
 
-// === REFERENCE MANAGER ===
+// === REFS ===
 function addRef(){const i=document.getElementById('refInput');const v=i.value.trim();if(!v)return;refs.push(v);i.value='';renderRefs();render();}
 function removeRef(idx){refs.splice(idx,1);renderRefs();render();}
 function renderRefs(){const l=document.getElementById('refList');document.getElementById('rc').textContent=refs.length;l.innerHTML=refs.map((r,i)=>'<div class="ref-item"><b>['+(i+1)+']</b>'+r+' <span style="cursor:pointer;color:#b42318;float:right" onclick="removeRef('+i+')">x</span></div>').join('');}
 function toggleRef(){document.getElementById('refPanel').classList.toggle('open');}
+function toggleHelp(){document.getElementById('helpPanel').classList.toggle('show');}
 
-// === VALIDATE (AI Security-aware) ===
+// === VALIDATE ===
 function validatePaper(){
   const t=inp.value;const issues=[];
-  if(!t.match(/^#\s/m))issues.push('[-] Missing title');else issues.push('[+] Title');
+  if(!t.match(/^#\s/m))issues.push('[-] No title');else issues.push('[+] Title');
   const secs=(t.match(/^##\s/gm)||[]).length;
-  issues.push(secs>=5?'[+] '+secs+' sections':'[-] '+secs+' sections (5+ recommended)');
-  if(!t.match(/introduction|서론/i))issues.push('[!] No Introduction');
-  if(!t.match(/conclusion|결론/i))issues.push('[!] No Conclusion');
-  if(!t.match(/reference|참고/i))issues.push('[!] No References');
-  // AI Security specific checks
-  if(t.match(/threat\s*model|위협\s*모델/i))issues.push('[+] Threat model present');
-  else issues.push('[!] No threat model (required for security papers)');
-  if(t.match(/MITRE|ATLAS|OWASP|NIST|CWE|CVE/))issues.push('[+] Framework references found');
-  else issues.push('[!] No framework mapping (MITRE ATLAS / OWASP / NIST)');
-  if(t.match(/ethic|disclosure|책임|윤리/i))issues.push('[+] Ethics/disclosure section');
-  else issues.push('[!] No ethics/disclosure section');
+  issues.push(secs>=5?'[+] '+secs+' sections':'[!] '+secs+' sections (5+ recommended)');
+  if(!t.match(/introduction|서론/i))issues.push('[!] No Introduction/서론');
+  if(!t.match(/conclusion|결론/i))issues.push('[!] No Conclusion/결론');
+  if(!t.match(/reference|참고문헌/i))issues.push('[!] No References/참고문헌');
+  if(t.match(/threat|위협/i))issues.push('[+] Threat model');else issues.push('[!] No threat model');
+  if(t.match(/ethic|disclosure|윤리|책임/i))issues.push('[+] Ethics/disclosure');
   const eqs=Math.floor((t.match(/\$\$/g)||[]).length/2);
-  issues.push(eqs>0?'[+] '+eqs+' equations':'[!] No equations');
-  const envs=(t.match(/:::(theorem|lemma|definition|algorithm|proof)/g)||[]).length;
-  if(envs)issues.push('[+] '+envs+' environments');
+  issues.push(eqs>0?'[+] '+eqs+' equations':'[*] No equations');
   const cites=(t.match(/\[cite:\d+\]/g)||[]).length;
   issues.push(cites>0?'[+] '+cites+' citations':'[!] No citations');
-  issues.push(refs.length>0?'[+] '+refs.length+' references':'[-] Reference list empty');
+  issues.push(refs.length>0?'[+] '+refs.length+' refs':'[-] Ref list empty');
   const wc=t.trim().split(/\s+/).length;
-  issues.push(wc>=500?'[+] '+wc+' words':'[!] '+wc+' words (short)');
+  issues.push(wc>=500?'[+] '+wc+' words':'[!] '+wc+' words');
   if(document.getElementById('ab').value||t.includes(':::abstract'))issues.push('[+] Abstract');
   else issues.push('[-] No abstract');
-  // Score
-  let sc=0;
-  sc+=Math.min(secs*4,20);sc+=(eqs>0?10:0);sc+=(envs>0?10:0);sc+=(cites>0?8:0);sc+=(refs.length>0?8:0);
-  sc+=(wc>=1000?12:Math.floor(wc/100)*1.2);
-  sc+=(t.match(/threat\s*model|위협/i)?10:0);
-  sc+=(t.match(/MITRE|ATLAS|OWASP|NIST/)?8:0);
-  sc+=(t.match(/ethic|disclosure/i)?7:0);
-  sc+=(t.match(/introduction|서론/i)?4:0);sc+=(t.match(/conclusion|결론/i)?3:0);
+  let sc=0;sc+=Math.min(secs*3,18);sc+=(eqs>0?8:0);sc+=(cites>0?8:0);sc+=(refs.length>0?8:0);
+  sc+=(wc>=1000?12:Math.floor(wc/100));sc+=(t.match(/threat|위협/i)?10:0);sc+=(t.match(/ethic|disclosure/i)?6:0);
+  sc+=(t.match(/introduction|서론/i)?5:0);sc+=(t.match(/conclusion|결론/i)?5:0);
+  sc+=(t.includes(':::abstract')||document.getElementById('ab').value?5:0);
+  sc+=(t.match(/:::(theorem|definition|algorithm)/)?5:0);sc+=((t.match(/\*Table/g)||[]).length>0?5:0);sc+=((t.match(/\*Fig/g)||[]).length>0?5:0);
   sc=Math.min(Math.round(sc),100);
   const el=document.getElementById('qs');el.textContent=sc;el.className='score '+(sc>=75?'sh':sc>=50?'sm':'sl');
-  pv.innerHTML='<div style="background:var(--surface);border-radius:6px;padding:14px;margin-bottom:14px;font-size:.8rem;line-height:1.7"><strong style="color:var(--brand)">Paper Validation ('+sc+'/100)</strong><br>'+issues.join('<br>')+'</div>'+pv.innerHTML;
+  pv.innerHTML='<div style="border:1px solid #ccc;padding:12px;margin-bottom:12px;font-size:.78rem;line-height:1.7;font-family:sans-serif"><strong>Paper Checklist ('+sc+'/100)</strong><br>'+issues.join('<br>')+'</div>'+pv.innerHTML;
 }
 
 // === STATS ===
 function updateStats(t){
-  const w=t.trim()?t.trim().split(/\s+/).length:0;
-  const s=(t.match(/^##\s/gm)||[]).length;
+  const w=t.trim()?t.trim().split(/\s+/).length:0;const s=(t.match(/^##\s/gm)||[]).length;
   const eq=Math.floor((t.match(/\$\$/g)||[]).length/2);
-  document.getElementById('wc').textContent=t.length;
-  document.getElementById('ww').textContent=w;
-  document.getElementById('sc').textContent=s;
-  document.getElementById('eqc').textContent=eq;
-  document.getElementById('rc').textContent=refs.length;
-  document.getElementById('pg').textContent=Math.max(1,Math.ceil(w/300));
-  let sc=0;sc+=Math.min(s*4,20);sc+=Math.min(Math.floor(w/80),20);
-  sc+=(eq>0?10:0)+(refs.length>0?10:0);
-  sc+=(/:::(theorem|definition|lemma|algorithm)/m.test(t)?8:0);
-  sc+=(s>=5?8:0)+(/\[cite:\d+\]/m.test(t)?8:0);
-  sc+=(/threat|OWASP|MITRE|ATLAS/i.test(t)?8:0);
-  sc+=(/ethic|disclosure/i.test(t)?8:0);
+  document.getElementById('wc').textContent=t.length;document.getElementById('ww').textContent=w;
+  document.getElementById('sc').textContent=s;document.getElementById('eqc').textContent=eq;
+  document.getElementById('rc').textContent=refs.length;document.getElementById('pg').textContent=Math.max(1,Math.ceil(w/300));
+  let sc=0;sc+=Math.min(s*3,18);sc+=Math.min(Math.floor(w/80),18);
+  sc+=(eq>0?8:0)+(refs.length>0?8:0);sc+=(/:::(theorem|definition|algorithm)/m.test(t)?6:0);
+  sc+=(s>=5?6:0)+(/\[cite:\d+\]/m.test(t)?6:0);sc+=(/threat|위협/i.test(t)?8:0);
+  sc+=(/ethic|disclosure|윤리/i.test(t)?6:0);sc+=(/\*Table|\*표/m.test(t)?6:0);sc+=(/\*Fig|\*그림/m.test(t)?5:0);
   sc=Math.min(sc,100);
   const el=document.getElementById('qs');el.textContent=sc;el.className='score '+(sc>=75?'sh':sc>=50?'sm':'sl');
 }
 
 // === EXPORT ===
 function publish(){
-  const ti=document.getElementById('ti').value||'Untitled';
-  const au=document.getElementById('au').value||'AICRA';
-  const coau=document.getElementById('coau').value;
-  const ab=document.getElementById('ab').value;
-  const kw=document.getElementById('kw').value;
-  const dm=document.getElementById('dm').value;
-  const status=document.getElementById('st-sel').value;
-  const collab=document.getElementById('collab').checked;
+  const ti=document.getElementById('ti').value||'Untitled';const au=document.getElementById('au').value||'AICRA';
+  const coau=document.getElementById('coau').value;const ab=document.getElementById('ab').value;
+  const kw=document.getElementById('kw').value;const dm=document.getElementById('dm').value;
+  const status=document.getElementById('st-sel').value;const collab=document.getElementById('collab').checked;
   const body=inp.value;const today=new Date().toISOString().split('T')[0];
   if(!body.trim())return alert('Content is empty.');
   const authors=coau?'\nauthors: ['+coau.split(',').map(s=>'"'+s.trim()+'"').join(', ')+']':'';
@@ -921,28 +1242,19 @@ function publish(){
   let refSec='';if(refs.length){refSec='\n\n---\n\n## References\n\n<div class="bib-list">\n'+refs.map(r=>'<p>'+r+'</p>').join('\n')+'\n</div>';}
   const fm='---\nlayout: paper\ntitle: "'+ti+'"\nauthor: '+au+authors+'\ndate: '+today+'\nstatus: '+status+'\ndomain: "'+dm+'"\nabstract: "'+ab+'"'+kwLine+'\ncollaborative: '+collab+'\nlang: ko\n---\n\n'+body+refSec;
   navigator.clipboard.writeText(fm).then(()=>{
-    const c=confirm('Copied to clipboard!\n\nOK = Open CMS\nCancel = Download .md');
+    const c=confirm('Copied!\n\nOK = CMS\nCancel = Download .md');
     if(c)window.open('/admin/#/collections/papers/new','_blank');
     else{const b=new Blob([fm],{type:'text/markdown'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=today+'-'+ti.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'')+'.md';a.click();}
   });
 }
 
-// === 2-COLUMN ===
 function toggleCol(two){pv.classList.toggle('two-col',two);document.getElementById('col1btn').classList.toggle('active',!two);document.getElementById('col2btn').classList.toggle('active',two);}
-
-// === AUTOSAVE ===
-function save(){localStorage.setItem('aicra.paper.v3',JSON.stringify({ti:document.getElementById('ti').value,au:document.getElementById('au').value,coau:document.getElementById('coau').value,ab:document.getElementById('ab').value,kw:document.getElementById('kw').value,dm:document.getElementById('dm').value,status:document.getElementById('st-sel').value,collab:document.getElementById('collab').checked,body:inp.value,refs:refs,at:Date.now()}));}
-function restore(){const d=localStorage.getItem('aicra.paper.v3');if(!d)return;const s=JSON.parse(d);if(Date.now()-s.at>604800000)return;inp.value=s.body||'';document.getElementById('ti').value=s.ti||'';document.getElementById('au').value=s.au||'AICRA';document.getElementById('coau').value=s.coau||'';document.getElementById('ab').value=s.ab||'';document.getElementById('kw').value=s.kw||'';if(s.dm)document.getElementById('dm').value=s.dm;if(s.status)document.getElementById('st-sel').value=s.status;if(s.collab)document.getElementById('collab').checked=s.collab;if(s.refs){refs=s.refs;renderRefs();}if(s.body)inp.dispatchEvent(new Event('input'));document.getElementById('as').textContent='Draft restored';}
+function save(){localStorage.setItem('aicra.paper.v4',JSON.stringify({ti:document.getElementById('ti').value,au:document.getElementById('au').value,coau:document.getElementById('coau').value,ab:document.getElementById('ab').value,kw:document.getElementById('kw').value,dm:document.getElementById('dm').value,status:document.getElementById('st-sel').value,collab:document.getElementById('collab').checked,body:inp.value,refs:refs,at:Date.now()}));}
+function restore(){const d=localStorage.getItem('aicra.paper.v4');if(!d)return;const s=JSON.parse(d);if(Date.now()-s.at>604800000)return;inp.value=s.body||'';document.getElementById('ti').value=s.ti||'';document.getElementById('au').value=s.au||'AICRA';document.getElementById('coau').value=s.coau||'';document.getElementById('ab').value=s.ab||'';document.getElementById('kw').value=s.kw||'';if(s.dm)document.getElementById('dm').value=s.dm;if(s.status)document.getElementById('st-sel').value=s.status;if(s.collab)document.getElementById('collab').checked=s.collab;if(s.refs){refs=s.refs;renderRefs();}if(s.body)inp.dispatchEvent(new Event('input'));document.getElementById('as').textContent='Draft restored';}
 setInterval(save,30000);restore();
-
-// === DARK MODE ===
 function toggleDark(){document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'':'dark';localStorage.setItem('aicra.dark',document.documentElement.dataset.theme);}
 if(localStorage.getItem('aicra.dark')==='dark')document.documentElement.dataset.theme='dark';
-
-// === FOCUS ===
 function toggleFocus(){focusMode=!focusMode;['metaBar','metaBar2','insBar','stBar'].forEach(id=>document.getElementById(id).style.display=focusMode?'none':'');}
-
-// === RESIZE ===
 let rs=false;document.getElementById('dv').addEventListener('mousedown',()=>rs=true);
 document.addEventListener('mousemove',e=>{if(!rs)return;const ed=document.querySelector('.ed'),r=ed.getBoundingClientRect(),p=((e.clientX-r.left)/r.width)*100;const pn=ed.querySelectorAll('.pn');pn[0].style.flex='0 0 '+p+'%';pn[1].style.flex='0 0 '+(100-p)+'%';});
 document.addEventListener('mouseup',()=>rs=false);
