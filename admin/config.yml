@@ -91,6 +91,38 @@ collections:
         field: { label: "Keyword", name: keyword, widget: string }
       - { label: "Body", name: body, widget: markdown }
 
+  - name: research
+    label: "Research Analysis"
+    label_singular: "Analysis"
+    folder: _research
+    create: true
+    slug: "{{slug}}"
+    summary: "{{title}} | {{venue}} ({{year}})"
+    fields:
+      - { label: "Layout", name: layout, widget: hidden, default: research }
+      - { label: "Title", name: title, widget: string }
+      - { label: "Paper URL", name: paper_url, widget: string, required: false }
+      - { label: "Venue", name: venue, widget: string, required: false }
+      - { label: "Year", name: year, widget: number, value_type: int, required: false }
+      - label: "Domain"
+        name: domain
+        widget: list
+        required: false
+        field: { label: "Domain", name: domain, widget: string }
+      - label: "Scores"
+        name: scores
+        widget: object
+        required: false
+        fields:
+          - { label: "Novelty (1-10)", name: novelty, widget: number, value_type: int, required: false }
+          - { label: "Rigor (1-10)", name: rigor, widget: number, value_type: int, required: false }
+          - { label: "Reproducibility (1-10)", name: reproducibility, widget: number, value_type: int, required: false }
+          - { label: "Relevance (1-10)", name: relevance, widget: number, value_type: int, required: false }
+      - { label: "Author (GitHub ID)", name: author, widget: string }
+      - { label: "Date", name: date, widget: datetime }
+      - { label: "Last Updated", name: last_updated, widget: string, required: false }
+      - { label: "Body", name: body, widget: markdown }
+
   - name: pages
     label: "Site Pages"
     files:

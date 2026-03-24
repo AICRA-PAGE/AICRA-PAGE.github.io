@@ -45,6 +45,8 @@ nav_links:
     url: /community/
   - name: Papers
     url: /papers/
+  - name: Research
+    url: /research/
   - name: Publications
     url: /publications/
   - name: Team
@@ -118,6 +120,9 @@ collections:
   papers:
     output: true
     permalink: /papers/:path/
+  research:
+    output: true
+    permalink: /research/:path/
 
 announcements:
   enabled: true

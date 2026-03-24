@@ -1,0 +1,62 @@
+---
+layout: default
+title: Research Analysis
+permalink: /research/
+description: "AICRA 논문 연구 분석 및 기술 리뷰"
+---
+
+<div style="max-width:900px;margin:0 auto;padding:20px;">
+  <header style="text-align:center;margin-bottom:2rem;">
+    <h1 style="font-size:1.5rem;color:#2f5d50;">Research Analysis</h1>
+    <p style="color:#6b665c;font-size:0.88rem;">논문 분석, 표준 매핑, 보안 리포트 리뷰</p>
+    <a href="/admin/editor.html?type=research" style="display:inline-block;margin-top:12px;padding:8px 20px;background:#2f5d50;color:#fff;border-radius:6px;text-decoration:none;font-size:0.85rem;font-weight:600;">
+      분석 작성하기
+    </a>
+  </header>
+
+  {% assign analyses = site.research | sort: "date" | reverse %}
+
+  {% if analyses.size > 0 %}
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
+    {% for item in analyses %}
+    <div style="background:#fff;border:1px solid #e0ddd5;border-radius:8px;padding:16px;transition:box-shadow 0.2s;">
+      {% if item.domain %}
+      <p style="margin-bottom:6px;">
+        {% for d in item.domain limit:2 %}
+        <span style="display:inline-block;background:#e8f5e9;color:#2e7d32;font-size:0.65rem;padding:1px 6px;border-radius:8px;">{{ d }}</span>
+        {% endfor %}
+      </p>
+      {% endif %}
+
+      <a href="{{ item.url }}" style="text-decoration:none;">
+        <h3 style="font-size:0.9rem;color:#2f5d50;margin-bottom:4px;line-height:1.4;">{{ item.title }}</h3>
+      </a>
+
+      {% if item.venue %}
+      <p style="font-size:0.72rem;color:#1565c0;">{{ item.venue }} {% if item.year %}({{ item.year }}){% endif %}</p>
+      {% endif %}
+
+      <p style="font-size:0.72rem;color:#8b8580;margin-top:4px;">
+        {{ item.author }} | {{ item.date | date: "%Y-%m-%d" }}
+      </p>
+
+      {% if item.scores %}
+      <div style="display:flex;gap:6px;margin-top:8px;">
+        {% for score in item.scores %}
+        <div style="text-align:center;background:#f8f6f0;border-radius:4px;padding:3px 8px;font-size:0.65rem;">
+          <div style="font-weight:700;color:#2f5d50;">{{ score[1] }}</div>
+          <div style="color:#8b8580;font-size:0.58rem;">{{ score[0] }}</div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div style="text-align:center;padding:3rem;color:#8b8580;">
+    <p>아직 등록된 분석이 없습니다.</p>
+    <p style="font-size:0.82rem;margin-top:8px;">첫 번째 논문 분석을 작성해 보세요.</p>
+  </div>
+  {% endif %}
+</div>

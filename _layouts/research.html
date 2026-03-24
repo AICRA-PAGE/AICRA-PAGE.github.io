@@ -1,0 +1,49 @@
+---
+layout: default
+---
+<article style="max-width:800px;margin:0 auto;padding:20px;">
+  <header style="margin-bottom:1.5rem;">
+    <p style="font-size:0.72rem;color:#6b665c;text-transform:uppercase;letter-spacing:1.5px;">AICRA Research Analysis</p>
+    <h1 style="font-size:1.4rem;color:#2f5d50;margin:0.3rem 0;">{{ page.title }}</h1>
+
+    {% if page.paper_url %}
+    <p style="font-size:0.8rem;margin-top:4px;">
+      <a href="{{ page.paper_url }}" target="_blank" rel="noopener" style="color:#1565c0;">Original Paper</a>
+      {% if page.venue %} | {{ page.venue }}{% endif %}
+      {% if page.year %} ({{ page.year }}){% endif %}
+    </p>
+    {% endif %}
+
+    <p style="font-size:0.75rem;color:#8b8580;">
+      Reviewed by {{ page.author }} | {{ page.date | date: "%Y-%m-%d" }}
+      {% if page.last_updated %} | Updated: {{ page.last_updated }}{% endif %}
+    </p>
+
+    {% if page.domain %}
+    <p style="margin-top:6px;">
+      {% for d in page.domain %}
+      <span style="display:inline-block;background:#e8f5e9;color:#2e7d32;font-size:0.7rem;padding:2px 8px;border-radius:10px;margin:2px;">{{ d }}</span>
+      {% endfor %}
+    </p>
+    {% endif %}
+
+    {% if page.scores %}
+    <div style="display:flex;gap:12px;margin-top:10px;flex-wrap:wrap;">
+      {% for score in page.scores %}
+      <div style="text-align:center;background:#f8f6f0;border-radius:6px;padding:6px 12px;min-width:60px;">
+        <div style="font-size:1.1rem;font-weight:700;color:#2f5d50;">{{ score[1] }}</div>
+        <div style="font-size:0.62rem;color:#6b665c;text-transform:capitalize;">{{ score[0] }}</div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </header>
+
+  <div class="research-body" style="font-size:0.85rem;line-height:1.8;">
+    {{ content }}
+  </div>
+
+  <footer style="margin-top:2rem;padding-top:1rem;border-top:1px solid #e0ddd5;font-size:0.72rem;color:#8b8580;">
+    AICRA Research Analysis | {{ page.date | date: "%Y" }}
+  </footer>
+</article>
