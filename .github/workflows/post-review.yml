@@ -14,7 +14,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Check post author
+      - name: Check post author permission
         uses: actions/github-script@v7
         with:
           script: |
@@ -24,14 +24,13 @@ jobs:
               pull_number: context.issue.number
             });
 
-            const prAuthor = context.payload.pull_request.user.login;
+            const prAuthor = context.payload.pull_request.user.login.toLowerCase();
             let warnings = [];
 
             for (const file of files) {
               if (!file.filename.startsWith('_posts/')) continue;
-              if (file.status === 'added') continue; // new posts are OK
+              if (file.status === 'added') continue;
 
-              // Read the file to check author field
               try {
                 const content = Buffer.from(
                   (await github.rest.repos.getContent({
@@ -42,14 +41,25 @@ jobs:
                   })).data.content, 'base64'
                 ).toString();
 
-                const authorMatch = content.match(/author:\s*["']?(.+?)["']?\s*$/m);
-                if (authorMatch) {
-                  const postAuthor = authorMatch[1].trim();
-                  if (postAuthor !== 'AICRA' && !prAuthor.toLowerCase().includes(postAuthor.toLowerCase())) {
-                    warnings.push(`${file.filename}: author is "${postAuthor}", PR by @${prAuthor}`);
-                  }
+                const collabMatch = content.match(/^collaborative:\s*(true)/m);
+                if (collabMatch) continue;
+
+                const authorsMatch = content.match(/^authors:\s*\[(.+?)\]/m);
+                const authorMatch = content.match(/^author:\s*["']?(.+?)["']?\s*$/m);
+
+                let authorList = [];
+                if (authorsMatch) {
+                  authorList = authorsMatch[1].split(',').map(a => a.trim().replace(/["']/g, '').toLowerCase());
+                } else if (authorMatch) {
+                  const a = authorMatch[1].trim().toLowerCase();
+                  if (a === 'aicra') continue;
+                  authorList = [a];
                 }
-              } catch(e) { /* new file */ }
+
+                if (authorList.length > 0 && !authorList.includes(prAuthor)) {
+                  warnings.push(`\`${file.filename}\`: author(s)=${authorList.join(', ')}, PR by @${prAuthor}`);
+                }
+              } catch(e) { /* new file or error */ }
             }
 
             if (warnings.length > 0) {
@@ -57,6 +67,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.issue.number,
-                body: `### Post Author Check\n\nThe following posts are being modified by someone other than the original author:\n\n${warnings.map(w => '- ' + w).join('\n')}\n\nPlease get approval from the original author before merging.`
+                body: `### Post Author Permission Check\n\n**These posts require original author approval:**\n\n${warnings.map(w => '- ' + w).join('\n')}\n\n> Original author must approve this PR.\n> Or add \`collaborative: true\` to allow shared editing.\n> Posts with \`author: AICRA\` are editable by all collaborators.`
               });
+              core.setFailed('Some posts require original author approval.');
             }

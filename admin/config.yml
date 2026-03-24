@@ -30,11 +30,20 @@ collections:
       - { label: "Title", name: title, widget: string }
       - { label: "Description", name: description, widget: text, required: false }
       - { label: "Date", name: date, widget: datetime }
-      - label: "Author"
+      - label: "Author (GitHub ID)"
         name: author
-        widget: select
-        options: ["AICRA", "Guest"]
+        widget: string
         default: "AICRA"
+      - label: "Co-Authors (공동 작성자)"
+        name: authors
+        widget: list
+        required: false
+        field: { label: "GitHub ID", name: id, widget: string }
+      - label: "Collaborative (누구나 수정 가능)"
+        name: collaborative
+        widget: boolean
+        default: false
+        required: false
       - label: "Categories"
         name: categories
         widget: select

@@ -36,6 +36,14 @@
     #pv hr{border:none;border-top:1px solid var(--l);margin:1em 0}
     #pv img{max-width:100%;border-radius:4px}
     #pv .callout{background:#fff8f0;border:1px solid #f0e0cc;border-radius:6px;padding:10px 14px;margin:.5em 0}
+    #pv .post-header{border-bottom:2px solid var(--b);padding-bottom:12px;margin-bottom:16px}
+    #pv .post-header h1{font-size:1.3rem;margin:0 0 4px}
+    #pv .post-meta{font-size:.72rem;color:var(--m)}
+    #pv .post-meta span{margin-right:10px}
+    .tone-report{background:#f8f6ff;border:1px solid #d8d0f0;border-radius:8px;padding:10px 14px;margin:10px 18px;font-size:.78rem;line-height:1.6}
+    .tone-report h4{color:#7b1fa2;margin-bottom:6px;font-size:.82rem}
+    .tone-ok{color:var(--b);font-weight:600}
+    .tone-warn{color:var(--r);font-weight:600}
     .st{padding:4px 12px;font-size:.68rem;color:var(--m);background:#f0ede6;border-top:1px solid var(--l);flex-shrink:0;display:flex;gap:10px;flex-wrap:wrap}
     .st b{color:var(--t)}.qa{margin-left:auto;font-weight:600}
     .score{padding:2px 8px;border-radius:10px;color:#fff;font-size:.68rem}
@@ -48,6 +56,7 @@
   <h1>AICRA Post Editor</h1>
   <button class="bt bg" onclick="convert()">정리하기</button>
   <button class="bt br" onclick="spellOnly()">맞춤법</button>
+  <button class="bt" style="background:#7b1fa2" onclick="toneCheck()">톤 검사</button>
   <button class="bt bb" onclick="publish()">발행하기</button>
   <a class="bt bo" href="/admin/">CMS</a>
   <a class="bt bo" href="/blog/">Blog</a>
@@ -148,8 +157,7 @@ function convert(){
   if(de)document.getElementById('de').value=de;
 
   out=t;
-  pv.innerHTML=marked.parse(t);
-  stats(t);
+  blogPreview(t);
 }
 
 // ========== NOTION CLEANUP ==========
@@ -327,6 +335,55 @@ function stats(t){
   const el=document.getElementById('qs');
   el.textContent=sc+'/100';
   el.className='score '+(sc>=75?'s-h':sc>=50?'s-m':'s-l');
+}
+
+// ========== BLOG-STYLE PREVIEW ==========
+function blogPreview(md){
+  const ti=document.getElementById('ti').value||'Untitled';
+  const de=document.getElementById('de').value||'';
+  const ca=document.getElementById('ca').value;
+  const today=new Date().toISOString().split('T')[0];
+  const header=`<div class="post-header"><h1>${ti}</h1><div class="post-meta"><span>${today}</span><span>${ca}</span><span>AICRA</span></div>${de?'<p style="color:#555;font-size:.82rem;margin-top:6px">'+de+'</p>':''}</div>`;
+  pv.innerHTML=header+marked.parse(md);
+  stats(md);
+}
+
+// ========== TONE CHECK ==========
+function toneCheck(){
+  const t=out||inp.value;
+  if(!t.trim())return alert('텍스트를 입력해 주세요.');
+  const issues=[];
+
+  // AICRA tone rules
+  const socTerms=['SOC','SIEM','SOAR','분석관','관제','인시던트 대응팀','보안 관제'];
+  const consultTerms=['권장사항','도입을 권고','컨설팅','ROI','투자 대비'];
+  const academicTerms=['본 연구','본 논문','본고에서','연구 결과에 따르면'];
+  const vagueTerms=['매우 중요','반드시 필요','절대적으로','획기적인'];
+
+  socTerms.forEach(w=>{if(t.includes(w))issues.push({type:'warn',msg:`SOC 용어 "${w}" -> 연구 블로그 톤으로 변환 권장`});});
+  consultTerms.forEach(w=>{if(t.includes(w))issues.push({type:'warn',msg:`컨설팅 톤 "${w}" -> 연구/분석 톤으로 변환 권장`});});
+  academicTerms.forEach(w=>{if(t.includes(w))issues.push({type:'warn',msg:`학술 논문 톤 "${w}" -> 블로그 톤으로 완화 권장`});});
+  vagueTerms.forEach(w=>{if(t.includes(w))issues.push({type:'warn',msg:`모호한 표현 "${w}" -> 구체적 근거로 대체 권장`});});
+
+  // Positive checks
+  if(/^##\s/m.test(t))issues.push({type:'ok',msg:'섹션 구조 있음'});
+  if(/^-\s/m.test(t))issues.push({type:'ok',msg:'리스트 활용 있음'});
+  if(/\*\*.+\*\*/m.test(t))issues.push({type:'ok',msg:'강조 표현 사용'});
+  if(/참고|reference/i.test(t))issues.push({type:'ok',msg:'참고자료 섹션 있음'});
+  if(t.trim().split(/\s+/).length>=500)issues.push({type:'ok',msg:'충분한 분량'});
+  else issues.push({type:'warn',msg:`분량 부족 (${t.trim().split(/\s+/).length}단어, 권장 1000+)`});
+
+  // Check ending style consistency
+  const sentences=t.split(/[.!?]\s+/);
+  let formal=0,informal=0;
+  sentences.forEach(s=>{if(/합니다|입니다|됩니다/.test(s))formal++;if(/이다|한다|된다/.test(s))informal++;});
+  if(formal>0&&informal>0)issues.push({type:'warn',msg:`종결어미 혼용 (합니다체 ${formal}회, 이다체 ${informal}회) -> 통일 권장`});
+  else issues.push({type:'ok',msg:'종결어미 일관성 유지'});
+
+  const report=document.createElement('div');
+  report.className='tone-report';
+  report.innerHTML='<h4>AICRA Tone Check</h4>'+issues.map(i=>`<div class="tone-${i.type}">${i.type==='ok'?'[OK]':'[!]'} ${i.msg}</div>`).join('');
+  pv.prepend(report);
 }
 
 // ========== SPELL ONLY ==========
