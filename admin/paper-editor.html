@@ -234,6 +234,10 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
   </select>
   <button class="bt" onclick="toggleRef()">참고문헌</button>
   <button class="bt" onclick="toggleHelp()">?</button>
+  <div class="sep"></div>
+  <button class="bt" onclick="ghSave()" title="GitHub 리포지토리에 저장">저장</button>
+  <button class="bt" onclick="ghLoad()" title="저장된 문서 불러오기">불러오기</button>
+  <button class="bt" onclick="ghLock()" title="문서 잠금/해제 (저자만)" id="lockBtn">잠금</button>
   <div class="spacer"></div>
   <button class="bt" onclick="genAbstract()" title="논문 본문에서 구조화 초록을 자동 생성합니다">초록 생성</button>
   <button class="bt" onclick="genPPT()" title="논문 내용으로 발표용 슬라이드(.pptx)를 생성합니다">발표자료</button>
@@ -2725,14 +2729,188 @@ document.addEventListener('mousemove',e=>{if(!rs)return;const ed=document.queryS
 document.addEventListener('mouseup',()=>rs=false);
 </script>
 
+<!-- Load Modal -->
+<div class="modal-overlay" id="loadModal">
+  <div class="modal-box" style="max-width:600px">
+    <div class="modal-head"><span>문서 불러오기</span><button class="bt" onclick="closeModal('loadModal')" style="padding:1px 6px">X</button></div>
+    <div class="modal-body" style="max-height:400px;overflow-y:auto">
+      <div id="loadList" style="font-size:.78rem"><p style="color:var(--muted);text-align:center;padding:20px">로딩 중...</p></div>
+    </div>
+    <div class="modal-foot">
+      <button class="bt" onclick="closeModal('loadModal')">닫기</button>
+    </div>
+  </div>
+</div>
+
+<!-- Conflict Modal -->
+<div class="modal-overlay" id="conflictModal">
+  <div class="modal-box" style="max-width:420px">
+    <div class="modal-head"><span>충돌 감지</span></div>
+    <div class="modal-body" style="text-align:center;padding:20px">
+      <p style="font-size:.82rem;margin-bottom:12px">다른 사용자가 이 문서를 수정했습니다.</p>
+      <p style="font-size:.72rem;color:var(--muted)">어떻게 하시겠습니까?</p>
+    </div>
+    <div class="modal-foot" style="justify-content:center;gap:8px">
+      <button class="bt" onclick="conflictResolve('overwrite')">내 내용으로 덮어쓰기</button>
+      <button class="bt" onclick="conflictResolve('reload')">원격 내용 불러오기</button>
+      <button class="bt" onclick="conflictResolve('copy')">사본으로 저장</button>
+    </div>
+  </div>
+</div>
+
 </div><!-- /editor-content -->
 
+<script src="/assets/js/doc-manager.js"></script>
 <script src="/assets/js/auth-guard.js"></script>
 <script>
+// === GITHUB DOCUMENT MANAGEMENT ===
+function getEditorMeta(){
+  return{
+    title:document.getElementById('ti').value,
+    author:document.getElementById('au').value,
+    coauthors:document.getElementById('coau').value,
+    abstract:document.getElementById('ab').value,
+    keywords:document.getElementById('kw').value,
+    domain:document.getElementById('dm').value,
+    status:document.getElementById('st-sel').value,
+    collaborative:document.getElementById('collab').checked
+  };
+}
+
+async function ghSave(){
+  const title=document.getElementById('ti').value;
+  if(!title){alert('제목을 입력해 주세요.');return;}
+  const body=inp.value;
+  if(!body.trim()){alert('내용을 입력해 주세요.');return;}
+  try{
+    document.getElementById('as').textContent='저장 중...';
+    const result=await docManager.save(title,body,getEditorMeta());
+    document.getElementById('as').textContent='저장됨: '+result.path.split('/').pop()+' ('+new Date().toLocaleTimeString()+')';
+  }catch(e){
+    if(e.message==='CONFLICT'){
+      document.getElementById('conflictModal').classList.add('show');
+    }else{
+      alert('저장 실패: '+e.message);
+      document.getElementById('as').textContent='저장 실패';
+    }
+  }
+}
+
+async function ghLoad(){
+  document.getElementById('loadModal').classList.add('show');
+  document.getElementById('loadList').innerHTML='<p style="color:var(--muted);text-align:center;padding:20px">로딩 중...</p>';
+  try{
+    const files=await docManager.listDrafts();
+    if(!files.length){
+      document.getElementById('loadList').innerHTML='<p style="color:var(--muted);text-align:center;padding:20px">저장된 문서가 없습니다.</p>';
+      return;
+    }
+    // Load each file's metadata
+    let html='';
+    for(const f of files){
+      const badge=f.own?'<span style="background:var(--brand);color:#fff;padding:1px 5px;border-radius:3px;font-size:.55rem">내 문서</span>':'<span style="background:var(--accent);color:#fff;padding:1px 5px;border-radius:3px;font-size:.55rem">공유:'+f.folder+'</span>';
+      html+='<div style="padding:8px;border-bottom:1px solid var(--line);cursor:pointer;display:flex;justify-content:space-between;align-items:center" onclick="loadDoc(\''+f.path+'\')"><div><b style="color:var(--brand);font-size:.8rem">'+f.name.replace('.md','')+'</b> '+badge+'</div><button class="bt" style="font-size:.55rem;padding:1px 5px;color:#b42318" onclick="event.stopPropagation();delDoc(\''+f.path+'\',\''+f.sha+'\')">삭제</button></div>';
+    }
+    document.getElementById('loadList').innerHTML=html;
+  }catch(e){
+    document.getElementById('loadList').innerHTML='<p style="color:#b42318;text-align:center;padding:20px">불러오기 실패: '+e.message+'</p>';
+  }
+}
+
+async function loadDoc(path){
+  try{
+    const data=await docManager.loadFile(path);
+    // Check ACL
+    if(data.acl==='readonly'){
+      alert('이 문서에 대한 편집 권한이 없습니다. (읽기 전용)');
+    }
+    if(data.meta.locked&&data.acl!=='owner'){
+      alert('이 문서는 저자에 의해 잠겨 있습니다.');
+      closeModal('loadModal');return;
+    }
+    // Load into editor
+    replaceAll(data.body);
+    if(data.meta.title)document.getElementById('ti').value=data.meta.title;
+    if(data.meta.author)document.getElementById('au').value=data.meta.author;
+    if(data.meta.authors)document.getElementById('coau').value=Array.isArray(data.meta.authors)?data.meta.authors.join(', '):data.meta.authors;
+    if(data.meta.abstract)document.getElementById('ab').value=data.meta.abstract;
+    if(data.meta.keywords)document.getElementById('kw').value=Array.isArray(data.meta.keywords)?data.meta.keywords.join(', '):data.meta.keywords;
+    if(data.meta.domain)document.getElementById('dm').value=data.meta.domain;
+    if(data.meta.status)document.getElementById('st-sel').value=data.meta.status;
+    if(data.meta.collaborative)document.getElementById('collab').checked=true;
+    // Update lock button
+    updateLockUI(data.meta.locked);
+    // Set readonly if needed
+    if(data.acl==='readonly')inp.readOnly=true;
+    else inp.readOnly=false;
+    inp.dispatchEvent(new Event('input'));
+    closeModal('loadModal');
+    document.getElementById('as').textContent='불러옴: '+path.split('/').pop();
+  }catch(e){
+    alert('불러오기 실패: '+e.message);
+  }
+}
+
+async function delDoc(path,sha){
+  if(!confirm('이 문서를 삭제하시겠습니까?\n'+path))return;
+  try{
+    await docManager.deleteFile(path,sha);
+    ghLoad(); // Refresh list
+  }catch(e){alert('삭제 실패: '+e.message);}
+}
+
+async function ghLock(){
+  const path=docManager.getCurrentFile();
+  if(!path){alert('먼저 문서를 저장하거나 불러와 주세요.');return;}
+  try{
+    const data=await docManager.loadFile(path);
+    const newLock=!data.meta.locked;
+    await docManager.toggleLock(path,newLock);
+    updateLockUI(newLock);
+    document.getElementById('as').textContent=newLock?'문서 잠김':'잠금 해제됨';
+  }catch(e){alert(e.message);}
+}
+
+function updateLockUI(locked){
+  const btn=document.getElementById('lockBtn');
+  if(locked){btn.textContent='잠금 해제';btn.style.color='#b42318';}
+  else{btn.textContent='잠금';btn.style.color='';}
+}
+
+async function conflictResolve(action){
+  closeModal('conflictModal');
+  const path=docManager.getCurrentFile();
+  if(action==='overwrite'){
+    // Force save by getting fresh SHA
+    try{
+      const r=await fetch('https://api.github.com/repos/AICRA-PAGE/AICRA-PAGE.github.io/contents/'+path,{headers:{'Authorization':'token '+docManager.getToken()}});
+      if(r.ok){const d=await r.json();/* update SHA then save */ }
+      ghSave(); // Retry
+    }catch(e){alert('덮어쓰기 실패');}
+  }else if(action==='reload'){
+    if(path)loadDoc(path);
+  }else if(action==='copy'){
+    // Save as new file with -copy suffix
+    document.getElementById('ti').value+=' (사본)';
+    ghSave();
+  }
+}
+
+// Start auto-save after auth
+function initAutoSave(){
+  docManager.startAutoSave(
+    function(){return inp.value;},
+    getEditorMeta,
+    function(msg){document.getElementById('as').textContent=msg;},
+    30000
+  );
+}
+
 aicraAuth.checkAccess(
   function(login){
     document.getElementById('auth-gate').style.display='none';
     document.getElementById('editor-content').style.display='flex';
+    initAutoSave();
   },
   function(login){
     document.getElementById('gate-title').textContent='접근이 거부되었습니다';
