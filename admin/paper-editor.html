@@ -158,6 +158,24 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
   #pv .abstract-box{border-top:.75pt solid #000;border-bottom:.75pt solid #000}
   #pv code{background:transparent!important;border:none}
 }
+/* Author chips */
+.author-sel{position:relative}
+.author-sel select{width:100%;padding:3px 6px;border:1px solid var(--line);border-radius:4px;font-size:.72rem;background:var(--panel);color:var(--text)}
+.chip-area{display:flex;flex-wrap:wrap;gap:3px;min-height:24px;padding:2px 4px;border:1px solid var(--line);border-radius:4px;background:var(--panel);align-items:center;cursor:text}
+.chip{display:inline-flex;align-items:center;gap:3px;padding:1px 6px;border-radius:10px;font-size:.62rem;background:var(--brand);color:#fff}
+.chip.ext{background:var(--accent)}
+.chip img{width:14px;height:14px;border-radius:50%}
+.chip .x{cursor:pointer;font-weight:700;margin-left:2px;opacity:.7}
+.chip .x:hover{opacity:1}
+.chip-dd{position:absolute;top:100%;left:0;right:0;background:var(--panel);border:1px solid var(--line);border-radius:4px;max-height:150px;overflow-y:auto;z-index:50;display:none;box-shadow:0 4px 12px rgba(0,0,0,.15)}
+.chip-dd.show{display:block}
+.chip-dd .chip-opt{padding:4px 8px;font-size:.68rem;cursor:pointer;display:flex;align-items:center;gap:6px}
+.chip-dd .chip-opt:hover{background:var(--surface)}
+.chip-dd .chip-opt img{width:18px;height:18px;border-radius:50%}
+.corr-sel{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.corr-sel label{font-size:.6rem;display:flex;align-items:center;gap:3px;cursor:pointer}
+.corr-sel input[type=radio]{width:auto;margin:0}
+
 /* Modal */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center}
 .modal-overlay.show{display:flex}
@@ -251,18 +269,40 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
   <a class="bt" href="/admin/" style="text-decoration:none">CMS</a>
 </div>
 
-<div class="meta" id="metaBar">
+<div class="meta" id="metaBar" style="grid-template-columns:2fr 1fr 1fr 1fr">
   <div><label>제목</label><input id="ti" placeholder="논문 제목"></div>
-  <div><label>저자</label><input id="au" placeholder="제1저자" value="AICRA"></div>
-  <div><label>분야</label><select id="dm"><option>LLM Security</option><option>Adversarial ML</option><option>Prompt Injection</option><option>AI Red Teaming</option><option>MCP Security</option><option>Agentic AI</option><option>Privacy / FL</option><option>AI Governance</option><option>Network Security</option><option>Malware Analysis</option><option>Cryptography</option><option>AI Governance</option><option>AI Policy</option><option>AI Law / Regulation</option><option>Compliance</option><option>AI Ethics</option><option>Other</option></select></div>
+  <div><label>분야</label><select id="dm"><option>LLM Security</option><option>Adversarial ML</option><option>Prompt Injection</option><option>AI Red Teaming</option><option>MCP Security</option><option>Agentic AI</option><option>Privacy / FL</option><option>AI Governance</option><option>Network Security</option><option>Malware Analysis</option><option>Cryptography</option><option>AI Policy</option><option>AI Law / Regulation</option><option>Compliance</option><option>AI Ethics</option><option>Other</option></select></div>
   <div><label>상태</label><select id="st-sel"><option value="draft">초안</option><option value="review">심사중</option><option value="published">게재</option></select></div>
   <div><label>키워드</label><input id="kw" placeholder="키워드1, 키워드2"></div>
 </div>
 
-<div class="meta2" id="metaBar2">
-  <div><label>공동저자</label><input id="coau" placeholder="저자2, 저자3"></div>
-  <div><label>초록</label><input id="ab" placeholder="한 줄 초록 (메타데이터용)"></div>
-  <div class="chk"><input type="checkbox" id="collab"><span>공동 편집</span></div>
+<div class="meta2" id="metaBar2" style="grid-template-columns:1fr 1fr 1fr 1fr">
+  <div class="author-sel">
+    <label>주저자 <span style="font-size:.45rem;color:var(--muted);font-weight:400">(Collaborator에서 선택)</span></label>
+    <select id="au" onchange="updateCorrOptions()"><option value="">로딩 중...</option></select>
+  </div>
+  <div class="author-sel" style="position:relative">
+    <label>공동저자 <span style="font-size:.45rem;color:var(--muted);font-weight:400">(복수 선택)</span></label>
+    <div class="chip-area" id="coau-chips" onclick="showCoauthorDD()"></div>
+    <div class="chip-dd" id="coau-dd"></div>
+    <input type="hidden" id="coau">
+  </div>
+  <div>
+    <label>교신저자 <span style="font-size:.45rem;color:var(--muted);font-weight:400">(복수 가능)</span></label>
+    <div id="corr-area" class="chip-area" style="min-height:20px"></div>
+    <input type="hidden" id="corr">
+  </div>
+  <div>
+    <label>초록</label><input id="ab" placeholder="한 줄 초록">
+    <div style="margin-top:3px"><label style="font-size:.5rem;display:flex;align-items:center;gap:3px"><input type="checkbox" id="collab" style="width:auto"> 공동 편집</label></div>
+  </div>
+</div>
+
+<div id="ext-author-bar" style="display:flex;gap:4px;padding:3px 12px;background:var(--surface);border-bottom:1px solid var(--line);flex-shrink:0;align-items:center">
+  <span style="font-size:.55rem;color:var(--muted)">외부 저자:</span>
+  <input id="ext-name" placeholder="이름 (비 GitHub)" style="padding:2px 6px;border:1px solid var(--line);border-radius:3px;font-size:.65rem;width:120px;background:var(--panel);color:var(--text)">
+  <button class="bt" onclick="addExtAuthor()" style="font-size:.58rem;padding:2px 6px">추가</button>
+  <span style="font-size:.48rem;color:var(--muted)">(편집 권한 없음, 논문 메타데이터만 포함)</span>
 </div>
 
 <div class="ins" id="insBar">
@@ -2763,12 +2803,120 @@ document.addEventListener('mouseup',()=>rs=false);
 <script src="/assets/js/doc-manager.js"></script>
 <script src="/assets/js/auth-guard.js"></script>
 <script>
+// === COLLABORATOR AUTHOR SYSTEM ===
+let collabList=[],selectedCoauthors=[],selectedCorr=[];
+
+async function fetchCollaborators(){
+  // Check cache
+  const cached=sessionStorage.getItem('aicra.collabs');
+  if(cached){try{const d=JSON.parse(cached);if(Date.now()-d.at<600000){collabList=d.list;populateAuthorUI();return;}}catch(e){}}
+  const token=docManager.getToken();if(!token)return;
+  try{
+    const r=await fetch('https://api.github.com/repos/AICRA-PAGE/AICRA-PAGE.github.io/collaborators',{headers:{'Authorization':'token '+token}});
+    if(!r.ok)return;
+    const data=await r.json();
+    collabList=data.map(u=>({login:u.login,avatar:u.avatar_url,name:u.login}));
+    sessionStorage.setItem('aicra.collabs',JSON.stringify({list:collabList,at:Date.now()}));
+    populateAuthorUI();
+  }catch(e){}
+}
+
+function populateAuthorUI(){
+  // Primary author dropdown
+  const sel=document.getElementById('au');
+  sel.innerHTML='<option value="">-- 주저자 선택 --</option>';
+  for(const c of collabList){
+    sel.innerHTML+='<option value="'+c.login+'">'+c.login+'</option>';
+  }
+  // Auto-select current user
+  docManager.getUser().then(u=>{if(u)sel.value=u.login;});
+  // Co-author dropdown options
+  updateCoauthorDD();
+}
+
+function updateCoauthorDD(){
+  const dd=document.getElementById('coau-dd');
+  const author=document.getElementById('au').value;
+  dd.innerHTML='';
+  for(const c of collabList){
+    if(c.login===author)continue; // Exclude primary author
+    if(selectedCoauthors.includes(c.login))continue; // Already selected
+    dd.innerHTML+='<div class="chip-opt" onclick="addCoauthor(\''+c.login+'\',\''+c.avatar+'\')"><img src="'+c.avatar+'" alt="">'+c.login+'</div>';
+  }
+}
+
+function showCoauthorDD(){
+  updateCoauthorDD();
+  document.getElementById('coau-dd').classList.toggle('show');
+}
+
+function addCoauthor(login,avatar){
+  if(selectedCoauthors.includes(login))return;
+  selectedCoauthors.push(login);
+  renderCoauthorChips();
+  updateCoauthorDD();
+  updateCorrOptions();
+  document.getElementById('coau-dd').classList.remove('show');
+}
+
+function removeCoauthor(login){
+  selectedCoauthors=selectedCoauthors.filter(l=>l!==login);
+  selectedCorr=selectedCorr.filter(l=>l!==login);
+  renderCoauthorChips();
+  updateCorrOptions();
+}
+
+function renderCoauthorChips(){
+  const area=document.getElementById('coau-chips');
+  area.innerHTML=selectedCoauthors.map(login=>{
+    const c=collabList.find(x=>x.login===login);
+    const av=c?'<img src="'+c.avatar+'" alt="">':'';
+    return '<span class="chip">'+av+login+'<span class="x" onclick="event.stopPropagation();removeCoauthor(\''+login+'\')">x</span></span>';
+  }).join('');
+  document.getElementById('coau').value=selectedCoauthors.join(', ');
+}
+
+function updateCorrOptions(){
+  const author=document.getElementById('au').value;
+  const all=[author,...selectedCoauthors].filter(Boolean);
+  const area=document.getElementById('corr-area');
+  area.innerHTML=all.map(login=>{
+    const checked=selectedCorr.includes(login)?'checked':'';
+    return '<label style="font-size:.6rem;display:flex;align-items:center;gap:2px;cursor:pointer"><input type="checkbox" style="width:auto" '+checked+' onchange="toggleCorr(\''+login+'\',this.checked)">'+login+'</label>';
+  }).join(' ');
+  document.getElementById('corr').value=selectedCorr.join(', ');
+}
+
+function toggleCorr(login,checked){
+  if(checked&&!selectedCorr.includes(login))selectedCorr.push(login);
+  else selectedCorr=selectedCorr.filter(l=>l!==login);
+  document.getElementById('corr').value=selectedCorr.join(', ');
+}
+
+function addExtAuthor(){
+  const name=document.getElementById('ext-name').value.trim();
+  if(!name)return;
+  selectedCoauthors.push(name);
+  // Render with different style
+  const area=document.getElementById('coau-chips');
+  area.innerHTML+=('<span class="chip ext">'+name+'<span class="x" onclick="event.stopPropagation();removeCoauthor(\''+name+'\')">x</span></span>');
+  document.getElementById('coau').value=selectedCoauthors.join(', ');
+  document.getElementById('ext-name').value='';
+  updateCorrOptions();
+}
+
+// Close dropdown on outside click
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.author-sel'))document.getElementById('coau-dd').classList.remove('show');
+});
+
 // === GITHUB DOCUMENT MANAGEMENT ===
 function getEditorMeta(){
   return{
     title:document.getElementById('ti').value,
     author:document.getElementById('au').value,
     coauthors:document.getElementById('coau').value,
+    corresponding:document.getElementById('corr').value,
     abstract:document.getElementById('ab').value,
     keywords:document.getElementById('kw').value,
     domain:document.getElementById('dm').value,
@@ -2910,6 +3058,7 @@ aicraAuth.checkAccess(
   function(login){
     document.getElementById('auth-gate').style.display='none';
     document.getElementById('editor-content').style.display='flex';
+    fetchCollaborators();
     initAutoSave();
   },
   function(login){
