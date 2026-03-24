@@ -471,24 +471,59 @@ sequenceDiagram
 
 <!-- Abstract Modal -->
 <div class="modal-overlay" id="absModal">
-  <div class="modal-box">
-    <div class="modal-head"><span>초록 자동 생성</span><button class="bt" onclick="closeModal('absModal')" style="padding:1px 6px">X</button></div>
-    <div class="modal-body">
-      <p style="font-size:.68rem;color:var(--muted);margin-bottom:8px">논문 본문에서 추출한 내용입니다. 각 항목을 수정한 후 삽입하세요.</p>
-      <label>배경 / 맥락</label>
-      <textarea id="abs-bg" rows="2"></textarea>
-      <label>목적 / 연구 질문</label>
-      <textarea id="abs-obj" rows="2"></textarea>
-      <label>방법 / 접근법</label>
-      <textarea id="abs-met" rows="2"></textarea>
-      <label>결과 / 발견</label>
-      <textarea id="abs-res" rows="2"></textarea>
-      <label>결론 / 의의</label>
-      <textarea id="abs-con" rows="2"></textarea>
+  <div class="modal-box" style="max-width:820px">
+    <div class="modal-head">
+      <span>초록 자동 생성</span>
+      <div style="display:flex;gap:4px;align-items:center">
+        <label style="font-size:.6rem;color:var(--muted);display:flex;align-items:center;gap:3px"><input type="checkbox" id="abs-dual" style="width:auto"> 국영문 이중 초록</label>
+        <button class="bt" onclick="closeModal('absModal')" style="padding:1px 6px">X</button>
+      </div>
+    </div>
+    <div class="modal-body" style="display:flex;gap:12px">
+      <!-- Left: Input -->
+      <div style="flex:1;min-width:0">
+        <p style="font-size:.62rem;color:var(--muted);margin-bottom:6px">논문 본문에서 자동 추출된 내용입니다. 수정 후 삽입하세요.</p>
+        <label>배경 <span style="font-size:.5rem;color:var(--muted);font-weight:400">연구 분야와 문제의 맥락을 1-2문장으로</span></label>
+        <textarea id="abs-bg" rows="2" oninput="updateAbsPreview()"></textarea>
+        <label>목적 <span style="font-size:.5rem;color:var(--muted);font-weight:400">이 연구가 무엇을 해결/규명하려 하는지</span></label>
+        <textarea id="abs-obj" rows="2" oninput="updateAbsPreview()"></textarea>
+        <label>방법 <span style="font-size:.5rem;color:var(--muted);font-weight:400">어떤 접근법/기법/방법론을 사용했는지</span></label>
+        <textarea id="abs-met" rows="2" oninput="updateAbsPreview()"></textarea>
+        <label>결과 <span style="font-size:.5rem;color:var(--muted);font-weight:400">핵심 수치/발견 (예: 정확도 95.2%)</span></label>
+        <textarea id="abs-res" rows="2" oninput="updateAbsPreview()"></textarea>
+        <label>결론 <span style="font-size:.5rem;color:var(--muted);font-weight:400">연구의 의의와 시사점</span></label>
+        <textarea id="abs-con" rows="2" oninput="updateAbsPreview()"></textarea>
+        <div id="abs-dual-fields" style="display:none;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)">
+          <p style="font-size:.6rem;font-weight:700;color:var(--brand);margin-bottom:4px">English Abstract</p>
+          <label>Background</label><textarea id="abs-bg-en" rows="1" oninput="updateAbsPreview()"></textarea>
+          <label>Objective</label><textarea id="abs-obj-en" rows="1" oninput="updateAbsPreview()"></textarea>
+          <label>Method</label><textarea id="abs-met-en" rows="1" oninput="updateAbsPreview()"></textarea>
+          <label>Results</label><textarea id="abs-res-en" rows="1" oninput="updateAbsPreview()"></textarea>
+          <label>Conclusion</label><textarea id="abs-con-en" rows="1" oninput="updateAbsPreview()"></textarea>
+        </div>
+      </div>
+      <!-- Right: Preview -->
+      <div style="flex:1;min-width:0;border-left:1px solid var(--line);padding-left:12px">
+        <p style="font-size:.6rem;font-weight:700;color:var(--brand);margin-bottom:6px">미리보기</p>
+        <div id="abs-preview" style="font-family:'Noto Serif KR',Georgia,serif;font-size:.78rem;line-height:1.6;border-top:1px solid #999;border-bottom:1px solid #999;padding:10px 0;color:#111;min-height:120px">
+          <em style="color:#999">좌측 항목을 수정하면 여기에 실시간으로 표시됩니다</em>
+        </div>
+        <div style="font-size:.55rem;color:var(--muted);margin-top:6px">
+          <b>작성 팁:</b><br>
+          - 초록은 150~300단어 (국문 200~400자)<br>
+          - 배경 -> 목적 -> 방법 -> 결과 -> 결론 순서<br>
+          - 결과에는 반드시 수치를 포함<br>
+          - 약어는 첫 등장 시 풀어쓰기<br>
+          - 인용, 수식, 그림 참조는 초록에 넣지 않음
+        </div>
+      </div>
     </div>
     <div class="modal-foot">
+      <button class="bt" onclick="copyAbstract()" title="초록 텍스트를 클립보드에 복사">복사</button>
+      <button class="bt" onclick="printAbstract()" title="초록만 별도로 인쇄/PDF 저장">인쇄</button>
+      <span style="flex:1"></span>
       <button class="bt" onclick="closeModal('absModal')">취소</button>
-      <button class="bt p" onclick="insertAbstract()">초록 삽입</button>
+      <button class="bt p" onclick="insertAbstract()">논문에 삽입</button>
     </div>
   </div>
 </div>
@@ -2474,24 +2509,23 @@ function genAbstract(){
   document.getElementById('absModal').classList.add('show');
 }
 function insertAbstract(){
-  const parts=[
-    document.getElementById('abs-bg').value.trim(),
-    document.getElementById('abs-obj').value.trim(),
-    document.getElementById('abs-met').value.trim(),
-    document.getElementById('abs-res').value.trim(),
-    document.getElementById('abs-con').value.trim()
-  ].filter(Boolean);
-  const absText=parts.join(' ');
+  const absText=getAbstractText();
   if(!absText)return;
+  // Build abstract block(s)
+  let absBlock=':::abstract\n'+absText+'\n:::';
+  // Dual mode: add English abstract
+  if(document.getElementById('abs-dual').checked){
+    const en=[document.getElementById('abs-bg-en').value.trim(),document.getElementById('abs-obj-en').value.trim(),document.getElementById('abs-met-en').value.trim(),document.getElementById('abs-res-en').value.trim(),document.getElementById('abs-con-en').value.trim()].filter(Boolean).join(' ');
+    if(en)absBlock+='\n\n:::abstract\n'+en+'\n:::';
+  }
   // Find existing :::abstract and replace, or insert after title
   let t=inp.value;
   if(t.includes(':::abstract')){
-    t=t.replace(/:::abstract\n[\s\S]*?\n:::/,':::abstract\n'+absText+'\n:::');
+    t=t.replace(/:::abstract\n[\s\S]*?\n:::/,absBlock);
   }else{
-    // Insert after first heading
     const idx=t.indexOf('\n',t.indexOf('#'));
-    if(idx>-1)t=t.slice(0,idx+1)+'\n:::abstract\n'+absText+'\n:::\n'+t.slice(idx+1);
-    else t=':::abstract\n'+absText+'\n:::\n\n'+t;
+    if(idx>-1)t=t.slice(0,idx+1)+'\n'+absBlock+'\n'+t.slice(idx+1);
+    else t=absBlock+'\n\n'+t;
   }
   replaceAll(t);inp.dispatchEvent(new Event('input'));
   closeModal('absModal');
@@ -2499,6 +2533,79 @@ function insertAbstract(){
   document.getElementById('ab').value=absText.substring(0,200);
 }
 function closeModal(id){document.getElementById(id).classList.remove('show');}
+
+// === ABSTRACT PREVIEW / COPY / PRINT ===
+function updateAbsPreview(){
+  const parts=[
+    document.getElementById('abs-bg').value.trim(),
+    document.getElementById('abs-obj').value.trim(),
+    document.getElementById('abs-met').value.trim(),
+    document.getElementById('abs-res').value.trim(),
+    document.getElementById('abs-con').value.trim()
+  ].filter(Boolean);
+  let html='<strong style="font-size:.7rem;text-transform:uppercase;letter-spacing:.3px;display:block;margin-bottom:4px">Abstract</strong>';
+  html+=parts.join(' ')||'<em style="color:#999">내용을 입력하세요</em>';
+  // English if dual mode
+  if(document.getElementById('abs-dual').checked){
+    const en=[
+      document.getElementById('abs-bg-en').value.trim(),
+      document.getElementById('abs-obj-en').value.trim(),
+      document.getElementById('abs-met-en').value.trim(),
+      document.getElementById('abs-res-en').value.trim(),
+      document.getElementById('abs-con-en').value.trim()
+    ].filter(Boolean);
+    if(en.length){
+      html+='<div style="margin-top:8px;padding-top:8px;border-top:1px solid #ccc"><strong style="font-size:.7rem;text-transform:uppercase;letter-spacing:.3px;display:block;margin-bottom:4px">English Abstract</strong>';
+      html+=en.join(' ')+'</div>';
+    }
+  }
+  // Word count
+  const wc=parts.join(' ').trim().split(/\s+/).filter(Boolean).length;
+  html+='<div style="text-align:right;font-size:.55rem;color:#999;margin-top:6px">'+wc+' 단어</div>';
+  document.getElementById('abs-preview').innerHTML=html;
+}
+
+function getAbstractText(){
+  const parts=[
+    document.getElementById('abs-bg').value.trim(),
+    document.getElementById('abs-obj').value.trim(),
+    document.getElementById('abs-met').value.trim(),
+    document.getElementById('abs-res').value.trim(),
+    document.getElementById('abs-con').value.trim()
+  ].filter(Boolean);
+  return parts.join(' ');
+}
+
+function copyAbstract(){
+  const text=getAbstractText();
+  if(!text)return;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=event.target;btn.textContent='복사됨!';setTimeout(()=>btn.textContent='복사',1500);
+  });
+}
+
+function printAbstract(){
+  const text=getAbstractText();if(!text)return;
+  const title=document.getElementById('ti').value||'';
+  const author=document.getElementById('au').value||'';
+  const w=window.open('','_blank','width=700,height=500');
+  w.document.write('<html><head><title>Abstract</title><style>body{font-family:"Noto Serif KR",Georgia,serif;max-width:600px;margin:40px auto;font-size:11pt;line-height:1.6;color:#111}h1{font-size:14pt;text-align:center;margin-bottom:4px}p.author{text-align:center;font-size:10pt;color:#555;margin-bottom:16px}.abs{border-top:1px solid #111;border-bottom:1px solid #111;padding:12px 0;text-align:justify}strong{font-size:9pt;text-transform:uppercase;letter-spacing:.5px}</style></head><body>');
+  w.document.write('<h1>'+title+'</h1><p class="author">'+author+'</p>');
+  w.document.write('<div class="abs"><strong>Abstract</strong><br>'+text+'</div>');
+  // English
+  if(document.getElementById('abs-dual').checked){
+    const en=[document.getElementById('abs-bg-en').value.trim(),document.getElementById('abs-obj-en').value.trim(),document.getElementById('abs-met-en').value.trim(),document.getElementById('abs-res-en').value.trim(),document.getElementById('abs-con-en').value.trim()].filter(Boolean).join(' ');
+    if(en)w.document.write('<div class="abs" style="margin-top:16px"><strong>English Abstract</strong><br>'+en+'</div>');
+  }
+  w.document.write('</body></html>');w.document.close();
+  setTimeout(()=>w.print(),300);
+}
+
+// Dual abstract toggle
+document.getElementById('abs-dual').addEventListener('change',function(){
+  document.getElementById('abs-dual-fields').style.display=this.checked?'block':'none';
+  updateAbsPreview();
+});
 
 // === PPT GENERATOR (PptxGenJS) ===
 function genPPT(){
