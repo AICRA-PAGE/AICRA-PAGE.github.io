@@ -380,15 +380,22 @@ function restoreEnvs(html){for(let i=0;i<envPH.length;i++){html=html.replace('<p
 function processNumberedEq(t){return t.replace(/^\$\$\s*\n?([\s\S]*?)\n?\$\$\s*$/gm,(m,eq)=>{eqCounter++;return '<div class="eq-row"><div class="katex-display">$$'+eq.trim()+'$$</div><div class="eq-num">('+eqCounter+')</div></div>';});}
 function processCitations(t){return t.replace(/\[cite:(\d+)\]/g,(m,n)=>'<span class="cite" title="'+(refs[parseInt(n)-1]||'Ref '+n)+'">['+n+']</span>');}
 
+// === UNDO-SAFE TEXT HELPERS ===
+// Uses execCommand to preserve browser native Ctrl+Z / Ctrl+Y
+function typeText(text){inp.focus();document.execCommand('insertText',false,text);}
+function replaceAll(text){inp.focus();inp.select();document.execCommand('insertText',false,text);}
+
 inp.addEventListener('keydown',e=>{
-  if(e.key==='Tab'){e.preventDefault();inp.setRangeText('  ',inp.selectionStart,inp.selectionStart,'end');}
+  if(e.key==='Tab'){e.preventDefault();typeText('  ');}
   if((e.ctrlKey||e.metaKey)&&e.key==='b'){e.preventDefault();wrap('**','**');}
   if((e.ctrlKey||e.metaKey)&&e.key==='i'){e.preventDefault();wrap('*','*');}
   if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();wrap('[','](url)');}
   if((e.ctrlKey||e.metaKey)&&e.key==='m'){e.preventDefault();wrap('$','$');}
   if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();save();document.getElementById('as').textContent='Saved';}
+  if((e.ctrlKey||e.metaKey)&&e.key==='z'){/* native undo - let browser handle */}
+  if((e.ctrlKey||e.metaKey)&&e.key==='y'){/* native redo - let browser handle */}
 });
-function wrap(a,b){const s=inp.selectionStart,e=inp.selectionEnd,sel=inp.value.substring(s,e);inp.setRangeText(a+sel+b,s,e,'end');inp.dispatchEvent(new Event('input'));}
+function wrap(a,b){const s=inp.selectionStart,e=inp.selectionEnd,sel=inp.value.substring(s,e);inp.focus();inp.setSelectionRange(s,e);document.execCommand('insertText',false,a+sel+b);inp.dispatchEvent(new Event('input'));}
 
 // === VENUE FORMAT TEMPLATES ===
 function insTpl(type){
@@ -1183,7 +1190,7 @@ in [Department/Program]
 ## Appendix B
 `
   };
-  if(T[type]){inp.value=T[type];inp.dispatchEvent(new Event('input'));document.getElementById('tplSel').value='';}
+  if(T[type]){replaceAll(T[type]);inp.dispatchEvent(new Event('input'));document.getElementById('tplSel').value='';}
 }
 
 // === INSERT SNIPPETS ===
@@ -1209,9 +1216,9 @@ function ins(type){
     arch:'```mermaid\ngraph LR\n  A[Input Layer] --> B[Processing Module]\n  B --> C[Security Check]\n  C --> D[Output]\n```\n*Fig. N. [System architecture overview.]*\n\n',
     ethics:'### Ethics and Responsible Disclosure\n\n- **Dual-use considerations:**\n- **Data / human subjects:**\n- **Responsible disclosure:**\n  - Discovery date:\n  - Vendor notified:\n  - Patch date:\n  - Public disclosure:\n- **Compliance:** [ISO 27001 / 42001 / IRB / other]\n\n'
   };
-  const s=inp.selectionStart;
-  inp.setRangeText(T[type]||'',s,s,'end');
-  inp.focus();inp.dispatchEvent(new Event('input'));
+  inp.focus();
+  typeText(T[type]||'');
+  inp.dispatchEvent(new Event('input'));
 }
 
 // === REFS ===
@@ -1376,7 +1383,7 @@ function insertAbstract(){
     if(idx>-1)t=t.slice(0,idx+1)+'\n:::abstract\n'+absText+'\n:::\n'+t.slice(idx+1);
     else t=':::abstract\n'+absText+'\n:::\n\n'+t;
   }
-  inp.value=t;inp.dispatchEvent(new Event('input'));
+  replaceAll(t);inp.dispatchEvent(new Event('input'));
   closeModal('absModal');
   // Also update metadata abstract field
   document.getElementById('ab').value=absText.substring(0,200);
