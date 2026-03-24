@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AICRA Paper Editor</title>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <style>
+    :root{--b:#2f5d50;--bg:#f5f3ed;--c:#fff;--l:#e0ddd5;--t:#1c1917;--m:#6b665c}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Pretendard',sans-serif;background:var(--bg);color:var(--t);height:100vh;display:flex;flex-direction:column;overflow:hidden}
+    .hd{display:flex;align-items:center;padding:6px 12px;background:var(--c);border-bottom:1px solid var(--l);gap:6px;flex-wrap:wrap}
+    .hd img{width:24px;height:24px}.hd h1{font-size:.88rem;color:var(--b);margin-right:auto}
+    .hd .badge{background:#7b1fa2;color:#fff;font-size:.6rem;padding:1px 6px;border-radius:8px;margin-left:4px}
+    .bt{padding:6px 12px;border:none;border-radius:5px;font-size:.75rem;font-weight:600;cursor:pointer;color:#fff}
+    .bg{background:var(--b)}.bg:hover{background:#244b40}
+    .bb{background:#1565c0}.bb:hover{background:#0d47a1}
+    .bo{background:transparent;color:var(--b);border:1px solid var(--l);text-decoration:none;display:inline-block}
+    .mt{display:flex;gap:6px;padding:6px 12px;background:#fafaf7;border-bottom:1px solid var(--l);flex-shrink:0;flex-wrap:wrap}
+    .mt label{font-size:.63rem;color:var(--m);font-weight:600}
+    .mt input,.mt select,.mt textarea{width:100%;padding:4px 6px;border:1px solid var(--l);border-radius:3px;font-size:.76rem;font-family:inherit}
+    .mt textarea{resize:vertical;min-height:36px}
+    .f1{flex:1;min-width:80px}.f2{flex:2;min-width:140px}.f3{flex:3;min-width:180px}
+    .ed{display:flex;flex:1;overflow:hidden}
+    .pn{flex:1;display:flex;flex-direction:column;overflow:hidden}
+    .pl{padding:4px 12px;font-size:.65rem;font-weight:700;color:var(--m);text-transform:uppercase;letter-spacing:.8px;background:#f0ede6;border-bottom:1px solid var(--l);flex-shrink:0}
+    .dv{width:3px;background:var(--l);cursor:col-resize;flex-shrink:0}
+    #input{flex:1;padding:12px;border:none;resize:none;font-size:.82rem;line-height:1.7;font-family:'JetBrains Mono',Consolas,monospace;background:var(--c);outline:none}
+    #pv{flex:1;padding:16px 24px;overflow-y:auto;background:var(--c);font-size:.88rem;line-height:1.9}
+    #pv h1,#pv h2,#pv h3{color:var(--b);margin:.7em 0 .3em}
+    #pv h2{border-bottom:1px solid var(--l);padding-bottom:2px}
+    #pv table{border-collapse:collapse;width:100%;margin:.7em 0;font-size:.8rem}
+    #pv th,#pv td{border:1px solid var(--l);padding:5px 8px}#pv th{background:#f0ede6}
+    #pv code{background:#f0ede6;padding:1px 3px;border-radius:2px;font-size:.8rem}
+    #pv pre{background:#292524;color:#e9e4da;padding:10px;border-radius:5px;overflow-x:auto;margin:.7em 0}
+    #pv pre code{background:none;color:inherit}
+    #pv blockquote{border-left:3px solid var(--b);padding:6px 12px;margin:.5em 0;background:#f8f6f0}
+    #pv .theorem,#pv .lemma,#pv .definition{background:#f8f6f0;border-left:4px solid var(--b);padding:10px 14px;margin:.8em 0;border-radius:0 6px 6px 0}
+    #pv .proof{background:#fafafa;border-left:3px solid #8b8580;padding:8px 14px;margin:.5em 0}
+    #pv .abstract-box{background:#f5f3ed;border:1px solid var(--l);border-radius:8px;padding:14px 18px;margin:1rem 0}
+    .st{padding:4px 12px;font-size:.68rem;color:var(--m);background:#f0ede6;border-top:1px solid var(--l);flex-shrink:0;display:flex;gap:10px}
+    .st b{color:var(--t)}
+    .tmpl{font-size:.7rem;color:#1565c0;cursor:pointer;text-decoration:underline;margin-left:8px}
+  </style>
+</head>
+<body>
+<div class="hd">
+  <img src="/assets/img/logo.svg" alt="">
+  <h1>AICRA Paper Editor <span class="badge">LaTeX</span></h1>
+  <button class="bt bg" onclick="renderPaper()">렌더링</button>
+  <button class="bt bb" onclick="publishPaper()">발행하기</button>
+  <a class="bt bo" href="/admin/editor.html">Blog Editor</a>
+  <a class="bt bo" href="/papers/">Papers</a>
+</div>
+<div class="mt">
+  <div class="f3"><label>Title</label><input id="ti" placeholder="논문 제목"></div>
+  <div class="f2"><label>Author (GitHub ID)</label><input id="au" placeholder="1저자"></div>
+  <div class="f2"><label>Co-Authors (쉼표)</label><input id="co" placeholder="co-author1, co-author2"></div>
+  <div class="f1"><label>Status</label><select id="st"><option>draft</option><option>review</option><option>published</option></select></div>
+</div>
+<div class="mt">
+  <div class="f3"><label>Abstract</label><textarea id="ab" placeholder="초록 (200자 이내)"></textarea></div>
+  <div class="f2"><label>Keywords (쉼표)</label><input id="kw" placeholder="AI Security, LLM"></div>
+  <div class="f1"><label>Collaborative</label><select id="cl"><option value="false">No (작성자만)</option><option value="true">Yes (공동)</option></select></div>
+</div>
+<div class="ed">
+  <div class="pn">
+    <div class="pl">Paper Body (Markdown + LaTeX)
+      <span class="tmpl" onclick="insertTemplate()">템플릿 삽입</span>
+    </div>
+    <textarea id="input" spellcheck="true" lang="ko" placeholder="LaTeX 수식: $E=mc^2$ 또는 $$\sum_{i=1}^{n} x_i$$
+
+학술 블록 (HTML 태그 사용):
+<div class='theorem'>정리 내용</div>
+<div class='proof'>증명 내용</div>
+<div class='definition'>정의 내용</div>
+<div class='algorithm'>알고리즘 단계</div>
+
+'템플릿 삽입' 클릭으로 논문 구조를 자동 생성합니다."></textarea>
+  </div>
+  <div class="dv" id="dv"></div>
+  <div class="pn">
+    <div class="pl">Paper Preview (KaTeX + Academic)</div>
+    <div id="pv"><p style="color:#bbb;padding:20px;text-align:center">논문 본문을 입력하고 '렌더링' 버튼을 클릭하세요.<br>LaTeX 수식이 실시간으로 렌더링됩니다.</p></div>
+  </div>
+</div>
+<div class="st">
+  <span>Length: <b id="wc">0</b> words</span>
+  <span>Sections: <b id="sc">0</b></span>
+  <span>Equations: <b id="ec">0</b></span>
+</div>
+<script>
+const inp=document.getElementById('input'),pv=document.getElementById('pv');
+
+// Live preview
+inp.addEventListener('input',()=>{
+  const t=inp.value;
+  pv.innerHTML=marked.parse(t);
+  renderMathInElement(pv,{delimiters:[{left:"$$",right:"$$",display:true},{left:"$",right:"$",display:false}],throwOnError:false});
+  document.getElementById('wc').textContent=t.trim()?t.trim().split(/\s+/).length:0;
+  document.getElementById('sc').textContent=(t.match(/^##\s/gm)||[]).length;
+  document.getElementById('ec').textContent=(t.match(/\$\$/g)||[]).length/2+(t.match(/(?<!\$)\$(?!\$)/g)||[]).length/2;
+});
+
+function renderPaper(){
+  const t=inp.value;
+  const ti=document.getElementById('ti').value;
+  const ab=document.getElementById('ab').value;
+  let html='';
+  if(ti)html+='<h1 style="text-align:center;color:#2f5d50">'+ti+'</h1>';
+  if(ab)html+='<div class="abstract-box"><strong>Abstract:</strong> '+ab+'</div>';
+  html+=marked.parse(t);
+  pv.innerHTML=html;
+  renderMathInElement(pv,{delimiters:[{left:"$$",right:"$$",display:true},{left:"$",right:"$",display:false}],throwOnError:false});
+}
+
+function insertTemplate(){
+  inp.value=`## 1. Introduction
+
+연구 배경과 목적을 기술합니다.
+
+---
+
+## 2. Related Work
+
+관련 연구를 정리합니다.
+
+---
+
+## 3. Methodology
+
+### 3.1 Problem Formulation
+
+문제를 수식으로 정의합니다:
+
+$$
+\\min_{\\theta} \\mathcal{L}(\\theta) = \\frac{1}{N}\\sum_{i=1}^{N} l(f_\\theta(x_i), y_i)
+$$
+
+### 3.2 Proposed Approach
+
+제안하는 방법론을 설명합니다.
+
+<div class="theorem">
+<strong>Theorem 1.</strong> 제안 방법의 수렴성을 보장한다.
+</div>
+
+<div class="proof">
+증명 내용을 기술합니다. $\\square$
+</div>
+
+<div class="algorithm">
+<strong>Algorithm 1: Training Procedure</strong><br>
+1. Initialize parameters $\\theta_0$<br>
+2. For $t = 1, 2, \\ldots, T$:<br>
+&nbsp;&nbsp;a. Sample mini-batch $B_t$<br>
+&nbsp;&nbsp;b. Compute gradient $g_t = \\nabla \\mathcal{L}(\\theta_t; B_t)$<br>
+&nbsp;&nbsp;c. Update $\\theta_{t+1} = \\theta_t - \\eta g_t$<br>
+3. Return $\\theta_T$
+</div>
+
+---
+
+## 4. Experiments
+
+### 4.1 Setup
+
+| Parameter | Value |
+|-----------|-------|
+| Learning Rate | 0.001 |
+| Batch Size | 64 |
+| Epochs | 100 |
+
+### 4.2 Results
+
+실험 결과를 분석합니다.
+
+---
+
+## 5. Discussion
+
+연구의 시사점과 한계를 논의합니다.
+
+---
+
+## 6. Conclusion
+
+결론 및 향후 연구 방향을 제시합니다.
+
+---
+
+## References
+
+[1] Author et al., "Title," Venue, Year.
+[2] Author et al., "Title," Venue, Year.
+`;
+  inp.dispatchEvent(new Event('input'));
+}
+
+function publishPaper(){
+  const ti=document.getElementById('ti').value||'Untitled Paper';
+  const au=document.getElementById('au').value||'AICRA';
+  const co=document.getElementById('co').value;
+  const st=document.getElementById('st').value;
+  const ab=document.getElementById('ab').value;
+  const kw=document.getElementById('kw').value;
+  const cl=document.getElementById('cl').value;
+  const body=inp.value;
+  const today=new Date().toISOString().split('T')[0];
+  const authors=co?'\nauthors: ['+co.split(',').map(s=>'"'+s.trim()+'"').join(', ')+']':'';
+  const keywords=kw?'\nkeywords: ['+kw.split(',').map(s=>'"'+s.trim()+'"').join(', ')+']':'';
+  const fm=`---
+layout: paper
+title: "${ti}"
+author: ${au}${authors}
+collaborative: ${cl}
+date: ${today}
+status: ${st}
+abstract: "${ab}"${keywords}
+---
+
+${body}`;
+  navigator.clipboard.writeText(fm).then(()=>{
+    alert('클립보드에 복사되었습니다!\nCMS에서 Research Papers > 새 Paper 생성 후 붙여넣기');
+    window.open('/admin/#/collections/papers/new','_blank');
+  }).catch(()=>{const w=window.open('','_blank');w.document.write('<pre style="white-space:pre-wrap">'+fm.replace(/</g,'&lt;')+'</pre>');});
+}
+
+// Resize
+let rs=false;
+document.getElementById('dv').addEventListener('mousedown',()=>rs=true);
+document.addEventListener('mousemove',e=>{if(!rs)return;const ed=document.querySelector('.ed'),r=ed.getBoundingClientRect(),p=((e.clientX-r.left)/r.width)*100,pn=ed.querySelectorAll('.pn');pn[0].style.flex='0 0 '+p+'%';pn[1].style.flex='0 0 '+(100-p)+'%';});
+document.addEventListener('mouseup',()=>rs=false);
+</script>
+</body>
+</html>

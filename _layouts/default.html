@@ -20,6 +20,9 @@
   <link rel="icon" type="image/svg+xml" href="{{ '/assets/img/favicon.svg' | relative_url }}">
   <link rel="apple-touch-icon" href="{{ '/assets/img/favicon.svg' | relative_url }}">
 
+  <!-- KaTeX (global math rendering) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+
   <!-- Fonts (Consensus: Noto Serif KR + Pretendard + JetBrains Mono) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -63,6 +66,22 @@
 
   <!-- Reading Progress Bar -->
   <div id="reading-progress" style="position:fixed;top:0;left:0;height:3px;background:var(--accent);z-index:9999;transition:width 0.1s;width:0;"></div>
+
+  <!-- KaTeX auto-render (global math support) -->
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: "$$", right: "$$", display: true},
+          {left: "$", right: "$", display: false}
+        ],
+        throwOnError: false,
+        strict: "warn"
+      });
+    });
+  </script>
 
   <!-- Mermaid (diagrams in markdown) -->
   <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>

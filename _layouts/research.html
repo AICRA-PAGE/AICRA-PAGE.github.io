@@ -15,7 +15,7 @@ layout: default
     {% endif %}
 
     <p style="font-size:0.75rem;color:#8b8580;">
-      Reviewed by {{ page.author }} | {{ page.date | date: "%Y-%m-%d" }}
+      {{ page.author }} | {{ page.date | date: "%Y-%m-%d" }}
       {% if page.last_updated %} | Updated: {{ page.last_updated }}{% endif %}
     </p>
 
@@ -37,11 +37,26 @@ layout: default
       {% endfor %}
     </div>
     {% endif %}
+
+    {% if page.abstract %}
+    <div class="abstract-box">{{ page.abstract }}</div>
+    {% endif %}
   </header>
 
-  <div class="research-body" style="font-size:0.85rem;line-height:1.8;">
+  <div class="research-body" style="font-size:0.88rem;line-height:1.9;">
     {{ content }}
   </div>
+
+  {% if page.related_posts %}
+  <div style="margin-top:2rem;padding:14px;background:#f8f6f0;border-radius:8px;">
+    <h4 style="font-size:0.85rem;color:#2f5d50;margin-bottom:8px;">Related</h4>
+    <ul style="font-size:0.82rem;padding-left:18px;">
+      {% for rp in page.related_posts %}
+      <li><a href="{{ rp.url }}">{{ rp.title }}</a></li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
 
   <footer style="margin-top:2rem;padding-top:1rem;border-top:1px solid #e0ddd5;font-size:0.72rem;color:#8b8580;">
     AICRA Research Analysis | {{ page.date | date: "%Y" }}

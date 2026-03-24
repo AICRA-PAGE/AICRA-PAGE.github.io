@@ -1,29 +1,37 @@
 ---
 layout: default
 ---
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-
 <article class="paper-article" style="max-width:800px;margin:0 auto;padding:20px;">
   <header style="text-align:center;margin-bottom:2rem;border-bottom:2px solid #2f5d50;padding-bottom:1.5rem;">
-    <p style="font-size:0.75rem;color:#6b665c;text-transform:uppercase;letter-spacing:2px;">AICRA Research Paper</p>
-    <h1 style="font-size:1.6rem;color:#2f5d50;margin:0.5rem 0;">{{ page.title }}</h1>
-    <p style="font-size:0.85rem;color:#44403C;">
+    <p style="font-size:0.72rem;color:#6b665c;text-transform:uppercase;letter-spacing:2px;">AICRA Research Paper</p>
+    <h1 style="font-size:1.5rem;color:#2f5d50;margin:0.5rem 0;">{{ page.title }}</h1>
+
+    <p style="font-size:0.88rem;color:#44403C;">
       {{ page.author }}
       {% if page.authors and page.authors.size > 0 %}
         , {{ page.authors | join: ", " }}
       {% endif %}
     </p>
-    <p style="font-size:0.75rem;color:#8b8580;">{{ page.date | date: "%Y-%m-%d" }}
-      {% if page.status %} | {{ page.status }}{% endif %}
-    </p>
-    {% if page.abstract %}
-    <div style="text-align:left;background:#f8f6f0;border-radius:8px;padding:14px 18px;margin-top:1rem;font-size:0.82rem;line-height:1.7;">
-      <strong>Abstract:</strong> {{ page.abstract }}
+
+    {% if page.affiliations %}
+    <div class="author-affiliations">
+      {% for aff in page.affiliations %}
+      <span class="affiliation">{{ aff }}</span>
+      {% endfor %}
     </div>
     {% endif %}
+
+    <p style="font-size:0.75rem;color:#8b8580;">{{ page.date | date: "%Y-%m-%d" }}
+      {% if page.status %} | <span style="background:{% if page.status == 'published' %}#e8f5e9;color:#2e7d32{% elsif page.status == 'review' %}#fff8e1;color:#f57f17{% else %}#f5f5f5;color:#757575{% endif %};padding:1px 8px;border-radius:10px;font-size:0.7rem;">{{ page.status }}</span>{% endif %}
+    </p>
+
+    {% if page.abstract %}
+    <div class="abstract-box">{{ page.abstract }}</div>
+    {% endif %}
+
     {% if page.keywords %}
-    <p style="font-size:0.72rem;color:#6b665c;margin-top:8px;">
-      <strong>Keywords:</strong> {{ page.keywords | join: ", " }}
+    <p style="font-size:0.72rem;color:#6b665c;">
+      <strong>Keywords:</strong> {{ page.keywords | join: " · " }}
     </p>
     {% endif %}
   </header>
@@ -34,22 +42,6 @@ layout: default
 
   <footer style="margin-top:2rem;padding-top:1rem;border-top:1px solid #e0ddd5;font-size:0.72rem;color:#8b8580;">
     <p>AICRA - AI Security Research Association | {{ page.date | date: "%Y" }}</p>
-    {% if page.collaborative %}
-    <p>This is a collaborative paper - open for contributions.</p>
-    {% endif %}
+    {% if page.collaborative %}<p style="color:#b7791f;">Open for contributions</p>{% endif %}
   </footer>
 </article>
-
-<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-    renderMathInElement(document.querySelector('.paper-body'), {
-      delimiters: [
-        {left: '$$', right: '$$', display: true},
-        {left: '$', right: '$', display: false}
-      ],
-      throwOnError: false
-    });
-  });
-</script>
