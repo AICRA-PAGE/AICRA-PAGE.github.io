@@ -93,6 +93,20 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
 #pv .cite{font-weight:700;cursor:help}
 #pv .fig-caption{text-align:center;font-size:.75rem;color:#444;margin:4px 0 12px;line-height:1.4}
 #pv .tbl-caption{font-size:.75rem;color:#444;margin:12px 0 4px;font-weight:700;line-height:1.4}
+/* Footnotes */
+#pv .footnotes{border-top:1px solid #999;margin-top:1.5rem;padding-top:.5rem;font-size:.75rem;line-height:1.5}
+#pv .footnotes ol{padding-left:1.5rem;margin:0}
+#pv .footnotes li{margin-bottom:.2rem}
+#pv sup.fn-ref{color:#111;font-weight:700;cursor:pointer;font-size:.7em}
+#pv sup.fn-ref:hover{text-decoration:underline}
+/* Subfigure grid */
+#pv .fig-grid{display:flex;gap:8px;margin:.8rem 0;flex-wrap:wrap;justify-content:center}
+#pv .fig-grid .subfig{flex:1;min-width:120px;text-align:center}
+#pv .fig-grid .subfig img{max-width:100%;border:1px solid #ddd;border-radius:2px}
+#pv .fig-grid .subfig .sub-label{font-size:.7rem;color:#444;margin-top:3px}
+#pv .fig-grid-caption{text-align:center;font-size:.75rem;color:#444;font-style:italic;margin:4px 0 12px}
+/* Image sizing */
+#pv img[data-width]{display:block;margin:0 auto}
 .st{display:flex;gap:10px;padding:3px 12px;font-size:.58rem;color:var(--muted);background:var(--surface);border-top:1px solid var(--line);flex-shrink:0;align-items:center}
 .st b{color:var(--text)}
 .score{padding:1px 6px;border-radius:8px;color:#fff;font-size:.55rem}
@@ -231,11 +245,16 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
   <button onclick="ins('eval')" title="Evaluation matrix: method vs metrics comparison">Eval</button>
   <button onclick="ins('framework')" title="Framework mapping: MITRE/OWASP/NIST reference">FW Map</button>
 
-  <span class="gl">Data</span>
-  <button onclick="ins('perf')" title="Performance comparison table with statistical measures">Perf</button>
-  <button onclick="ins('confmat')" title="Confusion matrix layout for classification results">Conf.Mat</button>
-  <button onclick="ins('arch')" title="Architecture diagram description (Mermaid)">Arch</button>
-  <button onclick="ins('ethics')" title="Ethics & disclosure section">Ethics</button>
+  <span class="gl">Visual</span>
+  <button onclick="ins('fn')" title="각주: [^1] 본문 참조 + [^1]: 설명">Footnote</button>
+  <button onclick="ins('subfig')" title="서브피겨: (a)(b) 2열 이미지 배치">Subfig</button>
+  <button onclick="ins('imgfmt')" title="이미지 크기/정렬: {width=50%}">Image</button>
+  <button onclick="ins('perf')" title="성능 비교 테이블 (통계치 포함)">Perf</button>
+  <button onclick="ins('confmat')" title="혼동 행렬 (분류 결과)">Conf.Mat</button>
+  <button onclick="ins('arch')" title="아키텍처 다이어그램 (Mermaid)">Arch</button>
+  <button onclick="ins('timeline')" title="타임라인 다이어그램 (Mermaid)">Timeline</button>
+  <button onclick="ins('flowchart')" title="프로토콜/공격 흐름도 (Mermaid)">Flow</button>
+  <button onclick="ins('ethics')" title="윤리/공개 섹션">Ethics</button>
 </div>
 
 <div class="ed">
@@ -358,6 +377,40 @@ graph LR
   <div class="io-label">출력</div>
   <div class="out" style="text-align:center;font-size:.6rem;color:#555">[입력] ---> [처리] ---> [출력]</div></div>
 
+  <div class="hitem"><b>각주 (Footnote)</b><em>본문에 번호를 달고 하단에 설명을 추가합니다</em>
+  <div class="io-label">입력</div>
+  <pre>제로트러스트 가정은 자주 위반된다[^ot].
+
+[^ot]: 레거시 PLC는 평면 L2 신뢰를 사용.</pre>
+  <div class="io-label">출력</div>
+  <div class="out">제로트러스트 가정은 자주 위반된다<sup style="font-weight:700">1</sup>.<hr style="margin:4px 0"><ol style="font-size:.58rem;padding-left:1.2rem;margin:0"><li>레거시 PLC는 평면 L2 신뢰를 사용.</li></ol></div></div>
+
+  <div class="hitem"><b>서브피겨 (Subfigure)</b><em>여러 이미지를 (a)(b) 라벨로 나란히 배치합니다</em>
+  <div class="io-label">입력</div>
+  <pre>```figgrid caption="Fig.3" cols=2
+![A](a.png){sub="a" cap="Baseline"}
+![B](b.png){sub="b" cap="Proposed"}
+```</pre>
+  <div class="io-label">출력</div>
+  <div class="out" style="text-align:center"><span style="display:inline-block;width:45%;border:1px solid #ddd;padding:4px;font-size:.55rem;margin:0 2px">[이미지A]<br>(a) Baseline</span><span style="display:inline-block;width:45%;border:1px solid #ddd;padding:4px;font-size:.55rem;margin:0 2px">[이미지B]<br>(b) Proposed</span><div style="font-size:.58rem;color:#555;margin-top:3px;font-style:italic">Fig.3</div></div></div>
+
+  <div class="hitem"><b>이미지 크기/정렬</b><em>{width=50%}로 이미지 크기를 제어합니다</em>
+  <div class="io-label">입력</div>
+  <pre>![설명](image.png){width=60%}
+*Fig. 1. 캡션.*</pre>
+  <div class="io-label">출력</div>
+  <div class="out" style="text-align:center"><div style="width:60%;margin:0 auto;border:1px solid #ddd;height:24px;display:flex;align-items:center;justify-content:center;font-size:.5rem;color:#999">[60% 너비 이미지]</div><div style="font-size:.58rem;color:#555;font-style:italic;margin-top:2px">Fig. 1. 캡션.</div></div></div>
+
+  <div class="hitem"><b>타임라인 / 흐름도</b><em>Mermaid로 공격 타임라인이나 프로토콜 흐름을 그립니다</em>
+  <div class="io-label">입력</div>
+  <pre>```mermaid
+sequenceDiagram
+  C->>S: Request
+  A->>S: Injection
+```</pre>
+  <div class="io-label">출력</div>
+  <div class="out" style="text-align:center;font-size:.58rem;color:#555">Client --Request--> Server<br>Attacker --Injection--> Server</div></div>
+
   <div class="hitem"><b>단축키</b>
   <div class="out" style="font-family:'Pretendard',sans-serif;font-size:.6rem;border:none">
   <b>Ctrl+B</b> 굵게 | <b>Ctrl+I</b> 기울임 | <b>Ctrl+K</b> 링크<br>
@@ -415,8 +468,9 @@ function render(){
   const raw=inp.value;
   if(!raw.trim()){pv.innerHTML='<p style="color:#999;text-align:center;padding:40px;font-family:sans-serif;font-size:.85rem">Select a format or start writing</p>';updateStats(raw);return;}
   envCounters={theorem:0,lemma:0,definition:0,corollary:0,proposition:0,algorithm:0};eqCounter=0;
-  let t=raw;t=processEnvs(t);t=processNumberedEq(t);t=processCitations(t);
+  let t=raw;t=processEnvs(t);t=processNumberedEq(t);t=processCitations(t);t=processFootnotes(t);t=processSubfigures(t);
   let html=marked.parse(t);html=restoreEnvs(html);
+  html=processImageSize(html);
   pv.innerHTML=html;
   renderMathInElement(pv,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false},{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}],throwOnError:false});
   updateStats(raw);
@@ -442,6 +496,65 @@ function processEnvs(t){
 function restoreEnvs(html){for(let i=0;i<envPH.length;i++){html=html.replace('<p>\x00E'+i+'\x00</p>',envPH[i]);html=html.replace('\x00E'+i+'\x00',envPH[i]);}return html;}
 function processNumberedEq(t){return t.replace(/^\$\$\s*\n?([\s\S]*?)\n?\$\$\s*$/gm,(m,eq)=>{eqCounter++;return '<div class="eq-row"><div class="katex-display">$$'+eq.trim()+'$$</div><div class="eq-num">('+eqCounter+')</div></div>';});}
 function processCitations(t){return t.replace(/\[cite:(\d+)\]/g,(m,n)=>'<span class="cite" title="'+(refs[parseInt(n)-1]||'Ref '+n)+'">['+n+']</span>');}
+
+// === FOOTNOTES ===
+function processFootnotes(t){
+  const defs={};let idx=1;
+  // Collect definitions: [^id]: text
+  t=t.replace(/^\[\^(\w+)\]:\s*(.+)$/gm,(m,id,text)=>{
+    if(!defs[id])defs[id]={num:idx++,text:text.trim()};
+    return '';
+  });
+  // Replace inline refs: [^id] -> superscript
+  t=t.replace(/\[\^(\w+)\]/g,(m,id)=>{
+    const d=defs[id];
+    if(!d)return m;
+    return '<sup class="fn-ref" title="'+d.text+'">'+d.num+'</sup>';
+  });
+  // Append footnote section
+  const entries=Object.values(defs).sort((a,b)=>a.num-b.num);
+  if(entries.length){
+    t+='\n\n<div class="footnotes"><hr><ol>'+entries.map(e=>'<li>'+e.text+'</li>').join('')+'</ol></div>';
+  }
+  return t;
+}
+
+// === SUBFIGURES ===
+function processSubfigures(t){
+  return t.replace(/```figgrid\s*(.*?)\n([\s\S]*?)```/g,(m,opts,body)=>{
+    const capMatch=opts.match(/caption="([^"]+)"/);
+    const colMatch=opts.match(/cols=(\d)/);
+    const cols=colMatch?parseInt(colMatch[1]):2;
+    const lines=body.trim().split('\n').filter(Boolean);
+    let html='<div class="fig-grid" style="display:flex;gap:8px">';
+    let sub=97; // 'a'
+    for(const line of lines){
+      const imgM=line.match(/!\[([^\]]*)\]\(([^)]+)\)(?:\{sub="([^"]*)"(?:\s+cap="([^"]*)")?\})?/);
+      if(imgM){
+        const alt=imgM[1]||'';const src=imgM[2];
+        const subLabel=imgM[3]||String.fromCharCode(sub);
+        const subCap=imgM[4]||alt;
+        html+='<div class="subfig" style="flex:1;text-align:center"><img src="'+src+'" alt="'+alt+'" style="max-width:100%"><div class="sub-label">('+subLabel+') '+subCap+'</div></div>';
+        sub++;
+      }
+    }
+    html+='</div>';
+    if(capMatch)html+='<div class="fig-grid-caption">'+capMatch[1]+'</div>';
+    const ph='\x00E'+envPH.length+'\x00';
+    envPH.push(html);
+    return ph;
+  });
+}
+
+// === IMAGE SIZE ===
+function processImageSize(html){
+  // Handle ![alt](src){width=50%} -> set width attribute
+  return html.replace(/<img([^>]*?)src="([^"]+)"([^>]*?)>/g,(m,pre,src,post)=>{
+    return m; // basic passthrough, width handled below
+  }).replace(/(<img[^>]+>)\{width=(\d+%?)\}/g,(m,img,w)=>{
+    return img.replace('>','" style="width:'+w+';display:block;margin:0 auto">').replace('""','"');
+  });
+}
 
 // === UNDO-SAFE TEXT HELPERS ===
 // Uses execCommand to preserve browser native Ctrl+Z / Ctrl+Y
@@ -1277,7 +1390,17 @@ function ins(type){
     perf:'*Table N. Performance comparison.*\n| Method | Accuracy | Precision | Recall | F1 | AUC | Latency (ms) |\n|--------|----------|-----------|--------|-----|-----|-------------|\n| A | | | | | | |\n| B | | | | | | |\n\nStatistical significance: [test name], p < [value]\n\n',
     confmat:'*Table N. Confusion matrix (test set, N samples).*\n|  | Predicted Positive | Predicted Negative |\n|--|-------------------|-------------------|\n| **Actual Positive** | TP = | FN = |\n| **Actual Negative** | FP = | TN = |\n\nAccuracy: , Precision: , Recall: , F1: \n\n',
     arch:'```mermaid\ngraph LR\n  A[Input Layer] --> B[Processing Module]\n  B --> C[Security Check]\n  C --> D[Output]\n```\n*Fig. N. [System architecture overview.]*\n\n',
-    ethics:'### Ethics and Responsible Disclosure\n\n- **Dual-use considerations:**\n- **Data / human subjects:**\n- **Responsible disclosure:**\n  - Discovery date:\n  - Vendor notified:\n  - Patch date:\n  - Public disclosure:\n- **Compliance:** [ISO 27001 / 42001 / IRB / other]\n\n'
+    ethics:'### Ethics and Responsible Disclosure\n\n- **Dual-use considerations:**\n- **Data / human subjects:**\n- **Responsible disclosure:**\n  - Discovery date:\n  - Vendor notified:\n  - Patch date:\n  - Public disclosure:\n- **Compliance:** [ISO 27001 / 42001 / IRB / other]\n\n',
+
+    fn:'[^1]\n\n[^1]: [각주 내용을 여기에 작성합니다.]\n',
+
+    subfig:'```figgrid caption="Fig. N. [전체 캡션]" cols=2\n![A](figures/a.png){sub="a" cap="[설명 A]"}\n![B](figures/b.png){sub="b" cap="[설명 B]"}\n```\n\n',
+
+    imgfmt:'![Fig. N. 캡션](figures/image.png){width=60%}\n*Fig. N. [그림 설명.]*\n\n',
+
+    timeline:'```mermaid\ntimeline\n    title [타임라인 제목]\n    section Phase 1\n        Step 1 : Description\n        Step 2 : Description\n    section Phase 2\n        Step 3 : Description\n        Step 4 : Description\n```\n*Fig. N. [타임라인 설명.]*\n\n',
+
+    flowchart:'```mermaid\nsequenceDiagram\n    participant C as Client\n    participant S as Server\n    participant A as Attacker\n    C->>S: Request\n    A->>S: Injected payload\n    S->>C: Compromised response\n```\n*Fig. N. [프로토콜/공격 흐름도.]*\n\n'
   };
   inp.focus();
   typeText(T[type]||'');
