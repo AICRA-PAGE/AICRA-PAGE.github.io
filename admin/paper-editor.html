@@ -387,15 +387,56 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
   </div>
   <div class="ref-panel" id="refPanel">
     <div class="ref-head"><span>참고문헌</span><button class="bt" style="padding:1px 4px;font-size:.5rem" onclick="toggleRef()">X</button></div>
-    <div style="padding:4px 6px;border-bottom:1px solid var(--line);display:flex;gap:2px;flex-shrink:0">
-      <input id="schQuery" placeholder="논문 검색..." style="flex:1;padding:3px 5px;border:1px solid var(--line);border-radius:3px;font-size:.6rem;background:var(--panel);color:var(--text)">
-      <button class="bt" onclick="searchScholar()" style="font-size:.52rem;padding:2px 4px">검색</button>
-      <button class="bt" onclick="openGScholar()" style="font-size:.52rem;padding:2px 4px" title="Google Scholar에서 열기">G</button>
+    <!-- Search -->
+    <div style="padding:4px 6px;border-bottom:1px solid var(--line);flex-shrink:0">
+      <div style="display:flex;gap:2px;margin-bottom:3px">
+        <input id="schQuery" placeholder="논문 검색..." style="flex:1;padding:3px 5px;border:1px solid var(--line);border-radius:3px;font-size:.6rem;background:var(--panel);color:var(--text)">
+        <button class="bt" onclick="searchScholar()" style="font-size:.5rem;padding:2px 4px">검색</button>
+      </div>
+      <div style="display:flex;gap:2px;flex-wrap:wrap">
+        <button class="bt" onclick="openGScholar()" style="font-size:.46rem;padding:1px 3px" title="Google Scholar">Scholar</button>
+        <button class="bt" onclick="openDB('riss')" style="font-size:.46rem;padding:1px 3px" title="한국교육학술정보원">RISS</button>
+        <button class="bt" onclick="openDB('kci')" style="font-size:.46rem;padding:1px 3px" title="한국학술지인용색인">KCI</button>
+        <button class="bt" onclick="openDB('dbpia')" style="font-size:.46rem;padding:1px 3px" title="누리미디어">DBpia</button>
+        <button class="bt" onclick="openDB('kiss')" style="font-size:.46rem;padding:1px 3px" title="한국학술정보">KISS</button>
+        <button class="bt" onclick="openDB('scienceon')" style="font-size:.46rem;padding:1px 3px" title="과학기술정보">ScienceON</button>
+      </div>
     </div>
-    <div id="schResults" style="max-height:120px;overflow-y:auto;font-size:.6rem;display:none;border-bottom:1px solid var(--line)"></div>
+    <div id="schResults" style="max-height:100px;overflow-y:auto;font-size:.6rem;display:none;border-bottom:1px solid var(--line)"></div>
+    <!-- Reference list -->
     <div class="ref-list" id="refList"></div>
+    <!-- Auto-format reference -->
+    <div style="padding:4px 6px;border-top:1px solid var(--line);flex-shrink:0;font-size:.58rem">
+      <div style="display:flex;gap:2px;margin-bottom:2px;align-items:center">
+        <span style="font-weight:600;color:var(--brand)">자동 생성</span>
+        <select id="refStyle" style="padding:1px 3px;border:1px solid var(--line);border-radius:2px;font-size:.55rem;background:var(--panel);color:var(--text)">
+          <option value="ieee">IEEE</option>
+          <option value="apa">APA</option>
+          <option value="chicago">Chicago</option>
+          <option value="vancouver">Vancouver</option>
+          <option value="kr">한국학술지</option>
+        </select>
+        <button class="bt" onclick="showRefGuide()" style="font-size:.48rem;padding:1px 3px">가이드</button>
+      </div>
+      <input id="rf-author" placeholder="저자 (예: Kim, J. / 김철수)" style="width:100%;padding:2px 4px;margin:1px 0;border:1px solid var(--line);border-radius:2px;font-size:.55rem;background:var(--panel);color:var(--text)">
+      <input id="rf-title" placeholder="논문 제목" style="width:100%;padding:2px 4px;margin:1px 0;border:1px solid var(--line);border-radius:2px;font-size:.55rem;background:var(--panel);color:var(--text)">
+      <div style="display:flex;gap:2px">
+        <input id="rf-venue" placeholder="저널/학회명" style="flex:2;padding:2px 4px;margin:1px 0;border:1px solid var(--line);border-radius:2px;font-size:.55rem;background:var(--panel);color:var(--text)">
+        <input id="rf-year" placeholder="연도" style="flex:1;padding:2px 4px;margin:1px 0;border:1px solid var(--line);border-radius:2px;font-size:.55rem;background:var(--panel);color:var(--text)">
+      </div>
+      <div style="display:flex;gap:2px">
+        <input id="rf-vol" placeholder="권(호)" style="flex:1;padding:2px 4px;margin:1px 0;border:1px solid var(--line);border-radius:2px;font-size:.55rem;background:var(--panel);color:var(--text)">
+        <input id="rf-pages" placeholder="pp." style="flex:1;padding:2px 4px;margin:1px 0;border:1px solid var(--line);border-radius:2px;font-size:.55rem;background:var(--panel);color:var(--text)">
+        <input id="rf-doi" placeholder="DOI" style="flex:1;padding:2px 4px;margin:1px 0;border:1px solid var(--line);border-radius:2px;font-size:.55rem;background:var(--panel);color:var(--text)">
+      </div>
+      <div style="display:flex;gap:2px;margin-top:2px">
+        <div id="rf-preview" style="flex:1;font-size:.52rem;color:var(--muted);padding:2px;min-height:14px;line-height:1.3"></div>
+        <button class="bt" onclick="addFormattedRef()" style="font-size:.52rem;padding:2px 5px;background:var(--brand);color:#fff;border-color:var(--brand)">추가</button>
+      </div>
+    </div>
+    <!-- Simple add (fallback) -->
     <div class="ref-add">
-      <input id="refInput" placeholder="저자, 제목, 학회/저널, 연도">
+      <input id="refInput" placeholder="직접 입력 (자유 형식)">
       <button onclick="addRef()">+</button>
     </div>
   </div>
@@ -3142,6 +3183,67 @@ function addScholarRef(el){
 function openGScholar(){
   const q=document.getElementById('schQuery').value.trim();
   if(q)window.open('https://scholar.google.com/scholar?q='+encodeURIComponent(q),'_blank');
+}
+function openDB(db){
+  const q=document.getElementById('schQuery').value.trim()||document.getElementById('ti').value.trim();
+  if(!q){alert('검색어를 입력해 주세요.');return;}
+  const urls={
+    riss:'https://www.riss.kr/search/Search.do?queryText='+encodeURIComponent(q),
+    kci:'https://www.kci.go.kr/kciportal/po/search/poSearList.kci?searchBean.query='+encodeURIComponent(q),
+    dbpia:'https://www.dbpia.co.kr/search/topSearch?searchOption=all&query='+encodeURIComponent(q),
+    kiss:'https://kiss.kstudy.com/ExternalLink/ExternalLink?pub=KSTUDY&key=search&type=keyword&query='+encodeURIComponent(q),
+    scienceon:'https://scienceon.kisti.re.kr/srch/selectPORSrchArticle.do?query='+encodeURIComponent(q)
+  };
+  if(urls[db])window.open(urls[db],'_blank');
+}
+
+// === REFERENCE AUTO-FORMATTER ===
+function formatRef(){
+  const style=document.getElementById('refStyle').value;
+  const a=document.getElementById('rf-author').value.trim();
+  const t=document.getElementById('rf-title').value.trim();
+  const v=document.getElementById('rf-venue').value.trim();
+  const y=document.getElementById('rf-year').value.trim();
+  const vol=document.getElementById('rf-vol').value.trim();
+  const pg=document.getElementById('rf-pages').value.trim();
+  const doi=document.getElementById('rf-doi').value.trim();
+  if(!a&&!t)return '';
+  const doiStr=doi?(' DOI: '+doi):'';
+  const pgStr=pg?(', pp. '+pg):'';
+  const volStr=vol?(', vol. '+vol):'';
+  switch(style){
+    case 'ieee':return a+', "'+t+'," '+(v?'in '+v:'')+volStr+pgStr+(y?', '+y:'')+'.'+doiStr;
+    case 'apa':return a+' ('+(y||'n.d.')+'). '+t+'. '+(v||'')+(vol?', '+vol:'')+pgStr+'.'+doiStr;
+    case 'chicago':return a+'. "'+t+'." '+(v||'')+(vol?' '+vol:'')+', no. '+(vol||'')+(y?' ('+y+')':'')+pgStr+'.'+doiStr;
+    case 'vancouver':return a+'. '+t+'. '+(v||'')+'. '+(y||'')+';'+(vol||'')+pgStr+'.'+doiStr;
+    case 'kr':return a+', "'+t+'," '+(v||'')+(vol?', '+vol:'')+pgStr+(y?', '+y:'')+'.';
+    default:return a+'. '+t+'. '+v+', '+y+'.';
+  }
+}
+// Live preview
+['rf-author','rf-title','rf-venue','rf-year','rf-vol','rf-pages','rf-doi','refStyle'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el)el.addEventListener('input',()=>{document.getElementById('rf-preview').textContent=formatRef();});
+  if(el&&el.tagName==='SELECT')el.addEventListener('change',()=>{document.getElementById('rf-preview').textContent=formatRef();});
+});
+function addFormattedRef(){
+  const formatted=formatRef();
+  if(!formatted){alert('저자와 제목을 입력해 주세요.');return;}
+  refs.push(formatted);renderRefs();render();
+  ['rf-author','rf-title','rf-venue','rf-year','rf-vol','rf-pages','rf-doi'].forEach(id=>{document.getElementById(id).value='';});
+  document.getElementById('rf-preview').textContent='';
+  document.getElementById('as').textContent='참고문헌 ['+refs.length+'] 추가됨';
+}
+
+function showRefGuide(){
+  const guide='[참고문헌 작성 가이드]\n\n'+
+    '== IEEE ==\n저자, "제목," 학회/저널명, 권, pp.페이지, 연도.\n예: J. Kim and S. Lee, "AI Security Framework," in Proc. IEEE S&P, pp. 1-15, 2025.\n\n'+
+    '== APA ==\n저자 (연도). 제목. 저널명, 권(호), 페이지.\n예: Kim, J., & Lee, S. (2025). AI Security Framework. IEEE TDSC, 22(3), 1-15.\n\n'+
+    '== 한국학술지 ==\n저자명, "논문제목," 학회명, 권(호), pp.페이지, 연도.\n예: 김철수, "AI 보안 프레임워크," 정보보호학회논문지, 35(2), pp.1-15, 2025.\n\n'+
+    '== Chicago ==\n저자. "제목." 저널 권, no.호 (연도): 페이지.\n\n'+
+    '== Vancouver ==\n저자. 제목. 저널. 연도;권(호):페이지.\n\n'+
+    '[필수 항목] 저자, 제목, 연도\n[권장 항목] 저널/학회명, 권호, 페이지, DOI';
+  alert(guide);
 }
 
 // === PAPER TYPE + SUBMISSION OPTIONS ===
