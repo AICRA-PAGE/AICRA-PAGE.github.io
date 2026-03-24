@@ -11,9 +11,10 @@ description: AI Security Research and Analysis
     <p class="page-description">
       AI Security research, analysis, and insight.
     </p>
-    <a href="/admin/editor.html" class="publish-btn" style="display:inline-block; margin-top:12px; padding:8px 20px; background:#2F5D50; color:#fff; border-radius:6px; text-decoration:none; font-size:0.85rem; font-weight:600;">
+    <a href="/admin/editor.html" id="write-blog-btn" class="publish-btn" style="display:none; margin-top:12px; padding:8px 20px; background:#2F5D50; color:#fff; border-radius:6px; text-decoration:none; font-size:0.85rem; font-weight:600;">
       게시물 작성하기
     </a>
+    <p id="write-blog-hint" style="font-size:0.75rem;color:#8b8580;margin-top:10px;display:none">Collaborator 로그인 후 작성 버튼이 표시됩니다.</p>
   </header>
 
   <nav class="category-filter">
@@ -61,3 +62,12 @@ description: AI Security Research and Analysis
   </div>
   {% endif %}
 </div>
+
+<script src="/assets/js/auth-guard.js"></script>
+<script>
+aicraAuth.checkAccess(
+  function(){document.getElementById('write-blog-btn').style.display='inline-block';},
+  function(){document.getElementById('write-blog-hint').style.display='block';},
+  function(){document.getElementById('write-blog-hint').style.display='block';}
+);
+</script>

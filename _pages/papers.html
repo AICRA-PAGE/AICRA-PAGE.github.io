@@ -9,9 +9,10 @@ description: "AICRA 연구 논문 및 기술 보고서"
   <header style="text-align:center;margin-bottom:1.5rem;">
     <h1 style="font-size:1.5rem;color:#2f5d50;">Research Papers</h1>
     <p style="color:#6b665c;font-size:0.88rem;">AI Security & Information Security Research</p>
-    <a href="/admin/paper-editor.html" style="display:inline-block;margin-top:10px;padding:7px 18px;background:#2f5d50;color:#fff;border-radius:6px;text-decoration:none;font-size:0.82rem;font-weight:600;">
+    <a href="/admin/paper-editor.html" id="write-paper-btn" style="display:none;margin-top:10px;padding:7px 18px;background:#2f5d50;color:#fff;border-radius:6px;text-decoration:none;font-size:0.82rem;font-weight:600;">
       Write Paper
     </a>
+    <p id="write-paper-hint" style="font-size:0.72rem;color:#8b8580;margin-top:10px;display:none">Collaborator 로그인 후 작성 버튼이 표시됩니다.</p>
   </header>
 
   <!-- Domain Filter -->
@@ -87,7 +88,14 @@ description: "AICRA 연구 논문 및 기술 보고서"
   {% endif %}
 </div>
 
+<script src="/assets/js/auth-guard.js"></script>
 <script>
+// Show write button only for collaborators
+aicraAuth.checkAccess(
+  function(){document.getElementById('write-paper-btn').style.display='inline-block';},
+  function(){document.getElementById('write-paper-hint').style.display='block';},
+  function(){document.getElementById('write-paper-hint').style.display='block';}
+);
 function filterDomain(domain){
   document.querySelectorAll('.df').forEach(b=>{b.style.background='#fff';b.style.color='#44403C';});
   event.target.style.background='#2f5d50';event.target.style.color='#fff';
