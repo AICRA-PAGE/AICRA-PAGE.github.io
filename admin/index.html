@@ -6,102 +6,66 @@
   <title>AICRA - Content Management</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', 'Segoe UI', sans-serif;
-      background: #F5F3ED;
-      color: #1C1917;
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', 'Segoe UI', sans-serif; background: #F5F3ED; color: #1C1917; }
+    .landing {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 100vh; padding: 2rem; text-align: center;
     }
-    .admin-landing {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 2rem;
-      text-align: center;
+    .landing.hidden { display: none; }
+    .logo { width: 72px; height: 72px; margin-bottom: 1.2rem; }
+    h1 { font-size: 1.4rem; font-weight: 700; color: #2F5D50; margin-bottom: 0.2rem; }
+    .subtitle { font-size: 0.85rem; color: #6B665C; margin-bottom: 2rem; }
+    .card {
+      background: white; border-radius: 12px; padding: 1.8rem 2rem; max-width: 440px; width: 100%;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 1.5rem;
     }
-    .admin-logo { width: 80px; height: 80px; margin-bottom: 1.5rem; }
-    .admin-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #2F5D50;
-      margin-bottom: 0.25rem;
+    .card h3 { font-size: 0.95rem; color: #2F5D50; margin-bottom: 1rem; }
+    .card ul { text-align: left; list-style: none; padding: 0; }
+    .card li { padding: 0.45rem 0; border-bottom: 1px solid #f0ede6; font-size: 0.82rem; color: #44403C; }
+    .card li:last-child { border-bottom: none; }
+    .card li strong { color: #2F5D50; }
+    .btn-enter {
+      display: inline-block; padding: 12px 32px; background: #2F5D50; color: white;
+      border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600;
+      cursor: pointer; transition: background 0.2s; margin-top: 0.5rem;
     }
-    .admin-subtitle {
-      font-size: 0.9rem;
-      color: #6B665C;
-      margin-bottom: 2rem;
-    }
-    .admin-info {
-      background: white;
-      border-radius: 12px;
-      padding: 2rem;
-      max-width: 480px;
-      width: 100%;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-      margin-bottom: 1.5rem;
-    }
-    .admin-info h3 {
-      font-size: 1rem;
-      color: #2F5D50;
-      margin-bottom: 1rem;
-    }
-    .admin-info ul {
-      text-align: left;
-      list-style: none;
-      padding: 0;
-    }
-    .admin-info li {
-      padding: 0.5rem 0;
-      border-bottom: 1px solid #f0ede6;
-      font-size: 0.85rem;
-      color: #44403C;
-    }
-    .admin-info li:last-child { border-bottom: none; }
-    .admin-info li strong { color: #2F5D50; }
-    .admin-note {
-      font-size: 0.8rem;
-      color: #8B8580;
-      max-width: 480px;
-      line-height: 1.5;
-      margin-top: 1rem;
-    }
-    .admin-note a { color: #2F5D50; }
+    .btn-enter:hover { background: #245045; }
+    .note { font-size: 0.75rem; color: #8B8580; max-width: 440px; line-height: 1.5; margin-top: 1rem; }
+    .note a { color: #2F5D50; }
   </style>
 </head>
 <body>
-  <div class="admin-landing" id="landing">
-    <img src="/assets/img/logo.svg" alt="AICRA" class="admin-logo">
-    <div class="admin-title">AICRA Content Management</div>
-    <div class="admin-subtitle">AI Security Research Association</div>
+  <div class="landing" id="landing">
+    <img src="/assets/img/logo.svg" alt="AICRA" class="logo">
+    <h1>AICRA Content Management</h1>
+    <p class="subtitle">AI Security Research Association</p>
 
-    <div class="admin-info">
-      <h3>Welcome, Collaborator</h3>
+    <div class="card">
+      <h3>Collaborator Guide</h3>
       <ul>
-        <li><strong>Blog Posts</strong> - AI 보안 연구 포스트 작성 및 편집</li>
-        <li><strong>Site Pages</strong> - About, Team, News, Community, Publications 편집</li>
+        <li><strong>Blog Posts</strong> - AI 보안 연구 포스트 작성/편집</li>
+        <li><strong>Pages</strong> - About, Team, News, Community, Publications 편집</li>
         <li><strong>Media</strong> - 이미지, SVG, 사진 업로드 관리</li>
       </ul>
     </div>
 
-    <p class="admin-note">
-      GitHub 계정으로 로그인하면 CMS 편집기가 열립니다.<br>
-      리포지토리 collaborator 권한이 필요합니다.<br>
-      문의: <a href="https://github.com/AICRA-PAGE/AICRA-PAGE.github.io/issues">GitHub Issues</a>
+    <button class="btn-enter" onclick="startCMS()">CMS 시작하기</button>
+
+    <p class="note">
+      GitHub 리포지토리 collaborator 권한이 필요합니다.<br>
+      권한 요청: <a href="https://github.com/AICRA-PAGE/AICRA-PAGE.github.io/issues" target="_blank">GitHub Issues</a>
+      &nbsp;|&nbsp;
+      <a href="https://aicra-page.github.io" target="_blank">블로그 바로가기</a>
     </p>
   </div>
 
   <script>
-    // Hide landing page once CMS loads
-    const observer = new MutationObserver(() => {
-      const cms = document.getElementById('nc-root') || document.querySelector('[class*="cms"]');
-      if (cms) {
-        document.getElementById('landing').style.display = 'none';
-        observer.disconnect();
-      }
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
+    function startCMS() {
+      document.getElementById('landing').classList.add('hidden');
+      var s = document.createElement('script');
+      s.src = 'https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js';
+      document.body.appendChild(s);
+    }
   </script>
-  <script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>
 </body>
 </html>
