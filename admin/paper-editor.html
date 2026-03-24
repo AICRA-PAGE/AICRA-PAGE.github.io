@@ -252,6 +252,7 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
   <button class="bt" onclick="ghSave()" title="GitHub 리포지토리에 저장">저장</button>
   <button class="bt" onclick="ghLoad()" title="저장된 문서 불러오기">불러오기</button>
   <button class="bt" onclick="ghLock()" title="문서 잠금/해제 (저자만)" id="lockBtn">잠금</button>
+  <button class="bt" onclick="showNameMapModal()" title="GitHub ID에 실명/소속을 매핑">저자 정보</button>
   <div class="spacer"></div>
   <button class="bt" onclick="genAbstract()" title="논문 본문에서 구조화 초록을 자동 생성합니다">초록 생성</button>
   <button class="bt" onclick="genPPT()" title="논문 내용으로 발표용 슬라이드(.pptx)를 생성합니다">발표자료</button>
@@ -717,19 +718,20 @@ function insertFootnote(){
   const existing=(inp.value.match(/\[\^\d+\]/g)||[]);
   const nums=existing.map(m=>parseInt(m.match(/\d+/)[0]));
   const next=nums.length?Math.max(...nums)+1:1;
-  // Insert [^N] at cursor
-  typeText('[^'+next+']');
-  // Save cursor position, then append definition at end
-  const pos=inp.selectionStart;
-  const val=inp.value;
+  const ref='[^'+next+']';
   const def='\n\n[^'+next+']: ';
-  // Move to end and append
-  inp.setSelectionRange(val.length,val.length);
-  typeText(def);
-  // Move cursor back to after the [^N] we inserted, then move to the definition to type
-  // Actually, move to the definition so user can type immediately
-  inp.setSelectionRange(inp.value.length,inp.value.length);
+  // Insert ref at cursor + def at end in one operation (reliable undo)
+  const pos=inp.selectionStart;
+  const before=inp.value.substring(0,pos);
+  const after=inp.value.substring(inp.selectionEnd);
+  const newVal=before+ref+after+def;
+  // Use replaceAll for reliable insertion
+  replaceAll(newVal);
+  // Move cursor to the definition (end of document) so user can type
+  const defPos=newVal.length;
+  inp.setSelectionRange(defPos,defPos);
   inp.dispatchEvent(new Event('input'));
+  document.getElementById('as').textContent='각주 '+next+' 삽입됨';
 }
 
 // === VENUE FORMAT TEMPLATES ===
@@ -2431,6 +2433,22 @@ function validatePaper(){
   issues.push(wc>=500?'[+] '+wc+' words':'[!] '+wc+' words');
   if(document.getElementById('ab').value||t.includes(':::abstract'))issues.push('[+] Abstract');
   else issues.push('[-] No abstract');
+  // Citation consistency
+  const citeNums=(t.match(/\[cite:(\d+)\]/g)||[]).map(m=>parseInt(m.match(/\d+/)[0]));
+  const uniqueCites=[...new Set(citeNums)].sort((a,b)=>a-b);
+  if(uniqueCites.length>0&&refs.length>0){
+    const maxCite=Math.max(...uniqueCites);
+    if(maxCite>refs.length)issues.push('[!] [cite:'+maxCite+'] 사용했으나 참고문헌은 '+refs.length+'개만 등록');
+    const unused=[];for(let i=1;i<=refs.length;i++){if(!uniqueCites.includes(i))unused.push(i);}
+    if(unused.length)issues.push('[!] 미인용 참고문헌: ['+unused.join(', ')+']');
+    else if(maxCite<=refs.length)issues.push('[+] 인용-참고문헌 정합');
+  }
+  // Footnote consistency
+  const fnRefs=(t.match(/\[\^(\d+)\]/g)||[]).map(m=>parseInt(m.match(/\d+/)[0]));
+  const fnDefs=(t.match(/^\[\^(\d+)\]:/gm)||[]).map(m=>parseInt(m.match(/\d+/)[0]));
+  const undefinedFn=fnRefs.filter(n=>!fnDefs.includes(n));
+  if(undefinedFn.length)issues.push('[!] 정의 없는 각주: [^'+[...new Set(undefinedFn)].join('], [^')+']');
+  else if(fnRefs.length)issues.push('[+] 각주 정합');
   let sc=0;sc+=Math.min(secs*3,18);sc+=(eqs>0?8:0);sc+=(cites>0?8:0);sc+=(refs.length>0?8:0);
   sc+=(wc>=1000?12:Math.floor(wc/100));sc+=(t.match(/threat|위협/i)?10:0);sc+=(t.match(/ethic|disclosure/i)?6:0);
   sc+=(t.match(/introduction|서론/i)?5:0);sc+=(t.match(/conclusion|결론/i)?5:0);
@@ -2783,10 +2801,51 @@ document.addEventListener('mouseup',()=>rs=false);
 <script src="/assets/js/doc-manager.js"></script>
 <script src="/assets/js/auth-guard.js"></script>
 <script>
-// === COLLABORATOR AUTHOR SYSTEM (all-dropdown) ===
+// === COLLABORATOR AUTHOR SYSTEM (all-dropdown + name mapping) ===
 let collabList=[],selectedCoauthors=[],selectedCorr=[];
+let nameMap={}; // {login: {name:'홍길동', affiliation:'AICRA', orcid:''}}
+
+function loadNameMap(){
+  try{const d=localStorage.getItem('aicra.author.map');if(d)nameMap=JSON.parse(d);}catch(e){}
+}
+function saveNameMap(){
+  localStorage.setItem('aicra.author.map',JSON.stringify(nameMap));
+}
+function getDisplayName(login){
+  const m=nameMap[login];
+  return m&&m.name?m.name+' ('+login+')':login;
+}
+function setNameMapping(login,name,affiliation){
+  nameMap[login]={name:name||'',affiliation:affiliation||''};
+  saveNameMap();
+}
+function showNameMapModal(){
+  let html='<div style="font-size:.75rem;line-height:1.6"><p style="color:var(--muted);margin-bottom:8px">GitHub ID에 실명과 소속을 매핑합니다. 논문 저자 표시에 사용됩니다.</p>';
+  for(const c of collabList){
+    const m=nameMap[c.login]||{name:'',affiliation:''};
+    html+='<div style="display:flex;gap:4px;align-items:center;margin-bottom:4px;padding:4px;border-bottom:1px solid var(--line)"><img src="'+c.avatar+'" style="width:20px;height:20px;border-radius:50%"><b style="min-width:80px;font-size:.68rem">'+c.login+'</b><input id="nm-'+c.login+'" value="'+m.name+'" placeholder="성명" style="flex:1;padding:2px 5px;border:1px solid var(--line);border-radius:3px;font-size:.68rem;background:var(--panel);color:var(--text)"><input id="af-'+c.login+'" value="'+m.affiliation+'" placeholder="소속" style="flex:1;padding:2px 5px;border:1px solid var(--line);border-radius:3px;font-size:.68rem;background:var(--panel);color:var(--text)"></div>';
+  }
+  html+='</div>';
+  // Reuse absModal structure with different content
+  const modal=document.getElementById('loadModal');
+  modal.querySelector('.modal-head span').textContent='저자 정보 매핑';
+  modal.querySelector('.modal-body').innerHTML=html;
+  modal.querySelector('.modal-foot').innerHTML='<button class="bt" onclick="closeModal(\'loadModal\')">취소</button><button class="bt p" onclick="applyNameMap()">저장</button>';
+  modal.classList.add('show');
+}
+function applyNameMap(){
+  for(const c of collabList){
+    const name=(document.getElementById('nm-'+c.login)||{}).value||'';
+    const aff=(document.getElementById('af-'+c.login)||{}).value||'';
+    if(name||aff)setNameMapping(c.login,name,aff);
+  }
+  populateAuthorUI();
+  closeModal('loadModal');
+  document.getElementById('as').textContent='저자 정보 저장됨';
+}
 
 async function fetchCollaborators(){
+  loadNameMap();
   const cached=sessionStorage.getItem('aicra.collabs');
   if(cached){try{const d=JSON.parse(cached);if(Date.now()-d.at<600000){collabList=d.list;populateAuthorUI();return;}}catch(e){}}
   const token=docManager.getToken();if(!token)return;
@@ -2803,26 +2862,24 @@ async function fetchCollaborators(){
 function populateAuthorUI(){
   const sel=document.getElementById('au');
   sel.innerHTML='<option value="">-- 선택 --</option>';
-  for(const c of collabList)sel.innerHTML+='<option value="'+c.login+'">'+c.login+'</option>';
+  for(const c of collabList)sel.innerHTML+='<option value="'+c.login+'">'+getDisplayName(c.login)+'</option>';
   docManager.getUser().then(u=>{if(u)sel.value=u.login;updateAuthorDDs();});
 }
 
 function updateAuthorDDs(){
-  // Update co-author dropdown (exclude primary author + already selected)
   const author=document.getElementById('au').value;
   const coSel=document.getElementById('coau-add');
   coSel.innerHTML='<option value="">-- 추가 --</option>';
   for(const c of collabList){
     if(c.login===author||selectedCoauthors.includes(c.login))continue;
-    coSel.innerHTML+='<option value="'+c.login+'">'+c.login+'</option>';
+    coSel.innerHTML+='<option value="'+c.login+'">'+getDisplayName(c.login)+'</option>';
   }
-  // Update corresponding author dropdown (author + coauthors)
   const corrSel=document.getElementById('corr-add');
   corrSel.innerHTML='<option value="">-- 추가 (없으면 생략) --</option>';
   const all=[author,...selectedCoauthors].filter(Boolean);
   for(const login of all){
     if(selectedCorr.includes(login))continue;
-    corrSel.innerHTML+='<option value="'+login+'">'+login+'</option>';
+    corrSel.innerHTML+='<option value="'+login+'">'+getDisplayName(login)+'</option>';
   }
 }
 
@@ -2865,8 +2922,9 @@ function renderChips(areaId,list,removeFn){
     const c=collabList.find(x=>x.login===login);
     const isExt=!c;
     const av=c?'<img src="'+c.avatar+'" alt="">':'';
-    const num=areaId==='coau-chips'?(i+2)+'저자 ':''; // 2저자, 3저자...
-    return '<span class="chip'+(isExt?' ext':'')+'">'+av+num+login+'<span class="x" onclick="'+removeFn+'(\''+login+'\')">x</span></span>';
+    const num=areaId==='coau-chips'?(i+2)+'저자 ':'';
+    const dn=getDisplayName(login);
+    return '<span class="chip'+(isExt?' ext':'')+'">'+av+num+dn+'<span class="x" onclick="'+removeFn+'(\''+login+'\')">x</span></span>';
   }).join('');
 }
 
@@ -2950,7 +3008,21 @@ async function loadDoc(path){
     replaceAll(data.body);
     if(data.meta.title)document.getElementById('ti').value=data.meta.title;
     if(data.meta.author)document.getElementById('au').value=data.meta.author;
-    if(data.meta.authors)document.getElementById('coau').value=Array.isArray(data.meta.authors)?data.meta.authors.join(', '):data.meta.authors;
+    // Restore co-author chips
+    if(data.meta.authors){
+      const authors=Array.isArray(data.meta.authors)?data.meta.authors:data.meta.authors.split(',').map(s=>s.trim());
+      selectedCoauthors=authors.filter(a=>a&&a!==data.meta.author);
+      renderChips('coau-chips',selectedCoauthors,'removeCoauthor');
+      document.getElementById('coau').value=selectedCoauthors.join(', ');
+    }
+    // Restore corresponding author chips
+    if(data.meta.corresponding_author){
+      const corrs=data.meta.corresponding_author.split(',').map(s=>s.trim()).filter(Boolean);
+      selectedCorr=corrs;
+      renderChips('corr-chips',selectedCorr,'removeCorr');
+      document.getElementById('corr').value=selectedCorr.join(', ');
+    }
+    updateAuthorDDs();
     if(data.meta.abstract)document.getElementById('ab').value=data.meta.abstract;
     if(data.meta.keywords)document.getElementById('kw').value=Array.isArray(data.meta.keywords)?data.meta.keywords.join(', '):data.meta.keywords;
     if(data.meta.domain)document.getElementById('dm').value=data.meta.domain;
