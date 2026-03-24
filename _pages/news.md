@@ -15,11 +15,10 @@ description: "AICRA 연구회 동향, 세미나, 활동 소식"
 
 | 시기 | 활동 | 상태 |
 |------|------|------|
+| 1월 | 1월 정기 모임 (노코드 AD보안 + AI Red Teaming Playground LAB) | 완료 |
 | 1월 | AICRA 블로그 오픈 | 완료 |
-| 1월 | 1월 정기 모임 (노코드 AD보안 + AI Red Teaming LABS) | 완료 |
-| 2월 | AI 보안 위협 분석 시리즈 발행 | 진행중 |
+| 3월 | 3월 정기 모임 (논문 지도/피드백) | 완료 |
 | 3월 | OWASP LLM/Agentic Top 10 분석 | 완료 |
-| 3월 | 3월 정기 모임 | 완료 |
 | 상반기 | 제1회 AICRA 세미나 | 예정 |
 | 하반기 | AI 보안 가이드라인 발행 | 예정 |
 
@@ -48,7 +47,7 @@ description: "AICRA 연구회 동향, 세미나, 활동 소식"
 
 ### 2026년 1월 정기 모임 (2026.01.24)
 
-노코드를 이용한 AD(Active Directory) 보안 취약점 솔루션 개발과 AI Red Teaming Playground LABS에 대한 소개가 진행되었습니다.
+노코드를 이용한 AD(Active Directory) 보안 취약점 솔루션 개발 사례와 AICRA AI Red Teaming Playground LAB 소개가 진행되었습니다.
 
 *사진 준비 중*
 
