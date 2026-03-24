@@ -415,6 +415,7 @@ sequenceDiagram
   <div class="out" style="font-family:'Pretendard',sans-serif;font-size:.6rem;border:none">
   <b>Ctrl+B</b> 굵게 | <b>Ctrl+I</b> 기울임 | <b>Ctrl+K</b> 링크<br>
   <b>Ctrl+M</b> 수식 | <b>Ctrl+S</b> 저장 | <b>Tab</b> 들여쓰기<br>
+  <b>Ctrl+Shift+F</b> 각주 삽입 (자동 번호)<br>
   <b>Ctrl+Z</b> 되돌리기 | <b>Ctrl+Y</b> 다시 실행
   </div></div>
 
@@ -568,10 +569,32 @@ inp.addEventListener('keydown',e=>{
   if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();wrap('[','](url)');}
   if((e.ctrlKey||e.metaKey)&&e.key==='m'){e.preventDefault();wrap('$','$');}
   if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();save();document.getElementById('as').textContent='Saved';}
-  if((e.ctrlKey||e.metaKey)&&e.key==='z'){/* native undo - let browser handle */}
-  if((e.ctrlKey||e.metaKey)&&e.key==='y'){/* native redo - let browser handle */}
+  if((e.ctrlKey||e.metaKey)&&e.shiftKey&&(e.key==='f'||e.key==='F')){e.preventDefault();insertFootnote();}
+  if((e.ctrlKey||e.metaKey)&&e.key==='z'){/* native undo */}
+  if((e.ctrlKey||e.metaKey)&&e.key==='y'){/* native redo */}
 });
 function wrap(a,b){const s=inp.selectionStart,e=inp.selectionEnd,sel=inp.value.substring(s,e);inp.focus();inp.setSelectionRange(s,e);document.execCommand('insertText',false,a+sel+b);inp.dispatchEvent(new Event('input'));}
+
+// === FOOTNOTE SHORTCUT ===
+function insertFootnote(){
+  // Count existing footnotes to get next number
+  const existing=(inp.value.match(/\[\^\d+\]/g)||[]);
+  const nums=existing.map(m=>parseInt(m.match(/\d+/)[0]));
+  const next=nums.length?Math.max(...nums)+1:1;
+  // Insert [^N] at cursor
+  typeText('[^'+next+']');
+  // Save cursor position, then append definition at end
+  const pos=inp.selectionStart;
+  const val=inp.value;
+  const def='\n\n[^'+next+']: ';
+  // Move to end and append
+  inp.setSelectionRange(val.length,val.length);
+  typeText(def);
+  // Move cursor back to after the [^N] we inserted, then move to the definition to type
+  // Actually, move to the definition so user can type immediately
+  inp.setSelectionRange(inp.value.length,inp.value.length);
+  inp.dispatchEvent(new Event('input'));
+}
 
 // === VENUE FORMAT TEMPLATES ===
 function insTpl(type){
