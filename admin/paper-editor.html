@@ -3804,31 +3804,19 @@ async function loadSamplePaper(slug){
   if(inp.value.trim()&&!confirm('현재 내용이 샘플 논문으로 대체됩니다. 계속?'))return;
   try{
     document.getElementById('as').textContent='샘플 논문 로딩 중...';
-    const r=await fetch('/assets/samples/'+slug+'.txt');
+    const r=await fetch('/assets/samples/'+slug+'.json');
     if(!r.ok)throw new Error('File not found: '+slug);
-    const text=await r.text();
-    // Parse metadata (HTML comment format or YAML front matter)
-    let fm='',body='';
-    const commentMatch=text.match(/^<!--\s*PAPER-META\n([\s\S]*?)-->\n*([\s\S]*)$/);
-    const yamlMatch=text.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
-    if(commentMatch){fm=commentMatch[1].trim();body=commentMatch[2].trim();}
-    else if(yamlMatch){fm=yamlMatch[1];body=yamlMatch[2].trim();}
-    else{body=text.trim();}
-    if(fm||body){
-      // Extract metadata (handle quoted values with colons)
-      const getVal=(key)=>{
-        const qm=fm.match(new RegExp(key+':\\s*"([^"]*)"'));
-        if(qm)return qm[1].trim();
-        const sm=fm.match(new RegExp(key+':\\s*(.+)'));
-        return sm?sm[1].trim().replace(/^"|"$/g,''):'';
-      };
-      document.getElementById('ti').value=getVal('title');
-      document.getElementById('dm').value=getVal('domain');
-      const kwMatch=fm.match(/keywords:\s*\[([^\]]+)\]/);
-      if(kwMatch)document.getElementById('kw').value=kwMatch[1].replace(/"/g,'').trim();
-      const absMatch=fm.match(/abstract:\s*"([\s\S]*?)"\s*\n/);
-      if(absMatch)document.getElementById('ab').value=absMatch[1].trim();
-      // Load body into editor
+    const data=await r.json();
+    const meta=data.meta||{};
+    const body=data.body||'';
+    if(body){
+      // Apply metadata to editor fields
+      if(meta.title)document.getElementById('ti').value=meta.title;
+      if(meta.domain)document.getElementById('dm').value=meta.domain;
+      if(meta.keywords)document.getElementById('kw').value=meta.keywords;
+      if(meta.abstract)document.getElementById('ab').value=meta.abstract;
+      if(meta.status){const sel=document.getElementById('st-sel');if(sel)sel.value=meta.status;}
+      // Load body into editor (undo-safe)
       inp.focus();inp.select();
       document.execCommand('insertText',false,body);
       inp.dispatchEvent(new Event('input'));
