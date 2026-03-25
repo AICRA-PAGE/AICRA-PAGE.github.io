@@ -8,11 +8,12 @@
 // === CSS injection for tutorial highlight + widget ===
 const style=document.createElement('style');
 style.textContent=`
-.tutorial-highlight{outline:3px solid #b7791f !important;outline-offset:2px;animation:tutPulse 1.5s infinite;position:relative;z-index:91}
-@keyframes tutPulse{0%{outline-color:#b7791f}50%{outline-color:#e0a030}100%{outline-color:#b7791f}}
+.tutorial-highlight{outline:4px solid #e6a817 !important;outline-offset:3px;box-shadow:0 0 12px 3px rgba(230,168,23,.45) !important;animation:tutPulse 1.2s infinite;position:relative;z-index:91}
+@keyframes tutPulse{0%{outline-color:#e6a817;box-shadow:0 0 8px 2px rgba(230,168,23,.3)}50%{outline-color:#ffcc00;box-shadow:0 0 16px 4px rgba(255,204,0,.5)}100%{outline-color:#e6a817;box-shadow:0 0 8px 2px rgba(230,168,23,.3)}}
 #tutorialWidget{position:fixed;right:16px;bottom:16px;width:340px;max-height:420px;background:var(--panel,#fff);border:2px solid var(--brand,#2f5d50);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.18);z-index:92;font-family:'Pretendard',sans-serif;overflow:hidden;transition:all .3s ease}
-#tutorialWidget.minimized{width:140px;max-height:36px;cursor:pointer}
+#tutorialWidget.minimized{width:160px;max-height:36px;cursor:pointer}
 #tutorialWidget.minimized .tw-body,#tutorialWidget.minimized .tw-nav,#tutorialWidget.minimized .tw-progress{display:none}
+@media(max-width:600px){#tutorialWidget{width:calc(100vw - 16px);right:8px;bottom:8px;max-height:240px}#tutorialWidget.minimized{width:140px}}
 .tw-header{display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:var(--brand,#2f5d50);color:#fff;font-size:.68rem;font-weight:700;cursor:pointer;user-select:none}
 .tw-header button{background:none;border:none;color:#fff;cursor:pointer;font-size:.72rem;padding:0 4px}
 .tw-progress{height:3px;background:var(--line,#e8e5de);margin:0}
@@ -291,20 +292,26 @@ function createWidget(){
   _startModalObserver();
 }
 
+let _autoMinimized=false;
 function _startModalObserver(){
   const obs=new MutationObserver(()=>{
-    if(!widget||isMinimized)return;
-    // Check if any modal overlay is visible
+    if(!widget)return;
     const modals=document.querySelectorAll('.modal-overlay.show');
-    if(modals.length>0){
-      // Auto-minimize widget so it doesn't cover the modal
+    if(modals.length>0&&!isMinimized){
+      // Auto-minimize when modal opens
+      _autoMinimized=true;
       isMinimized=true;
       widget.classList.add('minimized');
       clearHighlights();
+    }else if(modals.length===0&&_autoMinimized&&isMinimized){
+      // Auto-restore when all modals close
+      _autoMinimized=false;
+      isMinimized=false;
+      widget.classList.remove('minimized');
+      renderWidget();
     }
   });
   obs.observe(document.body,{subtree:true,attributes:true,attributeFilter:['class']});
-  // Store observer for cleanup
   widget._obs=obs;
 }
 
@@ -420,6 +427,7 @@ window._tMinimize=function(){
   else clearHighlights();
 };
 window._tClose=function(){
+  localStorage.setItem('aicra.tutorial.done','true');
   clearHighlights();_cleanupWidget();
   if(widget){widget.remove();widget=null;}
 };
