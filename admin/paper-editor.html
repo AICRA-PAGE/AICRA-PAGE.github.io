@@ -10,6 +10,8 @@
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
 <style>
 :root{--bg:#f9f8f5;--panel:#fff;--text:#2a2a2a;--muted:#7a756c;--brand:#2f5d50;--brand2:#245045;--line:#e8e5de;--surface:#f3f1ec;--code-bg:#0f172a;--radius:6px;--accent:#b7791f}
 [data-theme=dark]{--bg:#1a1d23;--panel:#22262e;--text:#d4d0c8;--muted:#8a8578;--brand:#4da89a;--brand2:#3d8a7e;--line:#333840;--surface:#2a2e36;--code-bg:#0d1117}
@@ -283,6 +285,7 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
     <option value="MD">Markdown (.md)</option>
     <option value="TeX">LaTeX (.tex)</option>
     <option value="PPT">발표자료 (.pptx)</option>
+    <option value="DOCX">Word (.docx)</option>
   </select>
   <div class="sep"></div>
   <button class="bt" onclick="startTutorial()" title="기능 체험 튜토리얼" style="background:var(--accent);color:#fff;border-color:var(--accent)">튜토리얼</button>
@@ -3359,7 +3362,7 @@ function restore(){const d=localStorage.getItem('aicra.paper.v4');if(!d)return;c
 setInterval(save,30000);restore();
 function toggleDark(){document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'':'dark';localStorage.setItem('aicra.dark',document.documentElement.dataset.theme);}
 if(localStorage.getItem('aicra.dark')==='dark')document.documentElement.dataset.theme='dark';
-function toggleFocus(){focusMode=!focusMode;['metaBar','metaBar2','insBar','stBar'].forEach(id=>document.getElementById(id).style.display=focusMode?'none':'');}
+function toggleFocus(){focusMode=!focusMode;['metaBar','metaBar2','stBar'].forEach(id=>document.getElementById(id).style.display=focusMode?'none':'');document.getElementById('insBar').style.display='';}
 // === ABSTRACT GENERATOR (rule-based) ===
 function parseSections(text){
   const lines=text.split('\n');const secs=[];let cur=null;
@@ -4209,6 +4212,129 @@ function buildExportContent(title,body){
   const kwLine=kw?'\nkeywords: ['+kw.split(',').map(s=>'"'+s.trim()+'"').join(', ')+']':'';
   let refSec='';if(refs.length){refSec='\n\n---\n\n## References\n\n'+refs.map((r,i)=>'['+(i+1)+'] '+r).join('\n');}
   return'---\nlayout: paper\ntitle: "'+title+'"\nauthor: '+(au||'AICRA')+authors+'\ndate: '+today+'\nstatus: '+status+'\ndomain: "'+dm+'"\nabstract: "'+(ab||'')+'"'+kwLine+'\nlang: ko\n---\n\n'+body+refSec;
+}
+
+// === DOCX EXPORT ===
+async function exportDOCX(){
+  const D=window.docx;if(!D){alert('docx 라이브러리 로딩 중...');return;}
+  const title=document.getElementById('ti').value||'Untitled';
+  const au=document.getElementById('au').value||'AICRA';
+  const coau=document.getElementById('coau').value;
+  const ab=document.getElementById('ab').value;
+  const kw=document.getElementById('kw').value;
+  const t=inp.value;
+  document.getElementById('as').textContent='DOCX 생성 중...';
+
+  const children=[];
+  // Title
+  children.push(new D.Paragraph({children:[new D.TextRun({text:title,bold:true,size:32,font:'Times New Roman'})],alignment:D.AlignmentType.CENTER,spacing:{after:120}}));
+  // Authors
+  const allAuthors=[au];if(coau)coau.split(',').forEach(a=>allAuthors.push(a.trim()));
+  children.push(new D.Paragraph({children:[new D.TextRun({text:allAuthors.join(', '),size:22,font:'Times New Roman'})],alignment:D.AlignmentType.CENTER,spacing:{after:200}}));
+  // Abstract
+  if(ab){
+    children.push(new D.Paragraph({children:[new D.TextRun({text:'Abstract',bold:true,size:20,font:'Times New Roman'})],spacing:{before:200,after:80}}));
+    children.push(new D.Paragraph({children:[new D.TextRun({text:ab,italics:true,size:20,font:'Times New Roman'})],spacing:{after:120},alignment:D.AlignmentType.BOTH}));
+  }
+  // Keywords
+  if(kw){
+    children.push(new D.Paragraph({children:[new D.TextRun({text:'Keywords: ',bold:true,size:18,font:'Times New Roman'}),new D.TextRun({text:kw,size:18,font:'Times New Roman'})],spacing:{after:200}}));
+  }
+
+  // Parse body lines
+  const lines=t.split('\n');
+  let inCodeBlock=false,inEnv=false,envType='',envContent=[];
+  for(let i=0;i<lines.length;i++){
+    const line=lines[i];
+    // Code blocks
+    if(line.startsWith('```')){inCodeBlock=!inCodeBlock;continue;}
+    if(inCodeBlock){children.push(new D.Paragraph({children:[new D.TextRun({text:line,font:'Courier New',size:18})],shading:{fill:'F4F4F4'},spacing:{after:40}}));continue;}
+    // Environment blocks
+    if(line.startsWith(':::')){
+      if(inEnv){
+        const label=envType.charAt(0).toUpperCase()+envType.slice(1);
+        const envText=envContent.join('\n');
+        children.push(new D.Paragraph({children:[new D.TextRun({text:label+'. ',bold:true,size:20,font:'Times New Roman'}),new D.TextRun({text:envText,italics:envType==='proof',size:20,font:'Times New Roman'})],spacing:{before:100,after:100},border:{top:{style:D.BorderStyle.SINGLE,size:1,color:'CCCCCC'},bottom:{style:D.BorderStyle.SINGLE,size:1,color:'CCCCCC'}}}));
+        inEnv=false;envContent=[];
+      }else{
+        const m=line.match(/^:::(\w+)\s*(.*)/);
+        if(m){envType=m[1];inEnv=true;envContent=[];if(m[2])envContent.push(m[2]);}
+      }
+      continue;
+    }
+    if(inEnv){envContent.push(line);continue;}
+    // Headings
+    const hm=line.match(/^(#{1,4})\s+(.+)/);
+    if(hm){
+      const level=hm[1].length;
+      const hStyle=[D.HeadingLevel.HEADING_1,D.HeadingLevel.HEADING_2,D.HeadingLevel.HEADING_3,D.HeadingLevel.HEADING_4];
+      children.push(new D.Paragraph({children:[new D.TextRun({text:hm[2],bold:true,size:level===1?28:level===2?24:22,font:'Times New Roman'})],heading:hStyle[level-1],spacing:{before:240,after:80}}));
+      continue;
+    }
+    // Horizontal rule
+    if(line.match(/^---+$/)){children.push(new D.Paragraph({children:[],spacing:{after:80},border:{bottom:{style:D.BorderStyle.SINGLE,size:1,color:'999999'}}}));continue;}
+    // Table
+    if(line.startsWith('|')&&line.includes('|')){
+      const rows=[];let j=i;
+      while(j<lines.length&&lines[j].startsWith('|')){
+        if(!lines[j].match(/^\|[-\s:|]+\|$/)){
+          rows.push(lines[j].split('|').filter(c=>c.trim()).map(c=>c.trim()));
+        }
+        j++;
+      }
+      if(rows.length>0){
+        const tblRows=rows.map((r,ri)=>new D.TableRow({children:r.map(c=>new D.TableCell({children:[new D.Paragraph({children:[new D.TextRun({text:c,bold:ri===0,size:18,font:'Times New Roman'})]})],width:{size:Math.floor(9000/r.length),type:D.WidthType.DXA}}))}));
+        children.push(new D.Table({rows:tblRows,width:{size:9000,type:D.WidthType.DXA}}));
+        children.push(new D.Paragraph({children:[],spacing:{after:80}}));
+      }
+      i=j-1;continue;
+    }
+    // Caption lines
+    if(line.startsWith('*')&&line.endsWith('*')){
+      children.push(new D.Paragraph({children:[new D.TextRun({text:line.replace(/^\*|\*$/g,''),italics:true,size:18,font:'Times New Roman'})],alignment:D.AlignmentType.CENTER,spacing:{after:80}}));
+      continue;
+    }
+    // Math blocks
+    if(line.startsWith('$$')){
+      let mathContent='';let k=i+1;
+      while(k<lines.length&&!lines[k].startsWith('$$')){mathContent+=lines[k]+'\n';k++;}
+      children.push(new D.Paragraph({children:[new D.TextRun({text:mathContent.trim(),font:'Cambria Math',size:20})],alignment:D.AlignmentType.CENTER,spacing:{before:80,after:80}}));
+      i=k;continue;
+    }
+    // Regular paragraph (handle citations, footnotes, bold, italic)
+    if(line.trim()){
+      const runs=[];
+      let remaining=line;
+      // Simple inline parse
+      const parts=remaining.split(/(\*\*[^*]+\*\*|\*[^*]+\*|\[cite:\d+\]|\[\^\w+\])/g);
+      parts.forEach(p=>{
+        if(!p)return;
+        if(p.startsWith('**')&&p.endsWith('**')){runs.push(new D.TextRun({text:p.slice(2,-2),bold:true,size:20,font:'Times New Roman'}));}
+        else if(p.startsWith('*')&&p.endsWith('*')){runs.push(new D.TextRun({text:p.slice(1,-1),italics:true,size:20,font:'Times New Roman'}));}
+        else if(p.match(/\[cite:(\d+)\]/)){const n=p.match(/\d+/)[0];runs.push(new D.TextRun({text:'['+n+']',superScript:true,size:18,font:'Times New Roman'}));}
+        else if(p.match(/\[\^(\w+)\]/)){const n=p.match(/\w+/)[0];runs.push(new D.TextRun({text:n,superScript:true,size:16,font:'Times New Roman'}));}
+        else{runs.push(new D.TextRun({text:p,size:20,font:'Times New Roman'}));}
+      });
+      if(runs.length)children.push(new D.Paragraph({children:runs,spacing:{after:80},alignment:D.AlignmentType.BOTH}));
+    }else{
+      children.push(new D.Paragraph({children:[],spacing:{after:40}}));
+    }
+  }
+
+  // References section
+  if(refs.length){
+    children.push(new D.Paragraph({children:[new D.TextRun({text:'References',bold:true,size:24,font:'Times New Roman'})],heading:D.HeadingLevel.HEADING_2,spacing:{before:300,after:100}}));
+    refs.forEach((r,i)=>{
+      children.push(new D.Paragraph({children:[new D.TextRun({text:'['+(i+1)+'] '+r,size:18,font:'Times New Roman'})],spacing:{after:40},indent:{left:360,hanging:360}}));
+    });
+  }
+
+  // Build document
+  const doc=new D.Document({sections:[{properties:{page:{size:{width:12240,height:15840},margin:{top:1440,right:1440,bottom:1440,left:1440}}},children:children}]});
+  const blob=await D.Packer.toBlob(doc);
+  const fn=(docManager?docManager.slugify(title):title.replace(/\s+/g,'-'))+'.docx';
+  saveAs(blob,fn);
+  document.getElementById('as').textContent='DOCX 저장됨: '+fn;
 }
 
 async function ghLoad(){

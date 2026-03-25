@@ -315,7 +315,30 @@ function _startModalObserver(){
   widget._obs=obs;
 }
 
+let _verifyTimer=null;
+function _startVerifyPolling(step){
+  _stopVerifyPolling();
+  if(!step.verify||cur>=activeStory.length-1)return;
+  _verifyTimer=setInterval(()=>{
+    if(step.verify()){
+      _stopVerifyPolling();
+      // Show success toast in widget
+      const body=document.getElementById('twBody');
+      if(body){
+        const toast=document.createElement('div');
+        toast.style.cssText='background:var(--brand,#2f5d50);color:#fff;padding:4px 10px;border-radius:4px;font-size:.6rem;font-weight:700;margin-top:6px;text-align:center';
+        toast.textContent='[+] 잘했습니다! 다음 단계로 진행합니다...';
+        body.appendChild(toast);
+      }
+      // Auto-advance after brief pause
+      setTimeout(()=>{if(cur<activeStory.length-1){cur++;renderWidget();}},1200);
+    }
+  },800);
+}
+function _stopVerifyPolling(){if(_verifyTimer){clearInterval(_verifyTimer);_verifyTimer=null;}}
+
 function _cleanupWidget(){
+  _stopVerifyPolling();
   if(widget&&widget._obs){widget._obs.disconnect();widget._obs=null;}
 }
 
@@ -342,12 +365,15 @@ function renderWidget(){
   const nav=document.getElementById('twNav');
   nav.innerHTML=
     (cur>0?'<button onclick="window._tPrev()">&#9664; 이전</button>':'')+
-    (step.auto?'<button class="primary" onclick="window._tAuto()">자동 실행</button>':'')+
+    (step.auto?'<button onclick="window._tAuto()" title="직접 해보기 어려우면 데모로 실행합니다" style="border-color:var(--accent);color:var(--accent)">실행 (데모)</button>':'')+
     '<span class="spacer"></span>'+
     (!isLast?'<button onclick="window._tNext()">다음 &#9654;</button>':'<button class="primary" onclick="window._tFinish()">완료</button>');
 
   // Apply highlight
   applyHighlight(step.highlight);
+
+  // Start verify polling: if user does the action themselves, auto-advance
+  _startVerifyPolling(step);
 }
 
 function showRoleSelect(){
@@ -424,7 +450,7 @@ window._tMinimize=function(){
   isMinimized=!isMinimized;
   widget.classList.toggle('minimized',isMinimized);
   if(!isMinimized)renderWidget();
-  else clearHighlights();
+  else{clearHighlights();_stopVerifyPolling();}
 };
 window._tClose=function(){
   localStorage.setItem('aicra.tutorial.done','true');
