@@ -47,7 +47,7 @@ lang: ko
 
 ## 7. Evaluation
 
-### 7.1 Setup
+### 7.1 Sㅇㅇㅇ
 ### 7.2 Results
 ### 7.3 Comparison
 
