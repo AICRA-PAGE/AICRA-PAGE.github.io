@@ -473,6 +473,11 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
       <input id="refInput" placeholder="직접 입력 (자유 형식)">
       <button onclick="addRef()">+</button>
     </div>
+    <!-- BibTeX import -->
+    <div style="padding:4px 8px;border-top:1px solid var(--line)">
+      <button class="bt" onclick="document.getElementById('bibFileInput').click()" style="font-size:.52rem;width:100%;padding:3px">BibTeX 가져오기 (.bib)</button>
+      <input type="file" id="bibFileInput" accept=".bib,.bibtex" style="display:none" onchange="importBibTeX(this)">
+    </div>
   </div>
 </div>
 
@@ -1121,7 +1126,12 @@ F(df1, df2)=값, p=값, eta^2=값</div>
   <span>수식:<b id="eqc">0</b></span>
   <span>참고:<b id="rc">0</b></span>
   <span>~<b id="pg">0</b>쪽</span>
+  <span style="display:flex;align-items:center;gap:3px" title="목표 단어수">
+    <input id="wordTarget" type="number" placeholder="목표" style="width:50px;padding:1px 3px;border:1px solid var(--line);border-radius:3px;font-size:.55rem;background:var(--panel);color:var(--text)" onchange="updateWordTarget()">
+    <div style="width:60px;height:6px;background:var(--line);border-radius:3px;overflow:hidden"><div id="wordTargetBar" style="height:100%;width:0;background:var(--brand);transition:width .3s;border-radius:3px"></div></div>
+  </span>
   <span style="margin-left:auto"><span class="score sl" id="qs">0</span></span>
+  <span><button class="bt" onclick="showSnapshots()" style="font-size:.48rem;padding:1px 4px" title="이전 버전 복원">이력</button></span>
   <span id="as" style="color:var(--brand)"></span>
 </div>
 
@@ -1131,11 +1141,37 @@ function escHtml(s){const d=document.createElement('div');d.textContent=s;return
 let focusMode=false,refs=[];
 let envCounters={theorem:0,lemma:0,definition:0,corollary:0,proposition:0,algorithm:0};
 let eqCounter=0;
+// === SECTION CACHE for 200-page performance ===
+const sectionCache=new Map();
+let renderToken=0;
+function simpleHash(s){let h=0;for(let i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h|=0;}return h.toString(36);}
+// === SNAPSHOT SYSTEM ===
+const SNAP_KEY='aicra.paper.snapshots.v1';
+function saveSnapshot(){
+  const body=inp.value;if(!body.trim())return;
+  const hash=simpleHash(body);
+  const list=JSON.parse(localStorage.getItem(SNAP_KEY)||'[]');
+  if(list[0]&&list[0].hash===hash)return;
+  list.unshift({at:Date.now(),hash:hash,title:document.getElementById('ti').value,words:body.trim().split(/\s+/).length,body:body,refs:JSON.parse(JSON.stringify(refs))});
+  try{localStorage.setItem(SNAP_KEY,JSON.stringify(list.slice(0,20)));}catch(e){localStorage.setItem(SNAP_KEY,JSON.stringify(list.slice(0,5)));}
+}
+setInterval(saveSnapshot,5*60*1000);
 
-inp.addEventListener('input',debounce(()=>{render();},150));
+// Adaptive debounce: faster for short docs, slower for long docs
+function getDebounceMs(){const wc=inp.value.length;return wc>100000?400:wc>30000?250:150;}
+inp.addEventListener('input',()=>{clearTimeout(inp._dbt);inp._dbt=setTimeout(()=>{render();},getDebounceMs());});
 ['ti','kw','ab'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',debounce(()=>{render();},200));});
 ['dm','st-sel','au'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('change',()=>render());});
 function debounce(fn,ms){let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms);};}
+
+// === SCROLL SYNC (editor <-> preview) ===
+let _syncLock=false;
+inp.addEventListener('scroll',()=>{
+  if(_syncLock)return;_syncLock=true;
+  const ratio=inp.scrollHeight>inp.clientHeight?inp.scrollTop/(inp.scrollHeight-inp.clientHeight):0;
+  pv.scrollTop=ratio*(pv.scrollHeight-pv.clientHeight);
+  setTimeout(()=>{_syncLock=false;},50);
+});
 
 // Mermaid init
 if(window.mermaid){mermaid.initialize({startOnLoad:false,securityLevel:'loose',theme:'default'});}
@@ -1170,17 +1206,65 @@ function buildPreviewHeader(){
   return h;
 }
 
+// === TOC Builder ===
+function buildTOC(){
+  const heads=[...pv.querySelectorAll('h2,h3')];
+  if(heads.length<2)return '';
+  const slugCount={};
+  const items=heads.map(h=>{
+    let slug=h.textContent.toLowerCase().replace(/[^a-z0-9가-힣]/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');
+    if(slugCount[slug]){slugCount[slug]++;slug+='-'+slugCount[slug];}else{slugCount[slug]=1;}
+    h.id=slug;
+    return '<a href="#'+slug+'" style="display:block;padding:1px 0 1px '+(h.tagName==='H3'?'14':'0')+'px;font-size:'+(h.tagName==='H3'?'.68':'.74')+'rem;color:var(--brand,#2f5d50);text-decoration:none;line-height:1.5" onclick="event.preventDefault();document.getElementById(\''+slug+'\').scrollIntoView({behavior:\'smooth\'})">'+escHtml(h.textContent)+'</a>';
+  });
+  return '<nav style="border:1px solid #ddd;border-radius:6px;padding:10px 14px;margin-bottom:16px;background:#fafaf8"><div style="font-size:.7rem;font-weight:700;color:#555;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px">Table of Contents</div>'+items.join('')+'</nav>';
+}
+
+// === RENDER (section-cache for 200-page perf) ===
 function render(){
+  const token=++renderToken;
   const raw=inp.value;
   const headerHtml=buildPreviewHeader();
   if(!raw.trim()&&!headerHtml){pv.innerHTML='<p style="color:#999;text-align:center;padding:40px;font-family:sans-serif;font-size:.85rem">양식을 선택하거나 직접 작성을 시작하세요</p>';updateStats(raw);return;}
-  envCounters={theorem:0,lemma:0,definition:0,corollary:0,proposition:0,algorithm:0};eqCounter=0;
-  let t=raw;t=processEnvs(t);t=processNumberedEq(t);t=processCitations(t);t=processFootnotes(t);t=processSubfigures(t);
-  let html=marked.parse(t);html=restoreEnvs(html);
-  html=processImageSize(html);
-  pv.innerHTML=headerHtml+html;
-  hydrateMermaid();
-  renderMathInElement(pv,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false},{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}],throwOnError:false});
+  // Section-based incremental render for large documents
+  const sections=raw.split(/(?=^## )/m);
+  const isLargeDoc=raw.length>30000;
+  let htmlParts;
+  if(isLargeDoc){
+    // Use section cache
+    htmlParts=sections.map((sec,i)=>{
+      const hash=simpleHash(sec);
+      const cached=sectionCache.get(i);
+      if(cached&&cached.hash===hash)return cached.html;
+      envCounters={theorem:0,lemma:0,definition:0,corollary:0,proposition:0,algorithm:0};eqCounter=0;
+      let t=sec;t=processEnvs(t);t=processNumberedEq(t);t=processCitations(t);t=processFootnotes(t);t=processSubfigures(t);
+      let html=marked.parse(t);html=restoreEnvs(html);html=processImageSize(html);
+      sectionCache.set(i,{hash:hash,html:html});
+      return html;
+    });
+    // Trim cache for deleted sections
+    for(let k of sectionCache.keys()){if(k>=sections.length)sectionCache.delete(k);}
+  }else{
+    // Small doc: full render (original behavior)
+    envCounters={theorem:0,lemma:0,definition:0,corollary:0,proposition:0,algorithm:0};eqCounter=0;
+    let t=raw;t=processEnvs(t);t=processNumberedEq(t);t=processCitations(t);t=processFootnotes(t);t=processSubfigures(t);
+    let html=marked.parse(t);html=restoreEnvs(html);html=processImageSize(html);
+    htmlParts=[html];
+  }
+  if(token!==renderToken)return; // stale render
+  pv.innerHTML=headerHtml+htmlParts.join('');
+  // Insert TOC after header
+  const tocHtml=buildTOC();
+  if(tocHtml){const headerDiv=pv.querySelector('div[style*="border-bottom"]');if(headerDiv)headerDiv.insertAdjacentHTML('afterend',tocHtml);else pv.insertAdjacentHTML('afterbegin',tocHtml);}
+  // Hydrate Mermaid + KaTeX (idle for large docs)
+  if(isLargeDoc){
+    if(window.requestIdleCallback){
+      requestIdleCallback(()=>{if(token===renderToken){hydrateMermaid();renderMathInElement(pv,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false},{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}],throwOnError:false});}},{timeout:800});
+    }else{setTimeout(()=>{hydrateMermaid();renderMathInElement(pv,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false},{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}],throwOnError:false});},100);}
+  }else{
+    hydrateMermaid();
+    renderMathInElement(pv,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false},{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}],throwOnError:false});
+  }
   updateStats(raw);
 }
 
@@ -1277,6 +1361,9 @@ inp.addEventListener('keydown',e=>{
   if((e.ctrlKey||e.metaKey)&&e.key==='m'){e.preventDefault();wrap('$','$');}
   if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();save();ghSave();}
   if(e.altKey&&(e.key==='n'||e.key==='N')){e.preventDefault();insertFootnote();}
+  if(e.altKey&&(e.key==='c'||e.key==='C')){e.preventDefault();handleCiteInsert();}
+  if((e.ctrlKey||e.metaKey)&&e.shiftKey&&e.key==='D'){e.preventDefault();diagnosePaper();}
+  if(e.key==='F1'){e.preventDefault();toggleHelp();}
   if((e.ctrlKey||e.metaKey)&&e.key==='z'){/* native undo */}
   if((e.ctrlKey||e.metaKey)&&e.key==='y'){/* native redo */}
 });
@@ -3029,6 +3116,92 @@ function switchHelpTab(idx){
   if(idx===0){const hp=document.getElementById('helpPanel');renderMathInElement(hp,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false});}
 }
 
+// === BIBTEX IMPORT ===
+function importBibTeX(fileInput){
+  const file=fileInput.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(e){
+    const text=e.target.result;
+    const entries=parseBibTeX(text);
+    let added=0;
+    entries.forEach(ent=>{
+      const formatted=ent.authors+', "'+ent.title+'," '+(ent.venue?ent.venue+', ':'')+ent.year+'.'+(ent.doi?' DOI: '+ent.doi:'');
+      refs.push(formatted);added++;
+    });
+    renderRefs();render();
+    document.getElementById('as').textContent='[+] BibTeX: '+added+'개 참고문헌 가져옴';
+    fileInput.value='';
+  };
+  reader.readAsText(file);
+}
+function parseBibTeX(text){
+  const entries=[];
+  // Split into @type{key, ... } blocks
+  const blocks=text.match(/@\w+\s*\{[^@]*\}/g)||[];
+  blocks.forEach(block=>{
+    const typeMatch=block.match(/@(\w+)\s*\{/);
+    if(!typeMatch)return;
+    const type=typeMatch[1].toLowerCase();
+    if(type==='comment'||type==='string'||type==='preamble')return;
+    const fields={};
+    // Extract fields: key = {value} or key = "value" or key = number
+    const fieldRe=/(\w+)\s*=\s*(?:\{([^}]*(?:\{[^}]*\}[^}]*)*)\}|"([^"]*)"|(\d+))/g;
+    let m;while((m=fieldRe.exec(block))!==null){fields[m[1].toLowerCase()]=m[2]||m[3]||m[4]||'';}
+    const authors=(fields.author||'').replace(/\s+and\s+/g,', ').replace(/[{}]/g,'').trim();
+    const title=(fields.title||'').replace(/[{}]/g,'').trim();
+    const venue=(fields.journal||fields.booktitle||fields.publisher||'').replace(/[{}]/g,'').trim();
+    const year=(fields.year||'').replace(/[{}]/g,'').trim();
+    const doi=(fields.doi||'').replace(/[{}]/g,'').trim();
+    if(title)entries.push({type:type,authors:authors,title:title,venue:venue,year:year,doi:doi});
+  });
+  return entries;
+}
+
+// === WORD COUNT TARGET ===
+function updateWordTarget(){
+  const target=parseInt(document.getElementById('wordTarget').value)||0;
+  const current=inp.value.trim()?inp.value.trim().split(/\s+/).length:0;
+  const bar=document.getElementById('wordTargetBar');
+  if(!target){bar.style.width='0';return;}
+  const pct=Math.min(120,Math.round(current/target*100));
+  bar.style.width=Math.min(pct,100)+'%';
+  bar.style.background=pct<60?'#b42318':pct<90?'var(--accent)':pct<=110?'var(--brand)':'#b42318';
+}
+
+// === SNAPSHOT RESTORE ===
+function showSnapshots(){
+  const list=JSON.parse(localStorage.getItem(SNAP_KEY)||'[]');
+  if(!list.length){alert('저장된 이력이 없습니다.');return;}
+  const cr=document.getElementById('checkResult');
+  let html='<strong style="color:var(--brand)">문서 이력 ('+list.length+'개)</strong>';
+  html+='<button onclick="document.getElementById(\'checkResult\').style.display=\'none\'" style="position:absolute;right:8px;top:8px;border:none;background:none;cursor:pointer;font-size:.8rem;color:var(--muted)">X</button>';
+  html+='<div style="margin-top:8px;max-height:180px;overflow-y:auto">';
+  list.forEach((snap,i)=>{
+    const date=new Date(snap.at);
+    const timeStr=date.toLocaleString('ko-KR',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+    html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px dotted var(--line);font-size:.65rem">';
+    html+='<span>'+timeStr+' | '+(snap.title||'제목없음')+' | '+snap.words+'단어</span>';
+    html+='<button class="bt" onclick="restoreSnapshot('+i+')" style="font-size:.5rem;padding:1px 6px">복원</button>';
+    html+='</div>';
+  });
+  html+='</div>';
+  cr.innerHTML=html;cr.style.display='block';
+}
+function restoreSnapshot(idx){
+  const list=JSON.parse(localStorage.getItem(SNAP_KEY)||'[]');
+  const snap=list[idx];if(!snap)return;
+  if(!confirm('현재 내용을 이 시점('+new Date(snap.at).toLocaleString('ko-KR')+')으로 복원하시겠습니까?'))return;
+  // Save current as snapshot first
+  saveSnapshot();
+  inp.focus();inp.select();
+  document.execCommand('insertText',false,snap.body);
+  if(snap.title)document.getElementById('ti').value=snap.title;
+  if(snap.refs){refs=snap.refs;renderRefs();}
+  render();
+  document.getElementById('checkResult').style.display='none';
+  document.getElementById('as').textContent='[+] 복원됨: '+new Date(snap.at).toLocaleTimeString();
+}
+
 // === VALIDATE ===
 function validatePaper(){
   const t=inp.value;const issues=[];
@@ -3247,6 +3420,7 @@ function updateStats(t){
   sc+=(/ethic|disclosure|윤리/i.test(t)?6:0);sc+=(/\*Table|\*표/m.test(t)?6:0);sc+=(/\*Fig|\*그림/m.test(t)?5:0);
   sc=Math.min(sc,100);
   const el=document.getElementById('qs');el.textContent=sc;el.className='score '+(sc>=75?'sh':sc>=50?'sm':'sl');
+  updateWordTarget();
 }
 
 // === EXPORT ===
