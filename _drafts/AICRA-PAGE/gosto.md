@@ -4,8 +4,9 @@ title: "GOSTO"
 author: AICRA-PAGE
 authors: ["0blueteam0"]
 date: 2026-03-25
-status: published
-domain: "Prompt Injection"
+status: draft
+domain: "Adversarial ML"
+keywords: ["DDDD"]
 lang: ko
 ---
 
