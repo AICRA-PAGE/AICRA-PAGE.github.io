@@ -5,9 +5,10 @@ author: AICRA-PAGE
 authors: ["0blueteam0"]
 corresponding_author: "AICRA-PAGE"
 date: 2026-03-25
-status: published
+status: draft
 domain: "Prompt Injection"
 keywords: ["DDDD"]
+reviewers: ["0blueteam0"]
 lang: ko
 ---
 
