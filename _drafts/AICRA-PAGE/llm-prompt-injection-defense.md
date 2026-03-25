@@ -10,15 +10,15 @@ keywords: ["DDDD"]
 lang: ko
 ---
 
+
 # [Paper Title]
 
-[Author 1], [Author 2]
-[Affiliations]
+Anonymous Authors
 
 :::abstract
 [150-250 words]
 :::
-
+dfdsfasdfasfadsd
 ---
 
 ## 1. Introduction
@@ -29,34 +29,33 @@ lang: ko
 
 ---
 
-## 3. Preliminaries
+## 3. Method
 
 ---
 
-## 4. Method
+## 4. Experiments
+
+### 4.1 Setup
+### 4.2 Results
 
 ---
 
-## 5. Theoretical Analysis
+## 5. Analysisdfsafsf
 
 ---
 
-## 6. Experiments
-
-### 6.1 Setup
-### 6.2 Main Results
-### 6.3 Ablation
+## 6. Conclusion
 
 ---
 
-## 7. Conclusion
+## Reproducibility Statement
 
 ---
 
-## Acknowledgements
+## Ethics Statement
 
 ---
 
 ## References
 
-<!-- ICML: 8 pages main, single PDF with appendices. Double-blind. -->
+<!-- ICLR: OpenReview submission. Public discussion phase. Anonymous. -->
