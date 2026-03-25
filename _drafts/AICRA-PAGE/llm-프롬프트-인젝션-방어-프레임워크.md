@@ -100,4 +100,11 @@ Output: [description]
 **Out-of-Scope**
 - [exclusion 1]
 
+*Table N. Framework mapping.*
+| Finding | Framework | ID / Category | Notes |
+|---------|-----------|--------------|-------|
+| | | | |
+
+<!-- Frameworks: MITRE ATLAS (AML.Txxxx), OWASP LLM Top 10 (LLM01-10), NIST AI RMF, CWE, ISO 27001/42001 -->
+
 
