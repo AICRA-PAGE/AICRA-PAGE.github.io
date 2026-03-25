@@ -3811,14 +3811,19 @@ async function loadSamplePaper(slug){
     const fmMatch=text.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
     if(fmMatch){
       const fm=fmMatch[1];const body=fmMatch[2].trim();
-      // Extract metadata
-      const getVal=(key)=>{const m=fm.match(new RegExp(key+':\\s*"?([^"\\n]+)"?'));return m?m[1].trim():'';};
+      // Extract metadata (handle quoted values with colons)
+      const getVal=(key)=>{
+        const qm=fm.match(new RegExp(key+':\\s*"([^"]*)"'));
+        if(qm)return qm[1].trim();
+        const sm=fm.match(new RegExp(key+':\\s*(.+)'));
+        return sm?sm[1].trim().replace(/^"|"$/g,''):'';
+      };
       document.getElementById('ti').value=getVal('title');
       document.getElementById('dm').value=getVal('domain');
       const kwMatch=fm.match(/keywords:\s*\[([^\]]+)\]/);
       if(kwMatch)document.getElementById('kw').value=kwMatch[1].replace(/"/g,'').trim();
-      const absMatch=fm.match(/abstract:\s*"([^"]+)"/);
-      if(absMatch)document.getElementById('ab').value=absMatch[1];
+      const absMatch=fm.match(/abstract:\s*"([\s\S]*?)"\s*\n/);
+      if(absMatch)document.getElementById('ab').value=absMatch[1].trim();
       // Load body into editor
       inp.focus();inp.select();
       document.execCommand('insertText',false,body);
