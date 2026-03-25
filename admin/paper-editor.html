@@ -58,7 +58,8 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
 /* Preview - clean academic style (readable on screen) */
 #pv{flex:1;padding:28px 36px;overflow-y:auto;background:#fff;font-family:'Noto Serif KR',Georgia,'Times New Roman',serif;font-size:.9rem;line-height:1.85;color:#1a1a1a;max-width:100%}
 [data-theme=dark] #pv{background:#1e1e1e;color:#d8d8d8}
-#pv.two-col{column-count:2;column-gap:22px;column-rule:.5px solid #ccc;font-size:.78rem;line-height:1.6;padding:20px 24px}
+#pv.two-col{column-count:2;column-gap:24px;column-rule:.5px solid #ccc;font-size:.78rem;line-height:1.55;padding:20px 24px;text-align:justify;hyphens:auto}
+#pv.two-col table,#pv.two-col .mermaid,#pv.two-col .env-block{break-inside:avoid;column-span:all}
 #pv h1{font-size:1.35rem;font-weight:700;text-align:center;margin-bottom:.2rem;color:#111}
 #pv h2{font-size:1rem;font-weight:700;text-transform:uppercase;letter-spacing:.3px;padding-bottom:2px;border-bottom:1px solid #999;margin:1.5rem 0 .6rem;color:#111}
 #pv h3{font-size:.9rem;font-weight:700;margin:.9rem 0 .35rem;color:#222}
@@ -73,10 +74,12 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
 #pv pre code{font-family:'JetBrains Mono',monospace;font-size:.76rem;color:#333;background:none;padding:0}
 [data-theme=dark] #pv pre code{color:#ccc}
 #pv code{font-family:'JetBrains Mono',monospace;background:#f0f0f0;padding:1px 3px;border-radius:2px;font-size:.82em;color:#333}
-#pv table{width:100%;border-collapse:collapse;margin:.7rem 0;font-size:.78rem}
-#pv th{border-top:2px solid #111;border-bottom:1px solid #111;padding:.35rem .5rem;text-align:left;font-weight:700;font-size:.75rem}
-#pv td{padding:.3rem .5rem;border-bottom:.5px solid #ccc;font-size:.78rem}
-#pv tr:last-child td{border-bottom:1.5px solid #111}
+/* Tables - booktabs academic style */
+#pv table{width:100%;border-collapse:collapse;margin:.7rem 0;font-size:.82rem;line-height:1.45;border-top:2px solid #111;border-bottom:2px solid #111;background:#fff}
+#pv th{padding:.45rem .6rem;text-align:left;font-weight:600;font-size:.78rem;border-bottom:1px solid #111;border-top:none;border-left:none!important;border-right:none!important}
+#pv td{padding:.4rem .6rem;font-size:.8rem;border:none;border-left:none!important;border-right:none!important}
+#pv tbody tr:nth-child(even){background:rgba(0,0,0,.03)}
+#pv tr:last-child td{border-bottom:none}
 #pv blockquote{border-left:2px solid #999;padding:.4rem .8rem;margin:.5rem 0;color:#555;font-style:italic;font-size:.85rem}
 #pv hr{border:none;border-top:.5px solid #bbb;margin:1.2rem 0}
 #pv img{max-width:100%;display:block;margin:.5rem auto}
@@ -92,12 +95,32 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
 #pv .eq-num{color:#555;font-size:.78rem;min-width:36px;text-align:right}
 #pv .abstract-box{border-top:1px solid #111;border-bottom:1px solid #111;padding:10px 0;margin:.8rem 0;font-size:.84rem;line-height:1.6}
 #pv .abstract-box strong{display:block;margin-bottom:2px;font-size:.75rem;text-transform:uppercase;letter-spacing:.5px}
-#pv .bib-list{font-size:.76rem;line-height:1.5;counter-reset:bib}
-#pv .bib-list p{padding-left:1.8rem;text-indent:-1.8rem;margin-bottom:.25rem}
-#pv .bib-list p::before{counter-increment:bib;content:'[' counter(bib) '] ';font-weight:700}
+/* Bibliography - hanging indent, numbered */
+#pv .bib-list{font-size:.78rem;line-height:1.55;counter-reset:bib;margin-top:1rem}
+#pv .bib-list p{padding-left:2rem;text-indent:-2rem;margin-bottom:.5rem}
+#pv .bib-list p::before{counter-increment:bib;content:'[' counter(bib) '] ';font-weight:400;color:#111}
 #pv .cite{font-weight:700;cursor:help}
-#pv .fig-caption{text-align:center;font-size:.75rem;color:#444;margin:4px 0 12px;line-height:1.4}
-#pv .tbl-caption{font-size:.75rem;color:#444;margin:12px 0 4px;font-weight:700;line-height:1.4}
+/* Figure/Table captions */
+#pv .fig-caption{text-align:center;font-size:.78rem;color:#222;margin:6px 0 14px;line-height:1.4;font-style:normal}
+#pv .tbl-caption{font-size:.78rem;color:#222;margin:14px 0 4px;font-style:italic;line-height:1.4}
+/* Mermaid diagrams - academic publication quality */
+#pv .mermaid{display:block;max-width:100%;margin:.8rem auto;padding:.5rem 0;background:#fff;border:none;border-radius:0;overflow-x:auto}
+#pv .mermaid svg{display:block;max-width:100%;height:auto;margin:0 auto;background:#fff;font-family:'Helvetica Neue',Arial,sans-serif!important}
+#pv .mermaid .label,#pv .mermaid .nodeLabel,#pv .mermaid .edgeLabel,#pv .mermaid .messageText{font-family:'Helvetica Neue',Arial,sans-serif!important;font-size:11px!important;fill:#111!important;color:#111!important}
+#pv .mermaid .node rect,#pv .mermaid .node polygon,#pv .mermaid .node circle{fill:#fff!important;stroke:#111!important;stroke-width:1.2px!important;rx:0!important;ry:0!important}
+#pv .mermaid .cluster rect{fill:#fafafa!important;stroke:#999!important;rx:0!important;ry:0!important}
+#pv .mermaid .edgePath path,#pv .mermaid .flowchart-link{stroke:#111!important;stroke-width:1.2px!important}
+#pv .mermaid marker path{fill:#111!important}
+#pv .mermaid .actor{fill:#fff!important;stroke:#111!important;stroke-width:1.2px!important}
+#pv .mermaid .note{fill:#f8f8f8!important;stroke:#777!important}
+/* Author/affiliation block */
+#pv .author-block{margin:.8rem auto 1.2rem;text-align:center;line-height:1.4}
+#pv .author-list{font-size:.95rem;font-weight:700;color:#111;margin-bottom:.3rem}
+#pv .author-list sup{font-size:.65em;vertical-align:super;font-weight:600}
+#pv .affiliations{font-size:.78rem;font-style:italic;color:#444;margin:.2rem 0}
+#pv .affiliation sup{font-size:.7em;vertical-align:super;font-style:normal}
+#pv .corresponding-author{font-size:.72rem;color:#333;margin-top:.3rem}
+#pv .author-email{font-family:'Courier New',monospace;font-size:.7rem;color:#111;font-style:normal}
 /* Footnotes */
 #pv .footnotes{border-top:1px solid #999;margin-top:1.5rem;padding-top:.5rem;font-size:.75rem;line-height:1.5}
 #pv .footnotes ol{padding-left:1.5rem;margin:0}
@@ -167,7 +190,8 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
   .pn:first-child{display:none!important}
   .pn:last-child{display:block!important;overflow:visible!important}
   body{height:auto;overflow:visible;background:#fff}
-  @page{margin:20mm 15mm;size:A4}
+  @page{margin:20mm 15mm 25mm 15mm;size:A4;@bottom-center{content:counter(page);font-size:9pt;color:#555}}
+  @page:first{margin-top:15mm;@bottom-center{content:none}}
   title{display:none!important}
   #pv{padding:10mm 0 0 0!important;font-family:'Times New Roman','Noto Serif KR',serif!important;font-size:11pt!important;line-height:1.5!important;color:#000!important;background:#fff!important;column-count:auto!important;overflow:visible!important;max-width:100%!important}
   #pv *{page-break-inside:avoid;orphans:3;widows:3}
@@ -1284,7 +1308,7 @@ pv.addEventListener('scroll',()=>{
 });
 
 // Mermaid init
-if(window.mermaid){mermaid.initialize({startOnLoad:false,securityLevel:'strict',theme:'default'});}
+if(window.mermaid){mermaid.initialize({startOnLoad:false,securityLevel:'strict',theme:'base',fontFamily:'Helvetica Neue,Arial,sans-serif',flowchart:{htmlLabels:false,nodeSpacing:36,rankSpacing:42,padding:12,curve:'linear',useMaxWidth:true},sequence:{useMaxWidth:true,actorMargin:40,messageMargin:32},themeVariables:{fontSize:'11px',fontFamily:'Helvetica Neue,Arial,sans-serif',primaryColor:'#ffffff',primaryTextColor:'#111111',primaryBorderColor:'#111111',lineColor:'#111111',secondaryColor:'#ffffff',tertiaryColor:'#fafafa',clusterBkg:'#fafafa',clusterBorder:'#999999',noteBkgColor:'#f8f8f8',noteBorderColor:'#777777'}});}
 function sanitizeHtml(html){return window.DOMPurify?DOMPurify.sanitize(html,{ADD_TAGS:['section','nav'],ADD_ATTR:['data-start','data-end','onclick'],ALLOW_DATA_ATTR:true}):html;}
 function hydrateMermaid(){
   if(!window.mermaid)return;
@@ -4617,6 +4641,26 @@ function exportReview(){
   a.download='review-'+(docManager?docManager.slugify(document.getElementById('ti').value||'paper'):'review')+'.txt';
   a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000);
 }
+
+// === IMAGE DRAG & DROP ===
+inp.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='copy';inp.style.boxShadow='inset 0 0 12px rgba(47,93,80,.3)';});
+inp.addEventListener('dragleave',()=>{inp.style.boxShadow='';});
+inp.addEventListener('drop',e=>{
+  e.preventDefault();inp.style.boxShadow='';
+  const files=e.dataTransfer.files;
+  for(const file of files){
+    if(!file.type.startsWith('image/'))continue;
+    const reader=new FileReader();
+    reader.onload=ev=>{
+      const dataUrl=ev.target.result;
+      const name=file.name.replace(/\s+/g,'-');
+      const md='\n\n!['+name+']('+dataUrl+')\n*Fig. N. '+name+'*\n\n';
+      inp.focus();typeText(md);inp.dispatchEvent(new Event('input'));
+      document.getElementById('as').textContent='[+] 이미지 삽입: '+name;
+    };
+    reader.readAsDataURL(file);
+  }
+});
 
 // === DIRTY FLAG + UNSAVED WARNING ===
 let _dirty=false;
