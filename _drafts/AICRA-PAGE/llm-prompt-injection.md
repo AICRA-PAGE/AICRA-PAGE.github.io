@@ -1,8 +1,8 @@
 ---
 layout: paper
 title: "LLM Prompt Injection"
-author: AICRA-PAGE
-authors: ["0blueteam0"]
+author: 0blueteam0
+authors: ["AICRA-PAGE"]
 date: 2026-03-25
 status: draft
 domain: "LLM Security"
