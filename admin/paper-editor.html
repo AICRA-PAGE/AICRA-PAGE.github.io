@@ -224,7 +224,7 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
 <div class="tb">
   <img src="/assets/img/logo.svg" alt=""><h1>Paper Editor</h1>
   <div class="sep"></div>
-  <select class="sel" id="tplSel" onchange="insTpl(this.value)">
+  <select class="sel" id="tplSel">
     <option value="">-- Format --</option>
     <optgroup label="AI/ML 학회">
       <option value="neurips">NeurIPS</option>
@@ -350,6 +350,8 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
   <label style="font-size:.52rem;display:flex;align-items:center;gap:2px;cursor:pointer"><input type="checkbox" id="opt-cover" style="width:auto" onchange="toggleOption('cover',this.checked)"> 표지</label>
   <label style="font-size:.52rem;display:flex;align-items:center;gap:2px;cursor:pointer"><input type="checkbox" id="opt-coverletter" style="width:auto" onchange="toggleOption('coverletter',this.checked)"> 커버레터</label>
   <label style="font-size:.52rem;display:flex;align-items:center;gap:2px;cursor:pointer"><input type="checkbox" id="opt-enabs" style="width:auto" onchange="toggleOption('enabs',this.checked)"> 영문 초록</label>
+  <span style="width:1px;height:14px;background:var(--line)"></span>
+  <button class="bt p" onclick="applyTemplate()" title="선택한 양식을 에디터에 적용합니다" style="padding:3px 12px;font-size:.6rem">양식 적용</button>
 </div>
 
 <div class="ins" id="insBar">
@@ -1266,6 +1268,15 @@ function insertFootnote(){
 }
 
 // === VENUE FORMAT TEMPLATES ===
+function applyTemplate(){
+  const sel=document.getElementById('tplSel');
+  const type=sel.value;
+  if(!type){alert('양식을 먼저 선택해 주세요.');return;}
+  if(inp.value.trim()&&!confirm('현재 내용이 선택한 양식으로 대체됩니다. 계속하시겠습니까?'))return;
+  insTpl(type);
+  sel.value='';
+  document.getElementById('as').textContent='[+] 양식 적용됨: '+sel.querySelector('option[value="'+type+'"]')?.textContent||type;
+}
 function insTpl(type){
   if(!type)return;
   const T={
