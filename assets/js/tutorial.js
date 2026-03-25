@@ -162,24 +162,53 @@ const FULL_STORY=[
    auto:()=>{if(window.analyzeStyle)window.analyzeStyle();},
    verify:()=>document.getElementById('checkResult').style.display==='block'},
 
-  // Chapter 8: Export & Save
-  {ch:'Ch.8 저장',title:'저장하기',
-   story:'GitHub 리포지토리 또는 로컬에 저장합니다. 파일명을 지정하여 관리합니다.',
-   task:'<b>저장</b> 버튼을 클릭하세요. (GitHub + 로컬 동시 저장 가능)',
+  // Chapter 8: Reviewer & Quality
+  {ch:'Ch.8 심사도구',title:'심사 체크리스트',
+   story:'검토자가 구조적으로 리뷰할 수 있는 체크리스트입니다. 8항목(독창성, 방법론, 명확성, 참고문헌 등)을 평가하고 심사의견(승인/수정/불가)을 선택합니다.',
+   task:'<b>심사</b> 버튼을 클릭하세요.',
+   highlight:'button[onclick="showReviewChecklist()"]',
+   auto:()=>{if(window.showReviewChecklist)window.showReviewChecklist();},
+   verify:()=>document.getElementById('checkResult').style.display==='block'},
+
+  {ch:'Ch.8 심사도구',title:'벤뉴 규격 체크',
+   story:'선택한 양식(IEEE/ACM/NeurIPS 등)의 투고 규격을 자동으로 점검합니다. 페이지수, 참고문헌 수, 필수 섹션을 확인합니다.',
+   task:'<b>규격</b> 버튼을 클릭하세요.',
+   highlight:'button[onclick="lintVenue()"]',
+   auto:()=>{if(window.lintVenue)window.lintVenue();},
+   verify:()=>document.getElementById('checkResult').style.display==='block'},
+
+  {ch:'Ch.8 심사도구',title:'검색/치환',
+   story:'Ctrl+H로 검색/치환 패널을 엽니다. 정규식과 대소문자 옵션을 지원합니다.',
+   task:'<b>Ctrl+H</b>를 누르거나 검색 패널을 확인하세요.',
+   highlight:'#findPanel',
+   auto:()=>{if(window.toggleFindPanel)window.toggleFindPanel();},
+   verify:()=>document.getElementById('findPanel').style.display!=='none'},
+
+  // Chapter 9: Export & Save
+  {ch:'Ch.9 저장',title:'저장하기',
+   story:'<b>저장</b>은 기존 파일명을 유지하고, <b>다른이름저장</b>은 새 파일명을 지정합니다. GitHub + 로컬 동시 저장이 가능합니다.',
+   task:'<b>저장</b> 또는 <b>다른이름저장</b> 버튼을 클릭하세요.',
    highlight:'button[onclick="ghSave()"]',
    auto:null,
    verify:()=>true},
 
-  {ch:'Ch.8 저장',title:'내보내기',
-   story:'Markdown, LaTeX, 발표자료(PPT)로 내보낼 수 있습니다.',
-   task:'<b>내보내기</b> 드롭다운에서 형식을 선택하세요.',
+  {ch:'Ch.9 저장',title:'DOCX 내보내기',
+   story:'논문을 Word 문서(.docx)로 내보냅니다. 제목, 저자, 초록, 참고문헌, 표 등이 학술 형식으로 변환됩니다.',
+   task:'<b>내보내기</b> 드롭다운에서 <b>Word (.docx)</b>를 선택하세요.',
+   highlight:'select[onchange*="export"]',
+   auto:null,
+   verify:()=>true},
+
+  {ch:'Ch.9 저장',title:'기타 내보내기',
+   story:'Markdown (.md), LaTeX (.tex), 발표자료 (.pptx)로도 내보낼 수 있습니다. 모든 형식에서 파일명을 지정합니다.',
+   task:'다양한 형식으로 내보내 보세요.',
    highlight:'select[onchange*="export"]',
    auto:null,
    verify:()=>true},
 
   // Ending
   {ch:'완료',title:'축하합니다!',
-   story:'논문 초안이 완성되었습니다!<br><br>추가로 시도해 보세요:<br>- <b>리뷰 요청</b>: 검토자에게 첨삭 요청<br>- <b>2단 미리보기</b>: 학술 레이아웃<br>- <b>다크 모드</b>: 눈 편한 모드<br>- <b>?</b> 도움말에서 모든 기능 확인',
+   story:'논문 초안이 완성되었습니다!<br><br>추가로 시도해 보세요:<br>- <b>심사</b>: 구조적 리뷰 체크리스트 + 심사의견<br>- <b>규격</b>: 양식별 투고 규격 점검<br>- <b>간편</b>: 초보자 모드 전환<br>- <b>이력</b>: 이전 버전 복원<br>- <b>2단 미리보기</b>: 학술 레이아웃<br>- <b>?</b> 도움말에서 모든 기능 확인',
    task:'',highlight:null,auto:null,verify:()=>true}
 ];
 
@@ -228,12 +257,22 @@ const CORRESPONDING_STORY=[
    task:'<b>문체</b> 버튼을 클릭하세요.',
    highlight:'button[onclick="analyzeStyle()"]',
    auto:()=>{if(window.analyzeStyle)window.analyzeStyle();},verify:()=>true},
+  {ch:'교신저자',title:'벤뉴 규격 체크',
+   story:'선택한 양식의 투고 규격(페이지, 참고문헌, 필수 섹션)을 점검합니다.',
+   task:'<b>규격</b> 버튼을 클릭하세요.',
+   highlight:'button[onclick="lintVenue()"]',
+   auto:()=>{if(window.lintVenue)window.lintVenue();},verify:()=>true},
+  {ch:'교신저자',title:'심사 체크리스트',
+   story:'리뷰어에게 보내기 전, 체크리스트로 자가 점검합니다.',
+   task:'<b>심사</b> 버튼을 클릭하세요.',
+   highlight:'button[onclick="showReviewChecklist()"]',
+   auto:()=>{if(window.showReviewChecklist)window.showReviewChecklist();},verify:()=>true},
   {ch:'교신저자',title:'리뷰 요청',
    story:'검토자에게 리뷰를 요청합니다.',
    task:'<b>리뷰 요청</b> 버튼을 클릭하세요.',
    highlight:'button[onclick="requestReview()"]',auto:null,verify:()=>true},
-  {ch:'교신저자',title:'내보내기',
-   story:'최종 원고를 LaTeX 또는 PDF로 내보냅니다.',
+  {ch:'교신저자',title:'DOCX 내보내기',
+   story:'최종 원고를 Word (.docx)로 내보냅니다. LaTeX/PPT도 가능합니다.',
    task:'<b>내보내기</b> 드롭다운에서 형식을 선택하세요.',
    highlight:'select[onchange*="export"]',auto:null,verify:()=>true}
 ];

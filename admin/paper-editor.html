@@ -641,6 +641,15 @@ graph LR
   <div class="io-label">출력</div>
   <div class="out">제로트러스트 가정은 자주 위반된다<sup style="font-weight:700">1</sup>.<hr style="margin:4px 0"><ol style="font-size:.58rem;padding-left:1.2rem;margin:0"><li>레거시 PLC는 평면 L2 신뢰를 사용.</li></ol></div></div>
 
+  <div class="hitem"><b>교차참조 (Cross-reference)</b><em>그림/표/수식에 라벨을 달고 본문에서 참조합니다</em>
+  <div class="io-label">입력</div>
+  <pre>*Fig. N. 시스템 구조.*
+\label{fig:arch}
+
+그림 \ref{fig:arch}에서 보듯이...</pre>
+  <div class="io-label">출력</div>
+  <div class="out"><em>Fig. 1. 시스템 구조.</em><br>그림 <a style="color:#2f5d50;font-weight:700;text-decoration:none">Fig. 1</a>에서 보듯이...</div></div>
+
   <div class="hitem"><b>서브피겨 (Subfigure)</b><em>여러 이미지를 (a)(b) 라벨로 나란히 배치합니다</em>
   <div class="io-label">입력</div>
   <pre>```figgrid caption="Fig.3" cols=2
@@ -1096,15 +1105,51 @@ F(df1, df2)=값, p=값, eta^2=값</div>
   </div>
 
   <div class="gsec" onclick="this.classList.toggle('open')">
+    <div class="gsec-head">검토자(리뷰어) 기능</div>
+    <div class="gsec-body">
+      <b>심사 체크리스트:</b> <em>심사</em> 버튼 -> 8항목(독창성, 방법론, 명확성, 참고문헌, 재현성, 윤리, 작성품질, 그림/표) 평가 + 심사의견(승인/수정/불가)<br>
+      <b>인라인 코멘트:</b> 미리보기에서 문단 클릭 -> 7종 카테고리(코멘트/수정제안/질문/오류/오타/참고문헌누락/불명확) 선택<br>
+      <b>수정 제안 수락:</b> 리뷰 확인 -> 수락 클릭시 본문에 자동 반영 (fuzzy match)<br>
+      <b>리뷰 내보내기:</b> 심사 패널 하단 -> .txt 파일로 체크리스트+의견+메타데이터 내보내기
+    </div>
+  </div>
+
+  <div class="gsec" onclick="this.classList.toggle('open')">
+    <div class="gsec-head">신규 기능 (v2)</div>
+    <div class="gsec-body">
+      <b>벤뉴 규격 체크:</b> <em>규격</em> 버튼 -> IEEE/ACM/NeurIPS/KCI별 페이지수, 참고문헌 수, 필수 섹션 자동 점검<br>
+      <b>BibTeX 가져오기:</b> 참고문헌 패널 하단 -> .bib 파일 업로드시 자동 파싱 + refs 등록<br>
+      <b>교차참조:</b> <code>\label{'{'}fig:arch{'}'}</code>로 라벨 지정, <code>\ref{'{'}fig:arch{'}'}</code>로 참조 -> 클릭 가능한 앵커<br>
+      <b>그림/표 자동 번호:</b> <code>*Fig. N.</code> / <code>*Table N.</code> -> Fig. 1, Table 1 순차 부여<br>
+      <b>DOCX 내보내기:</b> 내보내기 -> Word (.docx) -> 학술 스타일 Word 문서 생성<br>
+      <b>검색/치환:</b> Ctrl+H -> 정규식/대소문자 지원, 전체 치환 (Undo 가능)<br>
+      <b>스냅샷 이력:</b> 5분마다 자동 저장, <em>이력</em> 버튼으로 이전 버전 복원<br>
+      <b>초보자 모드:</b> <em>간편</em> 버튼 -> 핵심 6개 버튼만 표시<br>
+      <b>미저장 경고:</b> 저장하지 않고 페이지 떠날 때 경고<br>
+      <b>스크롤 동기화:</b> 에디터-미리보기 양방향 스크롤 자동 연동<br>
+      <b>목차 자동 생성:</b> 미리보기 상단에 클릭 가능한 목차<br>
+      <b>워드카운트 목표:</b> 상태바에서 목표 단어수 설정 -> 진행률 바
+    </div>
+  </div>
+
+  <div class="gsec" onclick="this.classList.toggle('open')">
+    <div class="gsec-head">단축키</div>
+    <div class="gsec-body">
+      <b>Ctrl+S</b> 저장 | <b>Ctrl+B</b> 굵게 | <b>Ctrl+I</b> 기울임 | <b>Ctrl+M</b> 수식<br>
+      <b>Ctrl+H</b> 검색/치환 | <b>Ctrl+Shift+D</b> 진단 | <b>Alt+C</b> 인용 | <b>Alt+N</b> 각주 | <b>F1</b> 도움말
+    </div>
+  </div>
+
+  <div class="gsec" onclick="this.classList.toggle('open')">
     <div class="gsec-head">문제 해결</div>
     <div class="gsec-body">
-      <b>저장 실패:</b> 네트워크 확인 -> 10초 후 재시도<br>
+      <b>저장 실패:</b> 네트워크 확인 -> 자동 재시도(2회). 여전히 실패시 '다른이름저장'<br>
+      <b>충돌 발생:</b> 덮어쓰기/새로 불러오기/사본 저장 선택<br>
       <b>미리보기 깨짐:</b> 닫는 기호($, :::) 누락 확인<br>
       <b>인용 번호 불일치:</b> 검증 버튼으로 정합성 확인<br>
       <b>이미지 안 보임:</b> 경로/확장자/대소문자 확인<br>
-      <b>충돌 반복:</b> 잠금 활성화, 섹션 단위 편집<br>
       <b>각주 안 됨:</b> Alt+N 사용 (Ctrl+Shift+F는 충돌)<br>
-      <b>TeX 깨짐:</b> 컴파일 후 경고 로그 확인
+      <b>대용량 느림:</b> 30,000자 이상시 자동으로 섹션 캐시 모드 적용
     </div>
   </div>
 
