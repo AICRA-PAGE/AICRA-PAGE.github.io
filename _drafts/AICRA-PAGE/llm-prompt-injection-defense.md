@@ -10,83 +10,53 @@ keywords: ["DDDD"]
 lang: ko
 ---
 
-# [s]
+# [Paper Title]
 
-# [LLM Prompt Injection Defense]
-
-**[저자1]**$^1$, **[저자2]**$^{2,*}$
-$^1$[소속 1] $^2$[소속 2]
-$^*$교신저자: [이메일]
+[Author 1], [Author 2]
+[Affiliations]
 
 :::abstract
-[국문초록: 200-300자. 연구 배경, 목적, 방법, 결과, 의의를 포함하여 작성.]
+[150-250 words]
 :::
 
-**주요어:** [키워드 1], [키워드 2], [키워드 3]
+---
 
-:::abstract
-[English Abstract: 150-250 words. Background, objective, method, results, and significance.]
-:::
-
-**Keywords:** [keyword 1], [keyword 2], [keyword 3]
+## 1. Introduction
 
 ---
 
-## I. 서론
+## 2. Related Work
 
 ---
 
-## II. 관련 연구
-
-### 2.1 [주제 영역]
-### 2.2 [기존 연구]
+## 3. Preliminaries
 
 ---
 
-## III. 위협 모델 및 문제 정의
+## 4. Method
 
 ---
 
-## IV. 제안 기법
-
-### 4.1 개요
-### 4.2 세부 설계
+## 5. Theoretical Analysis
 
 ---
 
-## V. 실험 및 평가
+## 6. Experiments
 
-### 5.1 실험 환경
-
-*표 1. 실험 환경.*
-| 구분 | 사양 |
-|------|------|
-| 하드웨어 | |
-| 데이터셋 | |
-
-### 5.2 평가 지표
-### 5.3 실험 결과
-
-*표 2. 주요 실험 결과.*
-| 기법 | 지표 A | 지표 B | 지표 C |
-|------|--------|--------|--------|
-| 기존 | | | |
-| 제안 | | | |
+### 6.1 Setup
+### 6.2 Main Results
+### 6.3 Ablation
 
 ---
 
-## VI. 고찰
+## 7. Conclusion
 
 ---
 
-## VII. 결론
+## Acknowledgements
 
 ---
 
-## 감사의 글
+## References
 
----
-
-## 참고문헌
-
-<!-- 한국정보보호학회 양식: [1] 저자명, "논문제목," 학회명, 권(호), pp.xx-xx, 연도. -->
+<!-- ICML: 8 pages main, single PDF with appendices. Double-blind. -->
