@@ -12,6 +12,7 @@
 <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
 <style>
 :root{--bg:#f9f8f5;--panel:#fff;--text:#2a2a2a;--muted:#7a756c;--brand:#2f5d50;--brand2:#245045;--line:#e8e5de;--surface:#f3f1ec;--code-bg:#0f172a;--radius:6px;--accent:#b7791f}
 [data-theme=dark]{--bg:#1a1d23;--panel:#22262e;--text:#d4d0c8;--muted:#8a8578;--brand:#4da89a;--brand2:#3d8a7e;--line:#333840;--surface:#2a2e36;--code-bg:#0d1117}
@@ -224,7 +225,7 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
 <div class="tb">
   <img src="/assets/img/logo.svg" alt=""><h1>Paper Editor</h1>
   <div class="sep"></div>
-  <select class="sel" id="tplSel">
+  <select class="sel" id="tplSel" onchange="if(this.value){if(inp.value.trim()&&!confirm('현재 내용이 대체됩니다. 계속?'))return;insTpl(this.value);this.value=''}">
     <option value="">-- Format --</option>
     <optgroup label="AI/ML 학회">
       <option value="neurips">NeurIPS</option>
@@ -267,7 +268,8 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
   <button class="bt" onclick="toggleRef()">참고문헌</button>
   <button class="bt" onclick="toggleHelp()">?</button>
   <div class="sep"></div>
-  <button class="bt" onclick="ghSave()" title="GitHub 리포지토리에 저장">저장</button>
+  <button class="bt" onclick="ghSave()" title="현재 파일명으로 저장 (Ctrl+S)">저장</button>
+  <button class="bt" onclick="ghSave(true)" title="새 이름으로 저장">다른이름저장</button>
   <button class="bt" onclick="ghLoad()" title="저장된 문서 불러오기">불러오기</button>
   <button class="bt" onclick="ghLock()" title="문서 잠금/해제 (저자만)" id="lockBtn">잠금</button>
   <button class="bt" onclick="showNameMapModal()" title="GitHub ID에 실명/소속을 매핑">저자 정보</button>
@@ -350,8 +352,6 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
   <label style="font-size:.52rem;display:flex;align-items:center;gap:2px;cursor:pointer"><input type="checkbox" id="opt-cover" style="width:auto" onchange="toggleOption('cover',this.checked)"> 표지</label>
   <label style="font-size:.52rem;display:flex;align-items:center;gap:2px;cursor:pointer"><input type="checkbox" id="opt-coverletter" style="width:auto" onchange="toggleOption('coverletter',this.checked)"> 커버레터</label>
   <label style="font-size:.52rem;display:flex;align-items:center;gap:2px;cursor:pointer"><input type="checkbox" id="opt-enabs" style="width:auto" onchange="toggleOption('enabs',this.checked)"> 영문 초록</label>
-  <span style="width:1px;height:14px;background:var(--line)"></span>
-  <button class="bt p" onclick="applyTemplate()" title="선택한 양식을 에디터에 적용합니다" style="padding:3px 12px;font-size:.6rem">양식 적용</button>
 </div>
 
 <div class="ins" id="insBar">
@@ -1132,17 +1132,54 @@ let focusMode=false,refs=[];
 let envCounters={theorem:0,lemma:0,definition:0,corollary:0,proposition:0,algorithm:0};
 let eqCounter=0;
 
-inp.addEventListener('input',debounce(()=>{render();},120));
+inp.addEventListener('input',debounce(()=>{render();},150));
+['ti','kw','ab'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',debounce(()=>{render();},200));});
+['dm','st-sel','au'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('change',()=>render());});
 function debounce(fn,ms){let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms);};}
+
+// Mermaid init
+if(window.mermaid){mermaid.initialize({startOnLoad:false,securityLevel:'loose',theme:'default'});}
+function hydrateMermaid(){
+  if(!window.mermaid)return;
+  pv.querySelectorAll('pre code.language-mermaid').forEach(code=>{
+    const host=document.createElement('div');
+    host.className='mermaid';
+    host.textContent=code.textContent;
+    code.parentElement.replaceWith(host);
+  });
+  try{mermaid.run({nodes:pv.querySelectorAll('.mermaid')});}catch(e){}
+}
+
+// Preview header from metadata
+function buildPreviewHeader(){
+  const ti=document.getElementById('ti').value.trim();
+  const au=document.getElementById('au').value.trim();
+  const coau=document.getElementById('coau')?(document.getElementById('coau').value||'').trim():'';
+  const dm=document.getElementById('dm').value.trim();
+  const kw=document.getElementById('kw').value.trim();
+  const ab=document.getElementById('ab').value.trim();
+  if(!ti&&!au&&!dm&&!kw&&!ab)return '';
+  let h='<div style="border-bottom:1px solid #bbb;padding-bottom:14px;margin-bottom:18px;text-align:center">';
+  if(ti)h+='<h1 style="margin-bottom:.3rem">'+escHtml(ti)+'</h1>';
+  const authors=[au];if(coau)coau.split(',').forEach(a=>{if(a.trim())authors.push(a.trim());});
+  if(authors.filter(a=>a).length)h+='<div style="font-size:.82rem;color:#444;margin-bottom:.2rem">'+authors.filter(a=>a).map(a=>escHtml(a)).join(', ')+'</div>';
+  if(dm)h+='<div style="font-size:.72rem;color:#666;margin-bottom:.2rem">'+escHtml(dm)+'</div>';
+  if(ab)h+='<div style="border-top:1px solid #ccc;border-bottom:1px solid #ccc;padding:8px 0;margin:8px 0;font-size:.82rem;text-align:justify;font-style:italic"><strong style="font-style:normal;display:block;margin-bottom:2px;font-size:.7rem;text-transform:uppercase;letter-spacing:.5px">Abstract</strong>'+escHtml(ab)+'</div>';
+  if(kw)h+='<div style="font-size:.72rem;color:#555"><strong>Keywords:</strong> '+escHtml(kw)+'</div>';
+  h+='</div>';
+  return h;
+}
 
 function render(){
   const raw=inp.value;
-  if(!raw.trim()){pv.innerHTML='<p style="color:#999;text-align:center;padding:40px;font-family:sans-serif;font-size:.85rem">양식을 선택하거나 직접 작성을 시작하세요</p>';updateStats(raw);return;}
+  const headerHtml=buildPreviewHeader();
+  if(!raw.trim()&&!headerHtml){pv.innerHTML='<p style="color:#999;text-align:center;padding:40px;font-family:sans-serif;font-size:.85rem">양식을 선택하거나 직접 작성을 시작하세요</p>';updateStats(raw);return;}
   envCounters={theorem:0,lemma:0,definition:0,corollary:0,proposition:0,algorithm:0};eqCounter=0;
   let t=raw;t=processEnvs(t);t=processNumberedEq(t);t=processCitations(t);t=processFootnotes(t);t=processSubfigures(t);
   let html=marked.parse(t);html=restoreEnvs(html);
   html=processImageSize(html);
-  pv.innerHTML=html;
+  pv.innerHTML=headerHtml+html;
+  hydrateMermaid();
   renderMathInElement(pv,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false},{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}],throwOnError:false});
   updateStats(raw);
 }
@@ -1238,7 +1275,7 @@ inp.addEventListener('keydown',e=>{
   if((e.ctrlKey||e.metaKey)&&e.key==='i'){e.preventDefault();wrap('*','*');}
   if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();wrap('[','](url)');}
   if((e.ctrlKey||e.metaKey)&&e.key==='m'){e.preventDefault();wrap('$','$');}
-  if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();save();document.getElementById('as').textContent='Saved';}
+  if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();save();ghSave();}
   if(e.altKey&&(e.key==='n'||e.key==='N')){e.preventDefault();insertFootnote();}
   if((e.ctrlKey||e.metaKey)&&e.key==='z'){/* native undo */}
   if((e.ctrlKey||e.metaKey)&&e.key==='y'){/* native redo */}
@@ -1268,15 +1305,6 @@ function insertFootnote(){
 }
 
 // === VENUE FORMAT TEMPLATES ===
-function applyTemplate(){
-  const sel=document.getElementById('tplSel');
-  const type=sel.value;
-  if(!type){alert('양식을 먼저 선택해 주세요.');return;}
-  if(inp.value.trim()&&!confirm('현재 내용이 선택한 양식으로 대체됩니다. 계속하시겠습니까?'))return;
-  insTpl(type);
-  sel.value='';
-  document.getElementById('as').textContent='[+] 양식 적용됨: '+sel.querySelector('option[value="'+type+'"]')?.textContent||type;
-}
 function insTpl(type){
   if(!type)return;
   const T={
@@ -3222,7 +3250,7 @@ function updateStats(t){
 }
 
 // === EXPORT ===
-function publish(){
+function publish(downloadName){
   const ti=document.getElementById('ti').value||'Untitled';const au=document.getElementById('au').value||'AICRA';
   const coau=document.getElementById('coau').value;const ab=document.getElementById('ab').value;
   const kw=document.getElementById('kw').value;const dm=document.getElementById('dm').value;
@@ -3236,13 +3264,30 @@ function publish(){
   navigator.clipboard.writeText(fm).then(()=>{
     const c=confirm('Copied!\n\nOK = CMS\nCancel = Download .md');
     if(c)window.open('/admin/#/collections/papers/new','_blank');
-    else{const b=new Blob([fm],{type:'text/markdown'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=today+'-'+ti.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'')+'.md';a.click();}
+    else{const b=new Blob([fm],{type:'text/markdown'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=downloadName||today+'-'+ti.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'')+'.md';a.click();}
   });
 }
 
 // === EXPORT ALIASES ===
-function exportMD(){publish();}
-function exportPPT(){genPPT();}
+function askFileName(defaultBase,ext){
+  const raw=prompt('파일명을 입력하세요 (.'+ext+')',defaultBase);
+  if(raw===null)return null;
+  const clean=raw.trim().replace(new RegExp('\\.'+ext+'$','i'),'');
+  if(!clean)return null;
+  return clean+'.'+ext;
+}
+function exportMD(){
+  const ti=document.getElementById('ti').value||'paper';
+  const fn=askFileName(docManager?docManager.slugify(ti):ti.replace(/\s+/g,'-').toLowerCase(),'md');
+  if(!fn)return;
+  publish(fn);
+}
+function exportPPT(){
+  const ti=document.getElementById('ti').value||'presentation';
+  const fn=askFileName(docManager?docManager.slugify(ti):ti.replace(/\s+/g,'-').toLowerCase(),'pptx');
+  if(!fn)return;
+  genPPT(fn);
+}
 
 // === TEX EXPORT ===
 function exportTeX(){
@@ -3356,13 +3401,14 @@ function exportTeX(){
   tex=tex.replace(/\\\\\\\\/g,'\\');
 
   // Download
-  const fn=ti.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'')||'paper';
+  const texFileName=askFileName(ti.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'')||'paper','tex');
+  if(!texFileName)return;
   const blob=new Blob([tex],{type:'application/x-tex'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
-  a.download=fn+'.tex';
+  a.download=texFileName;
   a.click();
-  document.getElementById('as').textContent='.tex 내보내기 완료';
+  document.getElementById('as').textContent='.tex 내보내기 완료: '+texFileName;
 }
 
 function escTeX(s){return s.replace(/[&%$#_{}~^]/g,m=>'\\'+m);}
@@ -3538,7 +3584,7 @@ document.getElementById('abs-dual').addEventListener('change',function(){
 });
 
 // === PPT GENERATOR (PptxGenJS) ===
-function genPPT(){
+function genPPT(fileName){
   const text=inp.value;if(!text.trim())return alert('Write paper content first.');
   if(typeof PptxGenJS==='undefined')return alert('PptxGenJS not loaded. Check network.');
   const pptx=new PptxGenJS();
@@ -3606,8 +3652,8 @@ function genPPT(){
   slide.addText(allAuthors+'\n'+domain,{x:0,y:4.0,w:'100%',fontSize:16,color:'CCDDCC',fontFace:'Arial',align:'center'});
 
   // Download
-  const fn=title.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'')||'presentation';
-  pptx.writeFile({fileName:fn+'.pptx'});
+  const fn=fileName||(title.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'')||'presentation')+'.pptx';
+  pptx.writeFile({fileName:fn});
 }
 
 function extractBullets(body){
@@ -4172,28 +4218,37 @@ function getEditorMeta(){
   };
 }
 
-function ghSave(){
+let _savedFileName='';
+function ghSave(forceSaveAs){
   const title=document.getElementById('ti').value;
   if(!title){alert('제목을 입력해 주세요.');return;}
   if(!inp.value.trim()){alert('내용을 입력해 주세요.');return;}
-  // Show save modal instead of prompt()
-  const defaultName=docManager.slugify(title);
+  // Quick save: reuse existing filename
+  const currentPath=docManager.getCurrentFile?docManager.getCurrentFile():null;
+  const currentName=currentPath?currentPath.split('/').pop().replace(/\.md$/,''):(_savedFileName||'');
+  if(!forceSaveAs&&currentName){
+    executeSave(currentName);
+    return;
+  }
+  // Save-as: show modal for new filename
+  const defaultName=currentName||docManager.slugify(title);
   const sm=document.getElementById('saveModal');
   document.getElementById('saveFileName').value=defaultName;
   document.getElementById('saveGH').checked=true;
   document.getElementById('saveLocal').checked=true;
   sm.classList.add('show');
 }
-async function executeSave(){
+async function executeSave(forcedName){
   const title=document.getElementById('ti').value;
   const body=inp.value;
-  const rawName=document.getElementById('saveFileName').value.trim();
+  const rawName=(forcedName||document.getElementById('saveFileName').value).trim();
   if(!rawName){alert('파일명을 입력해 주세요.');return;}
   const cleanName=rawName.replace(/\.md$/,'').replace(/[^a-z0-9가-힣_-]/gi,'-').replace(/-+/g,'-');
-  const saveGH=document.getElementById('saveGH').checked;
-  const saveLocal=document.getElementById('saveLocal').checked;
+  _savedFileName=cleanName;
+  const saveGH=forcedName?true:document.getElementById('saveGH').checked;
+  const saveLocal=forcedName?false:document.getElementById('saveLocal').checked;
   if(!saveGH&&!saveLocal){alert('저장 방식을 하나 이상 선택해 주세요.');return;}
-  document.getElementById('saveModal').classList.remove('show');
+  if(!forcedName)document.getElementById('saveModal').classList.remove('show');
   if(saveGH){
     try{
       document.getElementById('as').textContent='GitHub 저장 중...';
@@ -4229,6 +4284,8 @@ function buildExportContent(title,body){
 async function exportDOCX(){
   const D=window.docx;if(!D){alert('docx 라이브러리 로딩 중...');return;}
   const title=document.getElementById('ti').value||'Untitled';
+  const docxFileName=askFileName(docManager?docManager.slugify(title):title.replace(/\s+/g,'-'),'docx');
+  if(!docxFileName)return;
   const au=document.getElementById('au').value||'AICRA';
   const coau=document.getElementById('coau').value;
   const ab=document.getElementById('ab').value;
@@ -4343,9 +4400,8 @@ async function exportDOCX(){
   // Build document
   const doc=new D.Document({sections:[{properties:{page:{size:{width:12240,height:15840},margin:{top:1440,right:1440,bottom:1440,left:1440}}},children:children}]});
   const blob=await D.Packer.toBlob(doc);
-  const fn=(docManager?docManager.slugify(title):title.replace(/\s+/g,'-'))+'.docx';
-  saveAs(blob,fn);
-  document.getElementById('as').textContent='DOCX 저장됨: '+fn;
+  saveAs(blob,docxFileName);
+  document.getElementById('as').textContent='DOCX 저장됨: '+docxFileName;
 }
 
 async function ghLoad(){
