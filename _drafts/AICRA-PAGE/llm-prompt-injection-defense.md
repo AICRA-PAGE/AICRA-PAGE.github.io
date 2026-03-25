@@ -10,52 +10,71 @@ keywords: ["DDDD"]
 lang: ko
 ---
 
+# [논문 제목]
 
-# [Paper Title]
+# [English Title]
 
-Anonymous Authors
+**[저자1]**$^1$, **[저자2]**$^{2,*}$
+$^1$[대학교 법학전문대학원] $^2$[소속]
+$^*$교신저자
 
 :::abstract
-[150-250 words]
+[국문초록: AI 규제/책임/개인정보 등 법적 쟁점에 대한 분석]
 :::
-dfdsfasdfasfadsd
----
 
-## 1. Introduction
-
----
-ㅇㄹㄴㅇㄻㄴㄻ 무누우누우누
-## 2. Related Work
+**주요어:** [AI 규제], [법적 책임], [개인정보보호]
 
 ---
 
-## 3. Method
+## I. 문제제기
 
----
-아마도 아마도 아마도 정리정리
-## 4. Experiments
-
-### 4.1 Setup
-### 4.2 Results
+### 1. 연구의 배경
+### 2. 연구의 목적 및 범위
+### 3. 선행연구 검토
 
 ---
 
-## 5. Analysisdfsafsfa
+## II. 기술적 배경
+
+### 1. 관련 AI/보안 기술 개요
+### 2. 기술적 메커니즘과 법적 함의
 
 ---
 
-## 6. Conclusion
+## III. 법적 쟁점 분석
+
+### 1. 쟁점 1: [책임 소재]
+#### 가. 현행법 검토
+#### 나. 판례 및 행정해석
+#### 다. 소결
+
+### 2. 쟁점 2: [개인정보/지식재산]
+#### 가. 현행법 검토
+#### 나. 판례 및 행정해석
+#### 다. 소결
 
 ---
 
-## Reproducibility Statement
+## IV. 비교법적 분석
+
+### 1. EU (AI Act, GDPR)
+### 2. 미국
+### 3. 한국 (개인정보보호법, 인공지능기본법)
+### 4. 비교 소결
 
 ---
 
-## Ethics Statement
+## V. 입법론/해석론 제안
+
+### 1. 현행법 해석론
+### 2. 입법적 개선방안
 
 ---
 
-## References
+## VI. 결론
 
-<!-- ICLR: OpenReview submission. Public discussion phase. Anonymous. -->
+---
+
+## 참고문헌
+
+<!-- 법학 논문: 각주 중심 인용 체계. [^1] 형식 사용. -->
