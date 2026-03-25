@@ -65,3 +65,11 @@ LLM 기반 시스템이 확산됨에 따라 프롬프트 인젝션 공격이 주
 $$
 \mathcal{L}_{defense} = \mathcal{L}_{task} + \lambda \cdot \mathcal{L}_{safety}
 $$
+
+:::theorem 방어 수렴성
+제안 방어 필터는 유한 쿼리 $T < \infty$ 내에서 최적 정책 $\pi^*$에 수렴한다.
+:::
+
+:::proof
+마르코프 결정 과정의 수축 사상 정리에 의해 수렴한다.
+:::
