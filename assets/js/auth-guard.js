@@ -12,35 +12,42 @@
   // Note: Source protection (contextmenu/F12/selectstart blocks) removed for accessibility.
   // These blocks hurt keyboard users and screen readers more than they protect code.
 
+  // Strict token sources only (matches doc-manager.js)
   function getToken(){
     const keys=['sveltia-cms.user','netlify-cms-user'];
     for(const k of keys){
       const raw=localStorage.getItem(k);
       if(!raw)continue;
-      try{const d=JSON.parse(raw);if(d.token)return d.token;if(d.access_token)return d.access_token;}catch(e){if(raw.length>10)return raw;}
-    }
-    // Search for any cms-related token
-    for(let i=0;i<localStorage.length;i++){
-      const k=localStorage.key(i);
-      if(k&&(k.includes('cms')||k.includes('sveltia'))&&(k.includes('user')||k.includes('token'))){
-        try{const d=JSON.parse(localStorage.getItem(k));if(d.token)return d.token;}catch(e){}
+      try{
+        const d=JSON.parse(raw);
+        const t=d.token||d.access_token;
+        if(t&&typeof t==='string'&&t.length>10)return t;
+      }catch(e){
+        if(typeof raw==='string'&&raw.length>20&&raw.length<200&&/^[a-zA-Z0-9_-]+$/.test(raw))return raw;
       }
     }
     return null;
   }
 
+  // Token-bound cache (prevents forged cache or stale user)
   function getCached(){
     try{
       const raw=localStorage.getItem(CACHE_KEY);
       if(!raw)return null;
       const d=JSON.parse(raw);
-      if(Date.now()-d.at<CACHE_TTL)return d;
+      if(Date.now()-d.at>CACHE_TTL)return null;
+      // Verify cache is bound to current token
+      const currentToken=getToken();
+      if(!currentToken||d.tokenHash!==simpleHash(currentToken))return null;
+      return d;
     }catch(e){}
     return null;
   }
+  function simpleHash(s){let h=0;for(let i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h|=0;}return h.toString(36);}
 
   function setCache(login,isCollab){
-    localStorage.setItem(CACHE_KEY,JSON.stringify({login:login,collab:isCollab,at:Date.now()}));
+    const token=getToken();
+    localStorage.setItem(CACHE_KEY,JSON.stringify({login:login,collab:isCollab,at:Date.now(),tokenHash:token?simpleHash(token):''}));
   }
 
   window.aicraAuth={

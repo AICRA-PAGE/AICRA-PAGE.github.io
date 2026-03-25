@@ -1197,7 +1197,20 @@ F(df1, df2)=값, p=값, eta^2=값</div>
       <b>미저장 경고:</b> 저장하지 않고 페이지 떠날 때 경고<br>
       <b>스크롤 동기화:</b> 에디터-미리보기 양방향 스크롤 자동 연동<br>
       <b>목차 자동 생성:</b> 미리보기 상단에 클릭 가능한 목차<br>
-      <b>워드카운트 목표:</b> 상태바에서 목표 단어수 설정 -> 진행률 바
+      <b>워드카운트 목표:</b> 상태바에서 목표 단어수 설정 -> 진행률 바<br>
+      <b>인용 hover 팝오버:</b> [N] 위에 마우스를 올리면 참고문헌 전체 내용 표시<br>
+      <b>각주 양방향 링크:</b> 본문 각주 번호 클릭->각주 위치, 화살표->원문 위치로 이동<br>
+      <b>DOI 자동 링크:</b> 참고문헌의 DOI가 자동으로 클릭 가능한 링크로 변환<br>
+      <b>코드 구문 강조:</b> Python/JS/C 등 코드 블록 자동 색상 하이라이트 (highlight.js)<br>
+      <b>인용 순서 정렬:</b> 미리보기 도구 -> <em>정렬</em> 버튼으로 본문 등장순 재정렬<br>
+      <b>미리보기 확대/축소:</b> +/- 버튼으로 50%~200% 조절<br>
+      <b>그림/표 목록:</b> <em>LOF</em> 버튼으로 전체 그림/표 캡션 목록 표시<br>
+      <b>부록 번호:</b> ## Appendix 이후 섹션이 A, B, C로 자동 번호<br>
+      <b>인쇄 1단/2단:</b> 드롭다운으로 1단(기본) 또는 2단(IEEE) 인쇄 선택<br>
+      <b>이미지 드래그앤드롭:</b> 이미지 파일을 에디터로 드래그하면 자동 삽입<br>
+      <b>저자 소속:</b> 메타데이터에 소속 입력시 미리보기에 이탤릭으로 표시<br>
+      <b>저자 이름 매핑:</b> GitHub ID가 저자 정보에서 매핑한 실명으로 표시<br>
+      <b>샘플 논문:</b> 5편의 AI 보안 논문을 불러와 전 기능 테스트 가능
     </div>
   </div>
 
@@ -1311,14 +1324,47 @@ const sectionCache=new Map();
 let renderToken=0;
 function simpleHash(s){let h=0;for(let i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h|=0;}return h.toString(36);}
 // === SNAPSHOT SYSTEM ===
-const SNAP_KEY='aicra.paper.snapshots.v1';
-function saveSnapshot(){
-  const body=inp.value;if(!body.trim())return;
-  const hash=simpleHash(body);
-  const list=JSON.parse(localStorage.getItem(SNAP_KEY)||'[]');
-  if(list[0]&&list[0].hash===hash)return;
-  list.unshift({at:Date.now(),hash:hash,title:document.getElementById('ti').value,words:body.trim().split(/\s+/).length,body:body,refs:JSON.parse(JSON.stringify(refs))});
-  try{localStorage.setItem(SNAP_KEY,JSON.stringify(list.slice(0,20)));}catch(e){localStorage.setItem(SNAP_KEY,JSON.stringify(list.slice(0,5)));}
+// === SNAPSHOT SYSTEM (IndexedDB for large docs, localStorage fallback) ===
+const snapDB=(function(){
+  const DB='aicra-snapshots',STORE='snaps',VER=1;
+  function open(){return new Promise((ok,fail)=>{
+    const r=indexedDB.open(DB,VER);
+    r.onupgradeneeded=()=>{const db=r.result;if(!db.objectStoreNames.contains(STORE))db.createObjectStore(STORE,{keyPath:'id',autoIncrement:true}).createIndex('at','at');};
+    r.onsuccess=()=>ok(r.result);r.onerror=()=>fail(r.error);
+  });}
+  async function tx(mode,fn){const db=await open();return new Promise((ok,fail)=>{
+    const t=db.transaction(STORE,mode);const s=t.objectStore(STORE);fn(s);
+    t.oncomplete=()=>{db.close();ok();};t.onerror=()=>{db.close();fail(t.error);};
+  });}
+  return{
+    async save(snap){await tx('readwrite',s=>s.add(snap));},
+    async getAll(){const db=await open();return new Promise((ok,fail)=>{
+      const t=db.transaction(STORE,'readonly');const r=t.objectStore(STORE).getAll();
+      r.onsuccess=()=>{db.close();ok((r.result||[]).sort((a,b)=>(b.at||0)-(a.at||0)));};
+      r.onerror=()=>{db.close();fail(r.error);};
+    });},
+    async deleteOld(max){const all=await this.getAll();const victims=all.slice(max);
+      if(!victims.length)return;
+      await tx('readwrite',s=>{victims.forEach(v=>s.delete(v.id));});
+    }
+  };
+})();
+let _lastSnapHash='';
+async function saveSnapshot(){
+  try{
+    const body=inp.value;if(!body.trim())return;
+    const hash=simpleHash(body);
+    if(hash===_lastSnapHash)return;
+    _lastSnapHash=hash;
+    await snapDB.save({at:Date.now(),hash:hash,title:document.getElementById('ti').value,words:body.trim().split(/\s+/).length,body:body,refs:JSON.parse(JSON.stringify(refs))});
+    await snapDB.deleteOld(20);
+  }catch(e){
+    // Fallback to localStorage
+    const SNAP_KEY='aicra.paper.snapshots.v1';
+    const list=JSON.parse(localStorage.getItem(SNAP_KEY)||'[]');
+    list.unshift({at:Date.now(),title:document.getElementById('ti').value,words:inp.value.trim().split(/\s+/).length,body:inp.value,refs:refs});
+    try{localStorage.setItem(SNAP_KEY,JSON.stringify(list.slice(0,5)));}catch(e2){}
+  }
 }
 setInterval(saveSnapshot,5*60*1000);
 
@@ -3543,31 +3589,30 @@ function updateWordTarget(){
   bar.style.background=pct<60?'#b42318':pct<90?'var(--accent)':pct<=110?'var(--brand)':'#b42318';
 }
 
-// === SNAPSHOT RESTORE ===
-function showSnapshots(){
-  const list=JSON.parse(localStorage.getItem(SNAP_KEY)||'[]');
-  if(!list.length){alert('저장된 이력이 없습니다.');return;}
+// === SNAPSHOT RESTORE (IndexedDB) ===
+let _snapCache=[];
+async function showSnapshots(){
+  try{_snapCache=await snapDB.getAll();}catch(e){_snapCache=JSON.parse(localStorage.getItem('aicra.paper.snapshots.v1')||'[]');}
+  if(!_snapCache.length){alert('저장된 이력이 없습니다.');return;}
   const cr=document.getElementById('checkResult');
-  let html='<strong style="color:var(--brand)">문서 이력 ('+list.length+'개)</strong>';
+  let html='<strong style="color:var(--brand)">문서 이력 ('+_snapCache.length+'개)</strong>';
   html+='<button onclick="document.getElementById(\'checkResult\').style.display=\'none\'" style="position:absolute;right:8px;top:8px;border:none;background:none;cursor:pointer;font-size:.8rem;color:var(--muted)">X</button>';
   html+='<div style="margin-top:8px;max-height:180px;overflow-y:auto">';
-  list.forEach((snap,i)=>{
+  _snapCache.forEach((snap,i)=>{
     const date=new Date(snap.at);
     const timeStr=date.toLocaleString('ko-KR',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
     html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px dotted var(--line);font-size:.65rem">';
-    html+='<span>'+timeStr+' | '+(snap.title||'제목없음')+' | '+snap.words+'단어</span>';
+    html+='<span>'+timeStr+' | '+escHtml(snap.title||'제목없음')+' | '+(snap.words||0)+'단어</span>';
     html+='<button class="bt" onclick="restoreSnapshot('+i+')" style="font-size:.5rem;padding:1px 6px">복원</button>';
     html+='</div>';
   });
   html+='</div>';
   cr.innerHTML=html;cr.style.display='block';
 }
-function restoreSnapshot(idx){
-  const list=JSON.parse(localStorage.getItem(SNAP_KEY)||'[]');
-  const snap=list[idx];if(!snap)return;
+async function restoreSnapshot(idx){
+  const snap=_snapCache[idx];if(!snap)return;
   if(!confirm('현재 내용을 이 시점('+new Date(snap.at).toLocaleString('ko-KR')+')으로 복원하시겠습니까?'))return;
-  // Save current as snapshot first
-  saveSnapshot();
+  await saveSnapshot();
   inp.focus();inp.select();
   document.execCommand('insertText',false,snap.body);
   if(snap.title)document.getElementById('ti').value=snap.title;
@@ -4804,6 +4849,19 @@ inp.addEventListener('drop',e=>{
     };
     reader.readAsDataURL(file);
   }
+});
+
+// === GLOBAL ERROR HANDLER ===
+window.onerror=function(msg,src,line,col,err){
+  const as=document.getElementById('as');
+  if(as)as.textContent='[!] 오류: '+(msg||'').substring(0,80);
+  console.error('Paper Editor Error:',msg,src,line,col,err);
+  return false;
+};
+window.addEventListener('unhandledrejection',function(e){
+  const as=document.getElementById('as');
+  if(as)as.textContent='[!] 비동기 오류: '+(e.reason?.message||'').substring(0,60);
+  console.error('Unhandled rejection:',e.reason);
 });
 
 // === DIRTY FLAG + UNSAVED WARNING ===
