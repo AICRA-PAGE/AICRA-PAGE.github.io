@@ -6,144 +6,132 @@ authors: ["0blueteam0"]
 date: 2026-03-25
 status: published
 domain: "Privacy / FL"
-keywords: ["gradient leakage", "federated learning", "privacy", "data reconstruction", "distributed learning"]
+keywords: ["adversarial examples", "FGSM", "robustness", "deep learning", "adversarial training"]
 abstract: "We demonstrate that shared gradients in distributed learning can be inverted to recover private training data with high fidelity. DLG achieves MSE 0.0069 on CIFAR-100, a 37x improvement over prior methods."
 lang: ko
 ---
 
-# Deep Leakage from Gradients
+# Explaining and Harnessing Adversarial Examples
 
 :::abstract
-Shared gradients in distributed learning leak private training data. Our DLG method recovers training images and text by optimizing dummy data to match observed gradients. We achieve MSE 0.0069 on CIFAR-100, a 37x improvement over prior work.
+We propose a linear explanation for adversarial vulnerability and introduce FGSM, a fast single-step adversarial perturbation method. Adversarial training with FGSM improves MNIST test error from 0.94% to 0.84% while providing adversarial robustness. The vulnerability stems from model linearity in high-dimensional spaces, not overfitting.
 :::
 
 ---
 
 ## 1. Introduction
 
-Federated learning promises privacy by sharing model gradients instead of raw data [cite:1]. However, we show this guarantee is fundamentally flawed: gradients contain sufficient information to reconstruct the original training data with high fidelity [cite:2].
+Neural networks are vulnerable to adversarial examples: inputs with imperceptibly small perturbations that cause misclassification [cite:1]. Previous explanations attributed this to model complexity and overfitting [cite:2]. We argue that the primary cause is the linear nature of models in high-dimensional spaces.
+
+Our contributions:
+1. A linear explanation for adversarial vulnerability
+2. FGSM: a fast, single-step adversarial perturbation method
+3. Adversarial training as a regularization technique
 
 ---
 
-## 2. Threat Model
+## 2. The Linear Explanation
 
-### Threat Model
-
-**Assets**
-- Private training data of each participant
-- Label information
-
-**Adversary**
-- **Goal:** Reconstruct private training data from shared gradients
-- **Access:** Honest-but-curious participant observing shared gradients
-- **Capabilities:** Can store and analyze all received gradient updates
-- **Knowledge:** Knows model architecture and current parameters
-
-**Trust Boundaries**
-- Local training data <-> Shared gradient updates
-- Individual participant <-> Aggregation server
-
-**Assumptions**
-- Gradients are shared without noise or compression
-- Batch size is small (1-8 samples)
-
----
-
-## 3. Method
-
-### 3.1 Problem Formulation
-
-Given shared gradients $\nabla W = \frac{\partial \ell(F(x, W), y)}{\partial W}$, we seek to recover the private input $x$ and label $y$.
+Consider a linear model with weight vector $w$ and input $x$. An adversarial perturbation $\eta$ satisfies $\|\eta\|_\infty \leq \epsilon$. The effect on the output is:
 
 $$
-x'^*, y'^* = \arg\min_{x', y'} \left\| \frac{\partial \ell(F(x', W), y')}{\partial W} - \nabla W \right\|^2
+w^\top \tilde{x} = w^\top x + w^\top \eta
 $$
 
-\label{eq:dlg}
+\label{eq:linear}
 
-### 3.2 DLG Algorithm
+The perturbation's effect $w^\top \eta$ can be maximized by setting $\eta = \epsilon \cdot \text{sign}(w)$. In $n$ dimensions with average weight magnitude $m$, the activation change is $\epsilon m n$, which grows linearly with dimensionality.
 
-:::algorithm Deep Leakage from Gradients (DLG)
-Input: shared gradients $\nabla W$, model $F$, learning rate $\eta$, iterations $T$
-Output: reconstructed data $x'^*$, label $y'^*$
-1. Initialize dummy data: $x'^{(0)} \sim \mathcal{N}(0, 1)$, $y'^{(0)} \sim \text{Uniform}$
-2. For $t = 1$ to $T$:
-   a. Compute dummy gradients: $\nabla W' = \frac{\partial \ell(F(x'^{(t)}, W), y'^{(t)})}{\partial W}$
-   b. Compute matching loss: $D = \|\nabla W' - \nabla W\|^2$
-   c. Update dummy data: $x'^{(t+1)} = x'^{(t)} - \eta \frac{\partial D}{\partial x'}$
-   d. Update dummy label: $y'^{(t+1)} = y'^{(t)} - \eta \frac{\partial D}{\partial y'}$
-3. Return $x'^{(T)}$, $\arg\max y'^{(T)}$
-:::
-
-### 3.3 Convergence Analysis
-
-:::theorem DLG Convergence
-For a twice-differentiable loss function with Lipschitz-continuous gradients (constant $L$), DLG with learning rate $\eta < 1/L$ converges to a stationary point of the matching objective at rate $O(1/\sqrt{T})$.
+:::theorem Linear Vulnerability Scaling
+For a linear classifier with $n$-dimensional input and average weight magnitude $m$, the maximum activation change from an $L_\infty$-bounded perturbation $\epsilon$ scales as $O(\epsilon m n)$.
 :::
 
 :::proof
-The matching objective $D(x', y') = \|\nabla W'(x', y') - \nabla W\|^2$ is differentiable with respect to $(x', y')$. By the descent lemma and standard convergence analysis for non-convex objectives with Lipschitz gradients.
+$\max_{\|\eta\|_\infty \leq \epsilon} w^\top \eta = \epsilon \|w\|_1 \leq \epsilon \cdot n \cdot m$. The bound is tight when $\eta = \epsilon \cdot \text{sign}(w)$.
 :::
 
 ---
 
-## 4. Experiments
+## 3. Fast Gradient Sign Method
 
-*Table N. Image reconstruction quality (MSE, lower is better).*
-| Dataset | DLG (Ours) | Prior Method | Improvement |
-|---------|:----------:|:------------:|:-----------:|
-| MNIST | 0.0038 | 0.2275 | 59.9x |
-| CIFAR-10 | 0.0069 | 0.2578 | 37.4x |
-| SVHN | 0.0051 | 0.2771 | 54.3x |
-| LFW (faces) | 0.0055 | 0.2951 | 53.7x |
+\label{sec:fgsm}
 
-*Table N. NLP text reconstruction accuracy.*
-| Task | Sentence Length | Token Accuracy (%) | BLEU |
-|------|:--------------:|:------------------:|:----:|
-| Sentiment | 10 | 89.2 | 0.87 |
-| NLI | 20 | 82.1 | 0.79 |
-| QA | 30 | 74.5 | 0.68 |
+The FGSM generates adversarial examples in a single gradient computation:
+
+$$
+x_{\text{adv}} = x + \epsilon \cdot \text{sign}(\nabla_x J(\theta, x, y))
+$$
+
+\label{eq:fgsm}
+
+where $J(\theta, x, y)$ is the training loss. This is optimal for linear models under $L_\infty$ constraints.
+
+:::algorithm FGSM
+Input: clean input $x$, true label $y$, model parameters $\theta$, perturbation budget $\epsilon$
+Output: adversarial example $x_{\text{adv}}$
+1. Compute loss gradient: $g = \nabla_x J(\theta, x, y)$
+2. Compute sign of gradient: $s = \text{sign}(g)$
+3. Apply perturbation: $x_{\text{adv}} = x + \epsilon \cdot s$
+4. Clip to valid range: $x_{\text{adv}} = \text{clip}(x_{\text{adv}}, 0, 1)$
+5. Return $x_{\text{adv}}$
+:::
+
+---
+
+## 4. Adversarial Training
+
+We propose training on a mixture of clean and adversarial examples:
+
+$$
+\tilde{J}(\theta, x, y) = \alpha \cdot J(\theta, x, y) + (1 - \alpha) \cdot J(\theta, x + \epsilon \cdot \text{sign}(\nabla_x J(\theta, x, y)), y)
+$$
+
+\label{eq:advtrain}
+
+This can be interpreted as an $L_1$ regularizer on the gradient of the loss with respect to the input \ref{eq:fgsm}.
+
+---
+
+## 5. Experiments
+
+*Table N. FGSM attack success rate and model error.*
+| Dataset | Model | Clean Error (%) | Adv Error (%) | $\epsilon$ | Avg Wrong Confidence (%) |
+|---------|-------|:---------------:|:-------------:|:----------:|:------------------------:|
+| MNIST | Softmax | 7.87 | 99.9 | 0.25 | 79.3 |
+| MNIST | Maxout | 0.94 | 89.4 | 0.25 | 97.6 |
+| CIFAR-10 | Conv Maxout | 11.68 | 87.15 | 0.10 | 96.6 |
+
+*Table N. Adversarial training effect.*
+| Dataset | Model | Before AT (%) | After AT (%) | Adv Robustness (%) |
+|---------|-------|:-------------:|:------------:|:-------------------:|
+| MNIST | Maxout | 0.94 | 0.84 | 67.2 |
+| CIFAR-10 | Conv Maxout | 11.68 | 10.94 | 32.8 |
 
 ```mermaid
 flowchart TB
-    subgraph FL["Federated Learning"]
-      A[Participant A] -->|Gradients| S[Server]
-      B[Participant B] -->|Gradients| S
-      C[Participant C] -->|Gradients| S
+    subgraph Training["Adversarial Training"]
+      A[Clean Input x] --> B[Forward Pass]
+      B --> C[Compute Gradient]
+      C --> D[FGSM Perturbation]
+      D --> E[Adversarial Input]
+      E --> F[Combined Loss]
+      A --> F
     end
-    subgraph Attack["DLG Attack"]
-      S -->|Observed Gradients| D[Attacker]
-      D --> E[Optimize Dummy Data]
-      E --> F[Match Gradients]
-      F --> G[Reconstructed Data]
-    end
+    F --> G[Backpropagation]
 ```
-*Fig. N. DLG attack in federated learning.*
+*Fig. N. Adversarial training pipeline.*
 
 ---
 
-## 5. Defenses
+## 6. Discussion
 
-$$
-\nabla W_{\text{noisy}} = \nabla W + \mathcal{N}(0, \sigma^2 I)
-$$
-
-\label{eq:defense}
-
-*Table N. Defense effectiveness (CIFAR-10).*
-| Defense | MSE | Accuracy Drop (%) | Privacy Budget $\epsilon$ |
-|---------|:---:|:-----------------:|:------------------------:|
-| No defense | 0.0069 | 0.0 | $\infty$ |
-| Gaussian noise ($\sigma=0.01$) | 0.15 | 0.3 | 8.2 |
-| Gradient pruning (90%) | 0.28 | 1.2 | - |
-| Gradient compression | 0.31 | 0.8 | - |
-| DP-SGD ($\epsilon=8$) | 0.42 | 2.1 | 8.0 |
+The linear explanation predicts that adversarial vulnerability increases with input dimensionality. This is consistent with our MNIST ($n=784$) vs CIFAR-10 ($n=3072$) results. The connection to $L_1$ regularization suggests adversarial training provides benefits beyond robustness [cite:3].
 
 ---
 
-## 6. Conclusion
+## 7. Conclusion
 
-DLG demonstrates that gradient sharing in federated learning creates a fundamental privacy vulnerability [cite:3]. Even single gradient updates from small batches reveal training data at pixel-level fidelity. Effective defenses require differential privacy noise, which trades off model utility [cite:4].
+We demonstrated that adversarial vulnerability is a natural consequence of model linearity in high-dimensional spaces. FGSM provides a simple yet effective method for both generating adversarial examples and training robust models [cite:4]. Future work should explore multi-step attacks and certified defenses [cite:5].
 
 ---
 
