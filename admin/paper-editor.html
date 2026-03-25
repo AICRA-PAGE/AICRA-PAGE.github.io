@@ -78,7 +78,7 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
 #pv h2{font-size:1rem;font-weight:700;text-transform:uppercase;letter-spacing:.3px;padding-bottom:2px;border-bottom:1px solid #999;margin:1.5rem 0 .6rem;color:#111}
 #pv h3{font-size:.9rem;font-weight:700;margin:.9rem 0 .35rem;color:#222}
 #pv h4{font-size:.85rem;font-weight:600;margin:.6rem 0 .25rem;font-style:italic;color:#333}
-#pv p{margin-bottom:.7rem;text-align:justify;hyphens:auto}
+#pv p{margin-bottom:.7rem;text-align:justify;hyphens:auto;word-spacing:.02em;letter-spacing:.005em}
 #pv ul,#pv ol{margin-bottom:.7rem;padding-left:1.3rem}
 #pv li{line-height:1.7;margin-bottom:.15rem}
 #pv strong{font-weight:700}
@@ -1370,14 +1370,14 @@ function buildTOC(){
   });
   return '<nav class="paper-toc" style="border:1px solid #ddd;border-radius:6px;padding:10px 14px;margin-bottom:16px;background:#fafaf8"><div style="font-size:.7rem;font-weight:700;color:#555;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px">Table of Contents</div>'+items.join('')+'</nav>';
 }
-// TOC click handler (event delegation - DOMPurify safe)
+// Click handlers (event delegation - DOMPurify safe)
 pv.addEventListener('click',function(e){
-  const link=e.target.closest('.toc-link');
-  if(link){
-    e.preventDefault();
-    const target=document.getElementById(link.dataset.target);
-    if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
-  }
+  // TOC links
+  const tocLink=e.target.closest('.toc-link');
+  if(tocLink){e.preventDefault();const t=document.getElementById(tocLink.dataset.target);if(t)t.scrollIntoView({behavior:'smooth',block:'start'});return;}
+  // Cross-reference links
+  const xref=e.target.closest('.xref');
+  if(xref){e.preventDefault();const t=document.getElementById(xref.dataset.refTarget);if(t)t.scrollIntoView({behavior:'smooth',block:'center'});return;}
 });
 
 // === RENDER (section-cache for 200-page perf) ===
@@ -1420,7 +1420,9 @@ function render(){
     htmlParts=[html];
   }
   if(token!==renderToken)return; // stale render
-  pv.innerHTML=sanitizeHtml(headerHtml+htmlParts.join(''));
+  let finalHtml=headerHtml+htmlParts.join('');
+  finalHtml=processAppendix(finalHtml);
+  pv.innerHTML=sanitizeHtml(finalHtml);
   // Insert TOC after header
   const tocHtml=buildTOC();
   if(tocHtml){const headerDiv=pv.querySelector('div[style*="border-bottom"]');if(headerDiv)headerDiv.insertAdjacentHTML('afterend',tocHtml);else pv.insertAdjacentHTML('afterbegin',tocHtml);}
@@ -1589,11 +1591,25 @@ function preprocessRefsAndCaptions(text){
     });
     line=line.replace(/\\ref\{([^}]+)\}/g,(m,id)=>{
       const label=labelRegistry[id]||'??';
-      return '<a href="#ref-'+id+'" class="xref" style="color:var(--brand,#2f5d50);text-decoration:none;font-weight:600" onclick="event.preventDefault();document.getElementById(\'ref-'+id+'\')?.scrollIntoView({behavior:\'smooth\'})">'+escHtml(label)+'</a>';
+      return '<a href="#ref-'+id+'" class="xref" data-ref-target="ref-'+id+'" style="color:var(--brand,#2f5d50);text-decoration:none;font-weight:600">'+escHtml(label)+'</a>';
     });
     return line;
   });
   return out.join('\n');
+}
+
+// === APPENDIX NUMBERING (A, B, C instead of numbers) ===
+function processAppendix(html){
+  let inAppendix=false;let appIdx=0;
+  return html.replace(/<h2[^>]*>(.*?)<\/h2>/gi,(m,content)=>{
+    if(/appendix|부록/i.test(content))inAppendix=true;
+    if(inAppendix&&!/appendix|부록/i.test(content)){
+      appIdx++;
+      const letter=String.fromCharCode(64+appIdx); // A, B, C...
+      return m.replace(content,'Appendix '+letter+'. '+content.replace(/^\d+\.\s*/,''));
+    }
+    return m;
+  });
 }
 
 function processImageSize(html){
