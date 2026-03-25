@@ -9,6 +9,25 @@
 
   let _token=null,_user=null,_currentFile=null,_currentSha=null,_lastHash='',_autoSaveTimer=null;
 
+  // Retry wrapper for API calls
+  async function fetchRetry(url,opts,retries=2,delay=1000){
+    for(let i=0;i<=retries;i++){
+      try{
+        const r=await fetch(url,opts);
+        if(r.status===403&&r.headers.get('x-ratelimit-remaining')==='0'){
+          const reset=parseInt(r.headers.get('x-ratelimit-reset')||'0')*1000-Date.now();
+          if(reset>0&&reset<60000)await new Promise(ok=>setTimeout(ok,reset+1000));
+          continue;
+        }
+        if(r.status>=500&&i<retries){await new Promise(ok=>setTimeout(ok,delay*(i+1)));continue;}
+        return r;
+      }catch(e){
+        if(i<retries){await new Promise(ok=>setTimeout(ok,delay*(i+1)));continue;}
+        throw e;
+      }
+    }
+  }
+
   function getToken(){
     if(_token)return _token;
     // Strict token sources only (no arbitrary localStorage scanning)
@@ -362,6 +381,7 @@
     checkConflict:checkConflict,
     getCurrentFile:function(){return _currentFile;},
     getCurrentSha:function(){return _currentSha;},
+    setCurrentSha:function(sha){_currentSha=sha;},
     slugify:slugify,
     createReview:createReview,
     loadAnnotations:loadAnnotations,

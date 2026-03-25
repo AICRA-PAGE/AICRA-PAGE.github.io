@@ -4069,6 +4069,7 @@ document.addEventListener('mouseup',()=>rs=false);
 
 </div><!-- /editor-content -->
 
+<script src="/assets/js/paper-engine.js"></script>
 <script src="/assets/js/doc-manager.js"></script>
 <script src="/assets/js/tutorial.js"></script>
 <script src="/assets/js/auth-guard.js"></script>
@@ -4302,16 +4303,52 @@ async function showReviewPanel(){
   }
 }
 
+// === REVIEW SUGGESTION APPLY (fuzzy text match + replace) ===
+function findBestRange(source,target){
+  if(!source||!target)return null;
+  const exact=source.indexOf(target);
+  if(exact>-1)return{start:exact,end:exact+target.length,score:1};
+  const trimmed=target.trim();
+  const ti=trimmed?source.indexOf(trimmed):-1;
+  if(ti>-1)return{start:ti,end:ti+trimmed.length,score:.99};
+  // Fuzzy: find best matching paragraph block
+  const blocks=[];const re=/[^\n]+(?:\n(?!\n)[^\n]+)*/g;let m;
+  while((m=re.exec(source))!==null)blocks.push({start:m.index,end:m.index+m[0].length,text:m[0]});
+  const norm=s=>(s||'').toLowerCase().replace(/[`*_>#~\-\[\]()]/g,' ').replace(/\s+/g,' ').trim();
+  const nt=norm(target);if(!nt)return null;
+  let best=null;
+  for(const b of blocks){
+    const nb=norm(b.text);if(!nb)continue;
+    let sc=0;
+    if(nb===nt)sc=1;
+    else if(nb.includes(nt)||nt.includes(nb))sc=Math.min(nb.length,nt.length)/Math.max(nb.length,nt.length);
+    else{const tw=new Set(nt.split(' '));const bw=new Set(nb.split(' '));sc=[...tw].filter(w=>bw.has(w)).length/Math.max(tw.size,bw.size,1);}
+    if(!best||sc>best.score)best={start:b.start,end:b.end,score:sc};
+  }
+  return best&&best.score>=.5?best:null;
+}
+
 async function resolveAnnotation(reviewer,annotationId,status){
   const path=docManager.getCurrentFile();
   if(!path)return;
   try{
     const ann=await docManager.updateAnnotationStatus(path,reviewer,annotationId,status);
-    if(status==='accepted'&&ann&&ann.suggestion){
-      // Apply suggestion to text (simple: append as comment for now)
-      document.getElementById('as').textContent='제안 적용됨 - 본문에서 해당 부분을 수정해 주세요';
+    if(status==='accepted'&&ann&&(ann.type==='suggest'||ann.type==='suggestion')&&ann.suggestion){
+      const original=(ann.originalText||ann.paragraph||ann.text||'').trim();
+      const suggestion=ann.suggestion.trim();
+      if(original&&suggestion){
+        const range=findBestRange(inp.value,original);
+        if(range){
+          inp.focus();inp.setSelectionRange(range.start,range.end);
+          document.execCommand('insertText',false,suggestion);
+          inp.dispatchEvent(new Event('input'));
+          document.getElementById('as').textContent='[+] 제안이 본문에 적용되었습니다';
+        }else{
+          document.getElementById('as').textContent='[!] 상태 변경됨 - 본문에서 원문을 찾지 못했습니다';
+        }
+      }
     }
-    showReviewPanel(); // Refresh
+    showReviewPanel();
   }catch(e){alert('처리 실패: '+e.message);}
 }
 
@@ -4797,19 +4834,24 @@ function updateLockUI(locked){
 async function conflictResolve(action){
   closeModal('conflictModal');
   const path=docManager.getCurrentFile();
+  if(!path)return;
   if(action==='overwrite'){
-    // Force save by getting fresh SHA
     try{
-      const r=await fetch('https://api.github.com/repos/AICRA-PAGE/AICRA-PAGE.github.io/contents/'+path,{headers:{'Authorization':'token '+docManager.getToken()}});
-      if(r.ok){const d=await r.json();/* update SHA then save */ }
-      ghSave(); // Retry
-    }catch(e){alert('덮어쓰기 실패');}
+      document.getElementById('as').textContent='최신 버전 확인 중...';
+      const r=await fetch('https://api.github.com/repos/AICRA-PAGE/AICRA-PAGE.github.io/contents/'+path,{
+        headers:{'Authorization':'token '+docManager.getToken(),'Accept':'application/vnd.github+json'}
+      });
+      if(!r.ok)throw new Error('SHA reload failed: '+r.status);
+      const d=await r.json();
+      docManager.setCurrentSha(d.sha);
+      const currentName=path.split('/').pop().replace(/\.md$/,'');
+      await executeSave(currentName);
+    }catch(e){alert('덮어쓰기 실패: '+e.message);document.getElementById('as').textContent='충돌 해결 실패';}
   }else if(action==='reload'){
-    if(path)loadDoc(path);
+    await loadDoc(path);
   }else if(action==='copy'){
-    // Save as new file with -copy suffix
     document.getElementById('ti').value+=' (사본)';
-    ghSave();
+    ghSave(true);
   }
 }
 
