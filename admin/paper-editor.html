@@ -3804,7 +3804,7 @@ async function loadSamplePaper(slug){
   if(inp.value.trim()&&!confirm('현재 내용이 샘플 논문으로 대체됩니다. 계속?'))return;
   try{
     document.getElementById('as').textContent='샘플 논문 로딩 중...';
-    const r=await fetch('/_papers/'+slug+'.md');
+    const r=await fetch('/assets/samples/'+slug+'.md');
     if(!r.ok)throw new Error('File not found: '+slug);
     const text=await r.text();
     // Parse front matter
@@ -4129,22 +4129,38 @@ document.addEventListener('mouseup',()=>rs=false);
     <div class="modal-head"><span>첨삭/주석 입력</span><button class="bt" onclick="closeModal('annotModal')" style="padding:1px 6px">X</button></div>
     <div class="modal-body">
       <p id="annot-context" style="font-size:.7rem;color:var(--muted);margin-bottom:8px;padding:6px;background:var(--surface);border-radius:4px"></p>
-      <label>유형</label>
-      <select id="annot-type" style="width:100%;padding:4px;border:1px solid var(--line);border-radius:4px;font-size:.72rem;margin-bottom:6px">
-        <option value="comment">코멘트 (의견)</option>
-        <option value="suggest">수정 제안 (첨삭)</option>
-        <option value="question">질문</option>
-        <option value="error">오류/논리 문제</option>
-        <option value="typo">오타/문법</option>
-        <option value="missing_ref">참고문헌 누락</option>
-        <option value="unclear">불명확/모호</option>
-      </select>
-      <label>내용</label>
-      <textarea id="annot-text" rows="3" style="width:100%;padding:6px;border:1px solid var(--line);border-radius:4px;font-size:.75rem;font-family:inherit" placeholder="코멘트 또는 수정 제안을 입력하세요..."></textarea>
-      <div id="annot-suggest-area" style="display:none;margin-top:6px">
-        <label>수정 제안 텍스트</label>
-        <textarea id="annot-suggest" rows="2" style="width:100%;padding:6px;border:1px solid var(--line);border-radius:4px;font-size:.75rem;font-family:inherit" placeholder="이 문단을 이렇게 수정하면..."></textarea>
+      <div style="display:flex;gap:6px;margin-bottom:6px">
+        <div style="flex:1">
+          <label style="font-size:.65rem">유형</label>
+          <select id="annot-type" style="width:100%;padding:4px;border:1px solid var(--line);border-radius:4px;font-size:.72rem">
+            <option value="comment">코멘트 (의견)</option>
+            <option value="suggest">수정 제안 (첨삭)</option>
+            <option value="question">질문</option>
+            <option value="error">오류/논리 문제</option>
+            <option value="typo">오타/문법</option>
+            <option value="missing_ref">참고문헌 누락</option>
+            <option value="unclear">불명확/모호</option>
+          </select>
+        </div>
+        <div style="flex:1">
+          <label style="font-size:.65rem">심각도</label>
+          <select id="annot-severity" style="width:100%;padding:4px;border:1px solid var(--line);border-radius:4px;font-size:.72rem">
+            <option value="minor">Minor (사소)</option>
+            <option value="major">Major (중요)</option>
+            <option value="critical">Critical (필수 수정)</option>
+          </select>
+        </div>
       </div>
+      <label style="font-size:.65rem">섹션 (해당되는 경우)</label>
+      <input id="annot-section" style="width:100%;padding:3px 6px;border:1px solid var(--line);border-radius:4px;font-size:.7rem;margin-bottom:6px;background:var(--panel);color:var(--text)" placeholder="예: Introduction, Methods...">
+      <label style="font-size:.65rem">상세 코멘트</label>
+      <textarea id="annot-text" rows="4" style="width:100%;padding:6px;border:1px solid var(--line);border-radius:4px;font-size:.75rem;font-family:inherit" placeholder="구체적으로 어떤 점이 문제인지, 어떻게 개선하면 좋을지 상세히 작성해 주세요..."></textarea>
+      <div id="annot-suggest-area" style="display:none;margin-top:6px">
+        <label style="font-size:.65rem">수정 제안 텍스트</label>
+        <textarea id="annot-suggest" rows="3" style="width:100%;padding:6px;border:1px solid var(--line);border-radius:4px;font-size:.75rem;font-family:inherit" placeholder="원문을 이렇게 수정하면 더 명확해집니다..."></textarea>
+      </div>
+      <label style="font-size:.65rem;margin-top:4px">근거/참고 (선택)</label>
+      <input id="annot-reference" style="width:100%;padding:3px 6px;border:1px solid var(--line);border-radius:4px;font-size:.7rem;margin-bottom:4px;background:var(--panel);color:var(--text)" placeholder="관련 논문, 규정, 근거 등">
     </div>
     <div class="modal-foot">
       <button class="bt" onclick="closeModal('annotModal')">취소</button>
@@ -4503,9 +4519,13 @@ async function submitAnnotation(){
   const user=await docManager.getUser();
   if(!user)return;
   const ann={
-    paragraph:_annotParagraph.substring(0,200),
+    paragraph:_annotParagraph.substring(0,300),
+    originalText:_annotParagraph,
     type:document.getElementById('annot-type').value,
-    text:document.getElementById('annot-text').value.trim()
+    severity:document.getElementById('annot-severity').value,
+    section:document.getElementById('annot-section').value.trim(),
+    text:document.getElementById('annot-text').value.trim(),
+    reference:document.getElementById('annot-reference').value.trim()
   };
   if(!ann.text){alert('내용을 입력해 주세요.');return;}
   if(ann.type==='suggest')ann.suggestion=document.getElementById('annot-suggest').value.trim();
