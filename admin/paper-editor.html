@@ -329,6 +329,14 @@ body.simple-mode .ins button[onclick*="fn"]{display:inline-block}
   <button class="bt" onclick="showShortcuts()" title="단축키 가이드">&#9000;</button>
   <button class="bt icon" onclick="toggleFocus()" title="집중 모드">&#9974;</button>
   <button class="bt icon" onclick="window.print()" title="인쇄 / PDF">&#9113;</button>
+  <select class="sel" onchange="if(this.value){loadSamplePaper(this.value);this.value=''}" title="샘플 AI 보안 논문 불러오기">
+    <option value="">샘플 논문</option>
+    <option value="indirect-prompt-injection">Prompt Injection (Greshake 2023)</option>
+    <option value="adversarial-examples-fgsm">Adversarial FGSM (Goodfellow 2015)</option>
+    <option value="model-extraction-apis">Model Extraction (Tramer 2016)</option>
+    <option value="deep-leakage-gradients">Deep Leakage (Zhu 2019)</option>
+    <option value="malicious-use-ai">Malicious AI Use (Brundage 2018)</option>
+  </select>
   <a class="bt" href="/admin/editor.html" style="text-decoration:none">블로그</a>
   <a class="bt" href="/admin/" style="text-decoration:none">CMS</a>
 </div>
@@ -3791,6 +3799,44 @@ function toggleCol(two){pv.classList.toggle('two-col',two);document.getElementBy
 function save(){localStorage.setItem('aicra.paper.v4',JSON.stringify({ti:document.getElementById('ti').value,au:document.getElementById('au').value,coau:document.getElementById('coau').value,ab:document.getElementById('ab').value,kw:document.getElementById('kw').value,dm:document.getElementById('dm').value,status:document.getElementById('st-sel').value,collab:document.getElementById('collab').checked,body:inp.value,refs:refs,at:Date.now()}));}
 function restore(){const d=localStorage.getItem('aicra.paper.v4');if(!d)return;const s=JSON.parse(d);if(Date.now()-s.at>604800000)return;inp.value=s.body||'';document.getElementById('ti').value=s.ti||'';document.getElementById('au').value=s.au||'AICRA';document.getElementById('coau').value=s.coau||'';document.getElementById('ab').value=s.ab||'';document.getElementById('kw').value=s.kw||'';if(s.dm)document.getElementById('dm').value=s.dm;if(s.status)document.getElementById('st-sel').value=s.status;if(s.collab)document.getElementById('collab').checked=s.collab;if(s.refs){refs=s.refs;renderRefs();}if(s.body)inp.dispatchEvent(new Event('input'));document.getElementById('as').textContent='Draft restored';}
 setInterval(save,30000);restore();
+// === SAMPLE PAPER LOADER ===
+async function loadSamplePaper(slug){
+  if(inp.value.trim()&&!confirm('현재 내용이 샘플 논문으로 대체됩니다. 계속?'))return;
+  try{
+    document.getElementById('as').textContent='샘플 논문 로딩 중...';
+    const r=await fetch('/_papers/'+slug+'.md');
+    if(!r.ok)throw new Error('File not found: '+slug);
+    const text=await r.text();
+    // Parse front matter
+    const fmMatch=text.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+    if(fmMatch){
+      const fm=fmMatch[1];const body=fmMatch[2].trim();
+      // Extract metadata
+      const getVal=(key)=>{const m=fm.match(new RegExp(key+':\\s*"?([^"\\n]+)"?'));return m?m[1].trim():'';};
+      document.getElementById('ti').value=getVal('title');
+      document.getElementById('dm').value=getVal('domain');
+      const kwMatch=fm.match(/keywords:\s*\[([^\]]+)\]/);
+      if(kwMatch)document.getElementById('kw').value=kwMatch[1].replace(/"/g,'').trim();
+      const absMatch=fm.match(/abstract:\s*"([^"]+)"/);
+      if(absMatch)document.getElementById('ab').value=absMatch[1];
+      // Load body into editor
+      inp.focus();inp.select();
+      document.execCommand('insertText',false,body);
+      inp.dispatchEvent(new Event('input'));
+      // Extract references from ## References section
+      const refSection=body.match(/## References\n([\s\S]*)$/);
+      if(refSection){
+        const refLines=refSection[1].trim().split('\n').filter(l=>l.trim());
+        refLines.forEach(l=>{const clean=l.replace(/^\[\d+\]\s*/,'').trim();if(clean)refs.push(clean);});
+        renderRefs();
+      }
+      document.getElementById('as').textContent='[+] 샘플 논문 로드: '+getVal('title');
+    }
+  }catch(e){
+    document.getElementById('as').textContent='로드 실패: '+e.message;
+  }
+}
+
 function toggleDark(){document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'':'dark';localStorage.setItem('aicra.dark',document.documentElement.dataset.theme);}
 if(localStorage.getItem('aicra.dark')==='dark')document.documentElement.dataset.theme='dark';
 function toggleFocus(){focusMode=!focusMode;['metaBar','metaBar2','stBar'].forEach(id=>document.getElementById(id).style.display=focusMode?'none':'');document.getElementById('insBar').style.display='';}
