@@ -1,6 +1,6 @@
 ---
 layout: paper
-title: "LLM Prompt Injection Defense22DDㄴㅇㅇㅇㅇ"
+title: "LLM Prompt Injection Defense22DDㄴㅇㅇㅇㅇㅇㅇㅇ"
 author: AICRA-PAGE
 authors: ["0blueteam0"]
 date: 2026-03-25
