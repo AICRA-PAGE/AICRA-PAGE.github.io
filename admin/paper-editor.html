@@ -3804,7 +3804,7 @@ async function loadSamplePaper(slug){
   if(inp.value.trim()&&!confirm('현재 내용이 샘플 논문으로 대체됩니다. 계속?'))return;
   try{
     document.getElementById('as').textContent='샘플 논문 로딩 중...';
-    const r=await fetch('/assets/samples/'+slug+'.md');
+    const r=await fetch('/assets/samples/'+slug+'.txt');
     if(!r.ok)throw new Error('File not found: '+slug);
     const text=await r.text();
     // Parse front matter
