@@ -3827,7 +3827,7 @@ async function loadSamplePaper(slug){
         refLines.forEach(l=>{const clean=l.replace(/^\[\d+\]\s*/,'').trim();if(clean)refs.push(clean);});
         renderRefs();
       }
-      document.getElementById('as').textContent='[+] 샘플 논문 로드: '+getVal('title');
+      document.getElementById('as').textContent='[+] 샘플 논문 로드: '+(meta.title||slug);
     }
   }catch(e){
     document.getElementById('as').textContent='로드 실패: '+e.message;
