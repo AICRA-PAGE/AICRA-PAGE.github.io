@@ -6,131 +6,140 @@ authors: ["0blueteam0"]
 date: 2026-03-25
 status: published
 domain: "Prompt Injection"
-keywords: ["adversarial examples", "FGSM", "robustness", "deep learning", "adversarial training"]
+keywords: ["AI governance", "dual-use", "malicious AI", "digital security", "political security", "AI policy"]
 lang: ko
 ---
 
-# Explaining and Harnessing Adversarial Examples
+# The Malicious Use of Artificial Intelligence: Forecasting, Prevention, and Mitigation
 
 :::abstract
-We propose a linear explanation for adversarial vulnerability and introduce FGSM, a fast single-step adversarial perturbation method. Adversarial training with FGSM improves MNIST test error from 0.94% to 0.84% while providing adversarial robustness. The vulnerability stems from model linearity in high-dimensional spaces, not overfitting.
+This report surveys malicious AI uses across three security domains. As AI capabilities expand, exploitation for surveillance, deception, and autonomous attacks becomes feasible. We propose interventions spanning policy, norms, technical safeguards, and institutional responses.
 :::
 
 ---
 
 ## 1. Introduction
 
-Neural networks are vulnerable to adversarial examples: inputs with imperceptibly small perturbations that cause misclassification [cite:1]. Previous explanations attributed this to model complexity and overfitting [cite:2]. We argue that the primary cause is the linear nature of models in high-dimensional spaces.
+Artificial intelligence is a dual-use technology: the same capabilities that enable beneficial applications also create novel attack vectors [cite:1]. As AI systems become more capable and accessible, the barrier to malicious use decreases [cite:2].
 
-Our contributions:
-1. A linear explanation for adversarial vulnerability
-2. FGSM: a fast, single-step adversarial perturbation method
-3. Adversarial training as a regularization technique
-
----
-
-## 2. The Linear Explanation
-
-Consider a linear model with weight vector $w$ and input $x$. An adversarial perturbation $\eta$ satisfies $\|\eta\|_\infty \leq \epsilon$. The effect on the output is:
-
-$$
-w^\top \tilde{x} = w^\top x + w^\top \eta
-$$
-
-\label{eq:linear}
-
-The perturbation's effect $w^\top \eta$ can be maximized by setting $\eta = \epsilon \cdot \text{sign}(w)$. In $n$ dimensions with average weight magnitude $m$, the activation change is $\epsilon m n$, which grows linearly with dimensionality.
-
-:::theorem Linear Vulnerability Scaling
-For a linear classifier with $n$-dimensional input and average weight magnitude $m$, the maximum activation change from an $L_\infty$-bounded perturbation $\epsilon$ scales as $O(\epsilon m n)$.
-:::
-
-:::proof
-$\max_{\|\eta\|_\infty \leq \epsilon} w^\top \eta = \epsilon \|w\|_1 \leq \epsilon \cdot n \cdot m$. The bound is tight when $\eta = \epsilon \cdot \text{sign}(w)$.
-:::
+This report addresses three questions:
+1. What new attacks does advancing AI enable?
+2. How do existing threats change as AI improves?
+3. What interventions can mitigate malicious use?
 
 ---
 
-## 3. Fast Gradient Sign Method
+## 2. Scope and Framework
 
-\label{sec:fgsm}
-
-The FGSM generates adversarial examples in a single gradient computation:
-
-$$
-x_{\text{adv}} = x + \epsilon \cdot \text{sign}(\nabla_x J(\theta, x, y))
-$$
-
-\label{eq:fgsm}
-
-where $J(\theta, x, y)$ is the training loss. This is optimal for linear models under $L_\infty$ constraints.
-
-:::algorithm FGSM
-Input: clean input $x$, true label $y$, model parameters $\theta$, perturbation budget $\epsilon$
-Output: adversarial example $x_{\text{adv}}$
-1. Compute loss gradient: $g = \nabla_x J(\theta, x, y)$
-2. Compute sign of gradient: $s = \text{sign}(g)$
-3. Apply perturbation: $x_{\text{adv}} = x + \epsilon \cdot s$
-4. Clip to valid range: $x_{\text{adv}} = \text{clip}(x_{\text{adv}}, 0, 1)$
-5. Return $x_{\text{adv}}$
-:::
-
----
-
-## 4. Adversarial Training
-
-We propose training on a mixture of clean and adversarial examples:
-
-$$
-\tilde{J}(\theta, x, y) = \alpha \cdot J(\theta, x, y) + (1 - \alpha) \cdot J(\theta, x + \epsilon \cdot \text{sign}(\nabla_x J(\theta, x, y)), y)
-$$
-
-\label{eq:advtrain}
-
-This can be interpreted as an $L_1$ regularizer on the gradient of the loss with respect to the input \ref{eq:fgsm}.
-
----
-
-## 5. Experiments
-
-*Table N. FGSM attack success rate and model error.*
-| Dataset | Model | Clean Error (%) | Adv Error (%) | $\epsilon$ | Avg Wrong Confidence (%) |
-|---------|-------|:---------------:|:-------------:|:----------:|:------------------------:|
-| MNIST | Softmax | 7.87 | 99.9 | 0.25 | 79.3 |
-| MNIST | Maxout | 0.94 | 89.4 | 0.25 | 97.6 |
-| CIFAR-10 | Conv Maxout | 11.68 | 87.15 | 0.10 | 96.6 |
-
-*Table N. Adversarial training effect.*
-| Dataset | Model | Before AT (%) | After AT (%) | Adv Robustness (%) |
-|---------|-------|:-------------:|:------------:|:-------------------:|
-| MNIST | Maxout | 0.94 | 0.84 | 67.2 |
-| CIFAR-10 | Conv Maxout | 11.68 | 10.94 | 32.8 |
+We organize AI-enabled threats into three security domains:
 
 ```mermaid
 flowchart TB
-    subgraph Training["Adversarial Training"]
-      A[Clean Input x] --> B[Forward Pass]
-      B --> C[Compute Gradient]
-      C --> D[FGSM Perturbation]
-      D --> E[Adversarial Input]
-      E --> F[Combined Loss]
-      A --> F
-    end
-    F --> G[Backpropagation]
+    AI[AI Capabilities] --> D[Digital Security]
+    AI --> P[Physical Security]
+    AI --> PO[Political Security]
+    D --> D1[Automated Hacking]
+    D --> D2[Social Engineering]
+    D --> D3[Vulnerability Discovery]
+    P --> P1[Autonomous Weapons]
+    P --> P2[Repurposed Drones]
+    P --> P3[Adversarial Attacks on Sensors]
+    PO --> PO1[Surveillance]
+    PO --> PO2[Deepfakes]
+    PO --> PO3[Propaganda at Scale]
 ```
-*Fig. N. Adversarial training pipeline.*
+*Fig. N. AI-enabled threat taxonomy across three security domains.*
 
 ---
 
-## 6. Discussion
+## 3. Digital Security Threats
 
-The linear explanation predicts that adversarial vulnerability increases with input dimensionality. This is consistent with our MNIST ($n=784$) vs CIFAR-10 ($n=3072$) results. The connection to $L_1$ regularization suggests adversarial training provides benefits beyond robustness [cite:3].
+### 3.1 Automated Vulnerability Discovery
+AI can accelerate fuzzing and exploit generation, reducing the cost of zero-day discovery [cite:3].
+
+### 3.2 AI-Enhanced Social Engineering
+Language models enable personalized phishing at scale. A single operator can now generate thousands of contextually relevant phishing messages [cite:4].
+
+### 3.3 Adversarial Examples in Cybersecurity
+Adversarial perturbations can evade malware classifiers and intrusion detection systems.
+
+*Table N. AI-enabled digital attack capabilities.*
+| Attack Category | Traditional | AI-Enhanced | Scale Change |
+|----------------|:-----------:|:-----------:|:------------:|
+| Phishing | Manual crafting | Auto-personalized | 100x |
+| Vulnerability Discovery | Fuzzing | Neural fuzzing | 10x |
+| Malware Evasion | Obfuscation | Adversarial ML | 5x |
+| Password Cracking | Dictionary/Brute | Neural generation | 3x |
+
+---
+
+## 4. Physical Security Threats
+
+### 4.1 Autonomous Weapons
+Lethal autonomous weapons systems (LAWS) can select and engage targets without meaningful human control [cite:5].
+
+### 4.2 Repurposed Commercial AI
+Commercial drones and robots with AI navigation can be weaponized with minimal modification.
+
+*Table N. 위험 매트릭스.*
+| 위험 항목 | 영향도 (1-5) | 발생가능성 (1-5) | 위험등급 | 대응전략 |
+|----------|:-----------:|:---------------:|:-------:|----------|
+| Autonomous weapons | 5 | 3 | 15 (High) | 국제 규제 |
+| Weaponized drones | 4 | 4 | 16 (High) | 기술 통제 |
+| Sensor adversarial attacks | 3 | 4 | 12 (Med) | 방어 연구 |
+| Physical impersonation | 3 | 2 | 6 (Low) | 인증 강화 |
+
+---
+
+## 5. Political Security Threats
+
+### 5.1 Surveillance
+AI-powered facial recognition and behavior analysis enable mass surveillance at unprecedented scale.
+
+### 5.2 Deepfakes and Disinformation
+Generative models produce realistic fake video, audio, and text that undermine trust in media [cite:6].
+
+*표 N. 이해관계자 분석.*
+| 이해관계자 | 역할 | 관심사/요구 | 영향력 | 참여 수준 |
+|-----------|------|-----------|:------:|:---------:|
+| 정부/규제기관 | 정책 수립 | 안보, 인권 균형 | 높음 | 결정자 |
+| AI 연구자 | 기술 개발 | 학문 자유, 책임 | 중간 | 실행자 |
+| 시민사회 | 감시/옹호 | 프라이버시, 투명성 | 중간 | 감시자 |
+| 군/정보기관 | 활용/방어 | 기술 우위, 안보 | 높음 | 수요자 |
+
+---
+
+## 6. Interventions
+
+### 6.1 Policy Recommendations
+
+*표 N. 비교법 분석.*
+| 비교 항목 | EU | 미국 | 한국 |
+|----------|-----|------|------|
+| 근거 법률 | AI Act | Executive Order 14110 | 인공지능기본법 |
+| 규제 방식 | 위험 기반 | 자율 규제 + 행정명령 | 진흥 + 위험관리 |
+| LAWS 규제 | 금지 추진 | 미결정 | 논의 중 |
+| 딥페이크 규제 | DSA 포함 | 주별 상이 | 선거법 개정 |
+
+### 6.2 Technical Safeguards
+1. Dual-use aware research norms
+2. Red-teaming and adversarial evaluation
+3. Watermarking and provenance tracking
+4. Access controls for powerful models
+
+### 6.3 Institutional Responses
+Research institutions should adopt responsible disclosure practices analogous to cybersecurity [cite:7].
 
 ---
 
 ## 7. Conclusion
 
-We demonstrated that adversarial vulnerability is a natural consequence of model linearity in high-dimensional spaces. FGSM provides a simple yet effective method for both generating adversarial examples and training robust models [cite:4]. Future work should explore multi-step attacks and certified defenses [cite:5].
+AI의 악의적 사용은 디지털, 물리적, 정치적 보안 전반에 걸쳐 기존 위협을 증폭하고 새로운 공격을 가능하게 한다. 사전적 거버넌스가 필수적이며, 정책, 기술, 규범, 제도적 대응의 통합이 필요하다 [cite:8].
+
+### Ethics and Responsible Disclosure
+
+- **Dual-use considerations:** 본 보고서는 방어 목적의 위협 분석이며, 구체적 공격 도구를 제공하지 않음
+- **Compliance:** OECD AI Principles, UNESCO AI Ethics Recommendation
 
 ---
 
