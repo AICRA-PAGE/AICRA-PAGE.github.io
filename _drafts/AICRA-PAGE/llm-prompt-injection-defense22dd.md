@@ -12,11 +12,10 @@ lang: ko
 
 # [Paper Title]
 
-[Author 1], [Author 2]
-[Affiliations]
+[Author 1], [Institution]; [Author 2], [Institution]
 
 :::abstract
-[150-250 words]
+[Problem] [Approach] [Key measured result with numbers] [Practical significance]
 :::
 
 ---
@@ -25,61 +24,56 @@ lang: ko
 
 ---
 
-## 2. Related Work
+## 2. Problem Statement
 
 ---
 
-## 3. Preliminaries
-
----
-*표 N. 규제조문-통제항목 매핑.*
-| 규제/법률 | 조문 | 요구사항 | 통제항목 | 구현 현황 | 증적 |
-|----------|------|---------|---------|----------|------|
-| EU AI Act | Art. X | | | 충족/미충족 | |
-| 개인정보보호법 | 제X조 | | | | |
-| ISO 42001 | A.X.X | | | | |
-
-*표 N. 규제조문-통제항목 매핑.*
-| 규제/법률 | 조문 | 요구사항 | 통제항목 | 구현 현황 | 증적 |
-|----------|------|---------|---------|----------|------|
-| EU AI Act | Art. X | | | 충족/미충족 | |
-| 개인정보보호법 | 제X조 | | | | |
-| ISO 42001 | A.X.X | | | | |
-
-*표 N. 위험 매트릭스.*
-| 위험 항목 | 영향도 (1-5) | 발생가능성 (1-5) | 위험등급 | 대응전략 |
-|----------|:-----------:|:---------------:|:-------:|----------|
-| | | | | 수용/완화/전가/회피 |
-| | | | | |
-| | | | | |
-
-<!-- 위험등급: 영향도 x 발생가능성. 1-6 낮음, 7-14 중간, 15-25 높음 -->
-
-
-## 4. Method
+## 3. Design Goals
 
 ---
 
-## 5. Theoretical Analysis
+## 4. System Design
 
 ---
 
-## 6. Experiments
-
-### 6.1 Setup
-### 6.2 Main Results
-### 6.3 Ablation
+## 5. Threat Model
 
 ---
 
-## 7. Conclusion
+## 6. Implementation
 
 ---
 
-## Acknowledgements
+## 7. Evaluation
+
+### 7.1 Experimental Environment
+### 7.2 Workloads
+### 7.3 Metrics
+### 7.4 Results
+### 7.5 Sensitivity Analysis
+
+---
+
+## 8. Deployment Considerations
+
+---
+
+## 9. Limitations
+
+---
+
+## 10. Conclusion
 
 ---
 
 ## References
+*Table N. [Caption describing what the table compares.]*
+| Column A | Column B | Column C |
+|----------|----------|----------|
+|  |  |  |
 
-<!-- ICML: 8 pages main, single PDF with appendices. Double-blind. -->
+*Table N. [Caption describing what the table compares.]*
+| Column A | Column B | Column C |
+|----------|----------|----------|
+|  |  |  |
+
