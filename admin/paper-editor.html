@@ -1251,8 +1251,9 @@ function render(){
   const raw=inp.value;
   const headerHtml=buildPreviewHeader();
   if(!raw.trim()&&!headerHtml){pv.innerHTML='<p style="color:#999;text-align:center;padding:40px;font-family:sans-serif;font-size:.85rem">양식을 선택하거나 직접 작성을 시작하세요</p>';updateStats(raw);return;}
-  // Section-based incremental render for large documents
-  const sections=raw.split(/(?=^## )/m);
+  // Preprocess cross-refs + auto numbering BEFORE section split (works in both modes)
+  const preprocessed=preprocessRefsAndCaptions(raw);
+  const sections=preprocessed.split(/(?=^## )/m);
   const isLargeDoc=raw.length>30000;
   let htmlParts;
   if(isLargeDoc){
@@ -1279,7 +1280,7 @@ function render(){
   }else{
     // Small doc: full render (original behavior)
     envCounters={theorem:0,lemma:0,definition:0,corollary:0,proposition:0,algorithm:0};eqCounter=0;
-    let t=raw;t=autoNumberCaptions(t);t=processEnvs(t);t=processNumberedEq(t);t=collectLabels(t);t=processCitations(t);t=processFootnotes(t);t=processSubfigures(t);
+    let t=preprocessed;t=processEnvs(t);t=processNumberedEq(t);t=processCitations(t);t=processFootnotes(t);t=processSubfigures(t);
     let html=marked.parse(t);html=restoreEnvs(html);html=processImageSize(html);
     htmlParts=[html];
   }
@@ -1371,39 +1372,30 @@ function processSubfigures(t){
 }
 
 // === IMAGE SIZE ===
-// === CROSS-REFERENCES: \label{id} and \ref{id} ===
+// === UNIFIED PREPROCESSING: cross-refs + auto numbering (runs BEFORE section split) ===
 let labelRegistry={};
-function collectLabels(t){
+function preprocessRefsAndCaptions(text){
+  let figN=0,tblN=0,eqN=0,curSec='';
   labelRegistry={};
-  let figN=0,tblN=0;
-  // Auto-number figures and tables
-  t=t.replace(/\*Fig\.?\s*N?\.\s*/gi,()=>{figN++;return '*Fig. '+figN+'. ';});
-  t=t.replace(/\*Table\s*N?\.\s*/gi,()=>{tblN++;return '*Table '+tblN+'. ';});
-  // Collect \label{id} from text
-  t.replace(/\\label\{([^}]+)\}/g,(m,id)=>{
-    // Try to determine type and number from context
-    if(id.startsWith('fig:'))labelRegistry[id]='Fig. '+(figN||'?');
-    else if(id.startsWith('tbl:')||id.startsWith('tab:'))labelRegistry[id]='Table '+(tblN||'?');
-    else if(id.startsWith('eq:'))labelRegistry[id]='Eq. ('+eqCounter+')';
-    else if(id.startsWith('sec:'))labelRegistry[id]='Section';
-    else labelRegistry[id]=id;
+  const out=text.split('\n').map(line=>{
+    if(/^##\s+/.test(line))curSec=line.replace(/^##\s+/,'').trim();
+    line=line.replace(/\*Fig\.?\s*N\.\s*/gi,()=>{figN++;return '*Fig. '+figN+'. ';});
+    line=line.replace(/\*Table\s*N\.\s*/gi,()=>{tblN++;return '*Table '+tblN+'. ';});
+    if(/^\$\$/.test(line.trim()))eqN++;
+    line=line.replace(/\\label\{([^}]+)\}/g,(m,id)=>{
+      labelRegistry[id]=id.startsWith('fig:')?'Fig. '+figN:
+        /^(tbl|tab):/.test(id)?'Table '+tblN:
+        id.startsWith('eq:')?'Eq. ('+eqN+')':
+        id.startsWith('sec:')?curSec:id;
+      return '<a id="ref-'+id+'"></a>';
+    });
+    line=line.replace(/\\ref\{([^}]+)\}/g,(m,id)=>{
+      const label=labelRegistry[id]||'??';
+      return '<a href="#ref-'+id+'" class="xref" style="color:var(--brand,#2f5d50);text-decoration:none;font-weight:600" onclick="event.preventDefault();document.getElementById(\'ref-'+id+'\')?.scrollIntoView({behavior:\'smooth\'})">'+escHtml(label)+'</a>';
+    });
+    return line;
   });
-  // Remove \label{} from text (will be rendered as anchors)
-  t=t.replace(/\\label\{([^}]+)\}/g,'<a id="ref-$1"></a>');
-  // Replace \ref{id} with clickable links
-  t=t.replace(/\\ref\{([^}]+)\}/g,(m,id)=>{
-    const label=labelRegistry[id]||'??';
-    return '<a href="#ref-'+id+'" class="xref" style="color:var(--brand,#2f5d50);text-decoration:none;font-weight:600" onclick="event.preventDefault();document.getElementById(\'ref-'+id+'\')?.scrollIntoView({behavior:\'smooth\'})">'+escHtml(label)+'</a>';
-  });
-  return t;
-}
-
-// === AUTO FIGURE/TABLE NUMBERING ===
-function autoNumberCaptions(t){
-  let figN=0,tblN=0;
-  t=t.replace(/\*Fig\.?\s*N\.\s*/gi,()=>{figN++;return '*Fig. '+figN+'. ';});
-  t=t.replace(/\*Table\s*N\.\s*/gi,()=>{tblN++;return '*Table '+tblN+'. ';});
-  return t;
+  return out.join('\n');
 }
 
 function processImageSize(html){
@@ -3168,6 +3160,9 @@ function _completeCiteInsert(){
 function _cancelPendingCite(){
   if(!_pendingCite)return;
   _pendingCite=false;
+  // Restore cursor to original position
+  inp.focus();
+  inp.setSelectionRange(_citeSelStart,_citeSelEnd);
   document.getElementById('as').textContent='';
   document.getElementById('as').style.color='';
 }
@@ -3223,7 +3218,8 @@ document.getElementById('stBar')?.setAttribute('aria-live','polite');
 // === REFS ===
 function addRef(){const i=document.getElementById('refInput');const v=i.value.trim();if(!v)return;refs.push(v);i.value='';renderRefs();render();_completeCiteInsert();}
 function removeRef(idx){refs.splice(idx,1);renderRefs();render();}
-function renderRefs(){const l=document.getElementById('refList');document.getElementById('rc').textContent=refs.length;l.innerHTML=refs.map((r,i)=>'<div class="ref-item"><b>['+(i+1)+']</b>'+r+' <span style="cursor:pointer;color:#b42318;float:right" onclick="removeRef('+i+')">x</span></div>').join('');}
+function renderRefs(){const l=document.getElementById('refList');document.getElementById('rc').textContent=refs.length;l.innerHTML=refs.map((r,i)=>'<div class="ref-item" style="cursor:pointer" onclick="insertExistingCite('+(i+1)+')" title="클릭하여 [cite:'+(i+1)+'] 삽입"><b>['+(i+1)+']</b>'+escHtml(r)+' <span style="cursor:pointer;color:#b42318;float:right" onclick="event.stopPropagation();removeRef('+i+')">x</span></div>').join('');}
+function insertExistingCite(n){inp.focus();typeText('[cite:'+n+']');inp.dispatchEvent(new Event('input'));document.getElementById('as').textContent='[+] [cite:'+n+'] 삽입됨';}
 function toggleRef(){const rp=document.getElementById('refPanel');rp.classList.toggle('open');if(!rp.classList.contains('open'))_cancelPendingCite();}
 function toggleHelp(){const hp=document.getElementById('helpPanel');hp.classList.toggle('show');if(hp.classList.contains('show')){switchHelpTab(0);}}
 function switchHelpTab(idx){
@@ -3252,8 +3248,16 @@ function importBibTeX(fileInput){
 }
 function parseBibTeX(text){
   const entries=[];
-  // Split into @type{key, ... } blocks
-  const blocks=text.match(/@\w+\s*\{[^@]*\}/g)||[];
+  // Brace-depth based block splitting (handles nested braces)
+  const blocks=[];
+  let i=0;
+  while(i<text.length){
+    const at=text.indexOf('@',i);if(at===-1)break;
+    const ob=text.indexOf('{',at);if(ob===-1)break;
+    let depth=1,j=ob+1;
+    while(j<text.length&&depth>0){if(text[j]==='{')depth++;else if(text[j]==='}')depth--;j++;}
+    blocks.push(text.substring(at,j));i=j;
+  }
   blocks.forEach(block=>{
     const typeMatch=block.match(/@(\w+)\s*\{/);
     if(!typeMatch)return;
@@ -3381,7 +3385,7 @@ function diagnosePaper(){
     const block=lines.slice(s.start,s.end).join('\n');
     s.words=block.trim().split(/\s+/).length;
     s.cites=(block.match(/\[cite:\d+\]/g)||[]).length;
-    s.paras=(block.match(/\n\n/g)||[]).length;
+    s.paras=block.split(/\n{2,}/).filter(p=>p.trim()&&!/^(#|\||```|:::)/m.test(p.trim())).length;
   });
   // Paragraph length analysis
   const paras=t.split(/\n{2,}/).filter(p=>p.trim()&&!p.startsWith('#')&&!p.startsWith('|')&&!p.startsWith('```'));
@@ -3390,7 +3394,7 @@ function diagnosePaper(){
   const maxPara=paraLens.length?Math.max(...paraLens):0;
   const shortParas=paraLens.filter(l=>l<15).length;
   // Vocabulary diversity (unique words / total words)
-  const words=t.toLowerCase().replace(/[^a-z가-힣\s]/g,' ').trim().split(/\s+/).filter(w=>w.length>1);
+  const words=(t.toLowerCase().match(/[a-z]{2,}|[가-힣]{2,}/g)||[]);
   const uniqueWords=new Set(words);
   const diversity=words.length?Math.round((uniqueWords.size/words.length)*100):0;
   // Abstract quality
@@ -3440,9 +3444,9 @@ function diagnosePaper(){
     else if(absWords>300)rpt+=' <span style="color:var(--accent)">(300단어 이하 권장)</span>';
     else rpt+=' <span style="color:var(--brand)">(적정)</span>';
     rpt+='</div>';
-    const hasObj=/목적|objective|aim|goal/i.test(absContent);
-    const hasMethod=/방법|method|approach|기법/i.test(absContent);
-    const hasResult=/결과|result|성능|accuracy|감소|증가/i.test(absContent);
+    const hasObj=/(목적|objective|aim|goal|we propose|본 연구는|제안한다)/i.test(absContent);
+    const hasMethod=/(방법|method|approach|기법|using|based on|제안한|활용하여|설계하였)/i.test(absContent);
+    const hasResult=/(결과|result|accuracy|f1|auc|improv|향상|감소|증가|\d+(\.\d+)?%)/i.test(absContent);
     rpt+='<div style="font-size:.6rem">';
     rpt+=(hasObj?'[+]':'[-]')+' 연구 목적 '+(hasObj?'포함':'누락')+' | ';
     rpt+=(hasMethod?'[+]':'[-]')+' 방법론 '+(hasMethod?'포함':'누락')+' | ';
@@ -3461,17 +3465,18 @@ function diagnosePaper(){
 // === STYLE CONSISTENCY ===
 function analyzeStyle(){
   const t=inp.value;if(!t.trim()){alert('본문이 비어 있습니다.');return;}
-  const sentences=t.replace(/\n/g,' ').split(/(?<=[.!?다요함임됨음])\s+/).filter(s=>s.trim().length>5);
-  // Korean style endings
-  const formal=[];const informal=[];const mixed=[];
-  const formalPat=/(?:합니다|됩니다|있습니다|했습니다|됩니다|봅니다|겠습니다)[.!?]?\s*$/;
-  const informalPat=/(?:한다|된다|있다|했다|이다|된다|보인다|나타난다|보았다)[.!?]?\s*$/;
+  // Robust sentence splitting (no lookbehind for browser compat)
+  const sentences=(t.replace(/\n+/g,' ').match(/[^.!?]+[.!?]?/g)||[]).map(s=>s.trim()).filter(s=>s.length>5);
+  // Korean style endings (expanded patterns)
+  const formal=[];const informal=[];
+  const formalPat=/(습니다|입니다|했습니다|되었습니다|하겠습니다|봅니다|됩니다)[.!?]?\s*$/;
+  const informalPat=/(한다|이다|였다|했다|된다|보인다|나타난다|보았다|있다)[.!?]?\s*$/;
   sentences.forEach((s,i)=>{
     if(formalPat.test(s))formal.push({idx:i,text:s.trim().slice(-20)});
     else if(informalPat.test(s))informal.push({idx:i,text:s.trim().slice(-20)});
   });
-  // Passive vs active (Korean)
-  const passive=sentences.filter(s=>/(?:되었다|되었으며|되어|되고|된다|된 것)/i.test(s)).length;
+  // Passive vs active (Korean - expanded)
+  const passive=sentences.filter(s=>/(되었다|되며|되었다고|되어서|수집되었다|처리되었다|되었으며|되어|되고|된다|된 것)/.test(s)).length;
   const active=sentences.length-passive;
   // Term consistency check
   const termPairs=[
@@ -4669,7 +4674,7 @@ async function exportDOCX(){
         if(!p)return;
         if(p.startsWith('**')&&p.endsWith('**')){runs.push(new D.TextRun({text:p.slice(2,-2),bold:true,size:20,font:'Times New Roman'}));}
         else if(p.startsWith('*')&&p.endsWith('*')){runs.push(new D.TextRun({text:p.slice(1,-1),italics:true,size:20,font:'Times New Roman'}));}
-        else if(p.match(/\[cite:(\d+)\]/)){const n=p.match(/\d+/)[0];runs.push(new D.TextRun({text:'['+n+']',superScript:true,size:18,font:'Times New Roman'}));}
+        else if(p.match(/\[cite:(\d+)\]/)){const n=p.match(/\d+/)[0];runs.push(new D.TextRun({text:'['+n+']',size:20,font:'Times New Roman'}));}
         else if(p.match(/\[\^(\w+)\]/)){const n=p.match(/\w+/)[0];runs.push(new D.TextRun({text:n,superScript:true,size:16,font:'Times New Roman'}));}
         else{runs.push(new D.TextRun({text:p,size:20,font:'Times New Roman'}));}
       });
