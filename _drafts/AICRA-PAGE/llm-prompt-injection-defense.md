@@ -12,11 +12,10 @@ lang: ko
 
 # [Paper Title]
 
-[Author 1], [Author 2]
-[Affiliations]
+[Author 1], [Author 2] ([Affiliations])
 
 :::abstract
-[200-250 words]
+[150-250 words]
 :::
 
 ---
@@ -25,56 +24,48 @@ lang: ko
 
 ---
 
-## 2. Background
+## 2. Related Work
 
 ---
 
-## 3. Problem Statement
-ㅇㄹㄴㅇㄹㄴㅇㅁㄹㄴㅇㄹㄴㅇㄹㄴㅇㄹㄴㄹㄴㄻㄴㄻㄴ
----
-
-## 4. Threat Model
-ㄹㅇㄴㄹㄴㄻㄴㄹㄴㅁㄻㄴㄹㄴㅁㄹㅇㅁㄴㄹㄴㅁㄹㄴ
----
-
-## 5. Designㅇㄹㅇㄴㄹㄴㅇㅁㄻㄴㄻㄴ
-
----ㄹㄴㅇㄻㄴㄻㄴㄻㄴㄹㄴㄻㄴㄹㄴㅇㄻㄴㄻㄴㄹㅇㅁㄴㄹㄴㅇㄻㄴㄹㅇㅇㄴㅁㄻㄴㄻㄴㅇㄹㄴㅁㅇㄻㄴㅇㄻㄴㄻㄴㄻㄴ
-
-## 6. Implementation
+## 3. Method
 
 ---
 
-## 7. Evaluation
+## 4. Experiments
 
-### 7.1 Sㅇㅇㅇ
-### 7.2 Results
-### 7.3 Comparison
-
----
-
-## 8. Discussion
+### 4.1 Setup
+### 4.2 Results
+### 4.3 Ablation Study
 
 ---
 
-## 9. Related Work
+## 5. Discussion
 
 ---
 
-## 10. Conclusion
+## 6. Conclusion
+
+---
+
+## Broader Impact Statement
 
 ---
 
 ## References
 
-<!-- IEEE S&P: 2-cycle review, SoK track available, interactive rebuttal. -->
-ㅇㄹㄴㅇㄻㄴㅇㄹㅇㄴㅁㄹㅇㅁㄴㅇㄹ
-ㅇㄹㄴㅁㅇㄻㄴㄹㅇㄴㄹㄴㅁㄹ
-ㅇㄹㄴㅇㄹㄴㅁㅇㄻㄴㅇㄹㄴㅁ
-ㅇㅀㄴㅇㄻㄴㄻ
+---
 
-ㅈㄹㄴㅇㄻㄴㅇㄻㄴㅇㄹ
-ㅇㄻㄴㅇㅇㄻㅇㅁ
-ㅁㄴㅇㄴㅁㄴㅇㄻ
-ㄻㄴㅇㄹㄴㅇㄻㄴ
-ㄴㅇㄹㄴㅁㅇㄻㄴㄹㄴㅁㅇ
+## Appendix
+
+---
+
+## NeurIPS Paper Checklist
+
+<!-- Main paper: 9 pages max. Checklist is mandatory but excluded from page limit. -->
+- [ ] Claims: Do main claims match theory/experiments?
+- [ ] Limitations: Are limitations discussed?
+- [ ] Theory: Are all assumptions stated?
+- [ ] Experiments: Code/data availability?
+- [ ] Reproducibility: Seeds, hyperparameters, error bars?
+- [ ] Ethics: IRB, consent, privacy?
