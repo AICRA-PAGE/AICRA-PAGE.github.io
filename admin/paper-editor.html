@@ -183,7 +183,36 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
   #pv .abstract-box{border-top:.75pt solid #000;border-bottom:.75pt solid #000;page-break-inside:avoid}
   #pv code{background:transparent!important;border:none}
   #pv img{max-width:100%!important;page-break-inside:avoid}
+  #pv .footnotes{border-top:1pt solid #000;margin-top:12pt;padding-top:6pt;font-size:9pt!important}
+  #pv .bib-list{font-size:9pt!important}
+  #pv nav{display:none!important}
+  @page:first{margin-top:15mm}
 }
+/* Simple mode (beginner) */
+body.simple-mode .ins button{display:none}
+body.simple-mode .ins .gl{display:none}
+body.simple-mode .ins button[onclick*="sec"],
+body.simple-mode .ins button[onclick*="eq"],
+body.simple-mode .ins button[onclick*="tbl"],
+body.simple-mode .ins button[onclick*="fig"],
+body.simple-mode .ins button[onclick*="cite"],
+body.simple-mode .ins button[onclick*="fn"],
+body.simple-mode .ins button[onclick*="thm"],
+body.simple-mode .ins button[onclick*="algo"],
+body.simple-mode .ins button[onclick*="threat"],
+body.simple-mode .ins button[onclick*="code"],
+body.simple-mode .ins .gl:first-child,
+body.simple-mode .ins .gl:nth-child(2){display:inline}
+body.simple-mode .ins button[onclick*="sec"],
+body.simple-mode .ins button[onclick*="eq"],
+body.simple-mode .ins button[onclick*="tbl"],
+body.simple-mode .ins button[onclick*="fig"],
+body.simple-mode .ins button[onclick*="cite"],
+body.simple-mode .ins button[onclick*="fn"]{display:inline-block}
+/* Reviewer margin comments */
+.rv-margin{position:absolute;right:-200px;width:180px;font-size:.6rem;padding:4px 6px;background:#fff9e6;border:1px solid #e6d490;border-radius:4px;box-shadow:0 1px 4px rgba(0,0,0,.1);line-height:1.4;z-index:10}
+.rv-margin .rv-cat{font-size:.5rem;font-weight:700;padding:1px 4px;border-radius:3px;color:#fff;margin-right:3px}
+.rv-cat-comment{background:#2f5d50}.rv-cat-suggest{background:#b7791f}.rv-cat-error{background:#b42318}.rv-cat-question{background:#4a6fa5}.rv-cat-typo{background:#888}
 /* Author chips + dropdowns */
 .meta-sel{width:100%;padding:3px 6px;border:1px solid var(--line);border-radius:4px;font-size:.68rem;background:var(--panel);color:var(--text)}
 .chip-area{display:flex;flex-wrap:wrap;gap:2px;min-height:18px;padding:2px 3px;align-items:center}
@@ -278,12 +307,14 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
   <div class="sep"></div>
   <button class="bt" onclick="requestReview()" title="검토자에게 리뷰를 요청합니다">리뷰 요청</button>
   <button class="bt" onclick="showReviewPanel()" title="검토자의 첨삭/주석을 확인합니다">리뷰 확인</button>
+  <button class="bt" onclick="showReviewChecklist()" title="구조적 리뷰 체크리스트 + 심사의견" style="background:var(--accent);color:#fff;border-color:var(--accent)">심사</button>
   <div class="spacer"></div>
   <button class="bt" onclick="genAbstract()" title="논문 본문에서 구조화 초록을 자동 생성합니다">초록 생성</button>
   <button class="bt" onclick="genPPT()" title="논문 내용으로 발표용 슬라이드(.pptx)를 생성합니다">발표자료</button>
   <button class="bt" onclick="validatePaper()">검증</button>
   <button class="bt" onclick="diagnosePaper()" title="구조/인용/문단/어휘 상세 진단">진단</button>
   <button class="bt" onclick="analyzeStyle()" title="문체 일관성/용어 통일 분석">문체</button>
+  <button class="bt" onclick="lintVenue()" title="투고 양식 규격 체크">규격</button>
   <select class="sel" style="background:var(--brand);color:#fff;font-weight:600;border-color:var(--brand)" onchange="if(this.value){window['export'+this.value]();this.value=''}">
     <option value="">내보내기</option>
     <option value="MD">Markdown (.md)</option>
@@ -294,6 +325,8 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
   <div class="sep"></div>
   <button class="bt" onclick="startTutorial()" title="기능 체험 튜토리얼" style="background:var(--accent);color:#fff;border-color:var(--accent)">튜토리얼</button>
   <button class="bt icon" onclick="toggleDark()" title="다크 모드">&#9684;</button>
+  <button class="bt" onclick="toggleSimpleMode()" title="초보자 모드 전환" style="font-size:.55rem">간편</button>
+  <button class="bt" onclick="showShortcuts()" title="단축키 가이드">&#9000;</button>
   <button class="bt icon" onclick="toggleFocus()" title="집중 모드">&#9974;</button>
   <button class="bt icon" onclick="window.print()" title="인쇄 / PDF">&#9113;</button>
   <a class="bt" href="/admin/editor.html" style="text-decoration:none">블로그</a>
@@ -1453,6 +1486,7 @@ function insertFootnote(){
 
 // === VENUE FORMAT TEMPLATES ===
 function insTpl(type){
+  document.getElementById('tplSel').dataset.lastTpl=type;
   if(!type)return;
   const T={
 ieee_en:`# [Paper Title]
@@ -4004,7 +4038,10 @@ document.addEventListener('mouseup',()=>rs=false);
         <option value="comment">코멘트 (의견)</option>
         <option value="suggest">수정 제안 (첨삭)</option>
         <option value="question">질문</option>
-        <option value="error">오류 지적</option>
+        <option value="error">오류/논리 문제</option>
+        <option value="typo">오타/문법</option>
+        <option value="missing_ref">참고문헌 누락</option>
+        <option value="unclear">불명확/모호</option>
       </select>
       <label>내용</label>
       <textarea id="annot-text" rows="3" style="width:100%;padding:6px;border:1px solid var(--line);border-radius:4px;font-size:.75rem;font-family:inherit" placeholder="코멘트 또는 수정 제안을 입력하세요..."></textarea>
@@ -4387,10 +4424,164 @@ async function submitAnnotation(){
 function enableReviewMode(){
   document.getElementById('pv').addEventListener('click',function(e){
     const p=e.target.closest('p,li,td,div.env-block,blockquote');
-    if(p&&inp.readOnly){
+    if(p){
       openAnnotInput(p.textContent);
     }
   });
+}
+
+// === REVIEWER CHECKLIST ===
+const REVIEW_CHECKLIST=[
+  {id:'novelty',label:'독창성/기여도',desc:'새로운 기여가 명확하고 유의미한가?'},
+  {id:'methodology',label:'방법론 적절성',desc:'연구 방법이 목적에 적합하고 엄밀한가?'},
+  {id:'clarity',label:'논리 흐름/명확성',desc:'논증이 명확하고 논리적으로 일관되는가?'},
+  {id:'references',label:'참고문헌 충실도',desc:'선행 연구가 충분히 인용되고 비교되는가?'},
+  {id:'reproducibility',label:'재현 가능성',desc:'실험을 재현할 수 있을 정도의 정보가 제공되는가?'},
+  {id:'ethics',label:'윤리/책임 공개',desc:'윤리적 고려사항이 적절히 다루어졌는가?'},
+  {id:'writing',label:'작성 품질',desc:'문법, 문체, 용어 사용이 학술 수준인가?'},
+  {id:'figures',label:'그림/표 품질',desc:'그림과 표가 명확하고 캡션이 충분한가?'}
+];
+
+function showReviewChecklist(){
+  const stored=JSON.parse(localStorage.getItem('aicra.review.checklist')||'{}');
+  let html='<strong style="color:var(--brand)">구조적 리뷰 체크리스트</strong>';
+  html+='<button onclick="document.getElementById(\'checkResult\').style.display=\'none\'" style="position:absolute;right:8px;top:8px;border:none;background:none;cursor:pointer;font-size:.8rem;color:var(--muted)">X</button>';
+  html+='<div style="margin-top:8px">';
+  REVIEW_CHECKLIST.forEach(item=>{
+    const val=stored[item.id]||'';
+    html+='<div style="display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px dotted var(--line);font-size:.65rem">';
+    html+='<select onchange="updateChecklistItem(\''+item.id+'\',this.value)" style="padding:1px 3px;border:1px solid var(--line);border-radius:3px;font-size:.58rem;width:90px">';
+    html+='<option value=""'+(val===''?' selected':'')+'>미평가</option>';
+    html+='<option value="pass"'+(val==='pass'?' selected':'')+'>충족</option>';
+    html+='<option value="concern"'+(val==='concern'?' selected':'')+'>우려</option>';
+    html+='<option value="major"'+(val==='major'?' selected':'')+'>주요 문제</option>';
+    html+='<option value="na"'+(val==='na'?' selected':'')+'>해당없음</option>';
+    html+='</select>';
+    html+='<div><b>'+escHtml(item.label)+'</b><br><span style="color:var(--muted);font-size:.55rem">'+escHtml(item.desc)+'</span></div>';
+    html+='</div>';
+  });
+  // Verdict
+  const verdict=stored._verdict||'';
+  html+='<div style="margin-top:10px;padding-top:8px;border-top:2px solid var(--line)">';
+  html+='<div style="font-size:.7rem;font-weight:700;color:var(--brand);margin-bottom:4px">최종 심사의견</div>';
+  html+='<div style="display:flex;gap:4px;flex-wrap:wrap">';
+  ['accept','minor_revision','major_revision','reject'].forEach(v=>{
+    const labels={accept:'게재 승인',minor_revision:'소폭 수정',major_revision:'대폭 수정',reject:'게재 불가'};
+    const colors={accept:'#2f5d50',minor_revision:'#4a6fa5',major_revision:'#b7791f',reject:'#b42318'};
+    html+='<button onclick="setVerdict(\''+v+'\')" style="padding:3px 10px;border:2px solid '+colors[v]+';border-radius:4px;font-size:.6rem;font-weight:700;cursor:pointer;background:'+(verdict===v?colors[v]:'transparent')+';color:'+(verdict===v?'#fff':colors[v])+'">'+labels[v]+'</button>';
+  });
+  html+='</div></div>';
+  // Export button
+  html+='<div style="margin-top:8px"><button class="bt" onclick="exportReview()" style="font-size:.55rem;padding:2px 8px">리뷰 내보내기 (.txt)</button></div>';
+  html+='</div>';
+  const cr=document.getElementById('checkResult');
+  cr.innerHTML=html;cr.style.display='block';
+}
+function updateChecklistItem(id,value){
+  const stored=JSON.parse(localStorage.getItem('aicra.review.checklist')||'{}');
+  stored[id]=value;
+  localStorage.setItem('aicra.review.checklist',JSON.stringify(stored));
+}
+function setVerdict(v){
+  const stored=JSON.parse(localStorage.getItem('aicra.review.checklist')||'{}');
+  stored._verdict=v;
+  localStorage.setItem('aicra.review.checklist',JSON.stringify(stored));
+  showReviewChecklist(); // refresh
+}
+function exportReview(){
+  const stored=JSON.parse(localStorage.getItem('aicra.review.checklist')||'{}');
+  const verdictLabels={accept:'Accept',minor_revision:'Minor Revision',major_revision:'Major Revision',reject:'Reject'};
+  let report='=== REVIEW REPORT ===\n';
+  report+='Paper: '+(document.getElementById('ti').value||'Untitled')+'\n';
+  report+='Date: '+new Date().toISOString().split('T')[0]+'\n\n';
+  report+='--- CHECKLIST ---\n';
+  REVIEW_CHECKLIST.forEach(item=>{
+    const val=stored[item.id]||'not evaluated';
+    report+=item.label+': '+val+'\n';
+  });
+  report+='\n--- VERDICT ---\n';
+  report+=(verdictLabels[stored._verdict]||'Not decided')+'\n\n';
+  report+='--- COMMENTS ---\n';
+  report+='(Comments are stored in the GitHub repository annotation files)\n';
+  const blob=new Blob([report],{type:'text/plain;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='review-'+(docManager?docManager.slugify(document.getElementById('ti').value||'paper'):'review')+'.txt';
+  a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+}
+
+// === DIRTY FLAG + UNSAVED WARNING ===
+let _dirty=false;
+inp.addEventListener('input',()=>{if(!_dirty){_dirty=true;document.title='* '+document.title.replace(/^\* /,'');}});
+window.addEventListener('beforeunload',e=>{if(_dirty){e.preventDefault();e.returnValue='';}});
+function markClean(){_dirty=false;document.title=document.title.replace(/^\* /,'');}
+
+// === VENUE LINTING ===
+const VENUE_RULES={
+  ieee_en:{name:'IEEE Conference',maxPages:8,minRefs:15,maxAbstractWords:250,requiredSections:['Introduction','Related Work','Conclusion']},
+  acm_en:{name:'ACM Conference',maxPages:12,minRefs:20,maxAbstractWords:300,requiredSections:['Introduction','Related Work','Evaluation','Conclusion']},
+  neurips:{name:'NeurIPS',maxPages:9,minRefs:20,maxAbstractWords:250,requiredSections:['Introduction','Method','Experiments','Conclusion']},
+  kci_kr:{name:'KCI',maxPages:20,minRefs:10,maxAbstractWords:200,requiredSections:['서론','관련 연구','결론']},
+  journal_en:{name:'Journal',maxPages:30,minRefs:30,maxAbstractWords:300,requiredSections:['Introduction','Methodology','Results','Discussion','Conclusion']}
+};
+function lintVenue(){
+  const tplVal=document.getElementById('tplSel').dataset.lastTpl||'';
+  const rules=VENUE_RULES[tplVal];
+  if(!rules){document.getElementById('as').textContent='벤뉴 규격을 확인하려면 양식을 먼저 선택하세요.';return;}
+  const t=inp.value;const wc=t.trim().split(/\s+/).length;
+  const pages=Math.ceil(wc/300);const ab=document.getElementById('ab').value.trim();
+  const abWords=ab?ab.split(/\s+/).length:0;
+  const issues=[];
+  if(pages>rules.maxPages)issues.push('[!] '+pages+'페이지 ('+rules.name+' 최대 '+rules.maxPages+'페이지)');
+  else issues.push('[+] '+pages+'페이지 (한도 '+rules.maxPages+')');
+  if(refs.length<rules.minRefs)issues.push('[!] 참고문헌 '+refs.length+'개 (최소 '+rules.minRefs+'개 권장)');
+  else issues.push('[+] 참고문헌 '+refs.length+'개');
+  if(abWords>rules.maxAbstractWords)issues.push('[!] 초록 '+abWords+'단어 (최대 '+rules.maxAbstractWords+')');
+  else if(abWords>0)issues.push('[+] 초록 '+abWords+'단어');
+  rules.requiredSections.forEach(sec=>{
+    if(t.toLowerCase().includes(sec.toLowerCase()))issues.push('[+] '+sec+' 섹션 존재');
+    else issues.push('[!] '+sec+' 섹션 없음');
+  });
+  const cr=document.getElementById('checkResult');
+  cr.innerHTML='<strong style="color:var(--brand)">'+rules.name+' 투고 규격 체크</strong><button onclick="document.getElementById(\'checkResult\').style.display=\'none\'" style="position:absolute;right:8px;top:8px;border:none;background:none;cursor:pointer;font-size:.8rem;color:var(--muted)">X</button><br>'+issues.join('<br>');
+  cr.style.display='block';
+}
+
+// === SIMPLE MODE (beginner) ===
+function toggleSimpleMode(){
+  document.body.classList.toggle('simple-mode');
+  const isSimple=document.body.classList.contains('simple-mode');
+  document.getElementById('as').textContent=isSimple?'초보자 모드 (핵심 버튼만 표시)':'전체 모드';
+}
+
+// === SHORTCUT HELP MODAL ===
+function showShortcuts(){
+  const shortcuts=[
+    ['Ctrl+S','저장 (로컬+GitHub)'],['Ctrl+B','굵게'],['Ctrl+I','기울임'],['Ctrl+K','링크'],['Ctrl+M','인라인 수식'],
+    ['Ctrl+H','검색/치환'],['Ctrl+Shift+D','진단 리포트'],['Alt+C','인용 삽입'],['Alt+N','각주 삽입'],['F1','도움말']
+  ];
+  const cr=document.getElementById('checkResult');
+  let html='<strong style="color:var(--brand)">단축키 가이드</strong>';
+  html+='<button onclick="document.getElementById(\'checkResult\').style.display=\'none\'" style="position:absolute;right:8px;top:8px;border:none;background:none;cursor:pointer;font-size:.8rem;color:var(--muted)">X</button>';
+  html+='<table style="width:100%;font-size:.68rem;margin-top:8px;border-collapse:collapse">';
+  shortcuts.forEach(([key,desc])=>{html+='<tr><td style="padding:3px 8px;font-weight:700;font-family:monospace;background:var(--surface);border-radius:3px;width:120px">'+key+'</td><td style="padding:3px 8px">'+desc+'</td></tr>';});
+  html+='</table>';
+  cr.innerHTML=html;cr.style.display='block';
+}
+
+// === REFERENCE DUPLICATE CHECK ===
+function checkRefDuplicates(){
+  const dupes=[];
+  refs.forEach((r,i)=>{
+    refs.forEach((r2,j)=>{
+      if(i<j){
+        const norm=s=>(s||'').toLowerCase().replace(/[^a-z0-9가-힣]/g,'').substring(0,60);
+        if(norm(r)===norm(r2))dupes.push('[!] ['+( i+1)+']와 ['+(j+1)+'] 중복 의심: '+r.substring(0,50)+'...');
+      }
+    });
+  });
+  if(dupes.length){document.getElementById('as').textContent='[!] 참고문헌 중복 '+dupes.length+'건 발견';alert(dupes.join('\n'));}
+  else document.getElementById('as').textContent='[+] 참고문헌 중복 없음';
 }
 
 // === ACADEMIC DB SEARCH ===
@@ -4586,6 +4777,7 @@ async function executeSave(forcedName){
       document.getElementById('as').textContent='GitHub 저장 중...';
       const result=await docManager.save(title,body,getEditorMeta(),{fileName:cleanName});
       document.getElementById('as').textContent='GitHub 저장됨: '+cleanName+'.md ('+new Date().toLocaleTimeString()+')';
+      markClean();
     }catch(e){
       if(e.message==='CONFLICT'){document.getElementById('conflictModal').classList.add('show');}
       else{alert('GitHub 저장 실패: '+e.message);document.getElementById('as').textContent='GitHub 저장 실패';}
