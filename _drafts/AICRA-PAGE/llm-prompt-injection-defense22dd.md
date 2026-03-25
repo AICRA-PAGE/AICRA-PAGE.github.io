@@ -1,6 +1,6 @@
 ---
 layout: paper
-title: "LLM Prompt Injection Defense22DD"
+title: "LLM Prompt Injection Defense22DDㄴㅇㅇㅇㅇ"
 author: AICRA-PAGE
 authors: ["0blueteam0"]
 date: 2026-03-25
@@ -12,10 +12,10 @@ lang: ko
 
 # [Paper Title]
 
-[Author 1], [Institution]; [Author 2], [Institution]
+[Author 1] ([Institution]), [Author 2] ([Institution])
 
 :::abstract
-[Problem] [Approach] [Key measured result with numbers] [Practical significance]
+[200 words]
 :::
 
 ---
@@ -24,56 +24,37 @@ lang: ko
 
 ---
 
-## 2. Problem Statement
+## 2. Background and Related Work
 
 ---
 
-## 3. Design Goals
+## 3. Threat Model
 
 ---
 
-## 4. System Design
+## 4. Design
 
 ---
 
-## 5. Threat Model
+## 5. Implementation
 
 ---
 
-## 6. Implementation
+## 6. Evaluation
 
 ---
 
-## 7. Evaluation
+## 7. Discussion
 
-### 7.1 Experimental Environment
-### 7.2 Workloads
-### 7.3 Metrics
-### 7.4 Results
-### 7.5 Sensitivity Analysis
+### 7.1 Limitations
+### 7.2 Ethical Considerations
 
 ---
 
-## 8. Deployment Considerations
-
----
-
-## 9. Limitations
-
----
-
-## 10. Conclusion
+## 8. Conclusion
 
 ---
 
 ## References
-*Table N. [Caption describing what the table compares.]*
-| Column A | Column B | Column C |
-|----------|----------|----------|
-|  |  |  |
 
-*Table N. [Caption describing what the table compares.]*
-| Column A | Column B | Column C |
-|----------|----------|----------|
-|  |  |  |
-
+<!-- NDSS: 13 pages (ethics/refs/appendix excluded). 2-cycle review. -->
