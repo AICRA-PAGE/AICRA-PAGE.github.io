@@ -6,7 +6,7 @@ authors: ["0blueteam0"]
 date: 2026-03-25
 status: published
 domain: "Prompt Injection"
-keywords: ["DDDD"]
+keywords: ["IT", "SECURITY", "AI", "LLM", ""]
 lang: ko
 ---
 
