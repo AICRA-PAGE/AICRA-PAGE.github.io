@@ -6,13 +6,14 @@ authors: ["0blueteam0"]
 date: 2026-03-25
 status: published
 domain: "Prompt Injection"
-keywords: ["IT", "SECURITY", "AI", "LLM", ""]
+keywords: ["DDDD"]
 lang: ko
 ---
 
 # [Paper Title]
 
-[Author 1], [Author 2] ([Affiliations])
+[Author 1], [Author 2]
+[Affiliations]
 
 :::abstract
 [150-250 words]
@@ -28,44 +29,34 @@ lang: ko
 
 ---
 
-## 3. Method
+## 3. Preliminaries
 
 ---
 
-## 4. Experiments
-
-### 4.1 Setup
-### 4.2 Results
-### 4.3 Ablation Study
+## 4. Method
 
 ---
 
-## 5. Discussion
+## 5. Theoretical Analysis
 
 ---
 
-## 6. Conclusion
+## 6. Experiments
+
+### 6.1 Setup
+### 6.2 Main Results
+### 6.3 Ablation
 
 ---
 
-## Broader Impact Statement
+## 7. Conclusion
+
+---
+
+## Acknowledgements
 
 ---
 
 ## References
 
----
-
-## Appendix
-
----
-
-## NeurIPS Paper Checklist
-
-<!-- Main paper: 9 pages max. Checklist is mandatory but excluded from page limit. -->
-- [ ] Claims: Do main claims match theory/experiments?
-- [ ] Limitations: Are limitations discussed?
-- [ ] Theory: Are all assumptions stated?
-- [ ] Experiments: Code/data availability?
-- [ ] Reproducibility: Seeds, hyperparameters, error bars?
-- [ ] Ethics: IRB, consent, privacy?
+<!-- ICML: 8 pages main, single PDF with appendices. Double-blind. -->
