@@ -9,16 +9,8 @@
   const CACHE_KEY='aicra.auth';
   const CACHE_TTL=600000; // 10 minutes
 
-  // Source protection
-  document.addEventListener('contextmenu',function(e){e.preventDefault();});
-  document.addEventListener('keydown',function(e){
-    if(e.key==='F12')e.preventDefault();
-    if((e.ctrlKey||e.metaKey)&&e.key==='u')e.preventDefault();
-    if((e.ctrlKey||e.metaKey)&&e.shiftKey&&(e.key==='I'||e.key==='i'||e.key==='J'||e.key==='j'||e.key==='C'||e.key==='c'))e.preventDefault();
-  });
-  document.addEventListener('selectstart',function(e){
-    if(e.target.tagName!=='TEXTAREA'&&e.target.tagName!=='INPUT'&&!e.target.isContentEditable)e.preventDefault();
-  });
+  // Note: Source protection (contextmenu/F12/selectstart blocks) removed for accessibility.
+  // These blocks hurt keyboard users and screen readers more than they protect code.
 
   function getToken(){
     const keys=['sveltia-cms.user','netlify-cms-user'];

@@ -11,16 +11,17 @@
 
   function getToken(){
     if(_token)return _token;
+    // Strict token sources only (no arbitrary localStorage scanning)
     const keys=['sveltia-cms.user','netlify-cms-user'];
     for(const k of keys){
       const raw=localStorage.getItem(k);
       if(!raw)continue;
-      try{const d=JSON.parse(raw);if(d.token){_token=d.token;return _token;}}catch(e){if(raw.length>10){_token=raw;return _token;}}
-    }
-    for(let i=0;i<localStorage.length;i++){
-      const k=localStorage.key(i);
-      if(k&&(k.includes('cms')||k.includes('sveltia'))&&(k.includes('user')||k.includes('token'))){
-        try{const d=JSON.parse(localStorage.getItem(k));if(d.token){_token=d.token;return _token;}}catch(e){}
+      try{
+        const d=JSON.parse(raw);
+        const t=d.token||d.access_token;
+        if(t&&typeof t==='string'&&t.length>10){_token=t;return _token;}
+      }catch(e){
+        if(typeof raw==='string'&&raw.length>20&&raw.length<200&&/^[a-zA-Z0-9_-]+$/.test(raw)){_token=raw;return _token;}
       }
     }
     return null;

@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https://cdn.jsdelivr.net https://api.github.com https://api.semanticscholar.org https://api.crossref.org https://fonts.googleapis.com https://fonts.gstatic.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; img-src * data: blob:; connect-src *">
 <title>AICRA Paper Editor</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&family=Pretendard:wght@400;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
@@ -13,6 +14,7 @@
 <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.4/dist/purify.min.js"></script>
 <style>
 :root{--bg:#f9f8f5;--panel:#fff;--text:#2a2a2a;--muted:#7a756c;--brand:#2f5d50;--brand2:#245045;--line:#e8e5de;--surface:#f3f1ec;--code-bg:#0f172a;--radius:6px;--accent:#b7791f}
 [data-theme=dark]{--bg:#1a1d23;--panel:#22262e;--text:#d4d0c8;--muted:#8a8578;--brand:#4da89a;--brand2:#3d8a7e;--line:#333840;--surface:#2a2e36;--code-bg:#0d1117}
@@ -405,7 +407,23 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
 <div id="checkResult" style="display:none;padding:10px 14px;font-size:.75rem;line-height:1.6;background:var(--surface);border:1px solid var(--line);font-family:'Pretendard',sans-serif;max-height:220px;overflow-y:auto;flex-shrink:0;position:relative"></div>
 
 <div class="ed">
-  <div class="pn"><div class="pn-label">LaTeX + Markdown</div>
+  <div class="pn"><div class="pn-label">LaTeX + Markdown <span style="font-size:.45rem;color:var(--muted);margin-left:8px">Ctrl+H 검색/치환</span></div>
+    <!-- Find/Replace panel -->
+    <div id="findPanel" style="display:none;padding:4px 8px;background:var(--surface);border-bottom:1px solid var(--line);font-size:.65rem;flex-shrink:0">
+      <div style="display:flex;gap:4px;align-items:center;margin-bottom:3px">
+        <input id="findInput" placeholder="검색..." style="flex:1;padding:2px 6px;border:1px solid var(--line);border-radius:3px;font-size:.65rem;background:var(--panel);color:var(--text)">
+        <label style="font-size:.55rem;display:flex;align-items:center;gap:2px"><input type="checkbox" id="findRegex" style="width:auto"> 정규식</label>
+        <label style="font-size:.55rem;display:flex;align-items:center;gap:2px"><input type="checkbox" id="findCase" style="width:auto"> 대소문자</label>
+        <span id="findCount" style="font-size:.55rem;color:var(--muted);min-width:40px">0건</span>
+        <button class="bt" onclick="findNext()" style="font-size:.5rem;padding:1px 5px">다음</button>
+      </div>
+      <div style="display:flex;gap:4px;align-items:center">
+        <input id="replaceInput" placeholder="치환..." style="flex:1;padding:2px 6px;border:1px solid var(--line);border-radius:3px;font-size:.65rem;background:var(--panel);color:var(--text)">
+        <button class="bt" onclick="replaceOne()" style="font-size:.5rem;padding:1px 5px">치환</button>
+        <button class="bt" onclick="replaceAllFind()" style="font-size:.5rem;padding:1px 5px">전체 치환</button>
+        <button class="bt" onclick="closeFindPanel()" style="font-size:.5rem;padding:1px 5px">X</button>
+      </div>
+    </div>
     <textarea id="input" spellcheck="true" lang="ko" placeholder="위에서 논문 양식을 선택하여 시작하세요.&#10;&#10;$...$ 인라인 수식 | $$...$$ 블록 수식&#10;:::theorem, :::definition, :::proof 환경 블록&#10;[cite:1] 인용 | [^1] 각주&#10;&#10;? 버튼으로 작성 가이드를 확인하세요."></textarea>
   </div>
   <div class="dv" id="dv"></div>
@@ -1164,17 +1182,24 @@ inp.addEventListener('input',()=>{clearTimeout(inp._dbt);inp._dbt=setTimeout(()=
 ['dm','st-sel','au'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('change',()=>render());});
 function debounce(fn,ms){let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms);};}
 
-// === SCROLL SYNC (editor <-> preview) ===
+// === BIDIRECTIONAL SCROLL SYNC ===
 let _syncLock=false;
 inp.addEventListener('scroll',()=>{
   if(_syncLock)return;_syncLock=true;
   const ratio=inp.scrollHeight>inp.clientHeight?inp.scrollTop/(inp.scrollHeight-inp.clientHeight):0;
   pv.scrollTop=ratio*(pv.scrollHeight-pv.clientHeight);
-  setTimeout(()=>{_syncLock=false;},50);
+  setTimeout(()=>{_syncLock=false;},60);
+});
+pv.addEventListener('scroll',()=>{
+  if(_syncLock)return;_syncLock=true;
+  const ratio=pv.scrollHeight>pv.clientHeight?pv.scrollTop/(pv.scrollHeight-pv.clientHeight):0;
+  inp.scrollTop=ratio*(inp.scrollHeight-inp.clientHeight);
+  setTimeout(()=>{_syncLock=false;},60);
 });
 
 // Mermaid init
-if(window.mermaid){mermaid.initialize({startOnLoad:false,securityLevel:'loose',theme:'default'});}
+if(window.mermaid){mermaid.initialize({startOnLoad:false,securityLevel:'strict',theme:'default'});}
+function sanitizeHtml(html){return window.DOMPurify?DOMPurify.sanitize(html,{ADD_TAGS:['section','nav'],ADD_ATTR:['data-start','data-end','onclick'],ALLOW_DATA_ATTR:true}):html;}
 function hydrateMermaid(){
   if(!window.mermaid)return;
   pv.querySelectorAll('pre code.language-mermaid').forEach(code=>{
@@ -1231,28 +1256,35 @@ function render(){
   const isLargeDoc=raw.length>30000;
   let htmlParts;
   if(isLargeDoc){
-    // Use section cache
+    // Use section cache with cumulative counters (env/eq numbers carry forward)
+    envCounters={theorem:0,lemma:0,definition:0,corollary:0,proposition:0,algorithm:0};eqCounter=0;
+    let anyChanged=false;
     htmlParts=sections.map((sec,i)=>{
       const hash=simpleHash(sec);
       const cached=sectionCache.get(i);
-      if(cached&&cached.hash===hash)return cached.html;
-      envCounters={theorem:0,lemma:0,definition:0,corollary:0,proposition:0,algorithm:0};eqCounter=0;
+      // If any previous section changed, invalidate all downstream
+      if(!anyChanged&&cached&&cached.hash===hash){
+        // Restore counters from cached end state
+        if(cached.endCounters){Object.assign(envCounters,cached.endCounters);eqCounter=cached.endEq;}
+        return cached.html;
+      }
+      anyChanged=true;
+      const startCounters=JSON.parse(JSON.stringify(envCounters));const startEq=eqCounter;
       let t=sec;t=processEnvs(t);t=processNumberedEq(t);t=processCitations(t);t=processFootnotes(t);t=processSubfigures(t);
       let html=marked.parse(t);html=restoreEnvs(html);html=processImageSize(html);
-      sectionCache.set(i,{hash:hash,html:html});
+      sectionCache.set(i,{hash:hash,html:html,endCounters:JSON.parse(JSON.stringify(envCounters)),endEq:eqCounter});
       return html;
     });
-    // Trim cache for deleted sections
     for(let k of sectionCache.keys()){if(k>=sections.length)sectionCache.delete(k);}
   }else{
     // Small doc: full render (original behavior)
     envCounters={theorem:0,lemma:0,definition:0,corollary:0,proposition:0,algorithm:0};eqCounter=0;
-    let t=raw;t=processEnvs(t);t=processNumberedEq(t);t=processCitations(t);t=processFootnotes(t);t=processSubfigures(t);
+    let t=raw;t=autoNumberCaptions(t);t=processEnvs(t);t=processNumberedEq(t);t=collectLabels(t);t=processCitations(t);t=processFootnotes(t);t=processSubfigures(t);
     let html=marked.parse(t);html=restoreEnvs(html);html=processImageSize(html);
     htmlParts=[html];
   }
   if(token!==renderToken)return; // stale render
-  pv.innerHTML=headerHtml+htmlParts.join('');
+  pv.innerHTML=sanitizeHtml(headerHtml+htmlParts.join(''));
   // Insert TOC after header
   const tocHtml=buildTOC();
   if(tocHtml){const headerDiv=pv.querySelector('div[style*="border-bottom"]');if(headerDiv)headerDiv.insertAdjacentHTML('afterend',tocHtml);else pv.insertAdjacentHTML('afterbegin',tocHtml);}
@@ -1339,6 +1371,41 @@ function processSubfigures(t){
 }
 
 // === IMAGE SIZE ===
+// === CROSS-REFERENCES: \label{id} and \ref{id} ===
+let labelRegistry={};
+function collectLabels(t){
+  labelRegistry={};
+  let figN=0,tblN=0;
+  // Auto-number figures and tables
+  t=t.replace(/\*Fig\.?\s*N?\.\s*/gi,()=>{figN++;return '*Fig. '+figN+'. ';});
+  t=t.replace(/\*Table\s*N?\.\s*/gi,()=>{tblN++;return '*Table '+tblN+'. ';});
+  // Collect \label{id} from text
+  t.replace(/\\label\{([^}]+)\}/g,(m,id)=>{
+    // Try to determine type and number from context
+    if(id.startsWith('fig:'))labelRegistry[id]='Fig. '+(figN||'?');
+    else if(id.startsWith('tbl:')||id.startsWith('tab:'))labelRegistry[id]='Table '+(tblN||'?');
+    else if(id.startsWith('eq:'))labelRegistry[id]='Eq. ('+eqCounter+')';
+    else if(id.startsWith('sec:'))labelRegistry[id]='Section';
+    else labelRegistry[id]=id;
+  });
+  // Remove \label{} from text (will be rendered as anchors)
+  t=t.replace(/\\label\{([^}]+)\}/g,'<a id="ref-$1"></a>');
+  // Replace \ref{id} with clickable links
+  t=t.replace(/\\ref\{([^}]+)\}/g,(m,id)=>{
+    const label=labelRegistry[id]||'??';
+    return '<a href="#ref-'+id+'" class="xref" style="color:var(--brand,#2f5d50);text-decoration:none;font-weight:600" onclick="event.preventDefault();document.getElementById(\'ref-'+id+'\')?.scrollIntoView({behavior:\'smooth\'})">'+escHtml(label)+'</a>';
+  });
+  return t;
+}
+
+// === AUTO FIGURE/TABLE NUMBERING ===
+function autoNumberCaptions(t){
+  let figN=0,tblN=0;
+  t=t.replace(/\*Fig\.?\s*N\.\s*/gi,()=>{figN++;return '*Fig. '+figN+'. ';});
+  t=t.replace(/\*Table\s*N\.\s*/gi,()=>{tblN++;return '*Table '+tblN+'. ';});
+  return t;
+}
+
 function processImageSize(html){
   // Handle ![alt](src){width=50%} -> set width attribute
   return html.replace(/<img([^>]*?)src="([^"]+)"([^>]*?)>/g,(m,pre,src,post)=>{
@@ -1363,6 +1430,7 @@ inp.addEventListener('keydown',e=>{
   if(e.altKey&&(e.key==='n'||e.key==='N')){e.preventDefault();insertFootnote();}
   if(e.altKey&&(e.key==='c'||e.key==='C')){e.preventDefault();handleCiteInsert();}
   if((e.ctrlKey||e.metaKey)&&e.shiftKey&&e.key==='D'){e.preventDefault();diagnosePaper();}
+  if((e.ctrlKey||e.metaKey)&&e.key==='h'){e.preventDefault();toggleFindPanel();}
   if(e.key==='F1'){e.preventDefault();toggleHelp();}
   if((e.ctrlKey||e.metaKey)&&e.key==='z'){/* native undo */}
   if((e.ctrlKey||e.metaKey)&&e.key==='y'){/* native redo */}
@@ -3103,6 +3171,54 @@ function _cancelPendingCite(){
   document.getElementById('as').textContent='';
   document.getElementById('as').style.color='';
 }
+
+// === FIND/REPLACE ===
+function toggleFindPanel(){const fp=document.getElementById('findPanel');fp.style.display=fp.style.display==='none'?'flex':'none';if(fp.style.display!=='none')document.getElementById('findInput').focus();}
+function closeFindPanel(){document.getElementById('findPanel').style.display='none';}
+function _buildFindRegex(){
+  const q=document.getElementById('findInput').value;if(!q)return null;
+  const isRegex=document.getElementById('findRegex').checked;
+  const caseSensitive=document.getElementById('findCase').checked;
+  try{return new RegExp(isRegex?q:q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),caseSensitive?'g':'gi');}catch(e){return null;}
+}
+function findNext(){
+  const re=_buildFindRegex();if(!re)return;
+  const matches=[...inp.value.matchAll(re)];
+  document.getElementById('findCount').textContent=matches.length+'건';
+  if(!matches.length)return;
+  // Find next match after current cursor
+  const pos=inp.selectionEnd;
+  const next=matches.find(m=>m.index>=pos)||matches[0];
+  inp.focus();inp.setSelectionRange(next.index,next.index+next[0].length);
+  // Scroll into view
+  const lineHeight=parseInt(getComputedStyle(inp).lineHeight)||20;
+  const linesBefore=inp.value.substring(0,next.index).split('\n').length;
+  inp.scrollTop=Math.max(0,(linesBefore-5)*lineHeight);
+}
+function replaceOne(){
+  const re=_buildFindRegex();if(!re)return;
+  const sel=inp.value.substring(inp.selectionStart,inp.selectionEnd);
+  const rep=document.getElementById('replaceInput').value;
+  if(re.test(sel)){inp.focus();document.execCommand('insertText',false,sel.replace(re,rep));render();}
+  findNext();
+}
+function replaceAllFind(){
+  const re=_buildFindRegex();if(!re)return;
+  const rep=document.getElementById('replaceInput').value;
+  const count=(inp.value.match(re)||[]).length;
+  if(!count)return;
+  if(!confirm(count+'건을 모두 치환하시겠습니까?'))return;
+  const newVal=inp.value.replace(re,rep);
+  inp.focus();inp.select();document.execCommand('insertText',false,newVal);
+  render();
+  document.getElementById('findCount').textContent='0건 ('+count+'건 치환됨)';
+}
+
+// === ACCESSIBILITY IMPROVEMENTS ===
+// Add ARIA labels to toolbar buttons
+document.querySelectorAll('.bt[title]').forEach(btn=>{if(!btn.getAttribute('aria-label'))btn.setAttribute('aria-label',btn.title);});
+// Status bar live region
+document.getElementById('stBar')?.setAttribute('aria-live','polite');
 
 // === REFS ===
 function addRef(){const i=document.getElementById('refInput');const v=i.value.trim();if(!v)return;refs.push(v);i.value='';renderRefs();render();_completeCiteInsert();}
