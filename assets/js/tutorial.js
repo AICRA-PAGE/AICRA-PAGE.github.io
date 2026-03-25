@@ -315,25 +315,33 @@ function _startModalObserver(){
   widget._obs=obs;
 }
 
-let _verifyTimer=null;
+let _verifyTimer=null,_stepVerified=false;
 function _startVerifyPolling(step){
   _stopVerifyPolling();
+  _stepVerified=false;
   if(!step.verify||cur>=activeStory.length-1)return;
   _verifyTimer=setInterval(()=>{
-    if(step.verify()){
+    if(!_stepVerified&&step.verify()){
+      _stepVerified=true;
       _stopVerifyPolling();
-      // Show success toast in widget
+      // Show success toast (no auto-advance)
       const body=document.getElementById('twBody');
       if(body){
+        const old=body.querySelector('.tw-toast');if(old)old.remove();
         const toast=document.createElement('div');
-        toast.style.cssText='background:var(--brand,#2f5d50);color:#fff;padding:4px 10px;border-radius:4px;font-size:.6rem;font-weight:700;margin-top:6px;text-align:center';
-        toast.textContent='[+] 잘했습니다! 다음 단계로 진행합니다...';
+        toast.className='tw-toast';
+        toast.style.cssText='background:var(--brand,#2f5d50);color:#fff;padding:5px 10px;border-radius:4px;font-size:.62rem;font-weight:700;margin-top:6px;text-align:center';
+        toast.textContent='[+] 완료! "다음" 버튼을 눌러 진행하세요.';
         body.appendChild(toast);
       }
-      // Auto-advance after brief pause
-      setTimeout(()=>{if(cur<activeStory.length-1){cur++;renderWidget();}},1200);
+      // Highlight "다음" button
+      const nextBtn=document.querySelector('#twNav button:last-child');
+      if(nextBtn&&nextBtn.textContent.includes('다음')){
+        nextBtn.classList.add('primary');
+        nextBtn.style.animation='tutPulse 1s infinite';
+      }
     }
-  },800);
+  },600);
 }
 function _stopVerifyPolling(){if(_verifyTimer){clearInterval(_verifyTimer);_verifyTimer=null;}}
 
@@ -418,8 +426,12 @@ window._tAuto=function(){
   const inp=document.getElementById('input');
   const pv=document.getElementById('pv');
   const beforeVal=inp?inp.value:'';
+  // Execute the demo action (actually modifies editor)
   s.auto();
-  // After auto: scroll to show changes (only if editor content changed)
+  // Force preview re-render
+  if(inp)inp.dispatchEvent(new Event('input'));
+  if(window.render)window.render();
+  // Scroll + visual feedback
   setTimeout(()=>{
     const changed=inp&&inp.value!==beforeVal;
     if(changed){
@@ -428,11 +440,22 @@ window._tAuto=function(){
       inp.style.boxShadow='inset 0 0 12px rgba(183,121,31,.4)';
       setTimeout(()=>{inp.style.boxShadow='';},1500);
     }
-    if(changed&&pv){
+    if(pv){
       pv.scrollTop=pv.scrollHeight;
       pv.style.transition='box-shadow .3s';
       pv.style.boxShadow='inset 0 0 12px rgba(47,93,80,.3)';
       setTimeout(()=>{pv.style.boxShadow='';},1500);
+    }
+    // Show "실행됨" feedback in widget
+    const body=document.getElementById('twBody');
+    if(body){
+      const old=body.querySelector('.tw-toast');if(old)old.remove();
+      const toast=document.createElement('div');
+      toast.className='tw-toast';
+      toast.style.cssText='background:var(--accent,#b7791f);color:#fff;padding:5px 10px;border-radius:4px;font-size:.62rem;font-weight:700;margin-top:6px;text-align:center';
+      toast.textContent='[+] 실행됨! 에디터와 미리보기를 확인하세요.';
+      body.appendChild(toast);
+      setTimeout(()=>{if(toast.parentNode)toast.remove();},3000);
     }
   },400);
 };
