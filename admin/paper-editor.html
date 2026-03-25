@@ -384,7 +384,7 @@ body.simple-mode .ins button[onclick*="fn"]{display:inline-block}
   <button class="bt" onclick="toggleSimpleMode()" title="초보자 모드 전환" style="font-size:.55rem">간편</button>
   <button class="bt" onclick="showShortcuts()" title="단축키 가이드">&#9000;</button>
   <button class="bt icon" onclick="toggleFocus()" title="집중 모드">&#9974;</button>
-  <label style="font-size:.5rem;display:flex;align-items:center;gap:2px;cursor:pointer" title="인쇄시 2단 레이아웃"><input type="checkbox" id="printTwoCol" style="width:auto" onchange="pv.classList.toggle('print-two-col',this.checked)"> 2단인쇄</label>
+  <select class="sel" style="font-size:.52rem;padding:1px 3px" onchange="pv.classList.toggle('print-two-col',this.value==='2')" title="인쇄 레이아웃"><option value="1">1단 인쇄</option><option value="2">2단 인쇄</option></select>
   <button class="bt icon" onclick="window.print()" title="인쇄 / PDF">&#9113;</button>
   <select class="sel" onchange="if(this.value){loadSamplePaper(this.value);this.value=''}" title="샘플 AI 보안 논문 불러오기">
     <option value="">샘플 논문</option>
@@ -423,8 +423,8 @@ body.simple-mode .ins button[onclick*="fn"]{display:inline-block}
     <input type="hidden" id="corr">
   </div>
   <div>
-    <label>초록</label><input id="ab" placeholder="한 줄 초록" style="margin-bottom:3px">
-    <label style="font-size:.48rem;display:flex;align-items:center;gap:3px"><input type="checkbox" id="collab" style="width:auto"> 공동 편집</label>
+    <label>초록</label><input id="ab" placeholder="한 줄 초록">
+    <label style="font-size:.45rem;color:var(--muted)">소속</label><input id="affiliation" placeholder="대학교/기관명" style="padding:2px 5px;border:1px solid var(--line);border-radius:3px;font-size:.65rem;background:var(--panel);color:var(--text)">
   </div>
   <div>
     <label>외부 저자</label>
@@ -531,6 +531,10 @@ body.simple-mode .ins button[onclick*="fn"]{display:inline-block}
       <div class="opts">
         <button onclick="toggleCol(false)" class="active" id="col1btn">1단</button>
         <button onclick="toggleCol(true)" id="col2btn">2단</button>
+        <button onclick="zoomPreview(-10)" title="축소" style="font-size:.5rem">-</button>
+        <button onclick="zoomPreview(10)" title="확대" style="font-size:.5rem">+</button>
+        <button onclick="buildFigureTableList()" title="그림/표 목록" style="font-size:.48rem">LOF</button>
+        <button onclick="reorderCitations()" title="인용 순서 재정렬" style="font-size:.48rem">정렬</button>
       </div>
     </div>
     <div id="pv"><p style="color:#999;text-align:center;padding:40px;font-family:sans-serif;font-size:.85rem">양식을 선택하거나 직접 작성을 시작하세요</p></div>
@@ -1323,6 +1327,7 @@ function getDebounceMs(){const wc=inp.value.length;return wc>100000?400:wc>30000
 inp.addEventListener('input',()=>{clearTimeout(inp._dbt);inp._dbt=setTimeout(()=>{render();},getDebounceMs());});
 ['ti','kw','ab'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',debounce(()=>{render();},200));});
 ['dm','st-sel','au'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('change',()=>render());});
+['affiliation'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',debounce(()=>{render();},200));});
 function debounce(fn,ms){let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms);};}
 
 // === BIDIRECTIONAL SCROLL SYNC ===
@@ -1365,8 +1370,10 @@ function buildPreviewHeader(){
   if(!ti&&!au&&!dm&&!kw&&!ab)return '';
   let h='<div style="border-bottom:1px solid #bbb;padding-bottom:14px;margin-bottom:18px;text-align:center">';
   if(ti)h+='<h1 style="margin-bottom:.3rem">'+escHtml(ti)+'</h1>';
+  const aff=(document.getElementById('affiliation')||{}).value||'';
   const authors=[au];if(coau)coau.split(',').forEach(a=>{if(a.trim())authors.push(a.trim());});
-  if(authors.filter(a=>a).length)h+='<div style="font-size:.82rem;color:#444;margin-bottom:.2rem">'+authors.filter(a=>a).map(a=>escHtml(a)).join(', ')+'</div>';
+  if(authors.filter(a=>a).length)h+='<div class="author-list" style="font-size:.92rem;font-weight:700;color:#111;margin-bottom:.2rem">'+authors.filter(a=>a).map(a=>escHtml(a)).join(', ')+'</div>';
+  if(aff)h+='<div class="affiliations" style="font-size:.78rem;font-style:italic;color:#444;margin-bottom:.2rem">'+escHtml(aff)+'</div>';
   if(dm)h+='<div style="font-size:.72rem;color:#666;margin-bottom:.2rem">'+escHtml(dm)+'</div>';
   if(ab)h+='<div style="border-top:1px solid #ccc;border-bottom:1px solid #ccc;padding:8px 0;margin:8px 0;font-size:.82rem;text-align:justify;font-style:italic"><strong style="font-style:normal;display:block;margin-bottom:2px;font-size:.7rem;text-transform:uppercase;letter-spacing:.5px">Abstract</strong>'+escHtml(ab)+'</div>';
   if(kw)h+='<div style="font-size:.72rem;color:#555"><strong>Keywords:</strong> '+escHtml(kw)+'</div>';
@@ -4853,6 +4860,52 @@ function showShortcuts(){
   html+='<table style="width:100%;font-size:.68rem;margin-top:8px;border-collapse:collapse">';
   shortcuts.forEach(([key,desc])=>{html+='<tr><td style="padding:3px 8px;font-weight:700;font-family:monospace;background:var(--surface);border-radius:3px;width:120px">'+key+'</td><td style="padding:3px 8px">'+desc+'</td></tr>';});
   html+='</table>';
+  cr.innerHTML=html;cr.style.display='block';
+}
+
+// === CITATION REORDER (본문 등장순으로 참고문헌 정렬) ===
+function reorderCitations(){
+  const t=inp.value;
+  const citeOrder=[];
+  t.replace(/\[cite:(\d+)\]/g,(m,n)=>{const num=parseInt(n);if(!citeOrder.includes(num))citeOrder.push(num);});
+  if(!citeOrder.length||citeOrder.length!==refs.length){
+    document.getElementById('as').textContent='[!] 인용 수('+citeOrder.length+')와 참고문헌 수('+refs.length+')가 다릅니다';return;
+  }
+  // Reorder refs array by citation order
+  const newRefs=citeOrder.map(n=>refs[n-1]).filter(Boolean);
+  // Renumber citations in text
+  const mapping={};citeOrder.forEach((oldN,i)=>{mapping[oldN]=i+1;});
+  let newText=t.replace(/\[cite:(\d+)\]/g,(m,n)=>'[cite:'+mapping[parseInt(n)]+']');
+  refs.splice(0,refs.length,...newRefs);
+  inp.focus();inp.select();document.execCommand('insertText',false,newText);
+  renderRefs();render();
+  document.getElementById('as').textContent='[+] 인용 순서 재정렬 완료 ('+refs.length+'편)';
+}
+
+// === PREVIEW ZOOM ===
+let _pvZoom=100;
+function zoomPreview(delta){
+  _pvZoom=Math.max(50,Math.min(200,_pvZoom+delta));
+  pv.style.fontSize=(_pvZoom/100*0.9)+'rem';
+  document.getElementById('as').textContent='미리보기 '+_pvZoom+'%';
+}
+
+// === LIST OF FIGURES/TABLES ===
+function buildFigureTableList(){
+  const figs=[...pv.querySelectorAll('.fig-caption,em')].filter(el=>/^Fig\.\s*\d+/i.test(el.textContent));
+  const tbls=[...pv.querySelectorAll('.tbl-caption,em')].filter(el=>/^Table\s*\d+/i.test(el.textContent));
+  let html='<strong style="color:var(--brand)">그림/표 목록</strong>';
+  html+='<button onclick="document.getElementById(\'checkResult\').style.display=\'none\'" style="position:absolute;right:8px;top:8px;border:none;background:none;cursor:pointer;font-size:.8rem;color:var(--muted)">X</button>';
+  if(figs.length){
+    html+='<div style="margin-top:6px;font-size:.68rem;font-weight:700">Figures ('+figs.length+')</div>';
+    figs.forEach(f=>{html+='<div style="font-size:.62rem;padding:1px 0">'+escHtml(f.textContent.substring(0,80))+'</div>';});
+  }
+  if(tbls.length){
+    html+='<div style="margin-top:6px;font-size:.68rem;font-weight:700">Tables ('+tbls.length+')</div>';
+    tbls.forEach(t=>{html+='<div style="font-size:.62rem;padding:1px 0">'+escHtml(t.textContent.substring(0,80))+'</div>';});
+  }
+  if(!figs.length&&!tbls.length)html+='<div style="font-size:.62rem;color:var(--muted);margin-top:6px">그림/표가 없습니다</div>';
+  const cr=document.getElementById('checkResult');
   cr.innerHTML=html;cr.style.display='block';
 }
 
