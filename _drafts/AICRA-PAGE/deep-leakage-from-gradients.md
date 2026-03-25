@@ -123,6 +123,17 @@ flowchart TB
 
 ---
 
+```mermaid
+flowchart LR
+    I[Internet] --> FW[Firewall]
+    FW --> IDS[IDS/IPS]
+    IDS --> WEB[Web Tier]
+    WEB --> APP[App Tier]
+    APP --> DB[(Database)]
+```
+*Fig. N. [네트워크 토폴로지.]*
+
+
 ## 6. Discussion
 
 The linear explanation predicts that adversarial vulnerability increases with input dimensionality. This is consistent with our MNIST ($n=784$) vs CIFAR-10 ($n=3072$) results. The connection to $L_1$ regularization suggests adversarial training provides benefits beyond robustness [cite:3].
