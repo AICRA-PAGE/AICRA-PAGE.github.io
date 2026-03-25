@@ -49,7 +49,7 @@
   async function getUser(){
     if(_user)return _user;
     const token=getToken();if(!token)return null;
-    const r=await fetch('https://api.github.com/user',{headers:{'Authorization':'token '+token}});
+    const r=await fetchRetry('https://api.github.com/user',{headers:{'Authorization':'token '+token}});
     if(!r.ok)return null;
     _user=await r.json();return _user;
   }
@@ -99,7 +99,7 @@
     let sha=_currentFile===path?_currentSha:null;
     if(!sha){
       try{
-        const r=await fetch(API+path,{headers:headers()});
+        const r=await fetchRetry(API+path,{headers:headers()});
         if(r.ok){const d=await r.json();sha=d.sha;}
       }catch(e){}
     }
@@ -107,7 +107,7 @@
     const payload={message:(sha?'update':'create')+': '+title,content:encoded};
     if(sha)payload.sha=sha;
 
-    const r=await fetch(API+path,{method:'PUT',headers:headers(),body:JSON.stringify(payload)});
+    const r=await fetchRetry(API+path,{method:'PUT',headers:headers(),body:JSON.stringify(payload)});
     if(!r.ok){
       if(r.status===409)throw new Error('CONFLICT');
       throw new Error('Save failed: '+r.status);
@@ -141,7 +141,7 @@
     const results=[];
     // Get user's own drafts
     try{
-      const r=await fetch(API+'_drafts/'+user.login,{headers:headers()});
+      const r=await fetchRetry(API+'_drafts/'+user.login,{headers:headers()});
       if(r.ok){
         const files=await r.json();
         for(const f of files){
@@ -151,13 +151,13 @@
     }catch(e){}
     // Get shared drafts (all _drafts subfolders)
     try{
-      const r=await fetch(API+'_drafts',{headers:headers()});
+      const r=await fetchRetry(API+'_drafts',{headers:headers()});
       if(r.ok){
         const dirs=await r.json();
         for(const d of dirs){
           if(d.type==='dir'&&d.name!==user.login){
             try{
-              const r2=await fetch(API+d.path,{headers:headers()});
+              const r2=await fetchRetry(API+d.path,{headers:headers()});
               if(r2.ok){
                 const files=await r2.json();
                 for(const f of files){
@@ -174,7 +174,7 @@
 
   // === LOAD FILE ===
   async function loadFile(path){
-    const r=await fetch(API+path,{headers:headers()});
+    const r=await fetchRetry(API+path,{headers:headers()});
     if(!r.ok)throw new Error('Load failed: '+r.status);
     const d=await r.json();
     const content=b64decode(d.content);
@@ -208,7 +208,7 @@
   async function createReview(paperPath,reviewerLogin){
     const user=await getUser();if(!user)throw new Error('Not logged in');
     // Load original paper
-    const r=await fetch(API+paperPath,{headers:headers()});
+    const r=await fetchRetry(API+paperPath,{headers:headers()});
     if(!r.ok)throw new Error('Paper not found');
     const d=await r.json();
     const content=b64decode(d.content);
@@ -218,17 +218,17 @@
     const encoded=b64encode(content);
     // Check if already exists
     let sha=null;
-    try{const r2=await fetch(API+reviewPath,{headers:headers()});if(r2.ok){const d2=await r2.json();sha=d2.sha;}}catch(e){}
+    try{const r2=await fetchRetry(API+reviewPath,{headers:headers()});if(r2.ok){const d2=await r2.json();sha=d2.sha;}}catch(e){}
     const payload={message:'review: create copy for '+reviewerLogin,content:encoded};
     if(sha)payload.sha=sha;
-    await fetch(API+reviewPath,{method:'PUT',headers:headers(),body:JSON.stringify(payload)});
+    await fetchRetry(API+reviewPath,{method:'PUT',headers:headers(),body:JSON.stringify(payload)});
     // Create empty annotations file
     const annPath='_reviews/'+slug+'/'+reviewerLogin+'-annotations.json';
     let annSha=null;
-    try{const r3=await fetch(API+annPath,{headers:headers()});if(r3.ok){const d3=await r3.json();annSha=d3.sha;}}catch(e){}
+    try{const r3=await fetchRetry(API+annPath,{headers:headers()});if(r3.ok){const d3=await r3.json();annSha=d3.sha;}}catch(e){}
     if(!annSha){
       const annPayload={message:'review: init annotations for '+reviewerLogin,content:b64encode('[]')};
-      await fetch(API+annPath,{method:'PUT',headers:headers(),body:JSON.stringify(annPayload)});
+      await fetchRetry(API+annPath,{method:'PUT',headers:headers(),body:JSON.stringify(annPayload)});
     }
     return reviewPath;
   }
@@ -237,7 +237,7 @@
     const slug=paperPath.split('/').pop().replace('.md','');
     const annPath='_reviews/'+slug+'/'+reviewerLogin+'-annotations.json';
     try{
-      const r=await fetch(API+annPath,{headers:headers()});
+      const r=await fetchRetry(API+annPath,{headers:headers()});
       if(!r.ok)return[];
       const d=await r.json();
       return JSON.parse(b64decode(d.content));
@@ -248,7 +248,7 @@
     const slug=paperPath.split('/').pop().replace('.md','');
     const annPath='_reviews/'+slug+'/'+reviewerLogin+'-annotations.json';
     // Load current
-    const r=await fetch(API+annPath,{headers:headers()});
+    const r=await fetchRetry(API+annPath,{headers:headers()});
     let annotations=[],sha=null;
     if(r.ok){const d=await r.json();sha=d.sha;try{annotations=JSON.parse(b64decode(d.content));}catch(e){}}
     // Add new annotation
@@ -260,14 +260,14 @@
     // Save
     const payload={message:'review: annotation by '+reviewerLogin,content:b64encode(JSON.stringify(annotations,null,2))};
     if(sha)payload.sha=sha;
-    await fetch(API+annPath,{method:'PUT',headers:headers(),body:JSON.stringify(payload)});
+    await fetchRetry(API+annPath,{method:'PUT',headers:headers(),body:JSON.stringify(payload)});
     return annotation;
   }
 
   async function updateAnnotationStatus(paperPath,reviewerLogin,annotationId,status){
     const slug=paperPath.split('/').pop().replace('.md','');
     const annPath='_reviews/'+slug+'/'+reviewerLogin+'-annotations.json';
-    const r=await fetch(API+annPath,{headers:headers()});
+    const r=await fetchRetry(API+annPath,{headers:headers()});
     if(!r.ok)return;
     const d=await r.json();
     const sha=d.sha;
@@ -275,7 +275,7 @@
     const ann=annotations.find(a=>a.id===annotationId);
     if(ann)ann.status=status;
     const payload={message:'review: '+status+' annotation',content:b64encode(JSON.stringify(annotations,null,2)),sha:sha};
-    await fetch(API+annPath,{method:'PUT',headers:headers(),body:JSON.stringify(payload)});
+    await fetchRetry(API+annPath,{method:'PUT',headers:headers(),body:JSON.stringify(payload)});
     return ann;
   }
 
@@ -283,7 +283,7 @@
     const slug=paperPath.split('/').pop().replace('.md','');
     const reviewDir='_reviews/'+slug;
     try{
-      const r=await fetch(API+reviewDir,{headers:headers()});
+      const r=await fetchRetry(API+reviewDir,{headers:headers()});
       if(!r.ok)return[];
       const files=await r.json();
       return files.filter(f=>f.name.endsWith('.md')).map(f=>f.name.replace('.md',''));
@@ -304,7 +304,7 @@
     }
     content=rebuildContent(data.meta,data.body);
     const encoded=b64encode(content);
-    const r=await fetch(API+path,{method:'PUT',headers:headers(),body:JSON.stringify({
+    const r=await fetchRetry(API+path,{method:'PUT',headers:headers(),body:JSON.stringify({
       message:(lock?'lock':'unlock')+': '+data.meta.title,content:encoded,sha:data.sha
     })});
     if(!r.ok)throw new Error('Lock failed');
@@ -327,7 +327,7 @@
 
   // === DELETE ===
   async function deleteFile(path,sha){
-    const r=await fetch(API+path,{method:'DELETE',headers:headers(),body:JSON.stringify({
+    const r=await fetchRetry(API+path,{method:'DELETE',headers:headers(),body:JSON.stringify({
       message:'delete: '+path.split('/').pop(),sha:sha
     })});
     if(!r.ok)throw new Error('Delete failed');
@@ -360,7 +360,7 @@
   async function checkConflict(path){
     if(!path||!_currentSha)return false;
     try{
-      const r=await fetch(API+path,{headers:headers()});
+      const r=await fetchRetry(API+path,{headers:headers()});
       if(!r.ok)return false;
       const d=await r.json();
       return d.sha!==_currentSha;
