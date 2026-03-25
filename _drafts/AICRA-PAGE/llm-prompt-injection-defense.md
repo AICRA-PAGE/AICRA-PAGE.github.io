@@ -10,9 +10,9 @@ keywords: ["DDDD"]
 lang: ko
 ---
 
-# [국문 제목]
+# [s]
 
-# [English Title]
+# [LLM Prompt Injection Defense]
 
 **[저자1]**$^1$, **[저자2]**$^{2,*}$
 $^1$[소속 1] $^2$[소속 2]
