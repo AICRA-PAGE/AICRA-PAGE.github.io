@@ -206,9 +206,38 @@ const FULL_STORY=[
    auto:null,
    verify:()=>true},
 
+  // Chapter 10: Tools
+  {ch:'Ch.10 도구',title:'미리보기 확대/축소',
+   story:'미리보기 패널 상단의 +/- 버튼으로 크기를 조절합니다 (50%~200%).',
+   task:'미리보기의 <b>+</b> 또는 <b>-</b> 버튼을 클릭하세요.',
+   highlight:'#col2btn',
+   auto:()=>{if(window.zoomPreview)window.zoomPreview(20);},
+   verify:()=>true},
+
+  {ch:'Ch.10 도구',title:'인용 순서 재정렬',
+   story:'참고문헌을 본문에서 처음 등장하는 순서대로 자동 재정렬합니다.',
+   task:'미리보기의 <b>정렬</b> 버튼을 클릭하세요.',
+   highlight:'#col2btn',
+   auto:()=>{if(window.reorderCitations)window.reorderCitations();},
+   verify:()=>true},
+
+  {ch:'Ch.10 도구',title:'그림/표 목록',
+   story:'논문 내 모든 그림과 표의 캡션을 목록으로 확인합니다.',
+   task:'미리보기의 <b>LOF</b> 버튼을 클릭하세요.',
+   highlight:'#col2btn',
+   auto:()=>{if(window.buildFigureTableList)window.buildFigureTableList();},
+   verify:()=>document.getElementById('checkResult').style.display==='block'},
+
+  {ch:'Ch.10 도구',title:'샘플 논문 불러오기',
+   story:'5편의 AI 보안 논문 샘플을 불러와 에디터의 모든 기능을 체험할 수 있습니다.',
+   task:'툴바의 <b>샘플 논문</b> 드롭다운에서 원하는 논문을 선택하세요.',
+   highlight:'select[onchange*="loadSamplePaper"]',
+   auto:null,
+   verify:()=>document.getElementById('input').value.length>1000},
+
   // Ending
   {ch:'완료',title:'축하합니다!',
-   story:'논문 초안이 완성되었습니다!<br><br>추가로 시도해 보세요:<br>- <b>심사</b>: 구조적 리뷰 체크리스트 + 심사의견<br>- <b>규격</b>: 양식별 투고 규격 점검<br>- <b>간편</b>: 초보자 모드 전환<br>- <b>이력</b>: 이전 버전 복원<br>- <b>2단 미리보기</b>: 학술 레이아웃<br>- <b>?</b> 도움말에서 모든 기능 확인',
+   story:'논문 작성의 전 과정을 체험했습니다!<br><br>주요 기능 요약:<br>- <b>심사</b>: 구조적 리뷰 + 심사의견<br>- <b>규격</b>: 양식별 투고 규격 점검<br>- <b>진단/문체</b>: 논문 품질 자동 분석<br>- <b>간편</b>: 초보자 모드<br>- <b>이력</b>: 이전 버전 복원<br>- <b>인쇄</b>: 1단/2단 선택 + PDF<br>- <b>?</b> 도움말에서 100+ 기능 확인',
    task:'',highlight:null,auto:null,verify:()=>true}
 ];
 

@@ -94,6 +94,9 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
 #pv table{width:100%;border-collapse:collapse;margin:.7rem 0;font-size:.82rem;line-height:1.45;border-top:2px solid #111;border-bottom:2px solid #111;background:#fff}
 #pv th{padding:.45rem .6rem;text-align:left;font-weight:600;font-size:.78rem;border-bottom:1px solid #111;border-top:none;border-left:none!important;border-right:none!important}
 #pv td{padding:.4rem .6rem;font-size:.8rem;border:none;border-left:none!important;border-right:none!important}
+#pv td[style*="text-align:center"],#pv th[style*="text-align:center"]{text-align:center!important}
+#pv td[style*="text-align:right"],#pv th[style*="text-align:right"]{text-align:right!important}
+#pv tr:nth-child(even){background:rgba(0,0,0,.02)}
 #pv tbody tr:nth-child(even){background:rgba(0,0,0,.03)}
 #pv tr:last-child td{border-bottom:none}
 #pv blockquote{border-left:2px solid #999;padding:.4rem .8rem;margin:.5rem 0;color:#555;font-style:italic;font-size:.85rem}
@@ -1418,10 +1421,27 @@ function buildPreviewHeader(){
   if(ti)h+='<h1 style="margin-bottom:.3rem">'+escHtml(ti)+'</h1>';
   const aff=(document.getElementById('affiliation')||{}).value||'';
   const authors=[au];if(coau)coau.split(',').forEach(a=>{if(a.trim())authors.push(a.trim());});
-  // Resolve GitHub IDs to display names via nameMap
-  const resolvedAuthors=authors.filter(a=>a).map(a=>{const m=typeof nameMap!=='undefined'&&nameMap[a];return m&&m.name?m.name:a;});
-  if(resolvedAuthors.length)h+='<div class="author-list" style="font-size:.92rem;font-weight:700;color:#111;margin-bottom:.2rem">'+resolvedAuthors.map(a=>escHtml(a)).join(', ')+'</div>';
-  if(aff)h+='<div class="affiliations" style="font-size:.78rem;font-style:italic;color:#444;margin-bottom:.2rem">'+escHtml(aff)+'</div>';
+  // Resolve GitHub IDs to display names via nameMap; mark corresponding authors with dagger
+  const corrList=(typeof selectedCorr!=='undefined'?selectedCorr:[]);
+  const resolvedAuthors=authors.filter(a=>a).map(a=>{
+    const m=typeof nameMap!=='undefined'&&nameMap[a];
+    const displayName=m&&m.name?m.name:a;
+    const isCorr=corrList.includes(a);
+    return {name:displayName,login:a,isCorr:isCorr,affiliation:m&&m.affiliation?m.affiliation:''};
+  });
+  if(resolvedAuthors.length){
+    h+='<div class="author-list" style="font-size:.92rem;font-weight:700;color:#111;margin-bottom:.2rem">';
+    h+=resolvedAuthors.map(a=>escHtml(a.name)+(a.isCorr?'<sup style="color:#c00;font-weight:400">&dagger;</sup>':'')).join(', ');
+    h+='</div>';
+  }
+  // Affiliations: per-author if available, else shared field
+  const perAuthorAffs=resolvedAuthors.filter(a=>a.affiliation).map(a=>a.affiliation);
+  const uniqueAffs=[...new Set(perAuthorAffs)];
+  if(uniqueAffs.length>0)h+='<div class="affiliations" style="font-size:.78rem;font-style:italic;color:#444;margin-bottom:.2rem">'+uniqueAffs.map(a=>escHtml(a)).join('; ')+'</div>';
+  else if(aff)h+='<div class="affiliations" style="font-size:.78rem;font-style:italic;color:#444;margin-bottom:.2rem">'+escHtml(aff)+'</div>';
+  // Corresponding author line
+  const corrNames=resolvedAuthors.filter(a=>a.isCorr);
+  if(corrNames.length)h+='<div class="corresponding-author" style="font-size:.72rem;color:#333;margin-top:.3rem"><sup>&dagger;</sup> Corresponding author: '+corrNames.map(a=>escHtml(a.name)).join(', ')+'</div>';
   if(dm)h+='<div style="font-size:.72rem;color:#666;margin-bottom:.2rem">'+escHtml(dm)+'</div>';
   if(ab)h+='<div style="border-top:1px solid #ccc;border-bottom:1px solid #ccc;padding:8px 0;margin:8px 0;font-size:.82rem;text-align:justify;font-style:italic"><strong style="font-style:normal;display:block;margin-bottom:2px;font-size:.7rem;text-transform:uppercase;letter-spacing:.5px">Abstract</strong>'+escHtml(ab)+'</div>';
   if(kw)h+='<div style="font-size:.72rem;color:#555"><strong>Keywords:</strong> '+escHtml(kw)+'</div>';
@@ -1714,6 +1734,18 @@ function replaceAll(text){inp.focus();inp.select();document.execCommand('insertT
 
 inp.addEventListener('keydown',e=>{
   if(e.key==='Tab'){e.preventDefault();typeText('  ');}
+  // Auto-indent: preserve previous line's leading whitespace on Enter
+  if(e.key==='Enter'&&!e.ctrlKey&&!e.metaKey&&!e.shiftKey){
+    const pos=inp.selectionStart;
+    const before=inp.value.substring(0,pos);
+    const lastLine=before.split('\n').pop();
+    const indent=lastLine.match(/^(\s*(?:[-*+]\s|>\s|\d+\.\s)?)/);
+    if(indent&&indent[1]&&indent[1].length>0){
+      // If line is only whitespace/prefix (empty list item), clear it instead
+      if(lastLine.trim()===''||/^(\s*[-*+]|\s*\d+\.)\s*$/.test(lastLine)){return;}
+      e.preventDefault();typeText('\n'+indent[1]);
+    }
+  }
   if((e.ctrlKey||e.metaKey)&&e.key==='b'){e.preventDefault();wrap('**','**');}
   if((e.ctrlKey||e.metaKey)&&e.key==='i'){e.preventDefault();wrap('*','*');}
   if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();wrap('[','](url)');}
