@@ -1,4 +1,4 @@
----
+<!-- PAPER-META
 layout: paper
 title: "Stealing Machine Learning Models via Prediction APIs"
 author: tramer
@@ -10,7 +10,7 @@ abstract: "We demonstrate that machine learning models deployed as prediction AP
 keywords: ["model extraction", "MLaaS", "prediction API", "intellectual property", "model stealing"]
 collaborative: false
 lang: en
----
+-->
 
 # Stealing Machine Learning Models via Prediction APIs
 

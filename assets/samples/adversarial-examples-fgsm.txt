@@ -1,4 +1,4 @@
----
+<!-- PAPER-META
 layout: paper
 title: "Explaining and Harnessing Adversarial Examples"
 author: goodfellow
@@ -10,7 +10,7 @@ abstract: "We propose a linear explanation for adversarial examples and introduc
 keywords: ["adversarial examples", "FGSM", "robustness", "deep learning", "adversarial training"]
 collaborative: false
 lang: en
----
+-->
 
 # Explaining and Harnessing Adversarial Examples
 

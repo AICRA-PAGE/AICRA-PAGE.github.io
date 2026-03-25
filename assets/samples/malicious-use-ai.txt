@@ -1,4 +1,4 @@
----
+<!-- PAPER-META
 layout: paper
 title: "The Malicious Use of Artificial Intelligence: Forecasting, Prevention, and Mitigation"
 author: brundage
@@ -10,7 +10,7 @@ abstract: "We survey the landscape of potential malicious uses of AI across digi
 keywords: ["AI governance", "dual-use", "malicious AI", "digital security", "political security", "AI policy"]
 collaborative: false
 lang: en
----
+-->
 
 # The Malicious Use of Artificial Intelligence: Forecasting, Prevention, and Mitigation
 

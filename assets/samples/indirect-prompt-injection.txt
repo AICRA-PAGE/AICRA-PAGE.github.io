@@ -1,4 +1,4 @@
----
+<!-- PAPER-META
 layout: paper
 title: "Indirect Prompt Injection: Compromising LLM-Integrated Applications"
 author: greshake
@@ -10,7 +10,7 @@ abstract: "We propose a taxonomy of indirect prompt injection attacks targeting 
 keywords: ["prompt injection", "LLM security", "retrieval-augmented generation", "adversarial attacks"]
 collaborative: false
 lang: ko
----
+-->
 
 # Indirect Prompt Injection: Compromising LLM-Integrated Applications
 

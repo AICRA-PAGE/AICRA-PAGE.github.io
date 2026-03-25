@@ -1,4 +1,4 @@
----
+<!-- PAPER-META
 layout: paper
 title: "Deep Leakage from Gradients"
 author: zhu
@@ -10,7 +10,7 @@ abstract: "We demonstrate that shared gradients in distributed learning can be i
 keywords: ["gradient leakage", "federated learning", "privacy", "data reconstruction", "distributed learning"]
 collaborative: false
 lang: en
----
+-->
 
 # Deep Leakage from Gradients
 
