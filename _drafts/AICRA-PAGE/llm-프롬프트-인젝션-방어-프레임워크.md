@@ -73,3 +73,31 @@ $$
 :::proof
 마르코프 결정 과정의 수축 사상 정리에 의해 수렴한다.
 :::
+:::algorithm [Name]
+Input: [description]
+Output: [description]
+1. [Step]
+2. [Step]
+3. Return [result]
+:::
+### Threat Model
+
+**Assets**
+- [What needs protection]
+
+**Adversary**
+- **Goal:** [adversary objective]
+- **Access:** [black-box / gray-box / white-box]
+- **Capabilities:** [what the adversary can do]
+- **Knowledge:** [what the adversary knows]
+
+**Trust Boundaries**
+- [boundary description]
+
+**Assumptions**
+- [assumption 1]
+
+**Out-of-Scope**
+- [exclusion 1]
+
+
