@@ -1372,7 +1372,9 @@ function buildPreviewHeader(){
   if(ti)h+='<h1 style="margin-bottom:.3rem">'+escHtml(ti)+'</h1>';
   const aff=(document.getElementById('affiliation')||{}).value||'';
   const authors=[au];if(coau)coau.split(',').forEach(a=>{if(a.trim())authors.push(a.trim());});
-  if(authors.filter(a=>a).length)h+='<div class="author-list" style="font-size:.92rem;font-weight:700;color:#111;margin-bottom:.2rem">'+authors.filter(a=>a).map(a=>escHtml(a)).join(', ')+'</div>';
+  // Resolve GitHub IDs to display names via nameMap
+  const resolvedAuthors=authors.filter(a=>a).map(a=>{const m=typeof nameMap!=='undefined'&&nameMap[a];return m&&m.name?m.name:a;});
+  if(resolvedAuthors.length)h+='<div class="author-list" style="font-size:.92rem;font-weight:700;color:#111;margin-bottom:.2rem">'+resolvedAuthors.map(a=>escHtml(a)).join(', ')+'</div>';
   if(aff)h+='<div class="affiliations" style="font-size:.78rem;font-style:italic;color:#444;margin-bottom:.2rem">'+escHtml(aff)+'</div>';
   if(dm)h+='<div style="font-size:.72rem;color:#666;margin-bottom:.2rem">'+escHtml(dm)+'</div>';
   if(ab)h+='<div style="border-top:1px solid #ccc;border-bottom:1px solid #ccc;padding:8px 0;margin:8px 0;font-size:.82rem;text-align:justify;font-style:italic"><strong style="font-style:normal;display:block;margin-bottom:2px;font-size:.7rem;text-transform:uppercase;letter-spacing:.5px">Abstract</strong>'+escHtml(ab)+'</div>';
