@@ -10,53 +10,48 @@ keywords: ["454646"]
 lang: ko
 ---
 
+# [국문 제목]
 
+# [English Title]
 
-# [Paper Title]
-
-Anonymous Authors
+**[저자1]**$^1$, **[저자2]**$^{2,*}$
+$^1$[소속] $^2$[소속]
+$^*$교신저자
 
 :::abstract
-[150-250 words]
+[국문초록 200-300자]
 :::
 
----
+**주요어:** [키워드1], [키워드2]
 
-## 1. Introduction
+:::abstract
+[English Abstract 150-200 words]
+:::
 
----
-
-## 2. Related Work
-
----
-
-## 3. Method
+**Keywords:** [keyword1], [keyword2]
 
 ---
 
-## 4. Experiments
-
-### 4.1 Setup
-### 4.2 Results
+## I. 서론
 
 ---
 
-## 5. Analysis
+## II. 관련 연구
 
 ---
 
-## 6. Conclusion
+## III. 제안 기법
 
 ---
 
-## Reproducibility Statement
+## IV. 
 
 ---
 
-## Ethics Statement
+## V. 결론
 
 ---
 
-## References
+## 참고문헌
 
-<!-- ICLR: OpenReview submission. Public discussion phase. Anonymous. -->
+<!-- 정보보호학회논문지: 일반논문/짧은논문(4쪽) 구분. 공동저자 학회 회원 요건. -->
