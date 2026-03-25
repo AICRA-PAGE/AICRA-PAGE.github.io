@@ -15,6 +15,8 @@
 <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.4/dist/purify.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
 <style>
 :root{--bg:#f9f8f5;--panel:#fff;--text:#2a2a2a;--muted:#7a756c;--brand:#2f5d50;--brand2:#245045;--line:#e8e5de;--surface:#f3f1ec;--code-bg:#0f172a;--radius:6px;--accent:#b7791f}
 [data-theme=dark]{--bg:#1a1d23;--panel:#22262e;--text:#d4d0c8;--muted:#8a8578;--brand:#4da89a;--brand2:#3d8a7e;--line:#333840;--surface:#2a2e36;--code-bg:#0d1117}
@@ -113,7 +115,14 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
 #pv .bib-list{font-size:.78rem;line-height:1.55;counter-reset:bib;margin-top:1rem}
 #pv .bib-list p{padding-left:2rem;text-indent:-2rem;margin-bottom:.5rem}
 #pv .bib-list p::before{counter-increment:bib;content:'[' counter(bib) '] ';font-weight:400;color:#111}
-#pv .cite{font-weight:700;cursor:help}
+/* Citation with hover popover */
+#pv .cite{font-weight:700;cursor:help;position:relative}
+#pv .cite:hover::after{content:attr(title);position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:6px 10px;border-radius:4px;font-size:.7rem;font-weight:400;white-space:normal;width:280px;max-width:80vw;z-index:50;pointer-events:none;line-height:1.4;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+/* Footnote bidirectional links */
+#pv sup.fn-ref{color:#111;font-weight:700;cursor:pointer;font-size:.7em;position:relative}
+#pv sup.fn-ref:hover{text-decoration:underline;color:var(--brand)}
+#pv .footnotes li{position:relative}
+#pv .footnotes li:target{background:rgba(47,93,80,.08);border-radius:3px}
 /* Figure/Table captions */
 #pv .fig-caption{text-align:center;font-size:.78rem;color:#222;margin:6px 0 14px;line-height:1.4;font-style:normal}
 #pv .tbl-caption{font-size:.78rem;color:#222;margin:14px 0 4px;font-style:italic;line-height:1.4}
@@ -226,6 +235,13 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
   #pv .footnotes{border-top:1pt solid #000;margin-top:12pt;padding-top:6pt;font-size:9pt!important}
   #pv .bib-list{font-size:9pt!important}
   #pv nav{display:none!important}
+  /* Force light theme for print */
+  [data-theme=dark] #pv{background:#fff!important;color:#000!important}
+  [data-theme=dark] #pv h1,[data-theme=dark] #pv h2,[data-theme=dark] #pv h3{color:#000!important}
+  [data-theme=dark] #pv pre{background:#f8f8f8!important;color:#333!important}
+  [data-theme=dark] #pv code{color:#333!important;background:transparent!important}
+  /* Optional 2-column print */
+  #pv.print-two-col{column-count:2!important;column-gap:18px!important;font-size:9pt!important;line-height:1.35!important}
   @page:first{margin-top:15mm}
 }
 /* Simple mode (beginner) */
@@ -368,6 +384,7 @@ body.simple-mode .ins button[onclick*="fn"]{display:inline-block}
   <button class="bt" onclick="toggleSimpleMode()" title="초보자 모드 전환" style="font-size:.55rem">간편</button>
   <button class="bt" onclick="showShortcuts()" title="단축키 가이드">&#9000;</button>
   <button class="bt icon" onclick="toggleFocus()" title="집중 모드">&#9974;</button>
+  <label style="font-size:.5rem;display:flex;align-items:center;gap:2px;cursor:pointer" title="인쇄시 2단 레이아웃"><input type="checkbox" id="printTwoCol" style="width:auto" onchange="pv.classList.toggle('print-two-col',this.checked)"> 2단인쇄</label>
   <button class="bt icon" onclick="window.print()" title="인쇄 / PDF">&#9113;</button>
   <select class="sel" onchange="if(this.value){loadSamplePaper(this.value);this.value=''}" title="샘플 AI 보안 논문 불러오기">
     <option value="">샘플 논문</option>
@@ -1378,6 +1395,12 @@ pv.addEventListener('click',function(e){
   // Cross-reference links
   const xref=e.target.closest('.xref');
   if(xref){e.preventDefault();const t=document.getElementById(xref.dataset.refTarget);if(t)t.scrollIntoView({behavior:'smooth',block:'center'});return;}
+  // Footnote forward links (ref -> footnote)
+  const fnRef=e.target.closest('.fn-ref');
+  if(fnRef){e.preventDefault();const t=document.getElementById(fnRef.dataset.fn);if(t){t.scrollIntoView({behavior:'smooth',block:'center'});t.style.background='rgba(183,121,31,.15)';setTimeout(()=>{t.style.background='';},2000);}return;}
+  // Footnote back links (footnote -> ref)
+  const fnBack=e.target.closest('.fn-back');
+  if(fnBack){e.preventDefault();const t=document.getElementById(fnBack.dataset.fnBack);if(t){t.scrollIntoView({behavior:'smooth',block:'center'});}return;}
 });
 
 // === RENDER (section-cache for 200-page perf) ===
@@ -1494,6 +1517,14 @@ function autoFitVisuals(opts){
   });
   // Images: ensure max-width
   pv.querySelectorAll('img').forEach(img=>{img.style.maxWidth='100%';img.style.height='auto';});
+  // Code syntax highlighting
+  if(window.hljs){pv.querySelectorAll('pre code').forEach(block=>{if(!block.dataset.highlighted){hljs.highlightElement(block);block.dataset.highlighted='true';}});}
+  // DOI auto-linking in bibliography
+  pv.querySelectorAll('.bib-list p,.references p,.references li').forEach(el=>{
+    if(el.dataset.doiLinked)return;el.dataset.doiLinked='true';
+    el.innerHTML=el.innerHTML.replace(/DOI:\s*(10\.\d{4,}\/[^\s<]+)/gi,'DOI: <a href="https://doi.org/$1" target="_blank" rel="noopener" style="color:var(--brand);text-decoration:underline">$1</a>');
+    el.innerHTML=el.innerHTML.replace(/https?:\/\/doi\.org\/(10\.\d{4,}\/[^\s<"]+)/gi,'<a href="https://doi.org/$1" target="_blank" rel="noopener" style="color:var(--brand);text-decoration:underline">doi:$1</a>');
+  });
 }
 // Auto-fit on resize
 if(window.ResizeObserver){new ResizeObserver(()=>requestAnimationFrame(()=>autoFitVisuals())).observe(pv);}
@@ -1534,12 +1565,12 @@ function processFootnotes(t){
   t=t.replace(/\[\^(\w+)\]/g,(m,id)=>{
     const d=defs[id];
     if(!d)return m;
-    return '<sup class="fn-ref" title="'+d.text+'">'+d.num+'</sup>';
+    return '<sup class="fn-ref" data-fn="fn-'+d.num+'" id="fnref-'+d.num+'" title="'+escHtml(d.text)+'">'+d.num+'</sup>';
   });
-  // Append footnote section
+  // Append footnote section with back-links
   const entries=Object.values(defs).sort((a,b)=>a.num-b.num);
   if(entries.length){
-    t+='\n\n<div class="footnotes"><hr><ol>'+entries.map(e=>'<li>'+e.text+'</li>').join('')+'</ol></div>';
+    t+='\n\n<div class="footnotes"><hr><ol>'+entries.map(e=>'<li id="fn-'+e.num+'">'+escHtml(e.text)+' <a class="fn-back" data-fn-back="fnref-'+e.num+'" style="color:var(--brand);text-decoration:none;font-size:.7em;cursor:pointer">&#8617;</a></li>').join('')+'</ol></div>';
   }
   return t;
 }
