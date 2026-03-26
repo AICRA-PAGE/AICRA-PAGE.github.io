@@ -31,6 +31,40 @@ const HF_SEARCH_QUERIES = [
 
 const ARXIV_CATEGORIES = ['cs.CR', 'cs.AI', 'cs.LG'];
 
+// Top journals/conferences for AI security research
+const TOP_VENUES = [
+  // Security top-4
+  { query: 'IEEE Symposium on Security and Privacy', short: 'IEEE S&P' },
+  { query: 'ACM Conference on Computer and Communications Security', short: 'CCS' },
+  { query: 'USENIX Security Symposium', short: 'USENIX Security' },
+  { query: 'Network and Distributed System Security', short: 'NDSS' },
+  // AI top conferences
+  { query: 'NeurIPS', short: 'NeurIPS' },
+  { query: 'ICML', short: 'ICML' },
+  { query: 'ICLR', short: 'ICLR' },
+  { query: 'AAAI', short: 'AAAI' },
+  { query: 'CVPR', short: 'CVPR' },
+  // Security journals (SCI)
+  { query: 'IEEE Transactions on Information Forensics and Security', short: 'TIFS' },
+  { query: 'IEEE Transactions on Dependable and Secure Computing', short: 'TDSC' },
+  { query: 'Computers & Security', short: 'COSE' },
+  { query: 'Journal of Information Security and Applications', short: 'JISA' },
+  // AI journals (SCI)
+  { query: 'Artificial Intelligence', short: 'AIJ' },
+  { query: 'Pattern Recognition', short: 'PR' },
+  { query: 'IEEE Transactions on Neural Networks', short: 'TNNLS' },
+  // Korean journals
+  { query: 'Journal of the Korea Institute of Information Security', short: 'KIISC' },
+  { query: 'ETRI Journal', short: 'ETRI' },
+  { query: 'Journal of Information Science and Engineering', short: 'JISE-KR' },
+  { query: 'Korean Institute of Information Scientists', short: 'KIISE' },
+  // Chinese journals/conferences
+  { query: 'Science China Information Sciences', short: 'SCIS' },
+  { query: 'Journal of Computer Science and Technology', short: 'JCST' },
+  { query: 'Chinese Journal of Electronics', short: 'CJE' },
+  { query: 'ACM ASIA Conference on Computer and Communications Security', short: 'ASIACCS' },
+];
+
 // === UTILS ===
 function fetchJSON(url, opts = {}) {
   return new Promise((resolve, reject) => {
@@ -154,7 +188,13 @@ async function collectArxivPapers(existing) {
     'ti:intrusion+detection+AND+cat:cs.CR',
     'ti:backdoor+attack+AND+cat:cs.LG',
     'ti:model+extraction',
-    'ti:data+poisoning'
+    'ti:data+poisoning',
+    'ti:deepfake+detection',
+    'ti:federated+learning+attack',
+    'ti:adversarial+robustness+AND+cat:cs.LG',
+    'ti:AI+agent+security',
+    'ti:RAG+attack',
+    'ti:cybersecurity+AND+cat:cs.CR'
   ];
 
   for (const query of queries) {
@@ -224,6 +264,65 @@ async function collectArxivPapers(existing) {
   return newPapers;
 }
 
+// === TOP JOURNAL/CONFERENCE PAPER COLLECTION (Semantic Scholar) ===
+async function collectTopVenuePapers(existing) {
+  const existingTitles = new Set(existing.map(p => normalize(p.title)));
+  const existingDois = new Set(existing.map(p => p.doi).filter(Boolean));
+  const newPapers = [];
+
+  for (const venue of TOP_VENUES) {
+    // Search each venue with security keywords
+    const secQueries = ['adversarial', 'security', 'attack', 'privacy', 'malware', 'backdoor'];
+    for (const kw of secQueries) {
+      console.log(`  [S2] ${venue.short}: ${kw}`);
+      const url = `https://api.semanticscholar.org/graph/v1/paper/search?query=${encodeURIComponent(kw)}&venue=${encodeURIComponent(venue.query)}&year=2024-2026&limit=10&fields=title,authors,year,venue,citationCount,externalIds,abstract,url`;
+      const data = await fetchJSON(url);
+      if (!data || !data.data) { await sleep(1500); continue; }
+
+      for (const p of data.data) {
+        if (!p.title) continue;
+        if (existingTitles.has(normalize(p.title))) continue;
+        const doi = p.externalIds?.DOI || '';
+        if (doi && existingDois.has(doi)) continue;
+        const arxivId = p.externalIds?.ArXiv || '';
+
+        const abstract = (p.abstract || '').substring(0, 500);
+        const score = relevanceScore(p.title + ' ' + abstract);
+        if (score < 15) continue; // Lower threshold for top venues (already high quality)
+
+        const authors = (p.authors || []).map(a => a.name).slice(0, 10);
+
+        newPapers.push({
+          id: (doi || arxivId || normalize(p.title).substring(0, 30)).replace(/[./]/g, '-'),
+          title: p.title,
+          authors: authors,
+          abstract: abstract,
+          year: p.year || new Date().getFullYear(),
+          venue: venue.short,
+          arxiv_id: arxivId,
+          doi: doi,
+          semantic_scholar_id: p.paperId || '',
+          url: p.url || (doi ? `https://doi.org/${doi}` : ''),
+          pdf_url: arxivId ? `https://arxiv.org/pdf/${arxivId}` : '',
+          categories: [],
+          keywords: [],
+          relevance_score: score + 20, // Bonus for top venue
+          match_reasons: SECURITY_KEYWORDS.filter(k => (p.title + ' ' + abstract).toLowerCase().includes(k)),
+          published_at: '',
+          updated_at: '',
+          discovered_from: ['semantic-scholar', venue.short],
+          last_checked: new Date().toISOString()
+        });
+        existingTitles.add(normalize(p.title));
+        if (doi) existingDois.add(doi);
+      }
+      await sleep(1500); // Semantic Scholar: ~100 req/5min
+    }
+  }
+
+  return newPapers;
+}
+
 // === MAIN ===
 async function main() {
   console.log('=== AICRA Research Collector ===');
@@ -243,10 +342,18 @@ async function main() {
   const newDatasets = await collectHuggingFaceDatasets(datasets);
   console.log(`  Found ${newDatasets.length} new datasets`);
 
-  // Collect papers
-  console.log('\n--- Collecting Papers ---');
-  const newPapers = await collectArxivPapers(papers);
-  console.log(`  Found ${newPapers.length} new papers`);
+  // Collect papers (arXiv)
+  console.log('\n--- Collecting Papers (arXiv) ---');
+  const newArxiv = await collectArxivPapers(papers);
+  console.log(`  Found ${newArxiv.length} new arXiv papers`);
+
+  // Collect papers (Top journals/conferences via Semantic Scholar)
+  console.log('\n--- Collecting Papers (Top Venues) ---');
+  const allPapersSoFar = [...papers, ...newArxiv];
+  const newVenue = await collectTopVenuePapers(allPapersSoFar);
+  console.log(`  Found ${newVenue.length} new top venue papers`);
+
+  const newPapers = [...newArxiv, ...newVenue];
 
   // Merge
   if (newDatasets.length > 0) {
