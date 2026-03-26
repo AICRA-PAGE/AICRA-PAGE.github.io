@@ -119,18 +119,19 @@
     return{path:path,sha:_currentSha};
   }
 
+  function yamlEscape(s){if(!s)return'""';s=String(s);if(/[:"'\n\r\\{}[\],&*?|>!%@`#]/.test(s)||s.trim()!==s)return'"'+s.replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/\n/g,'\\n')+'"';return'"'+s+'"';}
   function buildContent(title,body,meta,login){
-    let fm='---\nlayout: paper\ntitle: "'+title+'"\nauthor: '+(meta.author||login);
-    if(meta.coauthors)fm+='\nauthors: ['+meta.coauthors.split(',').map(s=>'"'+s.trim()+'"').join(', ')+']';
-    if(meta.corresponding)fm+='\ncorresponding_author: "'+meta.corresponding+'"';
+    let fm='---\nlayout: paper\ntitle: '+yamlEscape(title)+'\nauthor: '+(meta.author||login);
+    if(meta.coauthors)fm+='\nauthors: ['+meta.coauthors.split(',').map(s=>yamlEscape(s.trim())).join(', ')+']';
+    if(meta.corresponding)fm+='\ncorresponding_author: '+yamlEscape(meta.corresponding);
     fm+='\ndate: '+new Date().toISOString().split('T')[0];
     if(meta.status)fm+='\nstatus: '+meta.status;
-    if(meta.domain)fm+='\ndomain: "'+meta.domain+'"';
-    if(meta.keywords)fm+='\nkeywords: ['+meta.keywords.split(',').map(s=>'"'+s.trim()+'"').join(', ')+']';
-    if(meta.abstract)fm+='\nabstract: "'+meta.abstract.replace(/"/g,"'")+'"';
+    if(meta.domain)fm+='\ndomain: '+yamlEscape(meta.domain);
+    if(meta.keywords)fm+='\nkeywords: ['+meta.keywords.split(',').map(s=>yamlEscape(s.trim())).join(', ')+']';
+    if(meta.abstract)fm+='\nabstract: '+yamlEscape(meta.abstract);
     if(meta.collaborative)fm+='\ncollaborative: true';
-    if(meta.reviewers)fm+='\nreviewers: ['+meta.reviewers.split(',').map(s=>'"'+s.trim()+'"').join(', ')+']';
-    if(meta.locked)fm+='\nlocked: true\nlocked_by: "'+login+'"';
+    if(meta.reviewers)fm+='\nreviewers: ['+meta.reviewers.split(',').map(s=>yamlEscape(s.trim())).join(', ')+']';
+    if(meta.locked)fm+='\nlocked: true\nlocked_by: '+yamlEscape(login);
     fm+='\nlang: ko\n---\n\n';
     return fm+body;
   }
