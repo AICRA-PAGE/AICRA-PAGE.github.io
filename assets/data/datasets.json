@@ -1,69 +1,856 @@
 [
   {
+    "id": "yatin-superintelligence-adversarial-agent-intent-safety-analysis-240k",
+    "name": "Adversarial-Agent-Intent-Safety-Analysis-240K",
+    "description": "HuggingFace dataset: yatin-superintelligence/Adversarial-Agent-Intent-Safety-Analysis-240K",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/yatin-superintelligence/Adversarial-Agent-Intent-Safety-Analysis-240K",
+    "size": "",
+    "license": "other",
+    "year": 2026,
+    "tags": [
+      "task_categories:text-classification",
+      "task_categories:text-generation",
+      "task_categories:question-answering",
+      "task_categories:reinforcement-learning",
+      "task_categories:robotics",
+      "language:en",
+      "format:parquet",
+      "modality:text"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 75,
+    "last_checked": "2026-03-26T22:12:59.449Z"
+  },
+  {
+    "id": "perkinsfund-traceix-ai-security-telemetry",
+    "name": "traceix-ai-security-telemetry",
+    "description": "HuggingFace dataset: PerkinsFund/traceix-ai-security-telemetry",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/PerkinsFund/traceix-ai-security-telemetry",
+    "size": "",
+    "license": "cc-by-4.0",
+    "year": 2026,
+    "tags": [
+      "region:us",
+      "malware",
+      "cybersecurity",
+      "ATT&CK",
+      "MBC",
+      "pe-files",
+      "elf-files",
+      "binary-classification"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 60,
+    "last_checked": "2026-03-26T22:12:58.231Z"
+  },
+  {
+    "id": "dattaraj-security-attacks-mitre",
+    "name": "security-attacks-MITRE",
+    "description": "HuggingFace dataset: dattaraj/security-attacks-MITRE",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/dattaraj/security-attacks-MITRE",
+    "size": "",
+    "license": "apache-2.0",
+    "year": 2026,
+    "tags": [
+      "task_categories:question-answering",
+      "language:en",
+      "format:json",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:mlcroissant",
+      "library:polars"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 45,
+    "last_checked": "2026-03-26T22:12:58.231Z"
+  },
+  {
+    "id": "neuralchemy-prompt-injection-dataset",
+    "name": "Prompt-injection-dataset",
+    "description": "HuggingFace dataset: neuralchemy/Prompt-injection-dataset",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/neuralchemy/Prompt-injection-dataset",
+    "size": "",
+    "license": "apache-2.0",
+    "year": 2026,
+    "tags": [
+      "task_categories:text-classification",
+      "language:en",
+      "format:parquet",
+      "format:optimized-parquet",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:polars"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 45,
+    "last_checked": "2026-03-26T22:13:01.909Z"
+  },
+  {
+    "id": "tom-gibbs-multi-turn_jailbreak_attack_datasets",
+    "name": "multi-turn_jailbreak_attack_datasets",
+    "description": "HuggingFace dataset: tom-gibbs/multi-turn_jailbreak_attack_datasets",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/tom-gibbs/multi-turn_jailbreak_attack_datasets",
+    "size": "",
+    "license": "mit",
+    "year": 2026,
+    "tags": [
+      "language:en",
+      "arxiv:2409.00137",
+      "region:us",
+      "jailbreak",
+      "multi-turn",
+      "LLM",
+      "multi-prompt",
+      "AI safety"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 45,
+    "last_checked": "2026-03-26T22:13:03.142Z"
+  },
+  {
+    "id": "centrepourlasecuriteia-bet-jailbreak-dataset",
+    "name": "BET-jailbreak-dataset",
+    "description": "HuggingFace dataset: centrepourlasecuriteia/BET-jailbreak-dataset",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/centrepourlasecuriteia/BET-jailbreak-dataset",
+    "size": "",
+    "license": "cc-by-nc-sa-4.0",
+    "year": 2026,
+    "tags": [
+      "task_categories:text-classification",
+      "language_creators:machine-generated",
+      "multilinguality:monolingual",
+      "source_datasets:extended|centrepourlasecuriteia/content-moderation-input",
+      "language:en",
+      "format:csv",
+      "modality:text",
+      "library:datasets"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 45,
+    "last_checked": "2026-03-26T22:13:03.142Z"
+  },
+  {
+    "id": "rogue-security-prompt-injections-benchmark",
+    "name": "prompt-injections-benchmark",
+    "description": "HuggingFace dataset: rogue-security/prompt-injections-benchmark",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/rogue-security/prompt-injections-benchmark",
+    "size": "",
+    "license": "cc-by-nc-4.0",
+    "year": 2026,
+    "tags": [
+      "format:csv",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us",
+      "prompt"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-03-26T22:12:58.231Z"
+  },
+  {
+    "id": "lakera-b3-agent-security-benchmark-weak",
+    "name": "b3-agent-security-benchmark-weak",
+    "description": "HuggingFace dataset: Lakera/b3-agent-security-benchmark-weak",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/Lakera/b3-agent-security-benchmark-weak",
+    "size": "",
+    "license": "other",
+    "year": 2026,
+    "tags": [
+      "task_categories:text-classification",
+      "task_categories:text-generation",
+      "language:en",
+      "format:csv",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:pandas"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-03-26T22:12:58.231Z"
+  },
+  {
+    "id": "zer0int-clip-adversarial-typographic-attack_text-image",
+    "name": "CLIP-adversarial-typographic-attack_text-image",
+    "description": "HuggingFace dataset: zer0int/CLIP-adversarial-typographic-attack_text-image",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/zer0int/CLIP-adversarial-typographic-attack_text-image",
+    "size": "",
+    "license": "",
+    "year": 2026,
+    "tags": [
+      "task_categories:text-to-image",
+      "format:text",
+      "modality:image",
+      "modality:text",
+      "library:datasets",
+      "library:mlcroissant",
+      "region:us",
+      "typographic"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-03-26T22:12:59.449Z"
+  },
+  {
+    "id": "lens-ai-adversarial_pcam",
+    "name": "adversarial_pcam",
+    "description": "HuggingFace dataset: lens-ai/adversarial_pcam",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/lens-ai/adversarial_pcam",
+    "size": "",
+    "license": "",
+    "year": 2026,
+    "tags": [
+      "task_categories:image-classification",
+      "format:imagefolder",
+      "modality:image",
+      "library:datasets",
+      "library:mlcroissant",
+      "region:us",
+      "adversarial",
+      "image-classification"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-03-26T22:12:59.449Z"
+  },
+  {
+    "id": "collinear-ai-cat-attack-adversarial-triggers",
+    "name": "cat-attack-adversarial-triggers",
+    "description": "HuggingFace dataset: collinear-ai/cat-attack-adversarial-triggers",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/collinear-ai/cat-attack-adversarial-triggers",
+    "size": "",
+    "license": "apache-2.0",
+    "year": 2026,
+    "tags": [
+      "format:parquet",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:mlcroissant",
+      "library:polars",
+      "region:us"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-03-26T22:12:59.449Z"
+  },
+  {
+    "id": "zer0int-clip-ko-adversarial-train-typo-attack",
+    "name": "CLIP-KO-Adversarial-Train-Typo-Attack",
+    "description": "HuggingFace dataset: zer0int/CLIP-KO-Adversarial-Train-Typo-Attack",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/zer0int/CLIP-KO-Adversarial-Train-Typo-Attack",
+    "size": "",
+    "license": "mit",
+    "year": 2026,
+    "tags": [
+      "format:imagefolder",
+      "modality:image",
+      "library:datasets",
+      "library:mlcroissant",
+      "region:us"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-03-26T22:12:59.449Z"
+  },
+  {
+    "id": "unileon-robotics-malware-samples",
+    "name": "malware-samples",
+    "description": "HuggingFace dataset: unileon-robotics/malware-samples",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/unileon-robotics/malware-samples",
+    "size": "",
+    "license": "cc-by-nc-sa-4.0",
+    "year": 2026,
+    "tags": [
+      "language:en",
+      "doi:10.57967/hf/7862",
+      "region:us",
+      "malware",
+      "analysis",
+      "trojan",
+      "ransomware",
+      "cape"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-03-26T22:13:00.676Z"
+  },
+  {
+    "id": "unileon-robotics-community-malware-samples",
+    "name": "community-malware-samples",
+    "description": "HuggingFace dataset: unileon-robotics/community-malware-samples",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/unileon-robotics/community-malware-samples",
+    "size": "",
+    "license": "cc-by-nc-sa-4.0",
+    "year": 2026,
+    "tags": [
+      "language:en",
+      "format:imagefolder",
+      "modality:image",
+      "library:datasets",
+      "library:mlcroissant",
+      "region:us",
+      "malware",
+      "analysis"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-03-26T22:13:00.676Z"
+  },
+  {
+    "id": "yanismiraoui-prompt_injections",
+    "name": "prompt_injections",
+    "description": "HuggingFace dataset: yanismiraoui/prompt_injections",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/yanismiraoui/prompt_injections",
+    "size": "",
+    "license": "apache-2.0",
+    "year": 2026,
+    "tags": [
+      "annotations_creators:no-annotation",
+      "multilinguality:multilingual",
+      "source_datasets:original",
+      "language:en",
+      "language:fr",
+      "language:de",
+      "language:es",
+      "language:pt"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-03-26T22:13:01.909Z"
+  },
+  {
+    "id": "centrepourlasecuriteia-jailbreak-dataset",
+    "name": "jailbreak-dataset",
+    "description": "HuggingFace dataset: centrepourlasecuriteia/jailbreak-dataset",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/centrepourlasecuriteia/jailbreak-dataset",
+    "size": "",
+    "license": "cc-by-nc-sa-4.0",
+    "year": 2026,
+    "tags": [
+      "task_categories:text-classification",
+      "language_creators:machine-generated",
+      "multilinguality:monolingual",
+      "source_datasets:extended|bells-o-project/content-moderation-input",
+      "language:en",
+      "language:gd",
+      "language:zu",
+      "language:bn"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-03-26T22:13:03.142Z"
+  },
+  {
+    "id": "circl-vulnerability-scores",
+    "name": "vulnerability-scores",
+    "description": "HuggingFace dataset: CIRCL/vulnerability-scores",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/CIRCL/vulnerability-scores",
+    "size": "",
+    "license": "cc-by-4.0",
+    "year": 2026,
+    "tags": [
+      "task_categories:text-classification",
+      "format:parquet",
+      "format:optimized-parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:polars"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-03-26T22:13:04.370Z"
+  },
+  {
+    "id": "davidquicast-vulnerability-intelligence-diagrammatic-reasoning",
+    "name": "vulnerability-intelligence-diagrammatic-reasoning",
+    "description": "HuggingFace dataset: davidquicast/vulnerability-intelligence-diagrammatic-reasoning",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/davidquicast/vulnerability-intelligence-diagrammatic-reasoning",
+    "size": "",
+    "license": "apache-2.0",
+    "year": 2026,
+    "tags": [
+      "language:en",
+      "format:parquet",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-03-26T22:13:04.370Z"
+  },
+  {
+    "id": "darkknight25-smart_contract_vulnerability_dataset",
+    "name": "Smart_Contract_Vulnerability_Dataset",
+    "description": "HuggingFace dataset: darkknight25/Smart_Contract_Vulnerability_Dataset",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/darkknight25/Smart_Contract_Vulnerability_Dataset",
+    "size": "",
+    "license": "mit",
+    "year": 2026,
+    "tags": [
+      "task_categories:text-classification",
+      "language:en",
+      "region:us",
+      "cybersecurity",
+      "smartcontract",
+      "blockchain"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-03-26T22:13:04.370Z"
+  },
+  {
+    "id": "lemon42-ai-code_vulnerability_labeled_dataset",
+    "name": "Code_Vulnerability_Labeled_Dataset",
+    "description": "HuggingFace dataset: lemon42-ai/Code_Vulnerability_Labeled_Dataset",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/lemon42-ai/Code_Vulnerability_Labeled_Dataset",
+    "size": "",
+    "license": "apache-2.0",
+    "year": 2026,
+    "tags": [
+      "task_categories:text-classification",
+      "task_categories:text-generation",
+      "task_categories:text-retrieval",
+      "language:en",
+      "format:csv",
+      "modality:text",
+      "library:datasets",
+      "library:pandas"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-03-26T22:13:04.370Z"
+  },
+  {
+    "id": "pytoshka-network-intrusion-detection",
+    "name": "network-intrusion-detection",
+    "description": "HuggingFace dataset: pyToshka/network-intrusion-detection",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/pyToshka/network-intrusion-detection",
+    "size": "",
+    "license": "bsd-3-clause",
+    "year": 2026,
+    "tags": [
+      "task_categories:other",
+      "task_ids:tabular-multi-class-classification",
+      "task_ids:multi-class-classification",
+      "annotations_creators:machine-generated",
+      "multilinguality:monolingual",
+      "source_datasets:original",
+      "language:en",
+      "format:parquet"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-03-26T22:13:05.586Z"
+  },
+  {
+    "id": "vinitvek-cybersecurityattacks",
+    "name": "cybersecurityattacks",
+    "description": "HuggingFace dataset: vinitvek/cybersecurityattacks",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/vinitvek/cybersecurityattacks",
+    "size": "",
+    "license": "unlicense",
+    "year": 2026,
+    "tags": [
+      "format:csv",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:mlcroissant",
+      "library:polars",
+      "region:us"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-03-26T22:13:06.810Z"
+  },
+  {
+    "id": "trendyol-trendyol-cybersecurity-instruction-tuning-dataset",
+    "name": "Trendyol-Cybersecurity-Instruction-Tuning-Dataset",
+    "description": "HuggingFace dataset: Trendyol/Trendyol-Cybersecurity-Instruction-Tuning-Dataset",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/Trendyol/Trendyol-Cybersecurity-Instruction-Tuning-Dataset",
+    "size": "",
+    "license": "apache-2.0",
+    "year": 2026,
+    "tags": [
+      "task_categories:text-generation",
+      "task_categories:question-answering",
+      "language:en",
+      "format:json",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:mlcroissant"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-03-26T22:13:06.810Z"
+  },
+  {
+    "id": "ethanolivertroy-nist-cybersecurity-training",
+    "name": "nist-cybersecurity-training",
+    "description": "HuggingFace dataset: ethanolivertroy/nist-cybersecurity-training",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/ethanolivertroy/nist-cybersecurity-training",
+    "size": "",
+    "license": "cc0-1.0",
+    "year": 2026,
+    "tags": [
+      "task_categories:text-generation",
+      "task_categories:question-answering",
+      "language:en",
+      "format:parquet",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:polars"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-03-26T22:13:06.810Z"
+  },
+  {
+    "id": "tanvi289-cybersecurity_attack_dataset",
+    "name": "Cybersecurity_Attack_Dataset",
+    "description": "HuggingFace dataset: Tanvi289/Cybersecurity_Attack_Dataset",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/Tanvi289/Cybersecurity_Attack_Dataset",
+    "size": "",
+    "license": "mit",
+    "year": 2026,
+    "tags": [
+      "format:csv",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:mlcroissant",
+      "library:polars",
+      "region:us"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-03-26T22:13:06.810Z"
+  },
+  {
+    "id": "deshaune-global-cybersecurity-threats-2015_2024",
+    "name": "Global-Cybersecurity-Threats-2015_2024",
+    "description": "HuggingFace dataset: Deshaune/Global-Cybersecurity-Threats-2015_2024",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/Deshaune/Global-Cybersecurity-Threats-2015_2024",
+    "size": "",
+    "license": "cc0-1.0",
+    "year": 2026,
+    "tags": [
+      "format:csv",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:mlcroissant",
+      "library:polars",
+      "region:us"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-03-26T22:13:06.810Z"
+  },
+  {
     "id": "nsl-kdd",
     "name": "NSL-KDD",
     "description": "Improved version of KDD Cup 99 for network intrusion detection. Removes redundant records and balances difficulty levels. 4 attack categories: DoS, Probe, R2L, U2R.",
-    "domain": ["network-intrusion"],
+    "domain": [
+      "network-intrusion"
+    ],
     "source": "University of New Brunswick",
     "url": "https://www.unb.ca/cic/datasets/nsl.html",
     "size": "125MB",
     "samples": 148517,
     "license": "Public",
     "year": 2009,
-    "tags": ["IDS", "classification", "network", "benchmark"],
+    "tags": [
+      "IDS",
+      "classification",
+      "network",
+      "benchmark"
+    ],
     "format": "CSV/ARFF",
     "papers_count": 3200,
     "threat_type": "network intrusion",
-    "eval_metrics": ["accuracy", "precision", "recall", "F1"],
+    "eval_metrics": [
+      "accuracy",
+      "precision",
+      "recall",
+      "F1"
+    ],
     "known_issues": "Aging attack patterns; synthetic traffic"
   },
   {
     "id": "cicids-2017",
     "name": "CICIDS2017",
     "description": "Canadian Institute for Cybersecurity IDS dataset with realistic network traffic. Contains benign and 7 common attack types including Brute Force, DoS, Web Attack, Infiltration, Botnet, DDoS.",
-    "domain": ["network-intrusion"],
+    "domain": [
+      "network-intrusion"
+    ],
     "source": "CIC, University of New Brunswick",
     "url": "https://www.unb.ca/cic/datasets/ids-2017.html",
     "size": "50GB",
     "samples": 2830743,
     "license": "Public",
     "year": 2017,
-    "tags": ["IDS", "network", "pcap", "flow"],
+    "tags": [
+      "IDS",
+      "network",
+      "pcap",
+      "flow"
+    ],
     "format": "PCAP/CSV",
     "papers_count": 1800,
     "threat_type": "network intrusion",
-    "eval_metrics": ["accuracy", "F1", "detection rate"],
+    "eval_metrics": [
+      "accuracy",
+      "F1",
+      "detection rate"
+    ],
     "known_issues": "Label noise in some attack categories"
   },
   {
     "id": "unsw-nb15",
     "name": "UNSW-NB15",
     "description": "Network intrusion detection dataset from UNSW Canberra with 9 attack families: Fuzzers, Analysis, Backdoors, DoS, Exploits, Generic, Reconnaissance, Shellcode, Worms.",
-    "domain": ["network-intrusion"],
+    "domain": [
+      "network-intrusion"
+    ],
     "source": "UNSW Canberra",
     "url": "https://research.unsw.edu.au/projects/unsw-nb15-dataset",
     "size": "1.5GB",
     "samples": 2540044,
     "license": "Research",
     "year": 2015,
-    "tags": ["IDS", "network", "multi-class"],
+    "tags": [
+      "IDS",
+      "network",
+      "multi-class"
+    ],
     "format": "CSV",
     "papers_count": 1200,
     "threat_type": "network intrusion",
-    "eval_metrics": ["accuracy", "FAR", "DR"]
+    "eval_metrics": [
+      "accuracy",
+      "FAR",
+      "DR"
+    ]
   },
   {
     "id": "ctu-13",
     "name": "CTU-13",
     "description": "Botnet traffic dataset from Czech Technical University. 13 scenarios of real botnet traffic mixed with normal traffic and background traffic.",
-    "domain": ["network-intrusion", "malware"],
+    "domain": [
+      "network-intrusion",
+      "malware"
+    ],
     "source": "Czech Technical University",
     "url": "https://www.stratosphereips.org/datasets-ctu13",
     "size": "90GB",
     "samples": 13,
     "license": "Public",
     "year": 2011,
-    "tags": ["botnet", "network", "pcap"],
+    "tags": [
+      "botnet",
+      "network",
+      "pcap"
+    ],
     "format": "PCAP/NetFlow",
     "papers_count": 600,
     "threat_type": "botnet"
@@ -72,14 +859,21 @@
     "id": "ember",
     "name": "EMBER",
     "description": "Endgame Malware BEnchmark for Research. 1.1M PE file features for malware classification. Includes raw features extracted from PE headers, imports, sections.",
-    "domain": ["malware"],
+    "domain": [
+      "malware"
+    ],
     "source": "Endgame/Elastic",
     "url": "https://github.com/elastic/ember",
     "size": "4GB",
     "samples": 1100000,
     "license": "MIT",
     "year": 2018,
-    "tags": ["malware", "PE", "static-analysis", "classification"],
+    "tags": [
+      "malware",
+      "PE",
+      "static-analysis",
+      "classification"
+    ],
     "format": "JSON/LMDB",
     "papers_count": 450,
     "threat_type": "malware"
@@ -88,14 +882,22 @@
     "id": "drebin",
     "name": "Drebin",
     "description": "Android malware dataset with 5,560 malware samples from 179 families. Features extracted from manifest and DEX code.",
-    "domain": ["malware", "mobile-security"],
+    "domain": [
+      "malware",
+      "mobile-security"
+    ],
     "source": "TU Braunschweig",
     "url": "https://www.sec.tu-bs.de/~danarp/drebin/",
     "size": "800MB",
     "samples": 5560,
     "license": "Research",
     "year": 2014,
-    "tags": ["android", "malware", "mobile", "classification"],
+    "tags": [
+      "android",
+      "malware",
+      "mobile",
+      "classification"
+    ],
     "format": "APK/Features",
     "papers_count": 800,
     "threat_type": "mobile malware"
@@ -104,14 +906,20 @@
     "id": "malimg",
     "name": "MalImg",
     "description": "Malware visualization dataset. Binary executables converted to grayscale images for visual classification. 25 malware families, 9,339 samples.",
-    "domain": ["malware"],
+    "domain": [
+      "malware"
+    ],
     "source": "UCSB",
     "url": "https://www.kaggle.com/datasets/keerthicheepurupalli/malimg-dataset",
     "size": "250MB",
     "samples": 9339,
     "license": "Public",
     "year": 2011,
-    "tags": ["malware", "image-classification", "visualization"],
+    "tags": [
+      "malware",
+      "image-classification",
+      "visualization"
+    ],
     "format": "PNG",
     "papers_count": 350,
     "threat_type": "malware"
@@ -120,31 +928,50 @@
     "id": "advbench",
     "name": "AdvBench",
     "description": "Adversarial behavior benchmark for LLMs. 520 harmful behaviors and 500 harmful strings for evaluating jailbreak attacks and safety alignment.",
-    "domain": ["adversarial-ml", "llm-security"],
+    "domain": [
+      "adversarial-ml",
+      "llm-security"
+    ],
     "source": "CMU",
     "url": "https://github.com/llm-attacks/llm-attacks",
     "size": "1MB",
     "samples": 1020,
     "license": "MIT",
     "year": 2023,
-    "tags": ["jailbreak", "LLM", "safety", "alignment"],
+    "tags": [
+      "jailbreak",
+      "LLM",
+      "safety",
+      "alignment"
+    ],
     "format": "CSV",
     "papers_count": 200,
     "threat_type": "LLM jailbreak",
-    "eval_metrics": ["attack success rate", "harmfulness score"]
+    "eval_metrics": [
+      "attack success rate",
+      "harmfulness score"
+    ]
   },
   {
     "id": "trojai",
     "name": "TrojAI",
     "description": "IARPA TrojAI program datasets for detecting trojaned/backdoored AI models. Multiple rounds covering image classification, NLP, and reinforcement learning.",
-    "domain": ["adversarial-ml", "backdoor"],
+    "domain": [
+      "adversarial-ml",
+      "backdoor"
+    ],
     "source": "IARPA/NIST",
     "url": "https://pages.nist.gov/trojai/",
     "size": "500GB+",
     "samples": 10000,
     "license": "Public Domain",
     "year": 2020,
-    "tags": ["trojan", "backdoor", "model-security", "detection"],
+    "tags": [
+      "trojan",
+      "backdoor",
+      "model-security",
+      "detection"
+    ],
     "format": "PyTorch models",
     "papers_count": 150,
     "threat_type": "model backdoor"
@@ -153,31 +980,49 @@
     "id": "robustbench",
     "name": "RobustBench",
     "description": "Standardized benchmark for adversarial robustness evaluation. Leaderboard for CIFAR-10, CIFAR-100, ImageNet with Linf, L2, corruptions threat models.",
-    "domain": ["adversarial-ml"],
+    "domain": [
+      "adversarial-ml"
+    ],
     "source": "Multiple universities",
     "url": "https://robustbench.github.io/",
     "size": "Varies",
     "samples": 10000,
     "license": "MIT",
     "year": 2021,
-    "tags": ["adversarial", "robustness", "benchmark", "image"],
+    "tags": [
+      "adversarial",
+      "robustness",
+      "benchmark",
+      "image"
+    ],
     "format": "PyTorch",
     "papers_count": 300,
     "threat_type": "adversarial examples",
-    "eval_metrics": ["robust accuracy", "clean accuracy"]
+    "eval_metrics": [
+      "robust accuracy",
+      "clean accuracy"
+    ]
   },
   {
     "id": "imagenet-c",
     "name": "ImageNet-C",
     "description": "Corrupted ImageNet for evaluating model robustness to common image corruptions. 15 corruption types at 5 severity levels.",
-    "domain": ["adversarial-ml", "robustness"],
+    "domain": [
+      "adversarial-ml",
+      "robustness"
+    ],
     "source": "UC Berkeley",
     "url": "https://github.com/hendrycks/robustness",
     "size": "15GB",
     "samples": 750000,
     "license": "Apache-2.0",
     "year": 2019,
-    "tags": ["corruption", "robustness", "image", "benchmark"],
+    "tags": [
+      "corruption",
+      "robustness",
+      "image",
+      "benchmark"
+    ],
     "format": "Images",
     "papers_count": 500,
     "threat_type": "distribution shift"
@@ -186,14 +1031,22 @@
     "id": "prompt-injections-deepset",
     "name": "Prompt Injections (deepset)",
     "description": "Dataset for detecting prompt injection attacks in LLM applications. Contains both injection attempts and benign prompts for binary classification.",
-    "domain": ["llm-security", "prompt-injection"],
+    "domain": [
+      "llm-security",
+      "prompt-injection"
+    ],
     "source": "deepset",
     "url": "https://huggingface.co/datasets/deepset/prompt-injections",
     "size": "5MB",
     "samples": 662,
     "license": "Apache-2.0",
     "year": 2023,
-    "tags": ["prompt-injection", "LLM", "detection", "classification"],
+    "tags": [
+      "prompt-injection",
+      "LLM",
+      "detection",
+      "classification"
+    ],
     "format": "CSV/Parquet",
     "papers_count": 80,
     "threat_type": "prompt injection"
@@ -202,14 +1055,22 @@
     "id": "cyberseceval",
     "name": "CyberSecEval 3",
     "description": "Meta's comprehensive cybersecurity evaluation suite for LLMs. Tests code generation security, prompt injection resistance, and harmful content generation.",
-    "domain": ["llm-security", "code-security"],
+    "domain": [
+      "llm-security",
+      "code-security"
+    ],
     "source": "Meta AI",
     "url": "https://huggingface.co/datasets/facebook/cyberseceval3-visual-prompt-injection",
     "size": "50MB",
     "samples": 5000,
     "license": "MIT",
     "year": 2024,
-    "tags": ["LLM", "code-security", "evaluation", "prompt-injection"],
+    "tags": [
+      "LLM",
+      "code-security",
+      "evaluation",
+      "prompt-injection"
+    ],
     "format": "JSON",
     "papers_count": 50,
     "threat_type": "LLM security"
@@ -218,14 +1079,21 @@
     "id": "seceval",
     "name": "SecurityEval",
     "description": "Benchmark for evaluating LLM-generated code security. 130 Python test cases across 75 CWE vulnerability types.",
-    "domain": ["code-security"],
+    "domain": [
+      "code-security"
+    ],
     "source": "s2e-lab",
     "url": "https://huggingface.co/datasets/s2e-lab/SecurityEval",
     "size": "2MB",
     "samples": 130,
     "license": "MIT",
     "year": 2023,
-    "tags": ["code-security", "CWE", "vulnerability", "LLM"],
+    "tags": [
+      "code-security",
+      "CWE",
+      "vulnerability",
+      "LLM"
+    ],
     "format": "JSON",
     "papers_count": 40,
     "threat_type": "code vulnerability"
@@ -234,14 +1102,21 @@
     "id": "mitre-attack",
     "name": "MITRE ATT&CK",
     "description": "Knowledge base of adversary tactics and techniques based on real-world observations. Covers Enterprise, Mobile, and ICS domains.",
-    "domain": ["threat-intelligence"],
+    "domain": [
+      "threat-intelligence"
+    ],
     "source": "MITRE",
     "url": "https://attack.mitre.org/",
     "size": "100MB",
     "samples": 800,
     "license": "Apache-2.0",
     "year": 2025,
-    "tags": ["threat-intel", "TTPs", "framework", "enterprise"],
+    "tags": [
+      "threat-intel",
+      "TTPs",
+      "framework",
+      "enterprise"
+    ],
     "format": "STIX/JSON",
     "papers_count": 5000,
     "threat_type": "threat taxonomy"
@@ -250,14 +1125,21 @@
     "id": "cve-db",
     "name": "CVE Database (NVD)",
     "description": "NIST National Vulnerability Database. Comprehensive repository of security vulnerabilities with CVSS scoring, CWE mapping, and affected products.",
-    "domain": ["vulnerability"],
+    "domain": [
+      "vulnerability"
+    ],
     "source": "NIST",
     "url": "https://nvd.nist.gov/",
     "size": "10GB+",
     "samples": 250000,
     "license": "Public Domain",
     "year": 2025,
-    "tags": ["CVE", "vulnerability", "CVSS", "NVD"],
+    "tags": [
+      "CVE",
+      "vulnerability",
+      "CVSS",
+      "NVD"
+    ],
     "format": "JSON/XML",
     "papers_count": 10000,
     "threat_type": "vulnerability"
@@ -266,14 +1148,22 @@
     "id": "cwe-database",
     "name": "CWE (Common Weakness Enumeration)",
     "description": "Community-developed list of software/hardware weakness types. 900+ weakness entries with descriptions, examples, mitigations, and detection methods.",
-    "domain": ["code-security", "vulnerability"],
+    "domain": [
+      "code-security",
+      "vulnerability"
+    ],
     "source": "MITRE",
     "url": "https://cwe.mitre.org/",
     "size": "50MB",
     "samples": 930,
     "license": "Public",
     "year": 2025,
-    "tags": ["CWE", "weakness", "code-security", "taxonomy"],
+    "tags": [
+      "CWE",
+      "weakness",
+      "code-security",
+      "taxonomy"
+    ],
     "format": "XML/JSON",
     "papers_count": 3000,
     "threat_type": "software weakness"
@@ -282,14 +1172,22 @@
     "id": "owasp-top10",
     "name": "OWASP Top 10 / LLM Top 10",
     "description": "OWASP security risk catalogs. Web Top 10 (2021) and LLM Top 10 (2025) provide ranked lists of critical security risks with descriptions and mitigations.",
-    "domain": ["web-security", "llm-security"],
+    "domain": [
+      "web-security",
+      "llm-security"
+    ],
     "source": "OWASP",
     "url": "https://owasp.org/www-project-top-ten/",
     "size": "5MB",
     "samples": 20,
     "license": "CC-BY-SA-4.0",
     "year": 2025,
-    "tags": ["OWASP", "web-security", "LLM", "risk"],
+    "tags": [
+      "OWASP",
+      "web-security",
+      "LLM",
+      "risk"
+    ],
     "format": "HTML/PDF",
     "papers_count": 8000,
     "threat_type": "security risk catalog"
@@ -298,14 +1196,21 @@
     "id": "mnist-adversarial",
     "name": "MNIST-Adversarial",
     "description": "Adversarial examples generated from MNIST. Used for benchmarking adversarial detection and robustness methods on simple image tasks.",
-    "domain": ["adversarial-ml"],
+    "domain": [
+      "adversarial-ml"
+    ],
     "source": "Community",
     "url": "https://huggingface.co/datasets/chrisjay/mnist-adversarial-dataset",
     "size": "50MB",
     "samples": 10000,
     "license": "MIT",
     "year": 2022,
-    "tags": ["adversarial", "MNIST", "image", "detection"],
+    "tags": [
+      "adversarial",
+      "MNIST",
+      "image",
+      "detection"
+    ],
     "format": "Parquet",
     "papers_count": 100,
     "threat_type": "adversarial examples"
@@ -314,14 +1219,22 @@
     "id": "safeguard-prompt",
     "name": "SafeGuard Prompt Injection",
     "description": "Large-scale prompt injection dataset for training and evaluating injection detection models. Multiple attack categories with severity labels.",
-    "domain": ["llm-security", "prompt-injection"],
+    "domain": [
+      "llm-security",
+      "prompt-injection"
+    ],
     "source": "xTRam1",
     "url": "https://huggingface.co/datasets/xTRam1/safe-guard-prompt-injection",
     "size": "15MB",
     "samples": 10000,
     "license": "Apache-2.0",
     "year": 2024,
-    "tags": ["prompt-injection", "LLM", "safety", "detection"],
+    "tags": [
+      "prompt-injection",
+      "LLM",
+      "safety",
+      "detection"
+    ],
     "format": "CSV/Parquet",
     "papers_count": 30,
     "threat_type": "prompt injection"
@@ -330,14 +1243,22 @@
     "id": "code-vuln-dpo",
     "name": "Code Vulnerability Security DPO",
     "description": "Dataset for Direct Preference Optimization on secure code generation. Pairs of vulnerable and secure code for training LLMs to prefer secure implementations.",
-    "domain": ["code-security", "llm-security"],
+    "domain": [
+      "code-security",
+      "llm-security"
+    ],
     "source": "CyberNative",
     "url": "https://huggingface.co/datasets/CyberNative/Code_Vulnerability_Security_DPO",
     "size": "10MB",
     "samples": 5000,
     "license": "Apache-2.0",
     "year": 2024,
-    "tags": ["DPO", "code-security", "LLM", "training"],
+    "tags": [
+      "DPO",
+      "code-security",
+      "LLM",
+      "training"
+    ],
     "format": "JSON",
     "papers_count": 15,
     "threat_type": "insecure code generation"
@@ -346,14 +1267,21 @@
     "id": "security-ttp-mapping",
     "name": "Security TTP Mapping",
     "description": "Dataset mapping security incidents to MITRE ATT&CK tactics, techniques, and procedures. Useful for threat classification and detection research.",
-    "domain": ["threat-intelligence"],
+    "domain": [
+      "threat-intelligence"
+    ],
     "source": "tumeteor",
     "url": "https://huggingface.co/datasets/tumeteor/Security-TTP-Mapping",
     "size": "5MB",
     "samples": 2000,
     "license": "MIT",
     "year": 2024,
-    "tags": ["MITRE", "ATT&CK", "TTP", "classification"],
+    "tags": [
+      "MITRE",
+      "ATT&CK",
+      "TTP",
+      "classification"
+    ],
     "format": "JSON/CSV",
     "papers_count": 20,
     "threat_type": "threat classification"
@@ -362,14 +1290,22 @@
     "id": "white-hat-prompts",
     "name": "White Hat Security Agent Prompts 600K",
     "description": "600K security-focused prompts for training and evaluating AI security agents. Covers ethical hacking scenarios, vulnerability assessment, and defense strategies.",
-    "domain": ["llm-security", "ai-agent"],
+    "domain": [
+      "llm-security",
+      "ai-agent"
+    ],
     "source": "yatin-superintelligence",
     "url": "https://huggingface.co/datasets/yatin-superintelligence/White-Hat-Security-Agent-Prompts-600K",
     "size": "500MB",
     "samples": 600000,
     "license": "Apache-2.0",
     "year": 2024,
-    "tags": ["agent", "security", "prompt", "ethical-hacking"],
+    "tags": [
+      "agent",
+      "security",
+      "prompt",
+      "ethical-hacking"
+    ],
     "format": "JSON/Parquet",
     "papers_count": 10,
     "threat_type": "AI agent security"
@@ -378,14 +1314,21 @@
     "id": "ember-malware-v2",
     "name": "EMBER 2018 v2",
     "description": "Updated EMBER malware dataset with improved feature extraction. 1M+ PE file feature vectors for malware/benign classification.",
-    "domain": ["malware"],
+    "domain": [
+      "malware"
+    ],
     "source": "Elastic",
     "url": "https://huggingface.co/datasets/cw1521/ember2018-malware-v2",
     "size": "3GB",
     "samples": 1000000,
     "license": "MIT",
     "year": 2018,
-    "tags": ["malware", "PE", "classification", "features"],
+    "tags": [
+      "malware",
+      "PE",
+      "classification",
+      "features"
+    ],
     "format": "JSON/Parquet",
     "papers_count": 200,
     "threat_type": "malware"
@@ -394,14 +1337,22 @@
     "id": "lakera-mosscap",
     "name": "Lakera Mosscap Prompt Injection",
     "description": "Prompt injection dataset from Lakera's Gandalf challenge. Real-world prompt injection attempts collected from interactive game.",
-    "domain": ["llm-security", "prompt-injection"],
+    "domain": [
+      "llm-security",
+      "prompt-injection"
+    ],
     "source": "Lakera",
     "url": "https://huggingface.co/datasets/Lakera/mosscap_prompt_injection",
     "size": "5MB",
     "samples": 3000,
     "license": "CC-BY-4.0",
     "year": 2024,
-    "tags": ["prompt-injection", "LLM", "gandalf", "real-world"],
+    "tags": [
+      "prompt-injection",
+      "LLM",
+      "gandalf",
+      "real-world"
+    ],
     "format": "Parquet",
     "papers_count": 25,
     "threat_type": "prompt injection"
@@ -410,14 +1361,22 @@
     "id": "adversarial-qa",
     "name": "Adversarial QA",
     "description": "Adversarially-crafted reading comprehension dataset. Human annotators write questions to fool QA models, testing robustness of NLU systems.",
-    "domain": ["adversarial-ml", "nlp"],
+    "domain": [
+      "adversarial-ml",
+      "nlp"
+    ],
     "source": "UCL NLP",
     "url": "https://huggingface.co/datasets/UCLNLP/adversarial_qa",
     "size": "50MB",
     "samples": 30000,
     "license": "CC-BY-SA-4.0",
     "year": 2020,
-    "tags": ["adversarial", "QA", "NLP", "robustness"],
+    "tags": [
+      "adversarial",
+      "QA",
+      "NLP",
+      "robustness"
+    ],
     "format": "JSON/Parquet",
     "papers_count": 150,
     "threat_type": "adversarial NLP"
@@ -426,14 +1385,22 @@
     "id": "cifar10-c",
     "name": "CIFAR-10-C",
     "description": "Corrupted CIFAR-10 for robustness evaluation. 19 corruption types at 5 severity levels. Standard benchmark for corruption robustness.",
-    "domain": ["adversarial-ml", "robustness"],
+    "domain": [
+      "adversarial-ml",
+      "robustness"
+    ],
     "source": "UC Berkeley",
     "url": "https://github.com/hendrycks/robustness",
     "size": "2.5GB",
     "samples": 950000,
     "license": "Apache-2.0",
     "year": 2019,
-    "tags": ["corruption", "robustness", "CIFAR", "benchmark"],
+    "tags": [
+      "corruption",
+      "robustness",
+      "CIFAR",
+      "benchmark"
+    ],
     "format": "NumPy",
     "papers_count": 400,
     "threat_type": "distribution shift"
@@ -442,14 +1409,21 @@
     "id": "fgsm-examples",
     "name": "FGSM Adversarial Examples",
     "description": "Pre-generated adversarial examples using Fast Gradient Sign Method. Multiple epsilon values on standard vision benchmarks.",
-    "domain": ["adversarial-ml"],
+    "domain": [
+      "adversarial-ml"
+    ],
     "source": "Community",
     "url": "https://github.com/goodfeli/adversarial",
     "size": "500MB",
     "samples": 50000,
     "license": "MIT",
     "year": 2015,
-    "tags": ["FGSM", "adversarial", "image", "attack"],
+    "tags": [
+      "FGSM",
+      "adversarial",
+      "image",
+      "attack"
+    ],
     "format": "NumPy/Images",
     "papers_count": 5000,
     "threat_type": "adversarial examples"
@@ -458,48 +1432,74 @@
     "id": "autoattack",
     "name": "AutoAttack Benchmark",
     "description": "Parameter-free adversarial attack ensemble benchmark. Standard evaluation for adversarial robustness with APGD-CE, APGD-DLR, FAB, and Square attacks.",
-    "domain": ["adversarial-ml"],
+    "domain": [
+      "adversarial-ml"
+    ],
     "source": "EPFL",
     "url": "https://github.com/fra31/auto-attack",
     "size": "100MB",
     "samples": 10000,
     "license": "MIT",
     "year": 2020,
-    "tags": ["adversarial", "robustness", "attack", "benchmark"],
+    "tags": [
+      "adversarial",
+      "robustness",
+      "attack",
+      "benchmark"
+    ],
     "format": "PyTorch",
     "papers_count": 500,
     "threat_type": "adversarial examples",
-    "eval_metrics": ["robust accuracy"]
+    "eval_metrics": [
+      "robust accuracy"
+    ]
   },
   {
     "id": "harmbench",
     "name": "HarmBench",
     "description": "Comprehensive benchmark for evaluating LLM safety and jailbreak resistance. 400+ harmful behaviors across multiple risk categories.",
-    "domain": ["llm-security"],
+    "domain": [
+      "llm-security"
+    ],
     "source": "Center for AI Safety",
     "url": "https://github.com/centerforaisafety/HarmBench",
     "size": "10MB",
     "samples": 400,
     "license": "MIT",
     "year": 2024,
-    "tags": ["jailbreak", "LLM", "safety", "red-team"],
+    "tags": [
+      "jailbreak",
+      "LLM",
+      "safety",
+      "red-team"
+    ],
     "format": "JSON/CSV",
     "papers_count": 80,
     "threat_type": "LLM jailbreak",
-    "eval_metrics": ["attack success rate"]
+    "eval_metrics": [
+      "attack success rate"
+    ]
   },
   {
     "id": "secbench",
     "name": "SecBench",
     "description": "Security knowledge benchmark for evaluating LLM cybersecurity capabilities. Multi-choice and open-ended questions across network, system, software, and crypto security.",
-    "domain": ["llm-security", "evaluation"],
+    "domain": [
+      "llm-security",
+      "evaluation"
+    ],
     "source": "Multiple universities",
     "url": "https://github.com/SecBench/SecBench",
     "size": "5MB",
     "samples": 2000,
     "license": "MIT",
     "year": 2024,
-    "tags": ["LLM", "evaluation", "cybersecurity", "benchmark"],
+    "tags": [
+      "LLM",
+      "evaluation",
+      "cybersecurity",
+      "benchmark"
+    ],
     "format": "JSON",
     "papers_count": 20,
     "threat_type": "LLM evaluation"
@@ -508,14 +1508,20 @@
     "id": "vxunderground",
     "name": "VX Underground Malware Samples",
     "description": "Largest free malware sample collection. Decompiled source code and binary samples organized by family and year.",
-    "domain": ["malware"],
+    "domain": [
+      "malware"
+    ],
     "source": "VX Underground",
     "url": "https://huggingface.co/datasets/mikosovsky/malware-vxunderground-2024-code-decompiled",
     "size": "50GB+",
     "samples": 100000,
     "license": "Research",
     "year": 2024,
-    "tags": ["malware", "source-code", "reverse-engineering"],
+    "tags": [
+      "malware",
+      "source-code",
+      "reverse-engineering"
+    ],
     "format": "Source code",
     "papers_count": 50,
     "threat_type": "malware",
@@ -525,14 +1531,22 @@
     "id": "powershell-malware",
     "name": "PowerShell Malware Detection",
     "description": "Dataset for detecting malicious PowerShell scripts. Contains obfuscated and deobfuscated samples with labels.",
-    "domain": ["malware", "code-security"],
+    "domain": [
+      "malware",
+      "code-security"
+    ],
     "source": "Community",
     "url": "https://huggingface.co/datasets/rr4433/Powershell_Malware_Detection_Dataset",
     "size": "20MB",
     "samples": 5000,
     "license": "MIT",
     "year": 2024,
-    "tags": ["PowerShell", "malware", "obfuscation", "detection"],
+    "tags": [
+      "PowerShell",
+      "malware",
+      "obfuscation",
+      "detection"
+    ],
     "format": "CSV/Parquet",
     "papers_count": 15,
     "threat_type": "script malware"
@@ -541,14 +1555,22 @@
     "id": "attack-visual-prompt",
     "name": "M-Attack V2 Adversarial Samples",
     "description": "Multimodal adversarial attack samples targeting vision-language models. Tests robustness of multimodal AI systems to visual perturbations.",
-    "domain": ["adversarial-ml", "multimodal"],
+    "domain": [
+      "adversarial-ml",
+      "multimodal"
+    ],
     "source": "MBZUAI",
     "url": "https://huggingface.co/datasets/MBZUAI-LLM/M-Attack-V2-Adversarial-Samples",
     "size": "100MB",
     "samples": 5000,
     "license": "Apache-2.0",
     "year": 2024,
-    "tags": ["multimodal", "adversarial", "VLM", "attack"],
+    "tags": [
+      "multimodal",
+      "adversarial",
+      "VLM",
+      "attack"
+    ],
     "format": "Images/JSON",
     "papers_count": 10,
     "threat_type": "multimodal adversarial"
@@ -557,14 +1579,22 @@
     "id": "clip-adversarial",
     "name": "CLIP Adversarial Typographic Attack",
     "description": "Dataset of typographic adversarial attacks on CLIP models. Text overlays on images that cause misclassification in vision-language models.",
-    "domain": ["adversarial-ml", "multimodal"],
+    "domain": [
+      "adversarial-ml",
+      "multimodal"
+    ],
     "source": "zer0int",
     "url": "https://huggingface.co/datasets/zer0int/CLIP-adversarial-typographic-attack_text-image",
     "size": "30MB",
     "samples": 2000,
     "license": "MIT",
     "year": 2024,
-    "tags": ["CLIP", "typographic", "adversarial", "multimodal"],
+    "tags": [
+      "CLIP",
+      "typographic",
+      "adversarial",
+      "multimodal"
+    ],
     "format": "Images/Text",
     "papers_count": 10,
     "threat_type": "typographic adversarial"
@@ -573,14 +1603,22 @@
     "id": "squad-adversarial",
     "name": "SQuAD Adversarial",
     "description": "Adversarial evaluation set for SQuAD reading comprehension. Tests model robustness to paraphrase and distractor sentence attacks.",
-    "domain": ["adversarial-ml", "nlp"],
+    "domain": [
+      "adversarial-ml",
+      "nlp"
+    ],
     "source": "Stanford NLP",
     "url": "https://huggingface.co/datasets/stanfordnlp/squad_adversarial",
     "size": "20MB",
     "samples": 5000,
     "license": "CC-BY-SA-4.0",
     "year": 2017,
-    "tags": ["SQuAD", "adversarial", "QA", "NLP"],
+    "tags": [
+      "SQuAD",
+      "adversarial",
+      "QA",
+      "NLP"
+    ],
     "format": "JSON",
     "papers_count": 300,
     "threat_type": "adversarial NLP"
@@ -589,14 +1627,22 @@
     "id": "secrepo",
     "name": "SecRepo Security Datasets",
     "description": "Curated collection of security-related log files, network captures, and malware samples for security research and education.",
-    "domain": ["network-intrusion", "malware"],
+    "domain": [
+      "network-intrusion",
+      "malware"
+    ],
     "source": "SecRepo",
     "url": "https://www.secrepo.com/",
     "size": "Varies",
     "samples": 100000,
     "license": "Various",
     "year": 2020,
-    "tags": ["logs", "pcap", "security", "collection"],
+    "tags": [
+      "logs",
+      "pcap",
+      "security",
+      "collection"
+    ],
     "format": "Various",
     "papers_count": 100,
     "threat_type": "various"
@@ -605,14 +1651,22 @@
     "id": "android-malware-genome",
     "name": "Android Malware Genome Project",
     "description": "Over 1,200 Android malware samples from 49 different malware families. Systematic characterization of Android malware.",
-    "domain": ["malware", "mobile-security"],
+    "domain": [
+      "malware",
+      "mobile-security"
+    ],
     "source": "NC State University",
     "url": "http://www.malgenomeproject.org/",
     "size": "2GB",
     "samples": 1260,
     "license": "Research",
     "year": 2012,
-    "tags": ["android", "malware", "genome", "mobile"],
+    "tags": [
+      "android",
+      "malware",
+      "genome",
+      "mobile"
+    ],
     "format": "APK",
     "papers_count": 600,
     "threat_type": "mobile malware"
@@ -621,14 +1675,22 @@
     "id": "sard",
     "name": "SARD (Software Assurance Reference Dataset)",
     "description": "NIST reference dataset for software vulnerability detection tools. Test cases in C/C++/Java with known vulnerability annotations.",
-    "domain": ["code-security", "vulnerability"],
+    "domain": [
+      "code-security",
+      "vulnerability"
+    ],
     "source": "NIST",
     "url": "https://samate.nist.gov/SARD/",
     "size": "5GB",
     "samples": 170000,
     "license": "Public Domain",
     "year": 2023,
-    "tags": ["SARD", "vulnerability", "static-analysis", "CWE"],
+    "tags": [
+      "SARD",
+      "vulnerability",
+      "static-analysis",
+      "CWE"
+    ],
     "format": "Source code",
     "papers_count": 200,
     "threat_type": "code vulnerability"
@@ -637,14 +1699,22 @@
     "id": "megavul",
     "name": "MegaVul",
     "description": "Large-scale vulnerability detection dataset from real-world GitHub commits. Includes vulnerability-fixing commits with before/after code pairs.",
-    "domain": ["code-security", "vulnerability"],
+    "domain": [
+      "code-security",
+      "vulnerability"
+    ],
     "source": "Community",
     "url": "https://huggingface.co/datasets/athrv/megavul-vulnerability-detection-java",
     "size": "200MB",
     "samples": 50000,
     "license": "MIT",
     "year": 2024,
-    "tags": ["vulnerability", "code", "GitHub", "commit"],
+    "tags": [
+      "vulnerability",
+      "code",
+      "GitHub",
+      "commit"
+    ],
     "format": "JSON/Parquet",
     "papers_count": 15,
     "threat_type": "code vulnerability"
@@ -653,14 +1723,21 @@
     "id": "security-tools-dataset",
     "name": "Security Tools Dataset",
     "description": "Dataset of security tool descriptions, commands, and outputs. Useful for training security-focused LLMs and chatbots.",
-    "domain": ["llm-security", "threat-intelligence"],
+    "domain": [
+      "llm-security",
+      "threat-intelligence"
+    ],
     "source": "w8ay",
     "url": "https://huggingface.co/datasets/w8ay/security-tools-datasets",
     "size": "50MB",
     "samples": 50000,
     "license": "MIT",
     "year": 2024,
-    "tags": ["security-tools", "pentesting", "LLM-training"],
+    "tags": [
+      "security-tools",
+      "pentesting",
+      "LLM-training"
+    ],
     "format": "Parquet",
     "papers_count": 5,
     "threat_type": "security tooling"
@@ -669,14 +1746,21 @@
     "id": "security-paper-datasets",
     "name": "Security Paper Datasets",
     "description": "Collection of cybersecurity research papers and their metadata. Useful for literature review automation and security topic modeling.",
-    "domain": ["threat-intelligence"],
+    "domain": [
+      "threat-intelligence"
+    ],
     "source": "clouditera",
     "url": "https://huggingface.co/datasets/clouditera/security-paper-datasets",
     "size": "500MB",
     "samples": 500000,
     "license": "Apache-2.0",
     "year": 2024,
-    "tags": ["papers", "NLP", "security", "literature"],
+    "tags": [
+      "papers",
+      "NLP",
+      "security",
+      "literature"
+    ],
     "format": "Parquet",
     "papers_count": 5,
     "threat_type": "literature"
@@ -685,14 +1769,21 @@
     "id": "protect-ai-injection",
     "name": "ProtectAI Prompt Injection Validation",
     "description": "Validated prompt injection detection dataset from ProtectAI. Curated examples with confirmed labels for training production-grade detectors.",
-    "domain": ["llm-security", "prompt-injection"],
+    "domain": [
+      "llm-security",
+      "prompt-injection"
+    ],
     "source": "ProtectAI",
     "url": "https://huggingface.co/datasets/protectai/prompt-injection-validation",
     "size": "5MB",
     "samples": 1000,
     "license": "Apache-2.0",
     "year": 2024,
-    "tags": ["prompt-injection", "validation", "detection"],
+    "tags": [
+      "prompt-injection",
+      "validation",
+      "detection"
+    ],
     "format": "CSV/Parquet",
     "papers_count": 10,
     "threat_type": "prompt injection"
@@ -701,14 +1792,22 @@
     "id": "lakera-b3-benchmark",
     "name": "Lakera B3 Agent Security Benchmark",
     "description": "Benchmark for evaluating AI agent security. Tests resistance to indirect prompt injection, data exfiltration, and privilege escalation in agent workflows.",
-    "domain": ["llm-security", "ai-agent"],
+    "domain": [
+      "llm-security",
+      "ai-agent"
+    ],
     "source": "Lakera",
     "url": "https://huggingface.co/datasets/Lakera/b3-agent-security-benchmark-weak",
     "size": "2MB",
     "samples": 500,
     "license": "Other",
     "year": 2024,
-    "tags": ["agent", "security", "benchmark", "indirect-injection"],
+    "tags": [
+      "agent",
+      "security",
+      "benchmark",
+      "indirect-injection"
+    ],
     "format": "JSON",
     "papers_count": 15,
     "threat_type": "AI agent security"
@@ -717,14 +1816,21 @@
     "id": "neuralchemy-injection",
     "name": "Neuralchemy Prompt Injection",
     "description": "Diverse prompt injection attack dataset. Multiple injection strategies including goal hijacking, payload injection, and context manipulation.",
-    "domain": ["llm-security", "prompt-injection"],
+    "domain": [
+      "llm-security",
+      "prompt-injection"
+    ],
     "source": "neuralchemy",
     "url": "https://huggingface.co/datasets/neuralchemy/Prompt-injection-dataset",
     "size": "10MB",
     "samples": 5000,
     "license": "MIT",
     "year": 2024,
-    "tags": ["prompt-injection", "LLM", "attack-strategies"],
+    "tags": [
+      "prompt-injection",
+      "LLM",
+      "attack-strategies"
+    ],
     "format": "CSV/Parquet",
     "papers_count": 10,
     "threat_type": "prompt injection"
@@ -733,14 +1839,21 @@
     "id": "cicids-2018",
     "name": "CSE-CIC-IDS2018",
     "description": "Updated CIC IDS dataset with AWS-based network infrastructure. 7 attack scenarios including brute force, heartbleed, botnet, DoS, DDoS, web attacks, and infiltration.",
-    "domain": ["network-intrusion"],
+    "domain": [
+      "network-intrusion"
+    ],
     "source": "CIC/CSE",
     "url": "https://www.unb.ca/cic/datasets/ids-2018.html",
     "size": "500GB",
     "samples": 16233002,
     "license": "Public",
     "year": 2018,
-    "tags": ["IDS", "network", "AWS", "cloud"],
+    "tags": [
+      "IDS",
+      "network",
+      "AWS",
+      "cloud"
+    ],
     "format": "PCAP/CSV",
     "papers_count": 800,
     "threat_type": "network intrusion"
@@ -749,14 +1862,21 @@
     "id": "kdd99",
     "name": "KDD Cup 1999",
     "description": "Classic network intrusion detection dataset. Despite known limitations (redundancy, imbalance), remains widely cited as a baseline reference.",
-    "domain": ["network-intrusion"],
+    "domain": [
+      "network-intrusion"
+    ],
     "source": "UCI",
     "url": "https://kdd.ics.uci.edu/databases/kddcup99/kddcup99.html",
     "size": "743MB",
     "samples": 4898431,
     "license": "Public",
     "year": 1999,
-    "tags": ["IDS", "network", "legacy", "benchmark"],
+    "tags": [
+      "IDS",
+      "network",
+      "legacy",
+      "benchmark"
+    ],
     "format": "CSV",
     "papers_count": 8000,
     "threat_type": "network intrusion",
@@ -766,31 +1886,49 @@
     "id": "bodmas",
     "name": "BODMAS Malware Dataset",
     "description": "Blue Hexagon Open Dataset for Malware AnalysiS. Timestamped malware samples for studying concept drift in malware classification.",
-    "domain": ["malware"],
+    "domain": [
+      "malware"
+    ],
     "source": "Blue Hexagon",
     "url": "https://whyisyoung.github.io/BODMAS/",
     "size": "5GB",
     "samples": 57293,
     "license": "Research",
     "year": 2021,
-    "tags": ["malware", "concept-drift", "temporal", "PE"],
+    "tags": [
+      "malware",
+      "concept-drift",
+      "temporal",
+      "PE"
+    ],
     "format": "Features/CSV",
     "papers_count": 50,
     "threat_type": "malware",
-    "eval_metrics": ["accuracy", "AUC", "concept drift rate"]
+    "eval_metrics": [
+      "accuracy",
+      "AUC",
+      "concept drift rate"
+    ]
   },
   {
     "id": "phishing-dataset",
     "name": "Phishing Website Dataset",
     "description": "Features extracted from URLs for phishing website detection. Binary classification with 30+ URL-based and page-based features.",
-    "domain": ["web-security"],
+    "domain": [
+      "web-security"
+    ],
     "source": "UCI ML Repository",
     "url": "https://archive.ics.uci.edu/dataset/327/phishing+websites",
     "size": "5MB",
     "samples": 11055,
     "license": "Public",
     "year": 2015,
-    "tags": ["phishing", "URL", "web", "classification"],
+    "tags": [
+      "phishing",
+      "URL",
+      "web",
+      "classification"
+    ],
     "format": "CSV/ARFF",
     "papers_count": 300,
     "threat_type": "phishing"
@@ -799,14 +1937,21 @@
     "id": "deepfake-detection",
     "name": "FaceForensics++",
     "description": "Large-scale face manipulation detection benchmark. 1,000 original videos and corresponding manipulations from 4 methods: Deepfakes, Face2Face, FaceSwap, NeuralTextures.",
-    "domain": ["deepfake"],
+    "domain": [
+      "deepfake"
+    ],
     "source": "TU Munich",
     "url": "https://github.com/ondyari/FaceForensics",
     "size": "300GB",
     "samples": 5000,
     "license": "Research",
     "year": 2019,
-    "tags": ["deepfake", "face", "manipulation", "detection"],
+    "tags": [
+      "deepfake",
+      "face",
+      "manipulation",
+      "detection"
+    ],
     "format": "Video/Frames",
     "papers_count": 1500,
     "threat_type": "deepfake"
@@ -815,14 +1960,21 @@
     "id": "dfdc",
     "name": "Deepfake Detection Challenge (DFDC)",
     "description": "Facebook's deepfake detection challenge dataset. 100,000+ clips with various manipulation techniques for robust deepfake detection research.",
-    "domain": ["deepfake"],
+    "domain": [
+      "deepfake"
+    ],
     "source": "Meta AI",
     "url": "https://www.kaggle.com/c/deepfake-detection-challenge",
     "size": "470GB",
     "samples": 100000,
     "license": "Research",
     "year": 2020,
-    "tags": ["deepfake", "challenge", "video", "detection"],
+    "tags": [
+      "deepfake",
+      "challenge",
+      "video",
+      "detection"
+    ],
     "format": "Video",
     "papers_count": 500,
     "threat_type": "deepfake"
@@ -831,31 +1983,50 @@
     "id": "jailbreakbench",
     "name": "JailbreakBench",
     "description": "NeurIPS 2024 benchmark with 100 unique misuse behaviors sourced from AdvBench, Trojan Red Teaming Competition, HarmBench. 10 categories based on OpenAI usage policies.",
-    "domain": ["llm-security", "jailbreak"],
+    "domain": [
+      "llm-security",
+      "jailbreak"
+    ],
     "source": "Multiple universities",
     "url": "https://jailbreakbench.github.io/",
     "size": "5MB",
     "samples": 100,
     "license": "MIT",
     "year": 2024,
-    "tags": ["jailbreak", "benchmark", "NeurIPS", "red-team"],
+    "tags": [
+      "jailbreak",
+      "benchmark",
+      "NeurIPS",
+      "red-team"
+    ],
     "format": "JSON",
     "papers_count": 120,
     "threat_type": "LLM jailbreak",
-    "eval_metrics": ["attack success rate", "judge score"]
+    "eval_metrics": [
+      "attack success rate",
+      "judge score"
+    ]
   },
   {
     "id": "wildjailbreak",
     "name": "WildJailbreak",
     "description": "Allen AI's 262K synthetic safety training dataset with vanilla and adversarial prompt-response pairs. Addresses exaggerated safety (over-refusal) by providing contrastive harmful/benign queries.",
-    "domain": ["llm-security", "jailbreak"],
+    "domain": [
+      "llm-security",
+      "jailbreak"
+    ],
     "source": "Allen AI",
     "url": "https://huggingface.co/datasets/allenai/wildjailbreak",
     "size": "500MB",
     "samples": 262000,
     "license": "Apache-2.0",
     "year": 2024,
-    "tags": ["jailbreak", "safety-training", "synthetic", "contrastive"],
+    "tags": [
+      "jailbreak",
+      "safety-training",
+      "synthetic",
+      "contrastive"
+    ],
     "format": "JSON/Parquet",
     "papers_count": 50,
     "threat_type": "LLM safety training"
@@ -864,14 +2035,23 @@
     "id": "jailbreakv-28k",
     "name": "JailBreakV-28K",
     "description": "28,000 jailbreak text-image pairs covering 16 safety policies and 5 diverse jailbreak methods. Multimodal benchmark for vision-language model safety.",
-    "domain": ["llm-security", "multimodal", "jailbreak"],
+    "domain": [
+      "llm-security",
+      "multimodal",
+      "jailbreak"
+    ],
     "source": "Multiple universities",
     "url": "https://github.com/EddyLuo1232/JailBreakV_28K",
     "size": "2GB",
     "samples": 28000,
     "license": "Research",
     "year": 2024,
-    "tags": ["multimodal", "jailbreak", "VLM", "safety"],
+    "tags": [
+      "multimodal",
+      "jailbreak",
+      "VLM",
+      "safety"
+    ],
     "format": "Images/JSON",
     "papers_count": 30,
     "threat_type": "multimodal jailbreak"
@@ -880,14 +2060,22 @@
     "id": "llmail-inject",
     "name": "LLMail-Inject",
     "description": "Largest indirect injection attack dataset with 208,095 unique attack prompts. Simulates indirect injection attacks on LLM-based email assistants.",
-    "domain": ["llm-security", "prompt-injection"],
+    "domain": [
+      "llm-security",
+      "prompt-injection"
+    ],
     "source": "Academic",
     "url": "https://github.com/LLMail-Inject/LLMail-Inject",
     "size": "200MB",
     "samples": 208095,
     "license": "MIT",
     "year": 2025,
-    "tags": ["indirect-injection", "email", "LLM", "large-scale"],
+    "tags": [
+      "indirect-injection",
+      "email",
+      "LLM",
+      "large-scale"
+    ],
     "format": "JSON",
     "papers_count": 10,
     "threat_type": "indirect prompt injection"
@@ -896,14 +2084,22 @@
     "id": "open-prompt-injection",
     "name": "Open-Prompt-Injection",
     "description": "Framework for formalizing and benchmarking prompt injection attacks and defenses. Includes SST-2, SMS Spam tasks and detectors like DataSentinel, PromptLocate.",
-    "domain": ["llm-security", "prompt-injection"],
+    "domain": [
+      "llm-security",
+      "prompt-injection"
+    ],
     "source": "GitHub",
     "url": "https://github.com/liu00222/Open-Prompt-Injection",
     "size": "50MB",
     "samples": 5000,
     "license": "MIT",
     "year": 2024,
-    "tags": ["prompt-injection", "benchmark", "framework", "defense"],
+    "tags": [
+      "prompt-injection",
+      "benchmark",
+      "framework",
+      "defense"
+    ],
     "format": "JSON/CSV",
     "papers_count": 40,
     "threat_type": "prompt injection"
@@ -912,14 +2108,22 @@
     "id": "alert-framework",
     "name": "ALERT Red Teaming",
     "description": "15,000 red teaming prompts classified by safety risk taxonomy. Includes suffix injection augmentation and DPO training dataset.",
-    "domain": ["llm-security", "red-team"],
+    "domain": [
+      "llm-security",
+      "red-team"
+    ],
     "source": "Academic",
     "url": "https://github.com/Babelscape/ALERT",
     "size": "30MB",
     "samples": 15000,
     "license": "Apache-2.0",
     "year": 2024,
-    "tags": ["red-team", "safety", "taxonomy", "DPO"],
+    "tags": [
+      "red-team",
+      "safety",
+      "taxonomy",
+      "DPO"
+    ],
     "format": "JSON",
     "papers_count": 25,
     "threat_type": "LLM red teaming"
@@ -928,14 +2132,22 @@
     "id": "apricot",
     "name": "APRICOT (Adversarial Patches in Context)",
     "description": "MITRE's 1,000+ real-world adversarial patch images for object detection. Designed for COCO-based detection models.",
-    "domain": ["adversarial-ml", "physical-attack"],
+    "domain": [
+      "adversarial-ml",
+      "physical-attack"
+    ],
     "source": "MITRE",
     "url": "https://github.com/mitre/apricot",
     "size": "5GB",
     "samples": 1000,
     "license": "Apache-2.0",
     "year": 2021,
-    "tags": ["adversarial-patch", "physical", "object-detection", "COCO"],
+    "tags": [
+      "adversarial-patch",
+      "physical",
+      "object-detection",
+      "COCO"
+    ],
     "format": "Images/COCO",
     "papers_count": 50,
     "threat_type": "physical adversarial attack"
@@ -944,14 +2156,22 @@
     "id": "drelab",
     "name": "DReLAB",
     "description": "Botnet detection adversarial resilience benchmark. Generated using Deep RL (Double DQN, Deep Sarsa) with realistic feature constraints.",
-    "domain": ["network-intrusion", "adversarial-ml"],
+    "domain": [
+      "network-intrusion",
+      "adversarial-ml"
+    ],
     "source": "Academic",
     "url": "https://github.com/DReLAB/DReLAB",
     "size": "100MB",
     "samples": 50000,
     "license": "MIT",
     "year": 2024,
-    "tags": ["botnet", "adversarial", "deep-RL", "IDS"],
+    "tags": [
+      "botnet",
+      "adversarial",
+      "deep-RL",
+      "IDS"
+    ],
     "format": "CSV",
     "papers_count": 10,
     "threat_type": "adversarial IDS evasion"
@@ -960,14 +2180,22 @@
     "id": "mcptox",
     "name": "MCPTox",
     "description": "Benchmark for poisoned MCP tools. Evaluates tool poisoning attacks where malicious instructions are hidden in tool metadata.",
-    "domain": ["ai-agent", "llm-security"],
+    "domain": [
+      "ai-agent",
+      "llm-security"
+    ],
     "source": "Academic",
     "url": "https://github.com/MCPTox/MCPTox",
     "size": "10MB",
     "samples": 1000,
     "license": "MIT",
     "year": 2025,
-    "tags": ["MCP", "agent", "tool-poisoning", "benchmark"],
+    "tags": [
+      "MCP",
+      "agent",
+      "tool-poisoning",
+      "benchmark"
+    ],
     "format": "JSON",
     "papers_count": 5,
     "threat_type": "MCP tool poisoning"
@@ -976,14 +2204,22 @@
     "id": "poisonedrag",
     "name": "PoisonedRAG",
     "description": "USENIX Security 2025 dataset for RAG pipeline poisoning. Injects 5 malicious texts per target question into databases of millions. NQ, HotpotQA, MS-MARCO scales.",
-    "domain": ["llm-security", "rag-security"],
+    "domain": [
+      "llm-security",
+      "rag-security"
+    ],
     "source": "Academic",
     "url": "https://github.com/sleeepeer/PoisonedRAG",
     "size": "1GB",
     "samples": 500,
     "license": "MIT",
     "year": 2025,
-    "tags": ["RAG", "poisoning", "knowledge-base", "USENIX"],
+    "tags": [
+      "RAG",
+      "poisoning",
+      "knowledge-base",
+      "USENIX"
+    ],
     "format": "JSON/Text",
     "papers_count": 15,
     "threat_type": "RAG pipeline poisoning"
@@ -992,14 +2228,22 @@
     "id": "fortress",
     "name": "FORTRESS",
     "description": "Frontier Risk Evaluation for National Security. 500 adversarial + 500 benign text prompts with grading rubrics. Evaluated across 26 frontier models.",
-    "domain": ["llm-security", "agi-safety"],
+    "domain": [
+      "llm-security",
+      "agi-safety"
+    ],
     "source": "UK AISI",
     "url": "https://www.aisi.gov.uk/",
     "size": "5MB",
     "samples": 1000,
     "license": "Research",
     "year": 2025,
-    "tags": ["frontier", "national-security", "red-team", "evaluation"],
+    "tags": [
+      "frontier",
+      "national-security",
+      "red-team",
+      "evaluation"
+    ],
     "format": "JSON",
     "papers_count": 10,
     "threat_type": "frontier model risk"
@@ -1008,14 +2252,22 @@
     "id": "ciciot-2023",
     "name": "CICIoT2023",
     "description": "IoT network intrusion detection dataset. Covers 33 attack types across DDoS, DoS, Recon, Web, BruteForce, Spoofing, and Mirai categories.",
-    "domain": ["network-intrusion", "iot-security"],
+    "domain": [
+      "network-intrusion",
+      "iot-security"
+    ],
     "source": "CIC, University of New Brunswick",
     "url": "https://www.unb.ca/cic/datasets/iotdataset-2023.html",
     "size": "100GB",
     "samples": 46686579,
     "license": "Public",
     "year": 2023,
-    "tags": ["IoT", "IDS", "DDoS", "network"],
+    "tags": [
+      "IoT",
+      "IDS",
+      "DDoS",
+      "network"
+    ],
     "format": "CSV",
     "papers_count": 200,
     "threat_type": "IoT network intrusion"
@@ -1024,14 +2276,21 @@
     "id": "art-safebench",
     "name": "ART-SafeBench",
     "description": "Fujitsu's AI safety research benchmark integrating adversarial prompts, jailbreak attacks, and toxicity. Includes RAGuard, FigStep, HarmBench, InjecAgent adapters.",
-    "domain": ["llm-security"],
+    "domain": [
+      "llm-security"
+    ],
     "source": "Fujitsu",
     "url": "https://github.com/Fujitsu-AI-Research/ART-SafeBench",
     "size": "50MB",
     "samples": 10000,
     "license": "Apache-2.0",
     "year": 2024,
-    "tags": ["safety", "benchmark", "adversarial", "integrated"],
+    "tags": [
+      "safety",
+      "benchmark",
+      "adversarial",
+      "integrated"
+    ],
     "format": "JSON",
     "papers_count": 15,
     "threat_type": "LLM safety evaluation"
@@ -1040,14 +2299,23 @@
     "id": "prompt-injection-rag-2025",
     "name": "Prompt Injection Benchmark for RAG",
     "description": "847 adversarial cases for evaluating prompt injection in RAG pipelines. Supports module-level and end-to-end defense evaluation with domain diversity.",
-    "domain": ["llm-security", "prompt-injection", "rag-security"],
+    "domain": [
+      "llm-security",
+      "prompt-injection",
+      "rag-security"
+    ],
     "source": "Academic",
     "url": "https://github.com/prompt-injection-rag-benchmark",
     "size": "10MB",
     "samples": 847,
     "license": "MIT",
     "year": 2025,
-    "tags": ["RAG", "prompt-injection", "benchmark", "defense"],
+    "tags": [
+      "RAG",
+      "prompt-injection",
+      "benchmark",
+      "defense"
+    ],
     "format": "JSON",
     "papers_count": 5,
     "threat_type": "RAG prompt injection"

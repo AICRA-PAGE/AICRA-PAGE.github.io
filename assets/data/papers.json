@@ -1,0 +1,809 @@
+[
+  {
+    "id": "2603-23925",
+    "title": "DP^2-VL: Private Photo Dataset Protection by Data Poisoning for Vision-Language Models",
+    "authors": [
+      "Hongyi Miao",
+      "Jun Jia",
+      "Xincheng Wang",
+      "Qianli Ma",
+      "Wei Sun",
+      "Wangqiu Zhou",
+      "Dandan Zhu",
+      "Yewen Cao",
+      "Zhi Liu",
+      "Guangtao Zhai"
+    ],
+    "abstract": "Recent advances in visual-language alignment have endowed vision-language models (VLMs) with fine-grained image understanding capabilities. However, this progress also introduces new privacy risks. This paper first proposes a novel privacy threat model named identity-affiliation learning: an attacker fine-tunes a VLM using only a few private photos of a target individual, thereby embedding associations between the target facial identity and their private property and social relationships into th",
+    "year": 2026,
+    "venue": "",
+    "arxiv_id": "2603.23925",
+    "doi": "",
+    "semantic_scholar_id": "",
+    "url": "https://arxiv.org/abs/2603.23925",
+    "pdf_url": "https://arxiv.org/pdf/2603.23925",
+    "categories": [
+      "cs.CV",
+      "cs.CV"
+    ],
+    "keywords": [],
+    "relevance_score": 75,
+    "match_reasons": [
+      "data poisoning",
+      "privacy",
+      "alignment",
+      "threat",
+      "attack"
+    ],
+    "published_at": "2026-03-25T04:30:42Z",
+    "updated_at": "2026-03-25T04:30:42Z",
+    "discovered_from": [
+      "arxiv"
+    ],
+    "last_checked": "2026-03-26T22:13:39.736Z"
+  },
+  {
+    "id": "2512-10998",
+    "title": "SCOUT: A Defense Against Data Poisoning Attacks in Fine-Tuned Language Models",
+    "authors": [
+      "Mohamed Afane",
+      "Abhishek Satyam",
+      "Ke Chen",
+      "Tao Li",
+      "Junaid Farooq",
+      "Juntao Chen"
+    ],
+    "abstract": "Backdoor attacks create significant security threats to language models by embedding hidden triggers that manipulate model behavior during inference, presenting critical risks for AI systems deployed in healthcare and other sensitive domains. While existing defenses effectively counter obvious threats such as out-of-context trigger words and safety alignment violations, they fail against sophisticated attacks using contextually-appropriate triggers that blend seamlessly into natural language. Th",
+    "year": 2025,
+    "venue": "",
+    "arxiv_id": "2512.10998",
+    "doi": "",
+    "semantic_scholar_id": "",
+    "url": "https://arxiv.org/abs/2512.10998",
+    "pdf_url": "https://arxiv.org/pdf/2512.10998",
+    "categories": [
+      "cs.CR",
+      "cs.CL",
+      "cs.CR"
+    ],
+    "keywords": [],
+    "relevance_score": 75,
+    "match_reasons": [
+      "data poisoning",
+      "backdoor",
+      "alignment",
+      "threat",
+      "attack"
+    ],
+    "published_at": "2025-12-10T17:25:55Z",
+    "updated_at": "2025-12-10T17:25:55Z",
+    "discovered_from": [
+      "arxiv"
+    ],
+    "last_checked": "2026-03-26T22:13:39.736Z"
+  },
+  {
+    "id": "2511-09400",
+    "title": "Abstract Gradient Training: A Unified Certification Framework for Data Poisoning, Unlearning, and Differential Privacy",
+    "authors": [
+      "Philip Sosnin",
+      "Matthew Wicker",
+      "Josh Collyer",
+      "Calvin Tsay"
+    ],
+    "abstract": "The impact of inference-time data perturbation (e.g., adversarial attacks) has been extensively studied in machine learning, leading to well-established certification techniques for adversarial robustness. In contrast, certifying models against training data perturbations remains a relatively under-explored area. These perturbations can arise in three critical contexts: adversarial data poisoning, where an adversary manipulates training samples to corrupt model performance; machine unlearning, w",
+    "year": 2025,
+    "venue": "",
+    "arxiv_id": "2511.09400",
+    "doi": "",
+    "semantic_scholar_id": "",
+    "url": "https://arxiv.org/abs/2511.09400",
+    "pdf_url": "https://arxiv.org/pdf/2511.09400",
+    "categories": [
+      "cs.LG",
+      "cs.LG"
+    ],
+    "keywords": [],
+    "relevance_score": 75,
+    "match_reasons": [
+      "adversarial",
+      "data poisoning",
+      "privacy",
+      "attack",
+      "robustness"
+    ],
+    "published_at": "2025-11-12T15:15:15Z",
+    "updated_at": "2025-11-12T15:15:15Z",
+    "discovered_from": [
+      "arxiv"
+    ],
+    "last_checked": "2026-03-26T22:13:39.737Z"
+  },
+  {
+    "id": "2603-17174",
+    "title": "Detecting Data Poisoning in Code Generation LLMs via Black-Box, Vulnerability-Oriented Scanning",
+    "authors": [
+      "Shenao Yan",
+      "Shimaa Ahmed",
+      "Shan Jin",
+      "Sunpreet S. Arora",
+      "Yiwei Cai",
+      "Yizhen Wang",
+      "Yuan Hong"
+    ],
+    "abstract": "Code generation large language models (LLMs) are increasingly integrated into modern software development workflows. Recent work has shown that these models are vulnerable to backdoor and poisoning attacks that induce the generation of insecure code, yet effective defenses remain limited. Existing scanning approaches rely on token-level generation consistency to invert attack targets, which is ineffective for source code where identical semantics can appear in diverse syntactic forms. We present",
+    "year": 2026,
+    "venue": "",
+    "arxiv_id": "2603.17174",
+    "doi": "",
+    "semantic_scholar_id": "",
+    "url": "https://arxiv.org/abs/2603.17174",
+    "pdf_url": "https://arxiv.org/pdf/2603.17174",
+    "categories": [
+      "cs.CR",
+      "cs.AI",
+      "cs.SE",
+      "cs.CR"
+    ],
+    "keywords": [],
+    "relevance_score": 60,
+    "match_reasons": [
+      "data poisoning",
+      "backdoor",
+      "vulnerability",
+      "attack"
+    ],
+    "published_at": "2026-03-17T22:08:45Z",
+    "updated_at": "2026-03-17T22:08:45Z",
+    "discovered_from": [
+      "arxiv"
+    ],
+    "last_checked": "2026-03-26T22:13:39.736Z"
+  },
+  {
+    "id": "2602-16480",
+    "title": "SRFed: Mitigating Poisoning Attacks in Privacy-Preserving Federated Learning with Heterogeneous Data",
+    "authors": [
+      "Yiwen Lu"
+    ],
+    "abstract": "Federated Learning (FL) enables collaborative model training without exposing clients' private data, and has been widely adopted in privacy-sensitive scenarios. However, FL faces two critical security threats: curious servers that may launch inference attacks to reconstruct clients' private data, and compromised clients that can launch poisoning attacks to disrupt model aggregation. Existing solutions mitigate these attacks by combining mainstream privacy-preserving techniques with defensive agg",
+    "year": 2026,
+    "venue": "",
+    "arxiv_id": "2602.16480",
+    "doi": "",
+    "semantic_scholar_id": "",
+    "url": "https://arxiv.org/abs/2602.16480",
+    "pdf_url": "https://arxiv.org/pdf/2602.16480",
+    "categories": [
+      "cs.CR",
+      "cs.DC",
+      "cs.CR"
+    ],
+    "keywords": [],
+    "relevance_score": 60,
+    "match_reasons": [
+      "privacy",
+      "federated",
+      "threat",
+      "attack"
+    ],
+    "published_at": "2026-02-18T14:14:38Z",
+    "updated_at": "2026-02-18T14:14:38Z",
+    "discovered_from": [
+      "arxiv"
+    ],
+    "last_checked": "2026-03-26T22:13:39.736Z"
+  },
+  {
+    "id": "2602-00822",
+    "title": "Safety-Efficacy Trade Off: Robustness against Data-Poisoning",
+    "authors": [
+      "Diego Granziol"
+    ],
+    "abstract": "Backdoor and data poisoning attacks can achieve high attack success while evading existing spectral and optimisation based defences. We show that this behaviour is not incidental, but arises from a fundamental geometric mechanism in input space. Using kernel ridge regression as an exact model of wide neural networks, we prove that clustered dirty label poisons induce a rank one spike in the input Hessian whose magnitude scales quadratically with attack efficacy. Crucially, for nonlinear kernels ",
+    "year": 2026,
+    "venue": "",
+    "arxiv_id": "2602.00822",
+    "doi": "",
+    "semantic_scholar_id": "",
+    "url": "https://arxiv.org/abs/2602.00822",
+    "pdf_url": "https://arxiv.org/pdf/2602.00822",
+    "categories": [
+      "cs.LG"
+    ],
+    "keywords": [],
+    "relevance_score": 60,
+    "match_reasons": [
+      "data poisoning",
+      "backdoor",
+      "attack",
+      "robustness"
+    ],
+    "published_at": "2026-01-31T17:22:00Z",
+    "updated_at": "2026-01-31T17:22:00Z",
+    "discovered_from": [
+      "arxiv"
+    ],
+    "last_checked": "2026-03-26T22:13:39.736Z"
+  },
+  {
+    "id": "2511-12722",
+    "title": "On Robustness of Linear Classifiers to Targeted Data Poisoning",
+    "authors": [
+      "Nakshatra Gupta",
+      "Sumanth Prabhu",
+      "Supratik Chakraborty",
+      "R Venkatesh"
+    ],
+    "abstract": "Data poisoning is a training-time attack that undermines the trustworthiness of learned models. In a targeted data poisoning attack, an adversary manipulates the training dataset to alter the classification of a targeted test point. Given the typically large size of training dataset, manual detection of poisoning is difficult. An alternative is to automatically measure a dataset's robustness against such an attack, which is the focus of this paper. We consider a threat model wherein an adversary",
+    "year": 2025,
+    "venue": "",
+    "arxiv_id": "2511.12722",
+    "doi": "",
+    "semantic_scholar_id": "",
+    "url": "https://arxiv.org/abs/2511.12722",
+    "pdf_url": "https://arxiv.org/pdf/2511.12722",
+    "categories": [
+      "cs.LG",
+      "cs.LG"
+    ],
+    "keywords": [],
+    "relevance_score": 60,
+    "match_reasons": [
+      "data poisoning",
+      "threat",
+      "attack",
+      "robustness"
+    ],
+    "published_at": "2025-11-16T18:20:16Z",
+    "updated_at": "2025-11-16T18:20:16Z",
+    "discovered_from": [
+      "arxiv"
+    ],
+    "last_checked": "2026-03-26T22:13:39.736Z"
+  },
+  {
+    "id": "2511-11020",
+    "title": "Data Poisoning Vulnerabilities Across Healthcare AI Architectures: A Security Threat Analysis",
+    "authors": [
+      "Farhad Abtahi",
+      "Fernando Seoane",
+      "Iván Pau",
+      "Mario Vega-Barbas"
+    ],
+    "abstract": "Healthcare AI systems face major vulnerabilities to data poisoning that current defenses and regulations cannot adequately address. We analyzed eight attack scenarios in four categories: architectural attacks on convolutional neural networks, large language models, and reinforcement learning agents; infrastructure attacks exploiting federated learning and medical documentation systems; critical resource allocation attacks affecting organ transplantation and crisis triage; and supply chain attack",
+    "year": 2025,
+    "venue": "",
+    "arxiv_id": "2511.11020",
+    "doi": "",
+    "semantic_scholar_id": "",
+    "url": "https://arxiv.org/abs/2511.11020",
+    "pdf_url": "https://arxiv.org/pdf/2511.11020",
+    "categories": [
+      "cs.CR",
+      "cs.AI",
+      "cs.CR"
+    ],
+    "keywords": [],
+    "relevance_score": 60,
+    "match_reasons": [
+      "data poisoning",
+      "federated",
+      "threat",
+      "attack"
+    ],
+    "published_at": "2025-11-14T07:16:16Z",
+    "updated_at": "2025-11-14T07:16:16Z",
+    "discovered_from": [
+      "arxiv"
+    ],
+    "last_checked": "2026-03-26T22:13:39.736Z"
+  },
+  {
+    "id": "2511-08331",
+    "title": "Adversarial Bias: Data Poisoning Attacks on Fairness",
+    "authors": [
+      "Eunice Chan",
+      "Hanghang Tong"
+    ],
+    "abstract": "With the growing adoption of AI and machine learning systems in real-world applications, ensuring their fairness has become increasingly critical. The majority of the work in algorithmic fairness focus on assessing and improving the fairness of machine learning systems. There is relatively little research on fairness vulnerability, i.e., how an AI system's fairness can be intentionally compromised. In this work, we first provide a theoretical analysis demonstrating that a simple adversarial pois",
+    "year": 2025,
+    "venue": "",
+    "arxiv_id": "2511.08331",
+    "doi": "",
+    "semantic_scholar_id": "",
+    "url": "https://arxiv.org/abs/2511.08331",
+    "pdf_url": "https://arxiv.org/pdf/2511.08331",
+    "categories": [
+      "cs.LG",
+      "cs.LG"
+    ],
+    "keywords": [],
+    "relevance_score": 60,
+    "match_reasons": [
+      "adversarial",
+      "data poisoning",
+      "vulnerability",
+      "attack"
+    ],
+    "published_at": "2025-11-11T15:09:53Z",
+    "updated_at": "2025-11-11T15:09:53Z",
+    "discovered_from": [
+      "arxiv"
+    ],
+    "last_checked": "2026-03-26T22:13:39.737Z"
+  },
+  {
+    "id": "2511-05845",
+    "title": "IndirectAD: Practical Data Poisoning Attacks against Recommender Systems for Item Promotion",
+    "authors": [
+      "Zihao Wang",
+      "Tianhao Mao",
+      "XiaoFeng Wang",
+      "Di Tang",
+      "Xiaozhong Liu"
+    ],
+    "abstract": "Recommender systems play a central role in digital platforms by providing personalized content. They often use methods such as collaborative filtering and machine learning to accurately predict user preferences. Although these systems offer substantial benefits, they are vulnerable to security and privacy threats, especially data poisoning attacks. By inserting misleading data, attackers can manipulate recommendations for purposes ranging from boosting product visibility to shaping public opinio",
+    "year": 2025,
+    "venue": "",
+    "arxiv_id": "2511.05845",
+    "doi": "",
+    "semantic_scholar_id": "",
+    "url": "https://arxiv.org/abs/2511.05845",
+    "pdf_url": "https://arxiv.org/pdf/2511.05845",
+    "categories": [
+      "cs.CR",
+      "cs.CR"
+    ],
+    "keywords": [],
+    "relevance_score": 60,
+    "match_reasons": [
+      "data poisoning",
+      "privacy",
+      "threat",
+      "attack"
+    ],
+    "published_at": "2025-11-08T04:27:34Z",
+    "updated_at": "2025-11-08T04:27:34Z",
+    "discovered_from": [
+      "arxiv"
+    ],
+    "last_checked": "2026-03-26T22:13:39.737Z"
+  },
+  {
+    "id": "2603-16137",
+    "title": "SIA: A Synthesize-Inject-Align Framework for Knowledge-Grounded and Secure E-commerce Search LLMs with Industrial Deployment",
+    "authors": [
+      "Zhouwei Zhai",
+      "Mengxiang Chen",
+      "Anmeng Zhang"
+    ],
+    "abstract": "Large language models offer transformative potential for e-commerce search by enabling intent-aware recommendations. However, their industrial deployment is hindered by two critical challenges: (1) knowledge hallucination due to insufficient encoding of dynamic, fine-grained product knowledge, and (2) security vulnerabilities under jailbreak attacks that threaten compliance. To address these issues, we propose SIA--a Synthesize-Inject-Align framework for building knowledgeable and secure e-comme",
+    "year": 2026,
+    "venue": "",
+    "arxiv_id": "2603.16137",
+    "doi": "",
+    "semantic_scholar_id": "",
+    "url": "https://arxiv.org/abs/2603.16137",
+    "pdf_url": "https://arxiv.org/pdf/2603.16137",
+    "categories": [
+      "cs.CL",
+      "cs.CL"
+    ],
+    "keywords": [],
+    "relevance_score": 45,
+    "match_reasons": [
+      "jailbreak",
+      "threat",
+      "attack"
+    ],
+    "published_at": "2026-03-17T05:41:22Z",
+    "updated_at": "2026-03-19T08:59:40Z",
+    "discovered_from": [
+      "arxiv"
+    ],
+    "last_checked": "2026-03-26T22:13:18.715Z"
+  },
+  {
+    "id": "2602-16944",
+    "title": "Exact Certification of Data-Poisoning Attacks Using Mixed-Integer Programming",
+    "authors": [
+      "Philip Sosnin",
+      "Jodie Knapp",
+      "Fraser Kennedy",
+      "Josh Collyer",
+      "Calvin Tsay"
+    ],
+    "abstract": "This work introduces a verification framework that provides both sound and complete guarantees for data poisoning attacks during neural network training. We formulate adversarial data manipulation, model training, and test-time evaluation in a single mixed-integer quadratic programming (MIQCP) problem. Finding the global optimum of the proposed formulation provably yields worst-case poisoning attacks, while simultaneously bounding the effectiveness of all possible attacks on the given training p",
+    "year": 2026,
+    "venue": "",
+    "arxiv_id": "2602.16944",
+    "doi": "",
+    "semantic_scholar_id": "",
+    "url": "https://arxiv.org/abs/2602.16944",
+    "pdf_url": "https://arxiv.org/pdf/2602.16944",
+    "categories": [
+      "cs.LG",
+      "cs.LG"
+    ],
+    "keywords": [],
+    "relevance_score": 45,
+    "match_reasons": [
+      "adversarial",
+      "data poisoning",
+      "attack"
+    ],
+    "published_at": "2026-02-18T23:18:45Z",
+    "updated_at": "2026-02-18T23:18:45Z",
+    "discovered_from": [
+      "arxiv"
+    ],
+    "last_checked": "2026-03-26T22:13:39.736Z"
+  },
+  {
+    "id": "2603-19469",
+    "title": "A Framework for Formalizing LLM Agent Security",
+    "authors": [
+      "Vincent Siu",
+      "Jingxuan He",
+      "Kyle Montgomery",
+      "Zhun Wang",
+      "Neil Gong",
+      "Chenguang Wang",
+      "Dawn Song"
+    ],
+    "abstract": "Security in LLM agents is inherently contextual. For example, the same action taken by an agent may represent legitimate behavior or a security violation depending on whose instruction led to the action, what objective is being pursued, and whether the action serves that objective. However, existing definitions of security attacks against LLM agents often fail to capture this contextual nature. As a result, defenses face a fundamental utility-security tradeoff: applying defenses uniformly across",
+    "year": 2026,
+    "venue": "",
+    "arxiv_id": "2603.19469",
+    "doi": "",
+    "semantic_scholar_id": "",
+    "url": "https://arxiv.org/abs/2603.19469",
+    "pdf_url": "https://arxiv.org/pdf/2603.19469",
+    "categories": [
+      "cs.CR",
+      "cs.AI",
+      "cs.CR"
+    ],
+    "keywords": [],
+    "relevance_score": 30,
+    "match_reasons": [
+      "agent security",
+      "attack"
+    ],
+    "published_at": "2026-03-19T21:01:49Z",
+    "updated_at": "2026-03-19T21:01:49Z",
+    "discovered_from": [
+      "arxiv"
+    ],
+    "last_checked": "2026-03-26T22:13:18.715Z"
+  },
+  {
+    "id": "2603-18740",
+    "title": "Measuring and Exploiting Confirmation Bias in LLM-Assisted Security Code Review",
+    "authors": [
+      "Dimitris Mitropoulos",
+      "Nikolaos Alexopoulos",
+      "Georgios Alexopoulos",
+      "Diomidis Spinellis"
+    ],
+    "abstract": "Security code reviews increasingly rely on systems integrating Large Language Models (LLMs), ranging from interactive assistants to autonomous agents in CI/CD pipelines. We study whether confirmation bias (i.e., the tendency to favor interpretations that align with prior expectations) affects LLM-based vulnerability detection, and whether this failure mode can be exploited in software supply-chain attacks. We conduct two complementary studies. Study 1 quantifies confirmation bias through control",
+    "year": 2026,
+    "venue": "",
+    "arxiv_id": "2603.18740",
+    "doi": "",
+    "semantic_scholar_id": "",
+    "url": "https://arxiv.org/abs/2603.18740",
+    "pdf_url": "https://arxiv.org/pdf/2603.18740",
+    "categories": [
+      "cs.SE",
+      "cs.AI",
+      "cs.CR",
+      "cs.SE"
+    ],
+    "keywords": [],
+    "relevance_score": 30,
+    "match_reasons": [
+      "vulnerability",
+      "attack"
+    ],
+    "published_at": "2026-03-19T10:40:27Z",
+    "updated_at": "2026-03-19T10:40:27Z",
+    "discovered_from": [
+      "arxiv"
+    ],
+    "last_checked": "2026-03-26T22:13:18.715Z"
+  },
+  {
+    "id": "2603-18196",
+    "title": "Retrieval-Augmented LLMs for Security Incident Analysis",
+    "authors": [
+      "Xavier Cadet",
+      "Aditya Vikram Singh",
+      "Harsh Mamania",
+      "Edward Koh",
+      "Alex Fitts",
+      "Dirk Van Bruggen",
+      "Simona Boboila",
+      "Peter Chin",
+      "Alina Oprea"
+    ],
+    "abstract": "Investigating cybersecurity incidents requires collecting and analyzing evidence from multiple log sources, including intrusion detection alerts, network traffic records, and authentication events. This process is labor-intensive: analysts must sift through large volumes of data to identify relevant indicators and piece together what happened. We present a RAG-based system that performs security incident analysis through targeted query-based filtering and LLM semantic reasoning. The system uses ",
+    "year": 2026,
+    "venue": "",
+    "arxiv_id": "2603.18196",
+    "doi": "",
+    "semantic_scholar_id": "",
+    "url": "https://arxiv.org/abs/2603.18196",
+    "pdf_url": "https://arxiv.org/pdf/2603.18196",
+    "categories": [
+      "cs.CR",
+      "cs.AI",
+      "cs.CR"
+    ],
+    "keywords": [],
+    "relevance_score": 30,
+    "match_reasons": [
+      "intrusion detection",
+      "cybersecurity"
+    ],
+    "published_at": "2026-03-18T18:45:56Z",
+    "updated_at": "2026-03-20T14:29:57Z",
+    "discovered_from": [
+      "arxiv"
+    ],
+    "last_checked": "2026-03-26T22:13:18.715Z"
+  },
+  {
+    "id": "2603-11619",
+    "title": "Taming OpenClaw: Security Analysis and Mitigation of Autonomous LLM Agent Threats",
+    "authors": [
+      "Xinhao Deng",
+      "Yixiang Zhang",
+      "Jiaqing Wu",
+      "Jiaqi Bai",
+      "Sibo Yi",
+      "Zhuoheng Zou",
+      "Yue Xiao",
+      "Rennai Qiu",
+      "Jianan Ma",
+      "Jialuo Chen"
+    ],
+    "abstract": "Autonomous Large Language Model (LLM) agents, exemplified by OpenClaw, demonstrate remarkable capabilities in executing complex, long-horizon tasks. However, their tightly coupled instant-messaging interaction paradigm and high-privilege execution capabilities substantially expand the system attack surface. In this paper, we present a comprehensive security threat analysis of OpenClaw. To structure our analysis, we introduce a five-layer lifecycle-oriented security framework that captures key st",
+    "year": 2026,
+    "venue": "",
+    "arxiv_id": "2603.11619",
+    "doi": "",
+    "semantic_scholar_id": "",
+    "url": "https://arxiv.org/abs/2603.11619",
+    "pdf_url": "https://arxiv.org/pdf/2603.11619",
+    "categories": [
+      "cs.CR",
+      "cs.AI",
+      "cs.CR"
+    ],
+    "keywords": [],
+    "relevance_score": 30,
+    "match_reasons": [
+      "threat",
+      "attack"
+    ],
+    "published_at": "2026-03-12T07:24:05Z",
+    "updated_at": "2026-03-12T07:24:05Z",
+    "discovered_from": [
+      "arxiv"
+    ],
+    "last_checked": "2026-03-26T22:13:18.716Z"
+  },
+  {
+    "id": "2603-09046",
+    "title": "FlexServe: A Fast and Secure LLM Serving System for Mobile Devices with Flexible Resource Isolation",
+    "authors": [
+      "Yinpeng Wu",
+      "Yitong Chen",
+      "Lixiang Wang",
+      "Jinyu Gu",
+      "Zhichao Hua",
+      "Yubin Xia"
+    ],
+    "abstract": "Device-side Large Language Models (LLMs) have witnessed explosive growth, offering higher privacy and availability compared to cloud-side LLMs. During LLM inference, both model weights and user data are valuable, and attackers may even compromise the OS kernel to steal them. ARM TrustZone is the de facto hardware-based isolation technology on mobile devices, used to protect sensitive applications from a compromised OS. However, protecting LLM inference with TrustZone incurs significant overhead ",
+    "year": 2026,
+    "venue": "",
+    "arxiv_id": "2603.09046",
+    "doi": "",
+    "semantic_scholar_id": "",
+    "url": "https://arxiv.org/abs/2603.09046",
+    "pdf_url": "https://arxiv.org/pdf/2603.09046",
+    "categories": [
+      "cs.CR",
+      "cs.LG",
+      "cs.OS",
+      "cs.CR"
+    ],
+    "keywords": [],
+    "relevance_score": 30,
+    "match_reasons": [
+      "privacy",
+      "attack"
+    ],
+    "published_at": "2026-03-10T00:31:25Z",
+    "updated_at": "2026-03-10T00:31:25Z",
+    "discovered_from": [
+      "arxiv"
+    ],
+    "last_checked": "2026-03-26T22:13:18.716Z"
+  },
+  {
+    "id": "2603-22603",
+    "title": "Semi-Automated Threat Modeling of Cloud-Based Systems Through Extracting Software Architecture from Configuration and Network Flow",
+    "authors": [
+      "Nicholas Pecka",
+      "Lotfi Ben Othmane",
+      "Bharat Bhargava",
+      "Renee Bryce"
+    ],
+    "abstract": "Traditional threat modeling occurs during design, but cloud deployments introduce unanticipated threats, especially multi-stage attacks chaining vulnerabilities across trust boundaries. Existing security tools analyze components in isolation, cannot detect architectural threats from system composition, and cannot validate runtime behavior against configured policies. This gap leaves organizations vulnerable to attacks exploiting architectural weaknesses. This paper addresses this gap through a k",
+    "year": 2026,
+    "venue": "",
+    "arxiv_id": "2603.22603",
+    "doi": "",
+    "semantic_scholar_id": "",
+    "url": "https://arxiv.org/abs/2603.22603",
+    "pdf_url": "https://arxiv.org/pdf/2603.22603",
+    "categories": [
+      "cs.CR",
+      "cs.CR"
+    ],
+    "keywords": [],
+    "relevance_score": 30,
+    "match_reasons": [
+      "threat",
+      "attack"
+    ],
+    "published_at": "2026-03-23T21:57:53Z",
+    "updated_at": "2026-03-23T21:57:53Z",
+    "discovered_from": [
+      "arxiv"
+    ],
+    "last_checked": "2026-03-26T22:13:36.006Z"
+  },
+  {
+    "id": "2603-00516",
+    "title": "ProtegoFed: Backdoor-Free Federated Instruction Tuning with Interspersed Poisoned Data",
+    "authors": [
+      "Haodong Zhao",
+      "Jinming Hu",
+      "Zhaomin Wu",
+      "Zongru Wu",
+      "Wei Du",
+      "Junyi Hou",
+      "Caibei Zhao",
+      "Zhuosheng Zhang",
+      "Bingsheng He",
+      "Gongshen Liu"
+    ],
+    "abstract": "Federated Instruction Tuning (FIT) enables collaborative instruction tuning of large language models across multiple organizations (clients) in a cross-silo setting without requiring the sharing of private instructions. Recent findings on natural backdoors and the existing training data collection method suggest that poisoned samples may be pervasive and inadvertently embedded in real-world datasets, potentially distributed across all clients, even if the clients are benign. This work systematic",
+    "year": 2026,
+    "venue": "",
+    "arxiv_id": "2603.00516",
+    "doi": "",
+    "semantic_scholar_id": "",
+    "url": "https://arxiv.org/abs/2603.00516",
+    "pdf_url": "https://arxiv.org/pdf/2603.00516",
+    "categories": [
+      "cs.CR",
+      "cs.CR"
+    ],
+    "keywords": [],
+    "relevance_score": 30,
+    "match_reasons": [
+      "backdoor",
+      "federated"
+    ],
+    "published_at": "2026-02-28T07:25:32Z",
+    "updated_at": "2026-02-28T07:25:32Z",
+    "discovered_from": [
+      "arxiv"
+    ],
+    "last_checked": "2026-03-26T22:13:39.736Z"
+  },
+  {
+    "id": "2602-23982",
+    "title": "Robust Aggregation for Federated Sequential Recommendation with Sparse and Poisoned Data",
+    "authors": [
+      "Minh Hieu Nguyen"
+    ],
+    "abstract": "Federated sequential recommendation distributes model training across user devices so that behavioural data remains local, reducing privacy risks. Yet, this setting introduces two intertwined difficulties. On the one hand, individual clients typically contribute only short and highly sparse interaction sequences, limiting the reliability of learned user representations. On the other hand, the federated optimisation process is vulnerable to malicious or corrupted client updates, where poisoned gr",
+    "year": 2026,
+    "venue": "",
+    "arxiv_id": "2602.23982",
+    "doi": "",
+    "semantic_scholar_id": "",
+    "url": "https://arxiv.org/abs/2602.23982",
+    "pdf_url": "https://arxiv.org/pdf/2602.23982",
+    "categories": [
+      "cs.IR",
+      "cs.IR"
+    ],
+    "keywords": [],
+    "relevance_score": 30,
+    "match_reasons": [
+      "privacy",
+      "federated"
+    ],
+    "published_at": "2026-02-27T12:50:44Z",
+    "updated_at": "2026-02-27T12:50:44Z",
+    "discovered_from": [
+      "arxiv"
+    ],
+    "last_checked": "2026-03-26T22:13:39.736Z"
+  },
+  {
+    "id": "2602-04899",
+    "title": "Phantom Transfer: Data-level Defences are Insufficient Against Data Poisoning",
+    "authors": [
+      "Andrew Draganov",
+      "Tolga H. Dur",
+      "Anandmayi Bhongade",
+      "Mary Phuong"
+    ],
+    "abstract": "We present a data poisoning attack -- Phantom Transfer -- with the property that, even if you know precisely how the poison was placed into an otherwise benign dataset, you cannot filter it out. We achieve this by modifying subliminal learning to work in real-world contexts and demonstrate that the attack works across models, including GPT-4.1. Indeed, even fully paraphrasing every sample in the dataset using a different model does not stop the attack. We also discuss connections to steering vec",
+    "year": 2026,
+    "venue": "",
+    "arxiv_id": "2602.04899",
+    "doi": "",
+    "semantic_scholar_id": "",
+    "url": "https://arxiv.org/abs/2602.04899",
+    "pdf_url": "https://arxiv.org/pdf/2602.04899",
+    "categories": [
+      "cs.CR",
+      "cs.AI",
+      "cs.CR"
+    ],
+    "keywords": [],
+    "relevance_score": 30,
+    "match_reasons": [
+      "data poisoning",
+      "attack"
+    ],
+    "published_at": "2026-02-03T14:38:07Z",
+    "updated_at": "2026-02-03T14:38:07Z",
+    "discovered_from": [
+      "arxiv"
+    ],
+    "last_checked": "2026-03-26T22:13:39.736Z"
+  },
+  {
+    "id": "2512-08485",
+    "title": "Optimal Perturbation Budget Allocation for Data Poisoning in Offline Reinforcement Learning",
+    "authors": [
+      "Junnan Qiu",
+      "Yuanjie Zhao",
+      "Jie Li"
+    ],
+    "abstract": "Offline Reinforcement Learning (RL) enables policy optimization from static datasets but is inherently vulnerable to data poisoning attacks. Existing attack strategies typically rely on locally uniform perturbations, which treat all samples indiscriminately. This approach is inefficient, as it wastes the perturbation budget on low-impact samples, and lacks stealthiness due to significant statistical deviations. In this paper, we propose a novel Global Budget Allocation attack strategy. Leveragin",
+    "year": 2025,
+    "venue": "",
+    "arxiv_id": "2512.08485",
+    "doi": "",
+    "semantic_scholar_id": "",
+    "url": "https://arxiv.org/abs/2512.08485",
+    "pdf_url": "https://arxiv.org/pdf/2512.08485",
+    "categories": [
+      "cs.LG",
+      "cs.LG"
+    ],
+    "keywords": [],
+    "relevance_score": 30,
+    "match_reasons": [
+      "data poisoning",
+      "attack"
+    ],
+    "published_at": "2025-12-09T11:04:37Z",
+    "updated_at": "2025-12-10T07:43:34Z",
+    "discovered_from": [
+      "arxiv"
+    ],
+    "last_checked": "2026-03-26T22:13:39.736Z"
+  }
+]
