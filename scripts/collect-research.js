@@ -16,17 +16,36 @@ const DATASETS_PATH = path.join(__dirname, '..', 'assets', 'data', 'datasets.jso
 const PAPERS_PATH = path.join(__dirname, '..', 'assets', 'data', 'papers.json');
 
 const SECURITY_KEYWORDS = [
+  // Security FOR AI (AI 시스템 보호)
   'adversarial', 'prompt injection', 'jailbreak', 'red teaming',
-  'model extraction', 'data poisoning', 'backdoor', 'malware',
-  'intrusion detection', 'vulnerability', 'privacy', 'federated',
-  'AI safety', 'LLM security', 'agent security', 'alignment',
-  'deepfake', 'phishing', 'cybersecurity', 'threat', 'attack',
-  'robustness', 'evasion', 'trojan', 'watermark'
+  'model extraction', 'data poisoning', 'backdoor', 'trojan',
+  'model inversion', 'membership inference', 'evasion attack',
+  'robustness', 'alignment', 'AI safety', 'LLM security',
+  'agent security', 'watermark', 'model stealing',
+  'adversarial example', 'adversarial training', 'certified defense',
+  'differential privacy', 'federated learning attack',
+  // AI FOR Security (AI를 보안에 활용)
+  'malware', 'intrusion detection', 'vulnerability', 'phishing',
+  'deepfake', 'cybersecurity', 'threat detection', 'anomaly detection',
+  'network security', 'cyber threat intelligence', 'fraud detection',
+  'spam detection', 'botnet', 'ransomware', 'APT detection',
+  'SIEM', 'SOC automation', 'digital forensics', 'incident response',
+  // Shared keywords
+  'privacy', 'federated', 'attack', 'defense', 'threat',
+  'information security', 'cyber attack', 'zero-day',
+  'supply chain attack', 'code security'
 ];
 
 const HF_SEARCH_QUERIES = [
-  'security', 'adversarial', 'malware', 'prompt injection',
-  'jailbreak', 'vulnerability', 'intrusion detection', 'cybersecurity'
+  // Security for AI
+  'security', 'adversarial', 'prompt injection', 'jailbreak',
+  'backdoor attack', 'model extraction', 'data poisoning',
+  'adversarial robustness', 'AI safety', 'red teaming',
+  // AI for Security
+  'malware', 'vulnerability', 'intrusion detection', 'cybersecurity',
+  'phishing', 'deepfake', 'threat detection', 'anomaly detection',
+  'fraud detection', 'ransomware', 'botnet detection',
+  'digital forensics', 'network security'
 ];
 
 const ARXIV_CATEGORIES = ['cs.CR', 'cs.AI', 'cs.LG'];
@@ -194,7 +213,21 @@ async function collectArxivPapers(existing) {
     'ti:adversarial+robustness+AND+cat:cs.LG',
     'ti:AI+agent+security',
     'ti:RAG+attack',
-    'ti:cybersecurity+AND+cat:cs.CR'
+    'ti:cybersecurity+AND+cat:cs.CR',
+    // AI for Security queries
+    'ti:anomaly+detection+AND+cat:cs.CR',
+    'ti:threat+detection+AND+cat:cs.CR',
+    'ti:phishing+detection',
+    'ti:ransomware+AND+cat:cs.CR',
+    'ti:network+intrusion+AND+cat:cs.CR',
+    'ti:digital+forensics+AND+cat:cs.CR',
+    'ti:fraud+detection+AND+cat:cs.AI',
+    // Security for AI additional
+    'ti:model+inversion+attack',
+    'ti:membership+inference',
+    'ti:differential+privacy+AND+cat:cs.LG',
+    'ti:adversarial+patch',
+    'ti:supply+chain+attack'
   ];
 
   for (const query of queries) {
@@ -272,7 +305,12 @@ async function collectTopVenuePapers(existing) {
 
   for (const venue of TOP_VENUES) {
     // Search each venue with security keywords
-    const secQueries = ['adversarial', 'security', 'attack', 'privacy', 'malware', 'backdoor'];
+    // Both "AI for Security" and "Security for AI" queries
+    const secQueries = [
+      'adversarial', 'security', 'attack', 'privacy', 'malware', 'backdoor',
+      'intrusion detection', 'vulnerability', 'deepfake', 'robustness',
+      'phishing', 'threat detection'
+    ];
     for (const kw of secQueries) {
       console.log(`  [S2] ${venue.short}: ${kw}`);
       const url = `https://api.semanticscholar.org/graph/v1/paper/search?query=${encodeURIComponent(kw)}&venue=${encodeURIComponent(venue.query)}&year=2024-2026&limit=10&fields=title,authors,year,venue,citationCount,externalIds,abstract,url`;
