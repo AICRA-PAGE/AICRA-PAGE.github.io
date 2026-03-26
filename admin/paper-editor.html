@@ -290,7 +290,55 @@ body.simple-mode .ins button[onclick*="fn"]{display:inline-block}
 .modal-body textarea{width:100%;min-height:50px;padding:6px 8px;border:1px solid var(--line);border-radius:4px;font-size:.78rem;font-family:inherit;background:var(--panel);color:var(--text);resize:vertical;line-height:1.5}
 .modal-foot{padding:10px 16px;border-top:1px solid var(--line);display:flex;gap:6px;justify-content:flex-end;flex-shrink:0}
 
-@media(max-width:1024px){.ed{flex-direction:column}.meta{grid-template-columns:1fr 1fr 1fr}.ref-panel.open{width:200px}}
+/* === RESPONSIVE: Tablet (max-width:1024px) === */
+@media(max-width:1024px){
+  .ed{flex-direction:column}
+  .meta{grid-template-columns:1fr 1fr 1fr}
+  .ref-panel.open{width:200px}
+  .ins{padding:3px 8px}
+  .ins button{padding:2px 5px;font-size:.55rem}
+  #pv{padding:20px 24px;font-size:.85rem}
+}
+/* === RESPONSIVE: Mobile (max-width:768px) === */
+@media(max-width:768px){
+  .tb{padding:4px 8px;gap:3px;flex-wrap:wrap}
+  .tb h1{font-size:.7rem}
+  .tb .sep{display:none}
+  .tb .bt{font-size:.6rem;padding:4px 6px;min-height:32px}
+  .tb select.sel{font-size:.6rem;min-height:32px}
+  .meta{grid-template-columns:1fr 1fr;gap:3px;padding:4px 8px}
+  .meta2{grid-template-columns:1fr 1fr;gap:3px;padding:4px 8px}
+  .ins{padding:2px 6px;gap:2px}
+  .ins button{padding:3px 5px;font-size:.55rem;min-height:28px}
+  .ins .gl{font-size:.46rem;padding:0 2px}
+  .ed{flex-direction:column;height:auto;flex:1}
+  .pn{min-height:40vh}
+  .dv{display:none}
+  #input{font-size:12px;padding:8px}
+  #pv{padding:14px 16px;font-size:.82rem;line-height:1.7}
+  .ref-panel{position:fixed!important;left:0;top:0;width:100%!important;height:100vh;z-index:100;border:none}
+  .ref-panel.open{width:100%!important}
+  .help{width:100%!important;max-width:100%!important}
+  .modal-box{width:95vw!important;max-width:95vw!important;max-height:90vh}
+  /* Mobile tab switcher */
+  .mobile-tabs{display:flex!important;gap:0;border-bottom:1px solid var(--line);background:var(--surface);flex-shrink:0}
+  .mobile-tabs button{flex:1;padding:8px;border:none;background:transparent;font-size:.7rem;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent}
+  .mobile-tabs button.active{color:var(--brand);border-bottom-color:var(--brand)}
+  .pn-label{padding:2px 8px;font-size:.52rem}
+}
+/* === RESPONSIVE: Small Mobile (max-width:480px) === */
+@media(max-width:480px){
+  .meta{grid-template-columns:1fr;gap:2px;padding:3px 6px}
+  .meta2{grid-template-columns:1fr;gap:2px;padding:3px 6px}
+  .tb{padding:3px 6px}
+  .tb .bt{font-size:.56rem;padding:4px 5px;min-height:36px}
+  .ins{display:none}
+  .ins.mobile-show{display:flex!important}
+  #input{font-size:11px;padding:6px}
+  #pv{padding:10px 12px;font-size:.78rem;line-height:1.6}
+}
+/* Hide mobile tabs on desktop */
+.mobile-tabs{display:none}
 </style>
 </head>
 <body>
@@ -506,8 +554,13 @@ body.simple-mode .ins button[onclick*="fn"]{display:inline-block}
 
 <div id="checkResult" style="display:none;padding:10px 14px;font-size:.75rem;line-height:1.6;background:var(--surface);border:1px solid var(--line);font-family:'Pretendard',sans-serif;max-height:220px;overflow-y:auto;flex-shrink:0;position:relative"></div>
 
+<div class="mobile-tabs" id="mobileTabs">
+  <button class="active" onclick="switchMobileTab('editor')">에디터</button>
+  <button onclick="switchMobileTab('preview')">미리보기</button>
+  <button onclick="switchMobileTab('tools')" style="font-size:.6rem">도구</button>
+</div>
 <div class="ed">
-  <div class="pn"><div class="pn-label">LaTeX + Markdown <span style="font-size:.45rem;color:var(--muted);margin-left:8px">Ctrl+H 검색/치환</span></div>
+  <div class="pn" id="editorPane"><div class="pn-label">LaTeX + Markdown <span style="font-size:.45rem;color:var(--muted);margin-left:8px">Ctrl+H 검색/치환</span></div>
     <!-- Find/Replace panel -->
     <div id="findPanel" style="display:none;padding:4px 8px;background:var(--surface);border-bottom:1px solid var(--line);font-size:.65rem;flex-shrink:0">
       <div style="display:flex;gap:4px;align-items:center;margin-bottom:3px">
@@ -527,7 +580,7 @@ body.simple-mode .ins button[onclick*="fn"]{display:inline-block}
     <textarea id="input" spellcheck="true" lang="ko" placeholder="위에서 논문 양식을 선택하여 시작하세요.&#10;&#10;$...$ 인라인 수식 | $$...$$ 블록 수식&#10;:::theorem, :::definition, :::proof 환경 블록&#10;[cite:1] 인용 | [^1] 각주&#10;&#10;? 버튼으로 작성 가이드를 확인하세요."></textarea>
   </div>
   <div class="dv" id="dv"></div>
-  <div class="pn">
+  <div class="pn" id="previewPane">
     <div class="pn-label">
       <span>미리보기</span>
       <div class="opts">
@@ -3588,6 +3641,36 @@ function replaceAllFind(){
   inp.focus();inp.select();document.execCommand('insertText',false,newVal);
   render();
   document.getElementById('findCount').textContent='0건 ('+count+'건 치환됨)';
+}
+
+// === MOBILE TAB SWITCHER ===
+function switchMobileTab(tab){
+  const ep=document.getElementById('editorPane');
+  const pp=document.getElementById('previewPane');
+  const dv=document.getElementById('dv');
+  const ins=document.querySelector('.ins');
+  const tabs=document.querySelectorAll('.mobile-tabs button');
+  tabs.forEach(b=>b.classList.remove('active'));
+  if(tab==='editor'){
+    ep.style.display='';pp.style.display='none';dv.style.display='none';
+    if(ins)ins.style.display='none';
+    tabs[0].classList.add('active');
+  }else if(tab==='preview'){
+    ep.style.display='none';pp.style.display='';dv.style.display='none';
+    if(ins)ins.style.display='none';
+    tabs[1].classList.add('active');
+    render();
+  }else if(tab==='tools'){
+    ep.style.display='none';pp.style.display='none';dv.style.display='none';
+    if(ins){ins.style.display='flex';ins.classList.add('mobile-show');}
+    tabs[2].classList.add('active');
+  }
+}
+// Auto-detect mobile and show tabs
+if(window.innerWidth<=768){
+  const pp=document.getElementById('previewPane');
+  if(pp)pp.style.display='none';
+  const dv=document.getElementById('dv');if(dv)dv.style.display='none';
 }
 
 // === ACCESSIBILITY IMPROVEMENTS ===
