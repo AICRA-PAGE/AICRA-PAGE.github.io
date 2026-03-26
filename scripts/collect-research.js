@@ -380,6 +380,72 @@ async function collectTopVenuePapers(existing) {
   return newPapers;
 }
 
+// === HIGH-CITATION PAPER COLLECTION (Semantic Scholar) ===
+async function collectHighCitationPapers(existing) {
+  const existingTitles = new Set(existing.map(p => normalize(p.title)));
+  const newPapers = [];
+
+  // AI security domain queries sorted by citation count
+  const hiCiteQueries = [
+    'adversarial examples', 'adversarial attacks deep learning',
+    'prompt injection LLM', 'jailbreak language model',
+    'data poisoning machine learning', 'backdoor attack neural network',
+    'model extraction attack', 'membership inference attack',
+    'federated learning privacy', 'differential privacy deep learning',
+    'malware detection deep learning', 'intrusion detection machine learning',
+    'deepfake detection', 'adversarial robustness',
+    'AI safety alignment', 'red teaming language model',
+    'network anomaly detection', 'vulnerability detection AI',
+    'phishing detection machine learning', 'ransomware detection',
+    'cyber threat intelligence', 'digital forensics machine learning'
+  ];
+
+  for (const query of hiCiteQueries) {
+    console.log(`  [HiCite] ${query}`);
+    // Sort by citationCount descending via relevance (S2 default is relevance, but high-cited papers rank high)
+    const url = `https://api.semanticscholar.org/graph/v1/paper/search?query=${encodeURIComponent(query)}&limit=5&fields=title,authors,year,venue,citationCount,externalIds,abstract,url&year=2018-2026`;
+    const data = await fetchJSON(url);
+    if (!data || !data.data) { await sleep(2000); continue; }
+
+    // Filter for high citation papers only
+    const highCited = (data.data || []).filter(p => (p.citationCount || 0) >= 50);
+    for (const p of highCited) {
+      if (!p.title || existingTitles.has(normalize(p.title))) continue;
+      const doi = p.externalIds?.DOI || '';
+      const arxivId = p.externalIds?.ArXiv || '';
+      const abstract = (p.abstract || '').substring(0, 500);
+      const authors = (p.authors || []).map(a => a.name).slice(0, 10);
+
+      newPapers.push({
+        id: (doi || arxivId || normalize(p.title).substring(0, 30)).replace(/[./]/g, '-'),
+        title: p.title,
+        authors: authors,
+        abstract: abstract,
+        year: p.year || 0,
+        venue: p.venue || '',
+        arxiv_id: arxivId,
+        doi: doi,
+        semantic_scholar_id: p.paperId || '',
+        url: p.url || '',
+        pdf_url: arxivId ? `https://arxiv.org/pdf/${arxivId}` : '',
+        categories: [],
+        keywords: [],
+        citation_count: p.citationCount || 0,
+        relevance_score: Math.min(100, 50 + Math.floor((p.citationCount || 0) / 10)),
+        match_reasons: ['high-citation', query],
+        published_at: '',
+        updated_at: '',
+        discovered_from: ['semantic-scholar', 'high-citation'],
+        last_checked: new Date().toISOString()
+      });
+      existingTitles.add(normalize(p.title));
+    }
+    await sleep(2000);
+  }
+
+  return newPapers;
+}
+
 // === MAIN ===
 async function main() {
   console.log('=== AICRA Research Collector ===');
@@ -410,7 +476,13 @@ async function main() {
   const newVenue = await collectTopVenuePapers(allPapersSoFar);
   console.log(`  Found ${newVenue.length} new top venue papers`);
 
-  const newPapers = [...newArxiv, ...newVenue];
+  // Collect high-citation papers
+  console.log('\n--- Collecting High-Citation Papers ---');
+  const allPapersNow = [...papers, ...newArxiv, ...newVenue];
+  const newHiCite = await collectHighCitationPapers(allPapersNow);
+  console.log(`  Found ${newHiCite.length} new high-citation papers`);
+
+  const newPapers = [...newArxiv, ...newVenue, ...newHiCite];
 
   // Merge
   if (newDatasets.length > 0) {
