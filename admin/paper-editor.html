@@ -1321,6 +1321,8 @@ F(df1, df2)=값, p=값, eta^2=값</div>
 <script>
 const inp=document.getElementById('input'),pv=document.getElementById('pv');
 function escHtml(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+function escAttr(s){return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/'/g,'&#39;');}
+function _addCrClose(cr){const btn=document.createElement('button');btn.style.cssText='position:absolute;right:8px;top:8px;border:none;background:none;cursor:pointer;font-size:.8rem;color:var(--muted)';btn.textContent='X';btn.setAttribute('aria-label','닫기');btn.addEventListener('click',()=>{cr.style.display='none';});cr.insertBefore(btn,cr.firstChild);}
 let focusMode=false,refs=[];
 let envCounters={theorem:0,lemma:0,definition:0,corollary:0,proposition:0,algorithm:0};
 let eqCounter=0;
@@ -1635,7 +1637,7 @@ function processEnvs(t){
 }
 function restoreEnvs(html){for(let i=0;i<envPH.length;i++){html=html.replace('<p>\x00E'+i+'\x00</p>',envPH[i]);html=html.replace('\x00E'+i+'\x00',envPH[i]);}return html;}
 function processNumberedEq(t){return t.replace(/^\$\$\s*\n?([\s\S]*?)\n?\$\$\s*$/gm,(m,eq)=>{eqCounter++;return '<div class="eq-row"><div class="katex-display">$$'+eq.trim()+'$$</div><div class="eq-num">('+eqCounter+')</div></div>';});}
-function processCitations(t){return t.replace(/\[cite:(\d+)\]/g,(m,n)=>'<span class="cite" title="'+(refs[parseInt(n)-1]||'Ref '+n)+'">['+n+']</span>');}
+function processCitations(t){return t.replace(/\[cite:(\d+)\]/g,(m,n)=>'<span class="cite" title="'+escAttr(refs[parseInt(n)-1]||'Ref '+n)+'">['+n+']</span>');}
 
 // === FOOTNOTES ===
 function processFootnotes(t){
@@ -3666,7 +3668,7 @@ async function showSnapshots(){
   if(!_snapCache.length){alert('저장된 이력이 없습니다.');return;}
   const cr=document.getElementById('checkResult');
   let html='<strong style="color:var(--brand)">문서 이력 ('+_snapCache.length+'개)</strong>';
-  html+='<button onclick="document.getElementById(\'checkResult\').style.display=\'none\'" style="position:absolute;right:8px;top:8px;border:none;background:none;cursor:pointer;font-size:.8rem;color:var(--muted)">X</button>';
+  html+='';
   html+='<div style="margin-top:8px;max-height:180px;overflow-y:auto">';
   _snapCache.forEach((snap,i)=>{
     const date=new Date(snap.at);
@@ -3677,7 +3679,7 @@ async function showSnapshots(){
     html+='</div>';
   });
   html+='</div>';
-  cr.innerHTML=html;cr.style.display='block';
+  cr.innerHTML=html;_addCrClose(cr);cr.style.display='block';
 }
 async function restoreSnapshot(idx){
   const snap=_snapCache[idx];if(!snap)return;
@@ -3736,8 +3738,8 @@ function validatePaper(){
   sc=Math.min(Math.round(sc),100);
   const el=document.getElementById('qs');el.textContent=sc;el.className='score '+(sc>=75?'sh':sc>=50?'sm':'sl');
   const cr=document.getElementById('checkResult');
-  cr.innerHTML='<strong style="color:var(--brand)">논문 검증 ('+sc+'/100)</strong> <button onclick="document.getElementById(\'checkResult\').style.display=\'none\'" style="position:absolute;right:8px;top:8px;border:none;background:none;cursor:pointer;font-size:.8rem;color:var(--muted)">X</button><br>'+issues.join('<br>');
-  cr.style.display='block';
+  cr.innerHTML='<strong style="color:var(--brand)">논문 검증 ('+sc+'/100)</strong><br>'+issues.join('<br>');
+  _addCrClose(cr);cr.style.display='block';
 }
 
 // === DIAGNOSTIC REPORT ===
@@ -3774,7 +3776,7 @@ function diagnosePaper(){
   const absWords=absContent.trim().split(/\s+/).length;
   // Build report
   let rpt='<strong style="color:var(--brand);font-size:.85rem">논문 진단 리포트</strong>';
-  rpt+='<button onclick="document.getElementById(\'checkResult\').style.display=\'none\'" style="position:absolute;right:8px;top:8px;border:none;background:none;cursor:pointer;font-size:.8rem;color:var(--muted)">X</button>';
+  rpt+='';
   rpt+='<div style="margin-top:8px">';
   // Overall stats
   rpt+='<div style="font-size:.68rem;font-weight:700;color:var(--brand);margin:6px 0 3px">전체 통계</div>';
@@ -3829,7 +3831,7 @@ function diagnosePaper(){
   rpt+='<div style="font-size:.62rem">총 '+totalCites+'회 인용 | 참고문헌 '+refs.length+'편 | '+(wc>0?Math.round(totalCites/wc*1000)/10:'0')+' 인용/100단어</div>';
   rpt+='</div>';
   const cr=document.getElementById('checkResult');
-  cr.innerHTML=rpt;cr.style.display='block';
+  cr.innerHTML=rpt;_addCrClose(cr);cr.style.display='block';
 }
 
 // === STYLE CONSISTENCY ===
@@ -3866,7 +3868,7 @@ function analyzeStyle(){
   const longSent=sentLens.filter(l=>l>40).length;
   // Build report
   let rpt='<strong style="color:var(--brand);font-size:.85rem">문체 일관성 분석</strong>';
-  rpt+='<button onclick="document.getElementById(\'checkResult\').style.display=\'none\'" style="position:absolute;right:8px;top:8px;border:none;background:none;cursor:pointer;font-size:.8rem;color:var(--muted)">X</button>';
+  rpt+='';
   rpt+='<div style="margin-top:8px">';
   // Writing style
   rpt+='<div style="font-size:.68rem;font-weight:700;color:var(--brand);margin:6px 0 3px">문체 분석 ('+sentences.length+'문장)</div>';
@@ -3895,7 +3897,7 @@ function analyzeStyle(){
   if(longSent>3)rpt+='<div style="font-size:.6rem;color:var(--accent)">[!] 장문이 많습니다. 분할하여 가독성을 높이세요.</div>';
   rpt+='</div>';
   const cr=document.getElementById('checkResult');
-  cr.innerHTML=rpt;cr.style.display='block';
+  cr.innerHTML=rpt;_addCrClose(cr);cr.style.display='block';
 }
 
 // === STATS ===
@@ -4867,7 +4869,7 @@ const REVIEW_CHECKLIST=[
 function showReviewChecklist(){
   const stored=JSON.parse(localStorage.getItem('aicra.review.checklist')||'{}');
   let html='<strong style="color:var(--brand)">구조적 리뷰 체크리스트</strong>';
-  html+='<button onclick="document.getElementById(\'checkResult\').style.display=\'none\'" style="position:absolute;right:8px;top:8px;border:none;background:none;cursor:pointer;font-size:.8rem;color:var(--muted)">X</button>';
+  html+='';
   html+='<div style="margin-top:8px">';
   REVIEW_CHECKLIST.forEach(item=>{
     const val=stored[item.id]||'';
@@ -4897,7 +4899,7 @@ function showReviewChecklist(){
   html+='<div style="margin-top:8px"><button class="bt" onclick="exportReview()" style="font-size:.55rem;padding:2px 8px">리뷰 내보내기 (.txt)</button></div>';
   html+='</div>';
   const cr=document.getElementById('checkResult');
-  cr.innerHTML=html;cr.style.display='block';
+  cr.innerHTML=html;_addCrClose(cr);cr.style.display='block';
 }
 function updateChecklistItem(id,value){
   const stored=JSON.parse(localStorage.getItem('aicra.review.checklist')||'{}');
@@ -4998,7 +5000,8 @@ function lintVenue(){
     else issues.push('[!] '+sec+' 섹션 없음');
   });
   const cr=document.getElementById('checkResult');
-  cr.innerHTML='<strong style="color:var(--brand)">'+rules.name+' 투고 규격 체크</strong><button onclick="document.getElementById(\'checkResult\').style.display=\'none\'" style="position:absolute;right:8px;top:8px;border:none;background:none;cursor:pointer;font-size:.8rem;color:var(--muted)">X</button><br>'+issues.join('<br>');
+  cr.innerHTML='<strong style="color:var(--brand)">'+escHtml(rules.name)+' 투고 규격 체크</strong><br>'+issues.join('<br>');
+  _addCrClose(cr);
   cr.style.display='block';
 }
 
@@ -5017,11 +5020,11 @@ function showShortcuts(){
   ];
   const cr=document.getElementById('checkResult');
   let html='<strong style="color:var(--brand)">단축키 가이드</strong>';
-  html+='<button onclick="document.getElementById(\'checkResult\').style.display=\'none\'" style="position:absolute;right:8px;top:8px;border:none;background:none;cursor:pointer;font-size:.8rem;color:var(--muted)">X</button>';
+  html+='';
   html+='<table style="width:100%;font-size:.68rem;margin-top:8px;border-collapse:collapse">';
   shortcuts.forEach(([key,desc])=>{html+='<tr><td style="padding:3px 8px;font-weight:700;font-family:monospace;background:var(--surface);border-radius:3px;width:120px">'+key+'</td><td style="padding:3px 8px">'+desc+'</td></tr>';});
   html+='</table>';
-  cr.innerHTML=html;cr.style.display='block';
+  cr.innerHTML=html;_addCrClose(cr);cr.style.display='block';
 }
 
 // === CITATION REORDER (본문 등장순으로 참고문헌 정렬) ===
@@ -5065,7 +5068,7 @@ function buildFigureTableList(){
     const p=el.parentElement;return!p||!p.closest('td,th,blockquote');
   });
   let html='<strong style="color:var(--brand)">그림/표 목록</strong>';
-  html+='<button onclick="document.getElementById(\'checkResult\').style.display=\'none\'" style="position:absolute;right:8px;top:8px;border:none;background:none;cursor:pointer;font-size:.8rem;color:var(--muted)">X</button>';
+  html+='';
   if(figs.length){
     html+='<div style="margin-top:6px;font-size:.68rem;font-weight:700">Figures ('+figs.length+')</div>';
     figs.forEach(f=>{html+='<div style="font-size:.62rem;padding:1px 0">'+escHtml(f.textContent.substring(0,80))+'</div>';});
@@ -5076,7 +5079,7 @@ function buildFigureTableList(){
   }
   if(!figs.length&&!tbls.length)html+='<div style="font-size:.62rem;color:var(--muted);margin-top:6px">그림/표가 없습니다</div>';
   const cr=document.getElementById('checkResult');
-  cr.innerHTML=html;cr.style.display='block';
+  cr.innerHTML=html;_addCrClose(cr);cr.style.display='block';
 }
 
 // === REFERENCE DUPLICATE CHECK ===
