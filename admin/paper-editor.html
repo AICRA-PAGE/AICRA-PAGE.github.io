@@ -337,6 +337,21 @@ body.simple-mode .ins button[onclick*="fn"]{display:inline-block}
   #input{font-size:11px;padding:6px}
   #pv{padding:10px 12px;font-size:.78rem;line-height:1.6}
 }
+/* === ORIENTATION: Landscape mobile/tablet -> restore 2-column */
+@media(orientation:landscape) and (max-width:1024px) and (min-width:481px){
+  .ed{flex-direction:row!important}
+  .pn{min-height:auto}
+  .dv{display:block!important}
+  .mobile-tabs{display:none!important}
+  #input{font-size:12px}
+  #pv{padding:16px 20px;font-size:.82rem}
+}
+/* === ORIENTATION: Portrait mobile -> tab mode */
+@media(orientation:portrait) and (max-width:768px){
+  .ed{flex-direction:column!important}
+  .dv{display:none!important}
+  .mobile-tabs{display:flex!important}
+}
 /* Hide mobile tabs on desktop */
 .mobile-tabs{display:none}
 </style>
@@ -3666,12 +3681,36 @@ function switchMobileTab(tab){
     tabs[2].classList.add('active');
   }
 }
-// Auto-detect mobile and show tabs
-if(window.innerWidth<=768){
-  const pp=document.getElementById('previewPane');
-  if(pp)pp.style.display='none';
-  const dv=document.getElementById('dv');if(dv)dv.style.display='none';
+// Auto-detect mobile and handle orientation changes
+function _applyResponsiveMode(){
+  const isMobile=window.innerWidth<=768 && window.matchMedia('(orientation:portrait)').matches;
+  const ep=document.getElementById('editorPane'),pp=document.getElementById('previewPane'),dv=document.getElementById('dv'),ins=document.querySelector('.ins');
+  if(isMobile){
+    // Portrait mobile: tab mode
+    if(pp)pp.style.display='none';
+    if(dv)dv.style.display='none';
+    if(ins)ins.style.display='none';
+  }else{
+    // Desktop or landscape: restore all panes, clear inline mobile styles
+    if(ep)ep.style.display='';
+    if(pp)pp.style.display='';
+    if(dv)dv.style.display='';
+    if(ins){ins.style.display='';ins.classList.remove('mobile-show');}
+  }
 }
+_applyResponsiveMode();
+window.addEventListener('resize',_applyResponsiveMode);
+try{window.matchMedia('(orientation:portrait)').addEventListener('change',_applyResponsiveMode);}catch(e){}
+
+// === GLOBAL ERROR HANDLERS ===
+window.addEventListener('unhandledrejection',e=>{
+  console.warn('[Paper Editor] Unhandled promise:',e.reason);
+  const as=document.getElementById('as');if(as)as.textContent='[!] 비동기 오류 발생';
+  e.preventDefault();
+});
+window.addEventListener('error',e=>{
+  console.warn('[Paper Editor] Runtime error:',e.message,e.filename,e.lineno);
+});
 
 // === ACCESSIBILITY IMPROVEMENTS ===
 // Add ARIA labels to toolbar buttons
@@ -4043,7 +4082,7 @@ function publish(downloadName){
     const c=confirm('Copied!\n\nOK = CMS\nCancel = Download .md');
     if(c)window.open('/admin/#/collections/papers/new','_blank');
     else{const b=new Blob([fm],{type:'text/markdown'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=downloadName||today+'-'+ti.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'')+'.md';a.click();}
-  });
+  }).catch(()=>{document.getElementById('as').textContent='[!] 클립보드 접근 실패';});
 }
 
 // === EXPORT ALIASES ===
@@ -4372,8 +4411,8 @@ function copyAbstract(){
   const text=getAbstractText();
   if(!text)return;
   navigator.clipboard.writeText(text).then(()=>{
-    const btn=event.target;btn.textContent='복사됨!';setTimeout(()=>btn.textContent='복사',1500);
-  });
+    try{const btn=event.target;btn.textContent='복사됨!';setTimeout(()=>btn.textContent='복사',1500);}catch(e){}
+  }).catch(()=>{document.getElementById('as').textContent='[!] 클립보드 접근 실패';});
 }
 
 function printAbstract(){
@@ -4693,7 +4732,7 @@ function populateAuthorUI(){
   sel.innerHTML='';
   const defOpt=document.createElement('option');defOpt.value='';defOpt.textContent='-- 선택 --';sel.appendChild(defOpt);
   for(const c of collabList){const o=document.createElement('option');o.value=c.login;o.textContent=getDisplayName(c.login);sel.appendChild(o);}
-  docManager.getUser().then(u=>{if(u)sel.value=u.login;updateAuthorDDs();updateReviewerDD();});
+  docManager.getUser().then(u=>{if(u)sel.value=u.login;updateAuthorDDs();updateReviewerDD();}).catch(()=>{});
 }
 
 function updateAuthorDDs(){
@@ -5208,20 +5247,23 @@ function checkRefDuplicates(){
   else document.getElementById('as').textContent='[+] 참고문헌 중복 없음';
 }
 
-// === ACADEMIC DB SEARCH ===
-async function searchScholar(){
+// === ACADEMIC DB SEARCH (pagination support) ===
+let _schOffset=0;let _schQuery='';
+async function searchScholar(append){
   const q=document.getElementById('schQuery').value.trim();
   if(!q)return;
+  if(q!==_schQuery){_schOffset=0;_schQuery=q;}
   const results=document.getElementById('schResults');
   results.style.display='block';
-  results.innerHTML='<p style="padding:6px;color:var(--muted)">검색 중...</p>';
+  if(!append)results.innerHTML='';
+  const loading=document.createElement('p');loading.style.cssText='padding:6px;color:var(--muted)';loading.textContent='검색 중...';results.appendChild(loading);
   try{
-    // Semantic Scholar API
-    const r=await fetch('https://api.semanticscholar.org/graph/v1/paper/search?query='+encodeURIComponent(q)+'&limit=5&fields=title,authors,year,venue,citationCount');
+    // Semantic Scholar API (relevance-sorted by default)
+    const r=await fetch('https://api.semanticscholar.org/graph/v1/paper/search?query='+encodeURIComponent(q)+'&limit=20&offset='+_schOffset+'&fields=title,authors,year,venue,citationCount');
     if(!r.ok)throw new Error('API error');
     const d=await r.json();
-    if(!d.data||!d.data.length){results.innerHTML='<p style="padding:6px;color:var(--muted)">결과 없음</p>';return;}
-    results.innerHTML='';
+    loading.remove();
+    if(!d.data||!d.data.length){if(!append){const empty=document.createElement('p');empty.style.cssText='padding:6px;color:var(--muted)';empty.textContent='결과 없음';results.appendChild(empty);}return;}
     d.data.forEach(p=>{
       const authors=(p.authors||[]).map(a=>a.name).join(', ');
       const ref=authors+'. "'+p.title+'." '+(p.venue||'')+', '+(p.year||'')+'.';
@@ -5232,10 +5274,24 @@ async function searchScholar(){
       const sp=document.createElement('span');sp.style.cssText='color:var(--muted);font-size:.52rem';sp.textContent=authors+' ('+p.year+') '+(p.venue||'')+' | 인용:'+p.citationCount;div.appendChild(sp);
       results.appendChild(div);
     });
+    // Pagination: page numbers
+    _schOffset+=20;
+    const totalPages=Math.ceil((d.total||1000)/20);const curPage=Math.floor(_schOffset/20);
+    const pgDiv=document.createElement('div');pgDiv.style.cssText='display:flex;gap:2px;padding:4px 6px;justify-content:center;flex-wrap:wrap';
+    const maxShow=Math.min(totalPages,10);
+    for(let i=0;i<maxShow;i++){
+      const pg=document.createElement('button');pg.className='bt';pg.style.cssText='font-size:.48rem;padding:1px 4px;min-width:20px';
+      pg.textContent=String(i+1);
+      if(i+1===curPage)pg.style.cssText+='background:var(--brand);color:#fff;border-color:var(--brand)';
+      const offset=i*20;pg.addEventListener('click',()=>{_schOffset=offset;searchScholar(false);});
+      pgDiv.appendChild(pg);
+    }
+    if(totalPages>10){const more=document.createElement('span');more.style.cssText='font-size:.48rem;color:var(--muted);padding:2px';more.textContent='...'+totalPages+'p';pgDiv.appendChild(more);}
+    results.appendChild(pgDiv);
   }catch(e){
     // Fallback to CrossRef
     try{
-      const r=await fetch('https://api.crossref.org/works?query='+encodeURIComponent(q)+'&rows=5');
+      const r=await fetch('https://api.crossref.org/works?query='+encodeURIComponent(q)+'&rows=10');
       if(!r.ok)throw new Error();
       const d=await r.json();
       results.innerHTML='';
@@ -5280,7 +5336,7 @@ function openDB(db){
 }
 
 // === DATASET SEARCH (local catalog + external API) ===
-let _dsCache=null;
+let _dsCache=null;let _dsAbort=null;let _recAbort=null;
 async function _loadDatasetCatalog(){
   if(_dsCache)return _dsCache;
   try{const r=await fetch('/assets/data/datasets.json');if(r.ok)_dsCache=await r.json();}catch(e){}
@@ -5289,6 +5345,7 @@ async function _loadDatasetCatalog(){
 async function searchDataset(){
   const q=document.getElementById('dsQuery').value.trim().toLowerCase();
   if(!q)return;
+  if(_dsAbort)_dsAbort.abort();_dsAbort=new AbortController();const sig=_dsAbort.signal;
   const results=document.getElementById('dsResults');
   results.style.display='block';results.innerHTML='';
   const loading=document.createElement('p');loading.style.cssText='padding:6px;color:var(--muted)';loading.textContent='검색 중...';results.appendChild(loading);
@@ -5350,8 +5407,10 @@ function _buildDsCard(d){
   return div;
 }
 function insertDatasetRef(d){
-  // Add to refs as citation
+  // Add to refs as citation (dedupe by name)
   const ref=(d.source||'')+(d.source?'. ':'')+'"'+d.name+'." '+(d.url||'')+', '+(d.year||'')+'.';
+  const norm=s=>s.toLowerCase().replace(/[^a-z0-9]/g,'');
+  if(refs.some(r=>norm(r).includes(norm(d.name)))){document.getElementById('as').textContent='[*] "'+d.name+'" 이미 참고문헌에 있음';return;}
   refs.push(ref);renderRefs();
   // Insert dataset block in editor
   const block='\n\n**Dataset: '+d.name+'**\n'+(d.description?'> '+d.description.substring(0,200)+'\n':'')+(d.url?'> URL: '+d.url+'\n':'')+(d.size?'> Size: '+d.size:'')+(d.format?' | Format: '+d.format:'')+'\n\n';

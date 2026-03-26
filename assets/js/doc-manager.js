@@ -335,15 +335,20 @@
     if(_currentFile===path){_currentFile=null;_currentSha=null;}
   }
 
-  // === AUTO-SAVE ===
+  // === AUTO-SAVE (race-safe with inFlight guard) ===
+  let _autoSaveInFlight=false;
   function startAutoSave(getContentFn,getMetaFn,statusFn,interval){
     if(_autoSaveTimer)clearInterval(_autoSaveTimer);
     _autoSaveTimer=setInterval(async()=>{
+      if(_autoSaveInFlight)return; // Prevent overlapping saves
       const token=getToken();if(!token)return;
       const content=getContentFn();if(!content||!content.trim())return;
       const title=getMetaFn().title;if(!title)return;
-      const hash=simpleHash(buildContent(title,content,getMetaFn(),(await getUser()).login));
+      let user;try{user=await getUser();}catch(e){return;}
+      if(!user)return;
+      const hash=simpleHash(buildContent(title,content,getMetaFn(),user.login));
       if(hash===_lastHash)return; // No changes
+      _autoSaveInFlight=true;
       try{
         statusFn('자동 저장 중...');
         await saveToGitHub(title,content,getMetaFn());
@@ -351,7 +356,7 @@
       }catch(e){
         if(e.message==='CONFLICT')statusFn('충돌 감지! 수동 저장 필요');
         else statusFn('자동 저장 실패');
-      }
+      }finally{_autoSaveInFlight=false;}
     },interval||30000);
   }
 
