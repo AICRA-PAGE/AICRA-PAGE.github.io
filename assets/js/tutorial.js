@@ -235,6 +235,21 @@ const FULL_STORY=[
    auto:null,
    verify:()=>document.getElementById('input').value.length>1000},
 
+  // Chapter 11: Dataset Search
+  {ch:'Ch.11 데이터셋',title:'데이터셋 검색',
+   story:'AI/보안 분야 공개 데이터셋을 검색하여 논문에 삽입합니다. 51개 로컬 카탈로그 + Papers With Code + HuggingFace 실시간 검색을 지원합니다.',
+   task:'참고문헌 패널의 <b>데이터셋 검색</b>에 키워드를 입력하세요.',
+   highlight:'#dsQuery',
+   auto:()=>{document.getElementById('dsQuery').value='malware';if(window.searchDataset)window.searchDataset();},
+   verify:()=>document.getElementById('dsResults').style.display==='block'},
+
+  {ch:'Ch.11 데이터셋',title:'데이터셋 삽입',
+   story:'검색 결과에서 데이터셋을 클릭하면 참고문헌에 자동 등록되고, 본문에 데이터셋 설명 블록이 삽입됩니다.',
+   task:'검색 결과에서 원하는 데이터셋을 클릭하세요.',
+   highlight:'#dsResults',
+   auto:null,
+   verify:()=>document.getElementById('input').value.includes('Dataset:')},
+
   // Ending
   {ch:'완료',title:'축하합니다!',
    story:'논문 작성의 전 과정을 체험했습니다!<br><br>주요 기능 요약:<br>- <b>심사</b>: 구조적 리뷰 + 심사의견<br>- <b>규격</b>: 양식별 투고 규격 점검<br>- <b>진단/문체</b>: 논문 품질 자동 분석<br>- <b>간편</b>: 초보자 모드<br>- <b>이력</b>: 이전 버전 복원<br>- <b>인쇄</b>: 1단/2단 선택 + PDF<br>- <b>?</b> 도움말에서 100+ 기능 확인',

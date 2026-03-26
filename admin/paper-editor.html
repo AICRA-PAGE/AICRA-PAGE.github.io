@@ -559,6 +559,22 @@ body.simple-mode .ins button[onclick*="fn"]{display:inline-block}
       </div>
     </div>
     <div id="schResults" style="max-height:100px;overflow-y:auto;font-size:.6rem;display:none;border-bottom:1px solid var(--line)"></div>
+    <!-- Dataset Search -->
+    <div style="padding:4px 6px;border-bottom:1px solid var(--line);flex-shrink:0">
+      <div style="display:flex;gap:2px;align-items:center">
+        <input id="dsQuery" placeholder="데이터셋 검색 (예: malware, IDS, prompt injection)" style="flex:1;padding:3px 5px;border:1px solid var(--line);border-radius:3px;font-size:.6rem;background:var(--panel);color:var(--text)">
+        <button class="bt" onclick="searchDataset()" style="font-size:.5rem;padding:2px 4px" title="로컬 카탈로그 + Papers With Code API">데이터셋</button>
+      </div>
+      <div style="display:flex;gap:2px;flex-wrap:wrap;margin-top:2px">
+        <button class="bt" onclick="searchDatasetByDomain('llm-security')" style="font-size:.44rem;padding:1px 3px">LLM</button>
+        <button class="bt" onclick="searchDatasetByDomain('adversarial-ml')" style="font-size:.44rem;padding:1px 3px">Adversarial</button>
+        <button class="bt" onclick="searchDatasetByDomain('malware')" style="font-size:.44rem;padding:1px 3px">Malware</button>
+        <button class="bt" onclick="searchDatasetByDomain('network-intrusion')" style="font-size:.44rem;padding:1px 3px">IDS</button>
+        <button class="bt" onclick="searchDatasetByDomain('code-security')" style="font-size:.44rem;padding:1px 3px">Code</button>
+        <button class="bt" onclick="searchDatasetByDomain('vulnerability')" style="font-size:.44rem;padding:1px 3px">Vuln</button>
+      </div>
+    </div>
+    <div id="dsResults" style="max-height:120px;overflow-y:auto;font-size:.58rem;display:none;border-bottom:1px solid var(--line)"></div>
     <!-- Reference list -->
     <div class="ref-list" id="refList"></div>
     <!-- Auto-format reference -->
@@ -1215,7 +1231,9 @@ F(df1, df2)=값, p=값, eta^2=값</div>
       <b>이미지 드래그앤드롭:</b> 이미지 파일을 에디터로 드래그하면 자동 삽입<br>
       <b>저자 소속:</b> 메타데이터에 소속 입력시 미리보기에 이탤릭으로 표시<br>
       <b>저자 이름 매핑:</b> GitHub ID가 저자 정보에서 매핑한 실명으로 표시<br>
-      <b>샘플 논문:</b> 5편의 AI 보안 논문을 불러와 전 기능 테스트 가능
+      <b>샘플 논문:</b> 5편의 AI 보안 논문을 불러와 전 기능 테스트 가능<br>
+      <b>데이터셋 검색:</b> 참고문헌 패널에서 AI/보안 데이터셋 검색 + 클릭으로 삽입. 51개 로컬 카탈로그 + Papers With Code + HuggingFace 실시간 검색<br>
+      <b>데이터셋 도메인 필터:</b> LLM/Adversarial/Malware/IDS/Code/Vuln 카테고리 버튼으로 빠른 필터링
     </div>
   </div>
 
@@ -5166,6 +5184,88 @@ function openDB(db){
     scienceon:'https://scienceon.kisti.re.kr/srch/selectPORSrchArticle.do?query='+encodeURIComponent(q)
   };
   if(urls[db])window.open(urls[db],'_blank');
+}
+
+// === DATASET SEARCH (local catalog + external API) ===
+let _dsCache=null;
+async function _loadDatasetCatalog(){
+  if(_dsCache)return _dsCache;
+  try{const r=await fetch('/assets/data/datasets.json');if(r.ok)_dsCache=await r.json();}catch(e){}
+  return _dsCache||[];
+}
+async function searchDataset(){
+  const q=document.getElementById('dsQuery').value.trim().toLowerCase();
+  if(!q)return;
+  const results=document.getElementById('dsResults');
+  results.style.display='block';results.innerHTML='';
+  const loading=document.createElement('p');loading.style.cssText='padding:6px;color:var(--muted)';loading.textContent='검색 중...';results.appendChild(loading);
+  // Local catalog search
+  const catalog=await _loadDatasetCatalog();
+  const local=catalog.filter(d=>{
+    const hay=(d.name+' '+d.description+' '+(d.tags||[]).join(' ')+' '+(d.domain||[]).join(' ')).toLowerCase();
+    return q.split(/\s+/).every(w=>hay.includes(w));
+  });
+  results.innerHTML='';
+  if(local.length){
+    const label=document.createElement('div');label.style.cssText='padding:2px 6px;font-size:.5rem;color:var(--muted);font-weight:600';label.textContent='카탈로그 ('+local.length+'건)';results.appendChild(label);
+    local.forEach(d=>results.appendChild(_buildDsCard(d)));
+  }
+  // External: Papers With Code API fallback
+  try{
+    const r=await fetch('https://paperswithcode.com/api/v1/datasets/?q='+encodeURIComponent(q)+'&items_per_page=5');
+    if(r.ok){const data=await r.json();
+      if(data.results&&data.results.length){
+        const label=document.createElement('div');label.style.cssText='padding:2px 6px;font-size:.5rem;color:var(--muted);font-weight:600;margin-top:4px';label.textContent='Papers With Code ('+data.results.length+'건)';results.appendChild(label);
+        data.results.forEach(p=>{
+          const d={id:p.name.toLowerCase().replace(/\s+/g,'-'),name:p.name,description:(p.description||'').substring(0,150),url:p.url?'https://paperswithcode.com'+p.url:''};
+          results.appendChild(_buildDsCard(d));
+        });
+      }
+    }
+  }catch(e){}
+  // HuggingFace API fallback
+  try{
+    const r=await fetch('https://huggingface.co/api/datasets?search='+encodeURIComponent(q)+'&sort=downloads&limit=5');
+    if(r.ok){const data=await r.json();
+      if(data.length){
+        const label=document.createElement('div');label.style.cssText='padding:2px 6px;font-size:.5rem;color:var(--muted);font-weight:600;margin-top:4px';label.textContent='HuggingFace ('+data.length+'건)';results.appendChild(label);
+        data.forEach(p=>{
+          const d={id:p.id,name:p.id.split('/').pop(),description:'HuggingFace dataset: '+p.id,url:'https://huggingface.co/datasets/'+p.id,tags:(p.tags||[]).slice(0,5)};
+          results.appendChild(_buildDsCard(d));
+        });
+      }
+    }
+  }catch(e){}
+  if(!results.children.length){const empty=document.createElement('p');empty.style.cssText='padding:6px;color:var(--muted)';empty.textContent='결과 없음';results.appendChild(empty);}
+}
+function searchDatasetByDomain(dom){
+  document.getElementById('dsQuery').value=dom;searchDataset();
+}
+function _buildDsCard(d){
+  const div=document.createElement('div');div.style.cssText='padding:4px 6px;border-bottom:1px dotted var(--line);cursor:pointer';
+  div.addEventListener('click',()=>insertDatasetRef(d));
+  const title=document.createElement('b');title.style.cssText='color:var(--brand);font-size:.56rem';title.textContent=d.name;div.appendChild(title);
+  if(d.domain&&d.domain.length){const dom=document.createElement('span');dom.style.cssText='font-size:.46rem;color:var(--muted);margin-left:4px';dom.textContent='['+d.domain.join(', ')+']';div.appendChild(dom);}
+  div.appendChild(document.createElement('br'));
+  const desc=document.createElement('span');desc.style.cssText='color:var(--text);font-size:.52rem';desc.textContent=(d.description||'').substring(0,120);div.appendChild(desc);
+  if(d.size||d.license||d.year){
+    div.appendChild(document.createElement('br'));
+    const meta=document.createElement('span');meta.style.cssText='font-size:.46rem;color:var(--muted)';
+    const parts=[];if(d.size)parts.push(d.size);if(d.license)parts.push(d.license);if(d.year)parts.push(String(d.year));if(d.format)parts.push(d.format);
+    meta.textContent=parts.join(' | ');div.appendChild(meta);
+  }
+  return div;
+}
+function insertDatasetRef(d){
+  // Add to refs as citation
+  const ref=(d.source||'')+(d.source?'. ':'')+'"'+d.name+'." '+(d.url||'')+', '+(d.year||'')+'.';
+  refs.push(ref);renderRefs();
+  // Insert dataset block in editor
+  const block='\n\n**Dataset: '+d.name+'**\n'+(d.description?'> '+d.description.substring(0,200)+'\n':'')+(d.url?'> URL: '+d.url+'\n':'')+(d.size?'> Size: '+d.size:'')+(d.format?' | Format: '+d.format:'')+'\n\n';
+  inp.focus();typeText(block);
+  render();
+  if(_pendingCite){_completeCiteInsert();}
+  else{document.getElementById('as').textContent='[+] 데이터셋 "'+d.name+'" 추가됨 ['+refs.length+']';}
 }
 
 // === REFERENCE AUTO-FORMATTER ===
