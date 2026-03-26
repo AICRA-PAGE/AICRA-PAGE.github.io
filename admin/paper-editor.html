@@ -604,7 +604,7 @@ body.simple-mode .ins button[onclick*="fn"]{display:inline-block}
 </div>
 
 <!-- Help Panel -->
-<div class="help" id="helpPanel">
+<div class="help" id="helpPanel" role="dialog" aria-label="도움말 패널">
   <h3>AICRA Paper Editor 가이드</h3>
   <div class="htabs">
     <div class="htab active" onclick="switchHelpTab(0)">서식</div>
@@ -1091,9 +1091,10 @@ F(df1, df2)=값, p=값, eta^2=값</div>
     <div class="gsec-body">
       <b>주저자(1저자):</b> Collaborator 드롭다운<br>
       <b>공동저자(2,3저자):</b> 드롭다운 추가<br>
-      <b>교신저자:</b> 복수 선택 가능<br>
+      <b>교신저자:</b> 복수 선택 가능 (미리보기에 &dagger; 표시)<br>
       <b>외부 저자:</b> 수동 입력 (편집권한 없음)<br>
-      <b>저자 정보:</b> GitHub ID에 실명/소속 매핑
+      <b>저자 정보:</b> GitHub ID에 실명/소속/이메일 매핑<br>
+      <b>교신저자 이메일:</b> 저자 정보에서 이메일 입력시 미리보기에 자동 표시
     </div>
   </div>
 
@@ -1103,8 +1104,10 @@ F(df1, df2)=값, p=값, eta^2=값</div>
       <b>Ctrl+B</b> 굵게 | <b>Ctrl+I</b> 기울임<br>
       <b>Ctrl+K</b> 링크 | <b>Ctrl+M</b> 수식<br>
       <b>Ctrl+S</b> 저장 | <b>Tab</b> 들여쓰기<br>
-      <b>Alt+N</b> 각주 삽입<br>
-      <b>Ctrl+Z</b> 되돌리기 | <b>Ctrl+Y</b> 다시 실행
+      <b>Alt+N</b> 각주 삽입 | <b>Alt+C</b> 인용 삽입<br>
+      <b>Ctrl+H</b> 검색/치환 | <b>Ctrl+Shift+D</b> 진단<br>
+      <b>Enter</b> 자동 들여쓰기 (이전 줄의 공백/목록 마커/인용 유지)<br>
+      <b>Ctrl+Z</b> 되돌리기 | <b>Ctrl+Y</b> 다시 실행 | <b>F1</b> 도움말
     </div>
   </div>
 
@@ -1242,7 +1245,7 @@ F(df1, df2)=값, p=값, eta^2=값</div>
 </div>
 
 <!-- Abstract Modal -->
-<div class="modal-overlay" id="absModal">
+<div class="modal-overlay" id="absModal" role="dialog" aria-label="초록 생성">
   <div class="modal-box" style="max-width:820px">
     <div class="modal-head">
       <span>초록 자동 생성</span>
@@ -3562,11 +3565,31 @@ function replaceAllFind(){
 document.querySelectorAll('.bt[title]').forEach(btn=>{if(!btn.getAttribute('aria-label'))btn.setAttribute('aria-label',btn.title);});
 // Status bar live region
 document.getElementById('stBar')?.setAttribute('aria-live','polite');
+// Escape key closes active modal/panel
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    const modals=['absModal','loadModal','refModal'];
+    for(const id of modals){const m=document.getElementById(id);if(m&&m.classList.contains('show')){closeModal(id);return;}}
+    const hp=document.getElementById('helpPanel');if(hp&&hp.classList.contains('show')){toggleHelp();return;}
+    const fp=document.getElementById('findPanel');if(fp&&fp.style.display!=='none'){fp.style.display='none';return;}
+  }
+});
 
 // === REFS ===
 function addRef(){const i=document.getElementById('refInput');const v=i.value.trim();if(!v)return;refs.push(v);i.value='';renderRefs();render();_completeCiteInsert();}
 function removeRef(idx){refs.splice(idx,1);renderRefs();render();}
-function renderRefs(){const l=document.getElementById('refList');document.getElementById('rc').textContent=refs.length;l.innerHTML=refs.map((r,i)=>'<div class="ref-item" style="cursor:pointer" onclick="insertExistingCite('+(i+1)+')" title="클릭하여 [cite:'+(i+1)+'] 삽입"><b>['+(i+1)+']</b>'+escHtml(r)+' <span style="cursor:pointer;color:#b42318;float:right" onclick="event.stopPropagation();removeRef('+i+')">x</span></div>').join('');}
+function renderRefs(){
+  const l=document.getElementById('refList');document.getElementById('rc').textContent=refs.length;l.innerHTML='';
+  refs.forEach((r,i)=>{
+    const div=document.createElement('div');div.className='ref-item';div.style.cursor='pointer';div.title='클릭하여 [cite:'+(i+1)+'] 삽입';
+    div.addEventListener('click',()=>insertExistingCite(i+1));
+    const b=document.createElement('b');b.textContent='['+(i+1)+']';div.appendChild(b);
+    div.appendChild(document.createTextNode(r+' '));
+    const x=document.createElement('span');x.style.cssText='cursor:pointer;color:#b42318;float:right';x.textContent='x';
+    x.addEventListener('click',e=>{e.stopPropagation();removeRef(i);});div.appendChild(x);
+    l.appendChild(div);
+  });
+}
 function insertExistingCite(n){inp.focus();typeText('[cite:'+n+']');inp.dispatchEvent(new Event('input'));document.getElementById('as').textContent='[+] [cite:'+n+'] 삽입됨';}
 function toggleRef(){const rp=document.getElementById('refPanel');rp.classList.toggle('open');if(!rp.classList.contains('open'))_cancelPendingCite();}
 function toggleHelp(){const hp=document.getElementById('helpPanel');hp.classList.toggle('show');if(hp.classList.contains('show')){switchHelpTab(0);}}
@@ -4446,9 +4469,9 @@ document.addEventListener('mouseup',()=>rs=false);
 </div>
 
 <!-- Load Modal -->
-<div class="modal-overlay" id="loadModal">
+<div class="modal-overlay" id="loadModal" role="dialog" aria-label="문서 관리">
   <div class="modal-box" style="max-width:600px">
-    <div class="modal-head"><span>문서 불러오기</span><button class="bt" onclick="closeModal('loadModal')" style="padding:1px 6px">X</button></div>
+    <div class="modal-head"><span>문서 불러오기</span><button class="bt" onclick="closeModal('loadModal')" style="padding:1px 6px" aria-label="닫기">X</button></div>
     <div class="modal-body" style="max-height:400px;overflow-y:auto">
       <div id="loadList" style="font-size:.78rem"><p style="color:var(--muted);text-align:center;padding:20px">로딩 중...</p></div>
     </div>
@@ -5031,8 +5054,16 @@ function zoomPreview(delta){
 
 // === LIST OF FIGURES/TABLES ===
 function buildFigureTableList(){
-  const figs=[...pv.querySelectorAll('.fig-caption,em')].filter(el=>/^Fig\.\s*\d+/i.test(el.textContent));
-  const tbls=[...pv.querySelectorAll('.tbl-caption,em')].filter(el=>/^Table\s*\d+/i.test(el.textContent));
+  // Precise selectors: .fig-caption class OR standalone em/i with caption-like text at start of parent
+  const figs=[...pv.querySelectorAll('.fig-caption,em,i')].filter(el=>{
+    if(!(/^Fig\.\s*\d+|^\*Fig\.\s*\d+/i.test(el.textContent)))return false;
+    // Exclude if parent is a table cell or blockquote (not a caption)
+    const p=el.parentElement;return!p||!p.closest('td,th,blockquote');
+  });
+  const tbls=[...pv.querySelectorAll('.tbl-caption,em,i')].filter(el=>{
+    if(!(/^Table\s*\d+|^\*Table\s*\d+/i.test(el.textContent)))return false;
+    const p=el.parentElement;return!p||!p.closest('td,th,blockquote');
+  });
   let html='<strong style="color:var(--brand)">그림/표 목록</strong>';
   html+='<button onclick="document.getElementById(\'checkResult\').style.display=\'none\'" style="position:absolute;right:8px;top:8px;border:none;background:none;cursor:pointer;font-size:.8rem;color:var(--muted)">X</button>';
   if(figs.length){
