@@ -72,16 +72,35 @@ const TOP_VENUES = [
   { query: 'Artificial Intelligence', short: 'AIJ' },
   { query: 'Pattern Recognition', short: 'PR' },
   { query: 'IEEE Transactions on Neural Networks', short: 'TNNLS' },
+  // Information security focused journals (SCI)
+  { query: 'ACM Transactions on Privacy and Security', short: 'TOPS' },
+  { query: 'Journal of Computer Security', short: 'JCS' },
+  { query: 'International Journal of Information Security', short: 'IJIS' },
+  { query: 'Security and Communication Networks', short: 'SCN' },
+  { query: 'Journal of Cybersecurity', short: 'JoC' },
+  { query: 'Digital Investigation', short: 'DIIN' },
+  { query: 'Forensic Science International: Digital Investigation', short: 'FSI-DI' },
+  // Information security conferences
+  { query: 'RAID', short: 'RAID' },
+  { query: 'ESORICS', short: 'ESORICS' },
+  { query: 'Annual Computer Security Applications Conference', short: 'ACSAC' },
+  { query: 'Detection of Intrusions and Malware', short: 'DIMVA' },
+  { query: 'International Conference on Dependable Systems and Networks', short: 'DSN' },
+  { query: 'IEEE European Symposium on Security and Privacy', short: 'EuroS&P' },
+  { query: 'ACM Workshop on Artificial Intelligence and Security', short: 'AISec' },
+  { query: 'SafeAI', short: 'SafeAI' },
   // Korean journals
   { query: 'Journal of the Korea Institute of Information Security', short: 'KIISC' },
   { query: 'ETRI Journal', short: 'ETRI' },
-  { query: 'Journal of Information Science and Engineering', short: 'JISE-KR' },
   { query: 'Korean Institute of Information Scientists', short: 'KIISE' },
-  // Chinese journals/conferences
+  { query: 'Korea Information Processing Society', short: 'KIPS' },
+  { query: 'Journal of Information Security', short: 'JIS-KR' },
+  // Chinese/Asian journals and conferences
   { query: 'Science China Information Sciences', short: 'SCIS' },
   { query: 'Journal of Computer Science and Technology', short: 'JCST' },
   { query: 'Chinese Journal of Electronics', short: 'CJE' },
   { query: 'ACM ASIA Conference on Computer and Communications Security', short: 'ASIACCS' },
+  { query: 'International Conference on Information and Communications Security', short: 'ICICS' },
 ];
 
 // === UTILS ===
