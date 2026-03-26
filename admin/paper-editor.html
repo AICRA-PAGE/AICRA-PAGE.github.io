@@ -616,6 +616,8 @@ body.simple-mode .ins button[onclick*="fn"]{display:inline-block}
   </div>
   <div class="ref-panel" id="refPanel">
     <div class="ref-head"><span>참고문헌</span><button class="bt" style="padding:1px 4px;font-size:.5rem" onclick="toggleRef()">X</button></div>
+    <!-- Evidence Layer hints -->
+    <div id="evidenceHints" style="display:none;padding:4px 6px;border-bottom:1px solid var(--accent);background:rgba(183,121,31,.06);flex-shrink:0;max-height:140px;overflow-y:auto"></div>
     <!-- Search -->
     <div style="padding:4px 6px;border-bottom:1px solid var(--line);flex-shrink:0">
       <div style="display:flex;gap:2px;margin-bottom:3px">
@@ -3806,7 +3808,157 @@ function renderRefs(){
   });
 }
 function insertExistingCite(n){inp.focus();typeText('[cite:'+n+']');inp.dispatchEvent(new Event('input'));document.getElementById('as').textContent='[+] [cite:'+n+'] 삽입됨';}
-function toggleRef(){const rp=document.getElementById('refPanel');rp.classList.toggle('open');if(!rp.classList.contains('open'))_cancelPendingCite();}
+function toggleRef(){const rp=document.getElementById('refPanel');rp.classList.toggle('open');if(!rp.classList.contains('open'))_cancelPendingCite();else _triggerEvidence();}
+
+// === EVIDENCE LAYER (증거 완성 시스템) ===
+let _papersCache=null;let _evidenceDismissed=new Set();
+try{const d=sessionStorage.getItem('aicra.evidence.dismissed');if(d)_evidenceDismissed=new Set(JSON.parse(d));}catch(e){}
+
+async function _loadPapersCache(){
+  if(_papersCache)return _papersCache;
+  try{const r=await fetch('/assets/data/papers.json');if(r.ok)_papersCache=await r.json();}catch(e){}
+  return _papersCache||[];
+}
+
+function extractDocumentContext(){
+  const title=(document.getElementById('ti').value||'').trim().toLowerCase();
+  const domain=(document.getElementById('dm').value||'').trim().toLowerCase();
+  const keywords=(document.getElementById('kw').value||'').trim().toLowerCase();
+  const body=inp.value||'';
+  // Extract section headings
+  const sections=[];
+  body.replace(/^## (.+)$/gm,(m,h)=>{sections.push(h.trim().toLowerCase());});
+  // Detect section intents
+  const hasExperiments=sections.some(s=>/experiment|evaluation|result|실험|평가/.test(s));
+  const hasRelatedWork=sections.some(s=>/related|prior|선행|관련/.test(s));
+  const hasDatasetSection=body.toLowerCase().includes('dataset');
+  // Extract used refs
+  const usedRefs=refs.map(r=>r.toLowerCase());
+  // Combine keywords
+  const allKw=[title,domain,...keywords.split(',').map(s=>s.trim()),...sections].filter(Boolean);
+  return{title,domain,keywords:allKw,sections,hasExperiments,hasRelatedWork,hasDatasetSection,usedRefs,body};
+}
+
+async function findEvidence(ctx){
+  const papers=await _loadPapersCache();
+  const datasets=await _loadDatasetCatalog();
+  const norm=s=>(s||'').toLowerCase().replace(/[^a-z0-9\uac00-\ud7a3]/g,'');
+  // Match papers by keywords
+  let matchedPapers=papers.filter(p=>{
+    if(_evidenceDismissed.has('p:'+p.id))return false;
+    // Already cited?
+    if(ctx.usedRefs.some(r=>r.includes(norm(p.title).substring(0,20))))return false;
+    const hay=norm(p.title+' '+(p.abstract||'')+' '+(p.venue||'')+' '+(p.match_reasons||[]).join(' '));
+    return ctx.keywords.some(kw=>kw.length>2&&hay.includes(norm(kw)));
+  });
+  // Sort by citation count, then relevance
+  matchedPapers.sort((a,b)=>(b.citation_count||b.relevance_score||0)-(a.citation_count||a.relevance_score||0));
+  matchedPapers=matchedPapers.slice(0,5);
+  // Match datasets
+  let matchedDatasets=datasets.filter(d=>{
+    if(_evidenceDismissed.has('d:'+d.id))return false;
+    if(ctx.usedRefs.some(r=>r.includes(norm(d.name).substring(0,10))))return false;
+    const hay=norm(d.name+' '+d.description+' '+(d.domain||[]).join(' ')+' '+(d.tags||[]).join(' '));
+    return ctx.keywords.some(kw=>kw.length>2&&hay.includes(norm(kw)));
+  });
+  matchedDatasets.sort((a,b)=>(b.papers_count||0)-(a.papers_count||0));
+  matchedDatasets=matchedDatasets.slice(0,5);
+  // Evidence gaps
+  const gaps=[];
+  if(ctx.hasExperiments&&!ctx.hasDatasetSection)gaps.push({type:'gap',msg:'Experiments 섹션에 데이터셋이 명시되지 않았습니다',icon:'[!]'});
+  if(!ctx.hasRelatedWork&&ctx.body.length>1000)gaps.push({type:'gap',msg:'Related Work / 선행연구 섹션이 없습니다',icon:'[!]'});
+  if(refs.length<5&&ctx.body.length>2000)gaps.push({type:'gap',msg:'참고문헌이 '+refs.length+'개로 부족합니다 (최소 5개 권장)',icon:'[!]'});
+  // Claim without citation detection
+  const claimPatterns=/(?:을 보였다|을 달성했다|significantly|outperform|demonstrates?|achieve[ds]?|show[ns]?|prove[dns]?|result[s]? indicate)/gi;
+  const lines=ctx.body.split('\n');
+  let unsupportedClaims=0;
+  lines.forEach(line=>{if(claimPatterns.test(line)&&!line.includes('[cite:'))unsupportedClaims++;});
+  if(unsupportedClaims>0)gaps.push({type:'gap',msg:unsupportedClaims+'개 주장 문장에 인용이 없습니다',icon:'[!]'});
+  return{papers:matchedPapers,datasets:matchedDatasets,gaps};
+}
+
+function renderEvidenceHints(evidence){
+  const el=document.getElementById('evidenceHints');
+  if(!el)return;
+  el.innerHTML='';
+  const total=evidence.papers.length+evidence.datasets.length+evidence.gaps.length;
+  if(total===0){el.style.display='none';_updateEvidenceBadge(0);return;}
+  el.style.display='';
+  // Gaps first
+  evidence.gaps.forEach(g=>{
+    const row=document.createElement('div');row.style.cssText='padding:3px 4px;font-size:.58rem;color:#b42318;border-bottom:1px dotted var(--line)';
+    row.textContent=g.icon+' '+g.msg;el.appendChild(row);
+  });
+  // Section label
+  if(evidence.papers.length||evidence.datasets.length){
+    const label=document.createElement('div');label.style.cssText='padding:2px 4px;font-size:.5rem;color:var(--accent);font-weight:600;margin-top:2px';
+    label.textContent='증거 제안 ('+(evidence.papers.length+evidence.datasets.length)+'건)';el.appendChild(label);
+  }
+  // Papers
+  evidence.papers.slice(0,3).forEach(p=>{
+    const card=document.createElement('div');card.style.cssText='padding:3px 4px;border-bottom:1px dotted var(--line);font-size:.55rem;display:flex;gap:4px;align-items:flex-start';
+    const info=document.createElement('div');info.style.flex='1';
+    const t=document.createElement('b');t.style.cssText='color:var(--brand);font-size:.54rem;cursor:pointer';t.textContent=p.title.substring(0,60)+(p.title.length>60?'...':'');info.appendChild(t);
+    if(p.venue||p.year){const m=document.createElement('div');m.style.cssText='font-size:.46rem;color:var(--muted)';m.textContent=(p.venue||'')+' '+(p.year||'')+' | 인용:'+(p.citation_count||p.relevance_score||'?');info.appendChild(m);}
+    card.appendChild(info);
+    const btns=document.createElement('div');btns.style.cssText='display:flex;gap:2px;flex-shrink:0';
+    const citeBtn=document.createElement('button');citeBtn.className='bt';citeBtn.style.cssText='font-size:.44rem;padding:1px 4px;background:var(--brand);color:#fff;border-color:var(--brand)';citeBtn.textContent='인용';
+    citeBtn.addEventListener('click',()=>{
+      const ref=(p.authors||[]).slice(0,3).join(', ')+'. "'+p.title+'." '+(p.venue||'')+', '+(p.year||'')+'.';
+      refs.push(ref);renderRefs();typeText('[cite:'+refs.length+']');render();
+      document.getElementById('as').textContent='[+] 인용 삽입됨';_triggerEvidence();
+    });btns.appendChild(citeBtn);
+    const dismissBtn=document.createElement('button');dismissBtn.className='bt';dismissBtn.style.cssText='font-size:.44rem;padding:1px 3px;color:var(--muted)';dismissBtn.textContent='x';
+    dismissBtn.addEventListener('click',()=>{_dismissEvidence('p:'+p.id);_triggerEvidence();});btns.appendChild(dismissBtn);
+    card.appendChild(btns);el.appendChild(card);
+  });
+  // Datasets
+  evidence.datasets.slice(0,2).forEach(d=>{
+    const card=document.createElement('div');card.style.cssText='padding:3px 4px;border-bottom:1px dotted var(--line);font-size:.55rem;display:flex;gap:4px;align-items:flex-start';
+    const info=document.createElement('div');info.style.flex='1';
+    const t=document.createElement('b');t.style.cssText='color:var(--accent);font-size:.54rem';t.textContent=d.name;info.appendChild(t);
+    const m=document.createElement('div');m.style.cssText='font-size:.46rem;color:var(--muted)';m.textContent=((d.domain||[]).join(', '))+' | '+(d.size||'?')+' | '+(d.format||'');info.appendChild(m);
+    card.appendChild(info);
+    const btns=document.createElement('div');btns.style.cssText='display:flex;gap:2px;flex-shrink:0';
+    const addBtn=document.createElement('button');addBtn.className='bt';addBtn.style.cssText='font-size:.44rem;padding:1px 4px;background:var(--accent);color:#fff;border-color:var(--accent)';addBtn.textContent='삽입';
+    addBtn.addEventListener('click',()=>{insertDatasetRef(d);_triggerEvidence();});btns.appendChild(addBtn);
+    const dismissBtn=document.createElement('button');dismissBtn.className='bt';dismissBtn.style.cssText='font-size:.44rem;padding:1px 3px;color:var(--muted)';dismissBtn.textContent='x';
+    dismissBtn.addEventListener('click',()=>{_dismissEvidence('d:'+d.id);_triggerEvidence();});btns.appendChild(dismissBtn);
+    card.appendChild(btns);el.appendChild(card);
+  });
+  _updateEvidenceBadge(total);
+}
+
+function _dismissEvidence(key){
+  _evidenceDismissed.add(key);
+  try{sessionStorage.setItem('aicra.evidence.dismissed',JSON.stringify([..._evidenceDismissed]));}catch(e){}
+}
+
+function _updateEvidenceBadge(count){
+  let badge=document.getElementById('evidenceBadge');
+  if(!badge){
+    const as=document.getElementById('as');
+    if(!as)return;
+    badge=document.createElement('span');badge.id='evidenceBadge';
+    badge.style.cssText='margin-left:6px;background:var(--accent);color:#fff;padding:1px 5px;border-radius:8px;font-size:.5rem;font-weight:600;cursor:pointer';
+    badge.addEventListener('click',()=>{const rp=document.getElementById('refPanel');if(!rp.classList.contains('open'))toggleRef();});
+    as.parentNode.insertBefore(badge,as.nextSibling);
+  }
+  if(count>0){badge.textContent='증거 '+count;badge.style.display='';}
+  else{badge.style.display='none';}
+}
+
+async function _triggerEvidence(){
+  const ctx=extractDocumentContext();
+  const evidence=await findEvidence(ctx);
+  renderEvidenceHints(evidence);
+}
+
+// Trigger evidence on metadata change
+['ti','dm','kw'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el)el.addEventListener('change',()=>setTimeout(_triggerEvidence,500));
+});
 function toggleHelp(){const hp=document.getElementById('helpPanel');hp.classList.toggle('show');if(hp.classList.contains('show')){switchHelpTab(0);}}
 function switchHelpTab(idx){
   document.querySelectorAll('.htab').forEach((t,i)=>t.classList.toggle('active',i===idx));
@@ -4042,9 +4194,23 @@ function diagnosePaper(){
   const totalCites=(t.match(/\[cite:\d+\]/g)||[]).length;
   rpt+='<div style="font-size:.68rem;font-weight:700;color:var(--brand);margin:8px 0 3px">인용 밀도</div>';
   rpt+='<div style="font-size:.62rem">총 '+totalCites+'회 인용 | 참고문헌 '+refs.length+'편 | '+(wc>0?Math.round(totalCites/wc*1000)/10:'0')+' 인용/100단어</div>';
+  // Evidence Layer gaps
+  const evCtx=extractDocumentContext();
+  const evGaps=[];
+  if(evCtx.hasExperiments&&!evCtx.hasDatasetSection)evGaps.push('[!] Experiments 섹션에 데이터셋이 명시되지 않았습니다');
+  if(!evCtx.hasRelatedWork&&wc>1000)evGaps.push('[!] Related Work / 선행연구 섹션이 없습니다');
+  if(refs.length<5&&wc>2000)evGaps.push('[!] 참고문헌 '+refs.length+'개 (최소 5개 권장)');
+  const claimPat2=/(?:을 보였다|을 달성했다|significantly|outperform|demonstrates?|achieve[ds]?|show[ns]? that)/gi;
+  let unClaims=0;lines.forEach(l=>{if(claimPat2.test(l)&&!l.includes('[cite:'))unClaims++;});
+  if(unClaims>0)evGaps.push('[!] '+unClaims+'개 주장 문장에 인용 없음');
+  if(evGaps.length){
+    rpt+='<div style="font-size:.68rem;font-weight:700;color:#b42318;margin:8px 0 3px">증거 갭 (Evidence Gaps)</div>';
+    evGaps.forEach(g=>{rpt+='<div style="font-size:.62rem;color:#b42318">'+escHtml(g)+'</div>';});
+  }
   rpt+='</div>';
   const cr=document.getElementById('checkResult');
   cr.innerHTML=rpt;_addCrClose(cr);cr.style.display='block';
+  _triggerEvidence();
 }
 
 // === STYLE CONSISTENCY ===
