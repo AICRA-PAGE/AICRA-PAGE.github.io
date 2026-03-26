@@ -96,7 +96,6 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
 #pv td{padding:.4rem .6rem;font-size:.8rem;border:none;border-left:none!important;border-right:none!important}
 #pv td[style*="text-align:center"],#pv th[style*="text-align:center"]{text-align:center!important}
 #pv td[style*="text-align:right"],#pv th[style*="text-align:right"]{text-align:right!important}
-#pv tr:nth-child(even){background:rgba(0,0,0,.02)}
 #pv tbody tr:nth-child(even){background:rgba(0,0,0,.03)}
 #pv tr:last-child td{border-bottom:none}
 #pv blockquote{border-left:2px solid #999;padding:.4rem .8rem;margin:.5rem 0;color:#555;font-style:italic;font-size:.85rem}
@@ -534,10 +533,10 @@ body.simple-mode .ins button[onclick*="fn"]{display:inline-block}
       <div class="opts">
         <button onclick="toggleCol(false)" class="active" id="col1btn">1단</button>
         <button onclick="toggleCol(true)" id="col2btn">2단</button>
-        <button onclick="zoomPreview(-10)" title="축소" style="font-size:.5rem">-</button>
-        <button onclick="zoomPreview(10)" title="확대" style="font-size:.5rem">+</button>
-        <button onclick="buildFigureTableList()" title="그림/표 목록" style="font-size:.48rem">LOF</button>
-        <button onclick="reorderCitations()" title="인용 순서 재정렬" style="font-size:.48rem">정렬</button>
+        <button id="zoomOutBtn" onclick="zoomPreview(-10)" title="축소" style="font-size:.5rem">-</button>
+        <button id="zoomInBtn" onclick="zoomPreview(10)" title="확대" style="font-size:.5rem">+</button>
+        <button id="lofBtn" onclick="buildFigureTableList()" title="그림/표 목록" style="font-size:.48rem">LOF</button>
+        <button id="reorderBtn" onclick="reorderCitations()" title="인용 순서 재정렬" style="font-size:.48rem">정렬</button>
       </div>
     </div>
     <div id="pv"><p style="color:#999;text-align:center;padding:40px;font-family:sans-serif;font-size:.85rem">양식을 선택하거나 직접 작성을 시작하세요</p></div>
@@ -1439,9 +1438,16 @@ function buildPreviewHeader(){
   const uniqueAffs=[...new Set(perAuthorAffs)];
   if(uniqueAffs.length>0)h+='<div class="affiliations" style="font-size:.78rem;font-style:italic;color:#444;margin-bottom:.2rem">'+uniqueAffs.map(a=>escHtml(a)).join('; ')+'</div>';
   else if(aff)h+='<div class="affiliations" style="font-size:.78rem;font-style:italic;color:#444;margin-bottom:.2rem">'+escHtml(aff)+'</div>';
-  // Corresponding author line
+  // Corresponding author line with email
   const corrNames=resolvedAuthors.filter(a=>a.isCorr);
-  if(corrNames.length)h+='<div class="corresponding-author" style="font-size:.72rem;color:#333;margin-top:.3rem"><sup>&dagger;</sup> Corresponding author: '+corrNames.map(a=>escHtml(a.name)).join(', ')+'</div>';
+  if(corrNames.length){
+    const corrParts=corrNames.map(a=>{
+      const m=typeof nameMap!=='undefined'&&nameMap[a.login];
+      const email=m&&m.email?m.email:'';
+      return escHtml(a.name)+(email?' ('+escHtml(email)+')':'');
+    });
+    h+='<div class="corresponding-author" style="font-size:.72rem;color:#333;margin-top:.3rem"><sup>&dagger;</sup> Corresponding author: '+corrParts.join(', ')+'</div>';
+  }
   if(dm)h+='<div style="font-size:.72rem;color:#666;margin-bottom:.2rem">'+escHtml(dm)+'</div>';
   if(ab)h+='<div style="border-top:1px solid #ccc;border-bottom:1px solid #ccc;padding:8px 0;margin:8px 0;font-size:.82rem;text-align:justify;font-style:italic"><strong style="font-style:normal;display:block;margin-bottom:2px;font-size:.7rem;text-transform:uppercase;letter-spacing:.5px">Abstract</strong>'+escHtml(ab)+'</div>';
   if(kw)h+='<div style="font-size:.72rem;color:#555"><strong>Keywords:</strong> '+escHtml(kw)+'</div>';
@@ -1734,16 +1740,25 @@ function replaceAll(text){inp.focus();inp.select();document.execCommand('insertT
 
 inp.addEventListener('keydown',e=>{
   if(e.key==='Tab'){e.preventDefault();typeText('  ');}
-  // Auto-indent: preserve previous line's leading whitespace on Enter
+  // Auto-indent: preserve previous line's structure (blockquotes, lists, indentation)
   if(e.key==='Enter'&&!e.ctrlKey&&!e.metaKey&&!e.shiftKey){
     const pos=inp.selectionStart;
     const before=inp.value.substring(0,pos);
     const lastLine=before.split('\n').pop();
-    const indent=lastLine.match(/^(\s*(?:[-*+]\s|>\s|\d+\.\s)?)/);
+    // Match: leading spaces, optional blockquote markers (> > >), optional list prefix
+    const indent=lastLine.match(/^((?:\s*>\s*)*\s*(?:[-*+]\s|\d+\.\s)?)/);
     if(indent&&indent[1]&&indent[1].length>0){
-      // If line is only whitespace/prefix (empty list item), clear it instead
-      if(lastLine.trim()===''||/^(\s*[-*+]|\s*\d+\.)\s*$/.test(lastLine)){return;}
-      e.preventDefault();typeText('\n'+indent[1]);
+      const prefix=indent[1];
+      const content=lastLine.substring(prefix.length);
+      // If content is empty (just prefix), exit the block
+      if(content.trim()===''){return;}
+      // Increment numbered list: "  1. " -> "  2. "
+      const numMatch=prefix.match(/^((?:\s*>\s*)*\s*)(\d+)(\.\s)$/);
+      if(numMatch){
+        e.preventDefault();typeText('\n'+numMatch[1]+(parseInt(numMatch[2])+1)+numMatch[3]);
+      }else{
+        e.preventDefault();typeText('\n'+prefix);
+      }
     }
   }
   if((e.ctrlKey||e.metaKey)&&e.key==='b'){e.preventDefault();wrap('**','**');}
@@ -4474,29 +4489,42 @@ function getDisplayName(login){
   const m=nameMap[login];
   return m&&m.name?m.name+' ('+login+')':login;
 }
-function setNameMapping(login,name,affiliation){
-  nameMap[login]={name:name||'',affiliation:affiliation||''};
+function setNameMapping(login,name,affiliation,email){
+  nameMap[login]={name:name||'',affiliation:affiliation||'',email:email||''};
   saveNameMap();
 }
 function showNameMapModal(){
-  let html='<div style="font-size:.75rem;line-height:1.6"><p style="color:var(--muted);margin-bottom:8px">GitHub ID에 실명과 소속을 매핑합니다. 논문 저자 표시에 사용됩니다.</p>';
+  const wrap=document.createElement('div');
+  wrap.style.cssText='font-size:.75rem;line-height:1.6';
+  const desc=document.createElement('p');desc.style.cssText='color:var(--muted);margin-bottom:8px';
+  desc.textContent='GitHub ID에 실명, 소속, 이메일을 매핑합니다. 논문 저자 표시에 사용됩니다.';
+  wrap.appendChild(desc);
   for(const c of collabList){
-    const m=nameMap[c.login]||{name:'',affiliation:''};
-    html+='<div style="display:flex;gap:4px;align-items:center;margin-bottom:4px;padding:4px;border-bottom:1px solid var(--line)"><img src="'+c.avatar+'" style="width:20px;height:20px;border-radius:50%"><b style="min-width:80px;font-size:.68rem">'+c.login+'</b><input id="nm-'+c.login+'" value="'+m.name+'" placeholder="성명" style="flex:1;padding:2px 5px;border:1px solid var(--line);border-radius:3px;font-size:.68rem;background:var(--panel);color:var(--text)"><input id="af-'+c.login+'" value="'+m.affiliation+'" placeholder="소속" style="flex:1;padding:2px 5px;border:1px solid var(--line);border-radius:3px;font-size:.68rem;background:var(--panel);color:var(--text)"></div>';
+    const m=nameMap[c.login]||{name:'',affiliation:'',email:''};
+    const row=document.createElement('div');
+    row.style.cssText='display:flex;gap:4px;align-items:center;margin-bottom:4px;padding:4px;border-bottom:1px solid var(--line)';
+    const img=document.createElement('img');img.src=c.avatar;img.style.cssText='width:20px;height:20px;border-radius:50%';row.appendChild(img);
+    const b=document.createElement('b');b.style.cssText='min-width:70px;font-size:.68rem';b.textContent=c.login;row.appendChild(b);
+    const mkInput=(id,val,ph)=>{const inp=document.createElement('input');inp.id=id;inp.value=val||'';inp.placeholder=ph;inp.style.cssText='flex:1;padding:2px 5px;border:1px solid var(--line);border-radius:3px;font-size:.68rem;background:var(--panel);color:var(--text)';return inp;};
+    row.appendChild(mkInput('nm-'+c.login,m.name,'성명'));
+    row.appendChild(mkInput('af-'+c.login,m.affiliation,'소속'));
+    row.appendChild(mkInput('em-'+c.login,m.email||'','이메일'));
+    wrap.appendChild(row);
   }
-  html+='</div>';
-  // Reuse absModal structure with different content
   const modal=document.getElementById('loadModal');
   modal.querySelector('.modal-head span').textContent='저자 정보 매핑';
-  modal.querySelector('.modal-body').innerHTML=html;
-  modal.querySelector('.modal-foot').innerHTML='<button class="bt" onclick="closeModal(\'loadModal\')">취소</button><button class="bt p" onclick="applyNameMap()">저장</button>';
+  const body=modal.querySelector('.modal-body');body.innerHTML='';body.appendChild(wrap);
+  const foot=modal.querySelector('.modal-foot');foot.innerHTML='';
+  const btnCancel=document.createElement('button');btnCancel.className='bt';btnCancel.textContent='취소';btnCancel.addEventListener('click',()=>closeModal('loadModal'));foot.appendChild(btnCancel);
+  const btnSave=document.createElement('button');btnSave.className='bt p';btnSave.textContent='저장';btnSave.addEventListener('click',applyNameMap);foot.appendChild(btnSave);
   modal.classList.add('show');
 }
 function applyNameMap(){
   for(const c of collabList){
     const name=(document.getElementById('nm-'+c.login)||{}).value||'';
     const aff=(document.getElementById('af-'+c.login)||{}).value||'';
-    if(name||aff)setNameMapping(c.login,name,aff);
+    const email=(document.getElementById('em-'+c.login)||{}).value||'';
+    if(name||aff||email)setNameMapping(c.login,name,aff,email);
   }
   populateAuthorUI();
   closeModal('loadModal');
@@ -4520,25 +4548,28 @@ async function fetchCollaborators(){
 
 function populateAuthorUI(){
   const sel=document.getElementById('au');
-  sel.innerHTML='<option value="">-- 선택 --</option>';
-  for(const c of collabList)sel.innerHTML+='<option value="'+c.login+'">'+getDisplayName(c.login)+'</option>';
+  sel.innerHTML='';
+  const defOpt=document.createElement('option');defOpt.value='';defOpt.textContent='-- 선택 --';sel.appendChild(defOpt);
+  for(const c of collabList){const o=document.createElement('option');o.value=c.login;o.textContent=getDisplayName(c.login);sel.appendChild(o);}
   docManager.getUser().then(u=>{if(u)sel.value=u.login;updateAuthorDDs();updateReviewerDD();});
 }
 
 function updateAuthorDDs(){
   const author=document.getElementById('au').value;
   const coSel=document.getElementById('coau-add');
-  coSel.innerHTML='<option value="">-- 추가 --</option>';
+  coSel.innerHTML='';
+  const defCo=document.createElement('option');defCo.value='';defCo.textContent='-- 추가 --';coSel.appendChild(defCo);
   for(const c of collabList){
     if(c.login===author||selectedCoauthors.includes(c.login))continue;
-    coSel.innerHTML+='<option value="'+c.login+'">'+getDisplayName(c.login)+'</option>';
+    const o=document.createElement('option');o.value=c.login;o.textContent=getDisplayName(c.login);coSel.appendChild(o);
   }
   const corrSel=document.getElementById('corr-add');
-  corrSel.innerHTML='<option value="">-- 추가 (없으면 생략) --</option>';
+  corrSel.innerHTML='';
+  const defCorr=document.createElement('option');defCorr.value='';defCorr.textContent='-- 추가 (없으면 생략) --';corrSel.appendChild(defCorr);
   const all=[author,...selectedCoauthors].filter(Boolean);
   for(const login of all){
     if(selectedCorr.includes(login))continue;
-    corrSel.innerHTML+='<option value="'+login+'">'+getDisplayName(login)+'</option>';
+    const o=document.createElement('option');o.value=login;o.textContent=getDisplayName(login);corrSel.appendChild(o);
   }
 }
 
@@ -4577,14 +4608,20 @@ function removeCorr(login){
 
 function renderChips(areaId,list,removeFn){
   const area=document.getElementById(areaId);
-  area.innerHTML=list.map((login,i)=>{
+  area.innerHTML='';
+  list.forEach((login,i)=>{
     const c=collabList.find(x=>x.login===login);
-    const isExt=!c;
-    const av=c?'<img src="'+c.avatar+'" alt="">':'';
+    const chip=document.createElement('span');
+    chip.className='chip'+(c?'':' ext');
+    if(c){const img=document.createElement('img');img.src=c.avatar;img.alt='';chip.appendChild(img);}
     const num=areaId==='coau-chips'?(i+2)+'저자 ':'';
-    const dn=getDisplayName(login);
-    return '<span class="chip'+(isExt?' ext':'')+'">'+av+num+dn+'<span class="x" onclick="'+removeFn+'(\''+login+'\')">x</span></span>';
-  }).join('');
+    chip.appendChild(document.createTextNode(num+getDisplayName(login)));
+    const x=document.createElement('span');x.className='x';x.textContent='x';
+    x.dataset.login=login;x.dataset.fn=removeFn;
+    x.addEventListener('click',function(){window[this.dataset.fn](this.dataset.login);});
+    chip.appendChild(x);
+    area.appendChild(chip);
+  });
 }
 
 function addExtAuthor(){
@@ -4616,10 +4653,11 @@ function removeReviewer(login){
 function updateReviewerDD(){
   const sel=document.getElementById('rev-add');
   const author=document.getElementById('au').value;
-  sel.innerHTML='<option value="">-- 추가 --</option>';
+  sel.innerHTML='';
+  const def=document.createElement('option');def.value='';def.textContent='-- 추가 --';sel.appendChild(def);
   for(const c of collabList){
     if(c.login===author||selectedCoauthors.includes(c.login)||selectedReviewers.includes(c.login))continue;
-    sel.innerHTML+='<option value="'+c.login+'">'+getDisplayName(c.login)+'</option>';
+    const o=document.createElement('option');o.value=c.login;o.textContent=getDisplayName(c.login);sel.appendChild(o);
   }
 }
 
@@ -4960,11 +4998,12 @@ function reorderCitations(){
   const t=inp.value;
   const citeOrder=[];
   t.replace(/\[cite:(\d+)\]/g,(m,n)=>{const num=parseInt(n);if(!citeOrder.includes(num))citeOrder.push(num);});
-  if(!citeOrder.length||citeOrder.length!==refs.length){
-    document.getElementById('as').textContent='[!] 인용 수('+citeOrder.length+')와 참고문헌 수('+refs.length+')가 다릅니다';return;
-  }
-  // Reorder refs array by citation order
-  const newRefs=citeOrder.map(n=>refs[n-1]).filter(Boolean);
+  if(!citeOrder.length){document.getElementById('as').textContent='[!] 본문에 인용이 없습니다';return;}
+  if(citeOrder.some(n=>n>refs.length)){document.getElementById('as').textContent='[!] 본문에 존재하지 않는 참고문헌 번호가 있습니다';return;}
+  // Reorder refs: cited refs first (by appearance order), uncited refs appended at end
+  const citedRefs=citeOrder.map(n=>refs[n-1]).filter(Boolean);
+  const uncitedRefs=refs.filter((r,i)=>!citeOrder.includes(i+1));
+  const newRefs=[...citedRefs,...uncitedRefs];
   // Renumber citations in text
   const mapping={};citeOrder.forEach((oldN,i)=>{mapping[oldN]=i+1;});
   let newText=t.replace(/\[cite:(\d+)\]/g,(m,n)=>'[cite:'+mapping[parseInt(n)]+']');
@@ -5029,25 +5068,37 @@ async function searchScholar(){
     if(!r.ok)throw new Error('API error');
     const d=await r.json();
     if(!d.data||!d.data.length){results.innerHTML='<p style="padding:6px;color:var(--muted)">결과 없음</p>';return;}
-    results.innerHTML=d.data.map(p=>{
+    results.innerHTML='';
+    d.data.forEach(p=>{
       const authors=(p.authors||[]).map(a=>a.name).join(', ');
       const ref=authors+'. "'+p.title+'." '+(p.venue||'')+', '+(p.year||'')+'.';
-      return '<div style="padding:4px 6px;border-bottom:1px dotted var(--line);cursor:pointer" onclick="addScholarRef(this)" data-ref="'+ref.replace(/"/g,'&quot;')+'"><b style="color:var(--brand);font-size:.58rem">'+p.title+'</b><br><span style="color:var(--muted);font-size:.52rem">'+authors+' ('+p.year+') '+(p.venue||'')+' | 인용:'+p.citationCount+'</span></div>';
-    }).join('');
+      const div=document.createElement('div');div.style.cssText='padding:4px 6px;border-bottom:1px dotted var(--line);cursor:pointer';
+      div.dataset.ref=ref;div.addEventListener('click',function(){addScholarRef(this);});
+      const b=document.createElement('b');b.style.cssText='color:var(--brand);font-size:.58rem';b.textContent=p.title;div.appendChild(b);
+      div.appendChild(document.createElement('br'));
+      const sp=document.createElement('span');sp.style.cssText='color:var(--muted);font-size:.52rem';sp.textContent=authors+' ('+p.year+') '+(p.venue||'')+' | 인용:'+p.citationCount;div.appendChild(sp);
+      results.appendChild(div);
+    });
   }catch(e){
     // Fallback to CrossRef
     try{
       const r=await fetch('https://api.crossref.org/works?query='+encodeURIComponent(q)+'&rows=5');
       if(!r.ok)throw new Error();
       const d=await r.json();
-      results.innerHTML=d.message.items.map(p=>{
+      results.innerHTML='';
+      d.message.items.forEach(p=>{
         const authors=(p.author||[]).map(a=>(a.family||'')+' '+(a.given||'')).join(', ');
         const title=(p.title||[''])[0];
         const year=p.published&&p.published['date-parts']?p.published['date-parts'][0][0]:'';
         const venue=(p['container-title']||[''])[0];
         const ref=authors+'. "'+title+'." '+venue+', '+year+'.';
-        return '<div style="padding:4px 6px;border-bottom:1px dotted var(--line);cursor:pointer" onclick="addScholarRef(this)" data-ref="'+ref.replace(/"/g,'&quot;')+'"><b style="color:var(--brand);font-size:.58rem">'+title+'</b><br><span style="color:var(--muted);font-size:.52rem">'+authors+' ('+year+') '+venue+'</span></div>';
-      }).join('');
+        const div=document.createElement('div');div.style.cssText='padding:4px 6px;border-bottom:1px dotted var(--line);cursor:pointer';
+        div.dataset.ref=ref;div.addEventListener('click',function(){addScholarRef(this);});
+        const b=document.createElement('b');b.style.cssText='color:var(--brand);font-size:.58rem';b.textContent=title;div.appendChild(b);
+        div.appendChild(document.createElement('br'));
+        const sp=document.createElement('span');sp.style.cssText='color:var(--muted);font-size:.52rem';sp.textContent=authors+' ('+year+') '+venue;div.appendChild(sp);
+        results.appendChild(div);
+      });
     }catch(e2){results.innerHTML='<p style="padding:6px;color:#b42318">검색 실패</p>';}
   }
 }
