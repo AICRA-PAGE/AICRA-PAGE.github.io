@@ -575,6 +575,14 @@ body.simple-mode .ins button[onclick*="fn"]{display:inline-block}
       </div>
     </div>
     <div id="dsResults" style="max-height:120px;overflow-y:auto;font-size:.58rem;display:none;border-bottom:1px solid var(--line)"></div>
+    <!-- Related Papers -->
+    <div style="padding:3px 6px;border-bottom:1px solid var(--line);flex-shrink:0">
+      <div style="display:flex;gap:2px;align-items:center">
+        <button class="bt" onclick="recommendPapers()" style="font-size:.5rem;padding:2px 5px;flex:1" title="현재 키워드/초록 기반 관련 논문 추천">관련 논문 추천</button>
+        <button class="bt" onclick="recommendByRefs()" style="font-size:.48rem;padding:2px 4px" title="현재 참고문헌 기반 추천">참고문헌 기반</button>
+      </div>
+    </div>
+    <div id="recResults" style="max-height:120px;overflow-y:auto;font-size:.58rem;display:none;border-bottom:1px solid var(--line)"></div>
     <!-- Reference list -->
     <div class="ref-list" id="refList"></div>
     <!-- Auto-format reference -->
@@ -1233,7 +1241,9 @@ F(df1, df2)=값, p=값, eta^2=값</div>
       <b>저자 이름 매핑:</b> GitHub ID가 저자 정보에서 매핑한 실명으로 표시<br>
       <b>샘플 논문:</b> 5편의 AI 보안 논문을 불러와 전 기능 테스트 가능<br>
       <b>데이터셋 검색:</b> 참고문헌 패널에서 AI/보안 데이터셋 검색 + 클릭으로 삽입. 51개 로컬 카탈로그 + Papers With Code + HuggingFace 실시간 검색<br>
-      <b>데이터셋 도메인 필터:</b> LLM/Adversarial/Malware/IDS/Code/Vuln 카테고리 버튼으로 빠른 필터링
+      <b>데이터셋 도메인 필터:</b> LLM/Adversarial/Malware/IDS/Code/Vuln 카테고리 버튼으로 빠른 필터링<br>
+      <b>관련 논문 추천:</b> 키워드/초록 기반으로 Semantic Scholar API가 관련 논문을 자동 추천. 클릭시 참고문헌 자동 등록<br>
+      <b>참고문헌 기반 추천:</b> 이미 등록된 참고문헌을 기반으로 유사 논문 탐색
     </div>
   </div>
 
@@ -5266,6 +5276,69 @@ function insertDatasetRef(d){
   render();
   if(_pendingCite){_completeCiteInsert();}
   else{document.getElementById('as').textContent='[+] 데이터셋 "'+d.name+'" 추가됨 ['+refs.length+']';}
+}
+
+// === RELATED PAPERS RECOMMENDATION ===
+async function recommendPapers(){
+  const kw=document.getElementById('kw').value.trim();
+  const ab=document.getElementById('ab').value.trim();
+  const ti=document.getElementById('ti').value.trim();
+  const query=[ti,kw,ab].filter(Boolean).join(' ').substring(0,200);
+  if(!query){document.getElementById('as').textContent='[!] 키워드 또는 초록을 먼저 입력하세요';return;}
+  const results=document.getElementById('recResults');
+  results.style.display='block';results.innerHTML='';
+  const loading=document.createElement('p');loading.style.cssText='padding:6px;color:var(--muted)';loading.textContent='관련 논문 검색 중...';results.appendChild(loading);
+  try{
+    const r=await fetch('https://api.semanticscholar.org/graph/v1/paper/search?query='+encodeURIComponent(query)+'&limit=8&fields=title,authors,year,venue,citationCount,url');
+    if(!r.ok)throw new Error('API error');
+    const d=await r.json();
+    results.innerHTML='';
+    if(!d.data||!d.data.length){const empty=document.createElement('p');empty.style.cssText='padding:6px;color:var(--muted)';empty.textContent='관련 논문을 찾지 못했습니다';results.appendChild(empty);return;}
+    const label=document.createElement('div');label.style.cssText='padding:2px 6px;font-size:.5rem;color:var(--muted);font-weight:600';label.textContent='추천 논문 ('+d.data.length+'건)';results.appendChild(label);
+    d.data.forEach(p=>{
+      const authors=(p.authors||[]).map(a=>a.name).join(', ');
+      const ref=authors+'. "'+p.title+'." '+(p.venue||'')+', '+(p.year||'')+'.';
+      const div=document.createElement('div');div.style.cssText='padding:4px 6px;border-bottom:1px dotted var(--line);cursor:pointer';
+      div.dataset.ref=ref;div.addEventListener('click',function(){addScholarRef(this);});
+      const b=document.createElement('b');b.style.cssText='color:var(--brand);font-size:.56rem';b.textContent=p.title;div.appendChild(b);
+      div.appendChild(document.createElement('br'));
+      const sp=document.createElement('span');sp.style.cssText='color:var(--muted);font-size:.5rem';sp.textContent=authors.substring(0,80)+(authors.length>80?'...':'')+' ('+p.year+') '+(p.venue||'')+' | 인용:'+p.citationCount;div.appendChild(sp);
+      results.appendChild(div);
+    });
+  }catch(e){
+    results.innerHTML='';
+    const err=document.createElement('p');err.style.cssText='padding:6px;color:#b42318';err.textContent='검색 실패. 잠시 후 다시 시도하세요.';results.appendChild(err);
+  }
+}
+async function recommendByRefs(){
+  if(!refs.length){document.getElementById('as').textContent='[!] 참고문헌을 먼저 등록하세요';return;}
+  // Use first ref title as seed query
+  const seed=refs[0].substring(0,100);
+  document.getElementById('kw').value||(document.getElementById('kw').value='');
+  const results=document.getElementById('recResults');
+  results.style.display='block';results.innerHTML='';
+  const loading=document.createElement('p');loading.style.cssText='padding:6px;color:var(--muted)';loading.textContent='참고문헌 기반 추천 중...';results.appendChild(loading);
+  try{
+    const r=await fetch('https://api.semanticscholar.org/graph/v1/paper/search?query='+encodeURIComponent(seed)+'&limit=8&fields=title,authors,year,venue,citationCount,url');
+    if(!r.ok)throw new Error('API error');
+    const d=await r.json();
+    results.innerHTML='';
+    if(!d.data||!d.data.length){const empty=document.createElement('p');empty.style.cssText='padding:6px;color:var(--muted)';empty.textContent='추천 논문을 찾지 못했습니다';results.appendChild(empty);return;}
+    const label=document.createElement('div');label.style.cssText='padding:2px 6px;font-size:.5rem;color:var(--muted);font-weight:600';label.textContent='참고문헌 기반 추천 ('+d.data.length+'건)';results.appendChild(label);
+    d.data.forEach(p=>{
+      const authors=(p.authors||[]).map(a=>a.name).join(', ');
+      const ref=authors+'. "'+p.title+'." '+(p.venue||'')+', '+(p.year||'')+'.';
+      const div=document.createElement('div');div.style.cssText='padding:4px 6px;border-bottom:1px dotted var(--line);cursor:pointer';
+      div.dataset.ref=ref;div.addEventListener('click',function(){addScholarRef(this);});
+      const b=document.createElement('b');b.style.cssText='color:var(--brand);font-size:.56rem';b.textContent=p.title;div.appendChild(b);
+      div.appendChild(document.createElement('br'));
+      const sp=document.createElement('span');sp.style.cssText='color:var(--muted);font-size:.5rem';sp.textContent=authors.substring(0,80)+(authors.length>80?'...':'')+' ('+p.year+') '+(p.venue||'')+' | 인용:'+p.citationCount;div.appendChild(sp);
+      results.appendChild(div);
+    });
+  }catch(e){
+    results.innerHTML='';
+    const err=document.createElement('p');err.style.cssText='padding:6px;color:#b42318';err.textContent='검색 실패';results.appendChild(err);
+  }
 }
 
 // === REFERENCE AUTO-FORMATTER ===

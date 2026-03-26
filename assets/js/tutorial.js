@@ -250,6 +250,14 @@ const FULL_STORY=[
    auto:null,
    verify:()=>document.getElementById('input').value.includes('Dataset:')},
 
+  // Chapter 12: Related Papers
+  {ch:'Ch.12 선행연구',title:'관련 논문 추천',
+   story:'키워드와 초록을 기반으로 Semantic Scholar가 관련 논문을 자동 추천합니다. 클릭하면 참고문헌에 바로 추가됩니다.',
+   task:'참고문헌 패널의 <b>관련 논문 추천</b> 버튼을 클릭하세요.',
+   highlight:'button[onclick="recommendPapers()"]',
+   auto:()=>{if(window.recommendPapers)window.recommendPapers();},
+   verify:()=>document.getElementById('recResults').style.display==='block'},
+
   // Ending
   {ch:'완료',title:'축하합니다!',
    story:'논문 작성의 전 과정을 체험했습니다!<br><br>주요 기능 요약:<br>- <b>심사</b>: 구조적 리뷰 + 심사의견<br>- <b>규격</b>: 양식별 투고 규격 점검<br>- <b>진단/문체</b>: 논문 품질 자동 분석<br>- <b>간편</b>: 초보자 모드<br>- <b>이력</b>: 이전 버전 복원<br>- <b>인쇄</b>: 1단/2단 선택 + PDF<br>- <b>?</b> 도움말에서 100+ 기능 확인',
