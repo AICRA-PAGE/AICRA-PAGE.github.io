@@ -558,6 +558,11 @@ body.simple-mode .ins button[onclick*="fn"]{display:inline-block}
   <button onclick="ins('timeline')" title="타임라인 다이어그램">타임라인</button>
   <button onclick="ins('ethics')" title="윤리 및 책임 공개 섹션">윤리</button>
 
+  <span class="gl">데이터</span>
+  <button onclick="openDatasetWorkspace()" title="데이터셋 검색/평가/삽입 워크스페이스 (Ctrl+Shift+D)" style="background:var(--brand);color:#fff;border-color:var(--brand)">데이터셋</button>
+  <button onclick="_insTemplate('dstbl')" title="데이터셋 비교 표 삽입">비교표</button>
+  <button onclick="_insTemplate('expsetup')" title="실험 설정 블록 삽입">실험설정</button>
+
   <span class="gl">법/정책</span>
   <button onclick="ins('statute')" title="규제조문-통제항목 매핑표">조문매핑</button>
   <button onclick="ins('case_law')" title="판례/행정해석 분석 블록">판례분석</button>
@@ -1338,6 +1343,64 @@ F(df1, df2)=값, p=값, eta^2=값</div>
 
   <button class="bt" onclick="toggleHelp()" style="width:100%;margin-top:6px">닫기</button>
   </div><!-- /helpTab2 기능 -->
+</div>
+
+<!-- Dataset Workspace Modal -->
+<div class="modal-overlay" id="dsModal" role="dialog" aria-label="데이터셋 워크스페이스">
+  <div class="modal-box" style="max-width:900px">
+    <div class="modal-head">
+      <span>데이터셋 워크스페이스</span>
+      <button class="bt" onclick="closeModal('dsModal')" style="padding:1px 6px" aria-label="닫기">X</button>
+    </div>
+    <div style="display:flex;gap:0;border-bottom:1px solid var(--line);background:var(--surface)">
+      <button class="bt" onclick="switchDsTab(0)" id="dsTab0" style="flex:1;border-radius:0;border:none;padding:6px;font-size:.65rem;font-weight:600;border-bottom:2px solid var(--brand);color:var(--brand)">검색</button>
+      <button class="bt" onclick="switchDsTab(1)" id="dsTab1" style="flex:1;border-radius:0;border:none;padding:6px;font-size:.65rem;color:var(--muted)">평가</button>
+      <button class="bt" onclick="switchDsTab(2)" id="dsTab2" style="flex:1;border-radius:0;border:none;padding:6px;font-size:.65rem;color:var(--muted)">관련 논문</button>
+      <button class="bt" onclick="switchDsTab(3)" id="dsTab3" style="flex:1;border-radius:0;border:none;padding:6px;font-size:.65rem;color:var(--muted)">템플릿 삽입</button>
+    </div>
+    <div class="modal-body" style="max-height:500px;overflow-y:auto;padding:8px">
+      <!-- Tab 0: Search -->
+      <div id="dsMTab0">
+        <div style="display:flex;gap:4px;margin-bottom:6px">
+          <input id="dsModalQuery" placeholder="데이터셋 검색 (예: malware, prompt injection, IDS)" style="flex:1;padding:5px 8px;border:1px solid var(--line);border-radius:4px;font-size:.72rem;background:var(--panel);color:var(--text)">
+          <button class="bt p" onclick="searchDatasetModal()" style="font-size:.65rem;padding:4px 10px">검색</button>
+        </div>
+        <div style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:6px">
+          <button class="bt" onclick="document.getElementById('dsModalQuery').value='llm-security';searchDatasetModal()" style="font-size:.52rem;padding:2px 5px">LLM Security</button>
+          <button class="bt" onclick="document.getElementById('dsModalQuery').value='adversarial';searchDatasetModal()" style="font-size:.52rem;padding:2px 5px">Adversarial</button>
+          <button class="bt" onclick="document.getElementById('dsModalQuery').value='malware';searchDatasetModal()" style="font-size:.52rem;padding:2px 5px">Malware</button>
+          <button class="bt" onclick="document.getElementById('dsModalQuery').value='network-intrusion';searchDatasetModal()" style="font-size:.52rem;padding:2px 5px">IDS</button>
+          <button class="bt" onclick="document.getElementById('dsModalQuery').value='code-security';searchDatasetModal()" style="font-size:.52rem;padding:2px 5px">Code</button>
+          <button class="bt" onclick="document.getElementById('dsModalQuery').value='prompt-injection';searchDatasetModal()" style="font-size:.52rem;padding:2px 5px">Prompt Inj.</button>
+          <button class="bt" onclick="document.getElementById('dsModalQuery').value='deepfake';searchDatasetModal()" style="font-size:.52rem;padding:2px 5px">Deepfake</button>
+        </div>
+        <div id="dsModalResults" style="font-size:.68rem"></div>
+      </div>
+      <!-- Tab 1: Evaluate -->
+      <div id="dsMTab1" style="display:none">
+        <div id="dsEvalContent" style="font-size:.68rem;color:var(--muted);text-align:center;padding:20px">데이터셋을 먼저 선택하세요 (검색 탭에서 클릭)</div>
+      </div>
+      <!-- Tab 2: Related Papers -->
+      <div id="dsMTab2" style="display:none">
+        <div id="dsRelatedPapers" style="font-size:.68rem;color:var(--muted);text-align:center;padding:20px">데이터셋 선택 후 관련 논문이 표시됩니다</div>
+      </div>
+      <!-- Tab 3: Insert Templates -->
+      <div id="dsMTab3" style="display:none">
+        <div style="font-size:.68rem">
+          <p style="color:var(--muted);margin-bottom:8px">선택한 데이터셋의 메타데이터를 기반으로 구조화된 섹션을 삽입합니다.</p>
+          <button class="bt" onclick="insertDsTemplate('factsheet')" style="width:100%;margin-bottom:4px;padding:6px;font-size:.65rem;text-align:left"><b>Dataset Fact Sheet</b> - 출처, URL, 크기, 라이선스, 한계점</button>
+          <button class="bt" onclick="insertDsTemplate('priorwork')" style="width:100%;margin-bottom:4px;padding:6px;font-size:.65rem;text-align:left"><b>Prior Work Table</b> - 이 데이터셋을 사용한 선행연구 표</button>
+          <button class="bt" onclick="insertDsTemplate('comparison')" style="width:100%;margin-bottom:4px;padding:6px;font-size:.65rem;text-align:left"><b>Dataset Comparison</b> - 데이터셋 비교표 (크기/모달리티/라이선스)</button>
+          <button class="bt" onclick="insertDsTemplate('expsetup')" style="width:100%;margin-bottom:4px;padding:6px;font-size:.65rem;text-align:left"><b>Experimental Setup</b> - 실험 설정 블록 (전처리/분할/메트릭)</button>
+          <button class="bt" onclick="insertDsTemplate('methodology')" style="width:100%;padding:6px;font-size:.65rem;text-align:left"><b>Methodology Notes</b> - 입력 표현, 라벨 매핑, 위협 타당성</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="bt" onclick="saveDsToRepo()" style="font-size:.62rem">리포지터리에 저장</button>
+      <button class="bt" onclick="closeModal('dsModal')">닫기</button>
+    </div>
+  </div>
 </div>
 
 <!-- Abstract Modal -->
@@ -5418,6 +5481,152 @@ function insertDatasetRef(d){
   render();
   if(_pendingCite){_completeCiteInsert();}
   else{document.getElementById('as').textContent='[+] 데이터셋 "'+d.name+'" 추가됨 ['+refs.length+']';}
+}
+
+// === DATASET WORKSPACE MODAL ===
+let _selectedDs=null;
+function openDatasetWorkspace(){document.getElementById('dsModal').classList.add('show');switchDsTab(0);}
+function switchDsTab(idx){
+  [0,1,2,3].forEach(i=>{
+    const tab=document.getElementById('dsTab'+i);const pane=document.getElementById('dsMTab'+i);
+    if(tab)tab.style.cssText='flex:1;border-radius:0;border:none;padding:6px;font-size:.65rem;'+(i===idx?'font-weight:600;border-bottom:2px solid var(--brand);color:var(--brand)':'color:var(--muted)');
+    if(pane)pane.style.display=i===idx?'':'none';
+  });
+}
+async function searchDatasetModal(){
+  const q=document.getElementById('dsModalQuery').value.trim().toLowerCase();
+  if(!q)return;
+  const results=document.getElementById('dsModalResults');
+  results.innerHTML='';
+  const loading=document.createElement('p');loading.style.cssText='padding:10px;color:var(--muted)';loading.textContent='검색 중...';results.appendChild(loading);
+  const catalog=await _loadDatasetCatalog();
+  const local=catalog.filter(d=>{const hay=(d.name+' '+d.description+' '+(d.tags||[]).join(' ')+' '+(d.domain||[]).join(' ')).toLowerCase();return q.split(/\s+/).every(w=>hay.includes(w));});
+  results.innerHTML='';
+  const all=[...local];
+  // External APIs
+  try{const r=await fetch('https://paperswithcode.com/api/v1/datasets/?q='+encodeURIComponent(q)+'&items_per_page=10');if(r.ok){const data=await r.json();(data.results||[]).forEach(p=>all.push({id:p.name.toLowerCase().replace(/\s+/g,'-'),name:p.name,description:(p.description||'').substring(0,200),url:p.url?'https://paperswithcode.com'+p.url:'',source:'Papers With Code'}));}}catch(e){}
+  try{const r=await fetch('https://huggingface.co/api/datasets?search='+encodeURIComponent(q)+'&sort=downloads&limit=10');if(r.ok){const data=await r.json();data.forEach(p=>all.push({id:p.id,name:p.id.split('/').pop(),description:'HuggingFace: '+p.id,url:'https://huggingface.co/datasets/'+p.id,source:'HuggingFace',tags:(p.tags||[]).slice(0,5)}));}}catch(e){}
+  if(!all.length){const empty=document.createElement('p');empty.style.cssText='padding:10px;color:var(--muted)';empty.textContent='결과 없음';results.appendChild(empty);return;}
+  all.forEach(d=>{
+    const card=document.createElement('div');card.style.cssText='padding:6px 8px;border:1px solid var(--line);border-radius:4px;margin-bottom:4px;cursor:pointer;transition:.15s';
+    card.addEventListener('mouseenter',()=>{card.style.background='var(--surface)';});
+    card.addEventListener('mouseleave',()=>{card.style.background='';});
+    card.addEventListener('click',()=>{_selectedDs=d;_showDsEval(d);switchDsTab(1);});
+    const title=document.createElement('b');title.style.cssText='color:var(--brand);font-size:.72rem';title.textContent=d.name;card.appendChild(title);
+    if(d.domain&&d.domain.length){const dom=document.createElement('span');dom.style.cssText='font-size:.52rem;color:var(--muted);margin-left:6px';dom.textContent='['+d.domain.join(', ')+']';card.appendChild(dom);}
+    if(d.source){const src=document.createElement('span');src.style.cssText='font-size:.48rem;color:var(--accent);margin-left:4px;background:var(--surface);padding:0 3px;border-radius:2px';src.textContent=d.source;card.appendChild(src);}
+    card.appendChild(document.createElement('br'));
+    const desc=document.createElement('span');desc.style.cssText='color:var(--text);font-size:.62rem';desc.textContent=(d.description||'').substring(0,150);card.appendChild(desc);
+    if(d.size||d.license||d.year){
+      card.appendChild(document.createElement('br'));
+      const meta=document.createElement('span');meta.style.cssText='font-size:.5rem;color:var(--muted)';
+      const parts=[];if(d.size)parts.push(d.size);if(d.license)parts.push(d.license);if(d.year)parts.push(String(d.year));if(d.format)parts.push(d.format);
+      meta.textContent=parts.join(' | ');card.appendChild(meta);
+    }
+    results.appendChild(card);
+  });
+}
+function _showDsEval(d){
+  const el=document.getElementById('dsEvalContent');el.innerHTML='';
+  const h=document.createElement('h3');h.style.cssText='font-size:.82rem;color:var(--brand);margin-bottom:8px';h.textContent=d.name;el.appendChild(h);
+  // Metadata display
+  const fields=[['출처',d.source],['URL',d.url],['도메인',(d.domain||[]).join(', ')],['크기',d.size],['라이선스',d.license],['연도',d.year],['형식',d.format],['태그',(d.tags||[]).join(', ')],['논문수',d.papers_count],['위협유형',d.threat_type]];
+  fields.forEach(([label,val])=>{
+    if(!val)return;
+    const row=document.createElement('div');row.style.cssText='display:flex;gap:6px;padding:2px 0;border-bottom:1px dotted var(--line);font-size:.65rem';
+    const l=document.createElement('b');l.style.cssText='min-width:60px;color:var(--muted)';l.textContent=label;row.appendChild(l);
+    const v=document.createElement('span');v.textContent=String(val);row.appendChild(v);
+    el.appendChild(row);
+  });
+  // Evaluation checklist
+  const checks=['연구 질문에 적합','벤치마크/훈련 데이터','공개/비공개 확인','라이선스 검토','공식 분할(split) 존재','선행연구와 비교 가능','알려진 한계점 확인'];
+  const checkDiv=document.createElement('div');checkDiv.style.cssText='margin-top:10px;padding-top:8px;border-top:1px solid var(--line)';
+  const checkTitle=document.createElement('b');checkTitle.style.cssText='font-size:.65rem;color:var(--brand)';checkTitle.textContent='평가 체크리스트';checkDiv.appendChild(checkTitle);
+  checks.forEach(c=>{
+    const row=document.createElement('label');row.style.cssText='display:flex;gap:4px;align-items:center;font-size:.62rem;padding:2px 0';
+    const cb=document.createElement('input');cb.type='checkbox';cb.style.width='auto';row.appendChild(cb);
+    row.appendChild(document.createTextNode(c));checkDiv.appendChild(row);
+  });
+  el.appendChild(checkDiv);
+  // Insert buttons
+  const btns=document.createElement('div');btns.style.cssText='margin-top:10px;display:flex;gap:4px;flex-wrap:wrap';
+  const addBtn=document.createElement('button');addBtn.className='bt p';addBtn.style.cssText='font-size:.62rem;padding:4px 10px';addBtn.textContent='참고문헌에 추가 + 본문 삽입';
+  addBtn.addEventListener('click',()=>{insertDatasetRef(d);closeModal('dsModal');});btns.appendChild(addBtn);
+  const tplBtn=document.createElement('button');tplBtn.className='bt';tplBtn.style.cssText='font-size:.62rem;padding:4px 10px';tplBtn.textContent='템플릿 선택 →';
+  tplBtn.addEventListener('click',()=>switchDsTab(3));btns.appendChild(tplBtn);
+  el.appendChild(btns);
+  // Load related papers
+  _loadDsRelatedPapers(d);
+}
+async function _loadDsRelatedPapers(d){
+  const el=document.getElementById('dsRelatedPapers');el.innerHTML='';
+  const loading=document.createElement('p');loading.style.cssText='padding:10px;color:var(--muted)';loading.textContent='"'+d.name+'" 관련 논문 검색 중...';el.appendChild(loading);
+  try{
+    const r=await fetch('https://api.semanticscholar.org/graph/v1/paper/search?query='+encodeURIComponent(d.name)+' dataset&limit=8&fields=title,authors,year,venue,citationCount');
+    if(!r.ok)throw new Error();
+    const data=await r.json();el.innerHTML='';
+    if(!data.data||!data.data.length){el.textContent='관련 논문을 찾지 못했습니다';return;}
+    const label=document.createElement('div');label.style.cssText='font-size:.6rem;color:var(--muted);font-weight:600;margin-bottom:4px';label.textContent='"'+d.name+'" 사용 논문 ('+data.data.length+'건)';el.appendChild(label);
+    data.data.forEach(p=>{
+      const authors=(p.authors||[]).map(a=>a.name).join(', ');
+      const ref=authors+'. "'+p.title+'." '+(p.venue||'')+', '+(p.year||'')+'.';
+      const div=document.createElement('div');div.style.cssText='padding:4px 6px;border-bottom:1px dotted var(--line);cursor:pointer;font-size:.62rem';
+      div.dataset.ref=ref;div.addEventListener('click',function(){addScholarRef(this);});
+      const b=document.createElement('b');b.style.cssText='color:var(--brand);font-size:.6rem';b.textContent=p.title;div.appendChild(b);
+      div.appendChild(document.createElement('br'));
+      const sp=document.createElement('span');sp.style.cssText='color:var(--muted);font-size:.52rem';sp.textContent=authors.substring(0,60)+' ('+p.year+') 인용:'+p.citationCount;div.appendChild(sp);
+      el.appendChild(div);
+    });
+  }catch(e){el.innerHTML='';el.textContent='검색 실패';}
+}
+function insertDsTemplate(type){
+  const d=_selectedDs;
+  if(!d){document.getElementById('as').textContent='[!] 데이터셋을 먼저 선택하세요';return;}
+  const templates={
+    factsheet:'\n\n### Dataset Fact Sheet: '+d.name+'\n- **Source:** '+(d.source||'[입력]')+'\n- **URL:** '+(d.url||'[입력]')+'\n- **Domain/Task:** '+((d.domain||[]).join(', ')||'[입력]')+'\n- **Modality:** [입력]\n- **Size:** '+(d.size||'[입력]')+'\n- **Labels/Classes:** [입력]\n- **Split:** [Train/Val/Test 비율 입력]\n- **Format:** '+(d.format||'[입력]')+'\n- **License:** '+(d.license||'[입력]')+'\n- **Access date:** '+new Date().toISOString().split('T')[0]+'\n- **Why selected:** [이 논문에 적합한 이유]\n- **Known limitations:** '+(d.known_issues||'[입력]')+'\n\n',
+    priorwork:'\n\n*Table N. Prior work using '+d.name+'.*\n| Paper | Year | Task | Split/Subset | Metric | Main Finding | Role in Our Comparison |\n|-------|------|------|-------------|--------|-------------|------------------------|\n| [저자] | [연도] | [태스크] | [분할] | [메트릭] | [주요 발견] | [우리 논문에서의 역할] |\n| | | | | | | |\n| | | | | | | |\n\n',
+    comparison:'\n\n*Table N. Dataset comparison.*\n| Dataset | Task | Size | Modality | Labels | License | Benchmark Popularity | Why Chosen/Not |\n|---------|------|------|----------|--------|---------|---------------------|----------------|\n| '+d.name+' | '+((d.domain||[]).join(', '))+' | '+(d.size||'-')+' | [입력] | [입력] | '+(d.license||'-')+' | '+(d.papers_count||'-')+' papers | [선택 이유] |\n| [비교 대상] | | | | | | | |\n| [비교 대상] | | | | | | | |\n\n',
+    expsetup:'\n\n### Experimental Setup\n**Primary dataset:** '+d.name+'\n**Task:** [태스크]\n**Split used:** [Train/Val/Test]\n**Preprocessing:** [전처리 방법]\n**Filtering/Exclusion criteria:** [제외 기준]\n**Class balance handling:** [클래스 불균형 처리]\n**Evaluation metrics:** '+(d.eval_metrics?d.eval_metrics.join(', '):'[메트릭]')+'\n**Hardware:** [GPU/CPU 사양]\n**Software:** [프레임워크, 버전]\n\n',
+    methodology:'\n\n### Methodology Notes for '+d.name+'\n- **Input representation:** [입력 형태]\n- **Label mapping:** [라벨 매핑 방식]\n- **Baseline methods from prior work:** [선행연구 베이스라인]\n- **Reproducibility constraints:** [재현성 제약]\n- **Threats to validity tied to this dataset:** '+(d.known_issues||'[위협 요인]')+'\n\n'
+  };
+  if(templates[type]){
+    inp.focus();typeText(templates[type]);render();
+    document.getElementById('as').textContent='[+] '+d.name+' 템플릿 삽입됨';
+    closeModal('dsModal');
+  }
+}
+async function saveDsToRepo(){
+  if(!_selectedDs){document.getElementById('as').textContent='[!] 저장할 데이터셋을 먼저 선택하세요';return;}
+  const d=_selectedDs;
+  document.getElementById('as').textContent='[*] 데이터셋 정보 리포지터리에 저장 중...';
+  try{
+    const token=docManager.getToken();if(!token){document.getElementById('as').textContent='[!] 로그인 필요';return;}
+    const path='assets/data/dataset-links.json';
+    const headers={'Authorization':'token '+token,'Content-Type':'application/json'};
+    // Get existing file
+    let existing=[];let sha=null;
+    try{const r=await fetch('https://api.github.com/repos/AICRA-PAGE/AICRA-PAGE.github.io/contents/'+path,{headers:headers});
+      if(r.ok){const data=await r.json();sha=data.sha;existing=JSON.parse(atob(data.content));}}catch(e){}
+    // Add new link
+    const link={dataset_id:d.id||d.name.toLowerCase().replace(/\s+/g,'-'),dataset_name:d.name,paper_title:document.getElementById('ti').value||'',added_by:(await docManager.getUser())?.login||'anonymous',added_at:new Date().toISOString(),task:'',metric:'',split:'',notes:''};
+    existing.push(link);
+    const content=btoa(unescape(encodeURIComponent(JSON.stringify(existing,null,2))));
+    const payload={message:'dataset: add '+d.name+' link',content:content};if(sha)payload.sha=sha;
+    const r=await fetch('https://api.github.com/repos/AICRA-PAGE/AICRA-PAGE.github.io/contents/'+path,{method:'PUT',headers:headers,body:JSON.stringify(payload)});
+    if(r.ok)document.getElementById('as').textContent='[+] 데이터셋 "'+d.name+'" 리포지터리에 저장됨';
+    else document.getElementById('as').textContent='[!] 저장 실패: '+r.status;
+  }catch(e){document.getElementById('as').textContent='[!] 저장 오류: '+e.message;}
+}
+// Keyboard shortcut
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.shiftKey&&(e.key==='d'||e.key==='D')&&!e.altKey){e.preventDefault();openDatasetWorkspace();}});
+
+// === INSERT TEMPLATES (toolbar buttons) ===
+function _insTemplate(key){
+  const tpls={
+    dstbl:'\n\n*Table N. Dataset comparison.*\n| Dataset | Task | Size | Modality | Labels | License | Popularity |\n|---------|------|------|----------|--------|---------|------------|\n| [데이터셋1] | | | | | | |\n| [데이터셋2] | | | | | | |\n| [데이터셋3] | | | | | | |\n\n',
+    expsetup:'\n\n### Experimental Setup\n**Primary dataset:** [데이터셋명]\n**Task:** [태스크]\n**Split:** [Train/Val/Test]\n**Preprocessing:** [전처리]\n**Metrics:** [메트릭]\n**Hardware:** [GPU/CPU]\n\n'
+  };
+  if(tpls[key]){inp.focus();typeText(tpls[key]);render();}
 }
 
 // === RELATED PAPERS RECOMMENDATION ===
