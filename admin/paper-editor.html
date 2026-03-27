@@ -5226,10 +5226,10 @@ async function requestReview(){
   const path=docManager.getCurrentFile();
   if(!path){alert('먼저 문서를 저장해 주세요.');return;}
   if(!selectedReviewers.length){alert('검토자를 추가해 주세요.');return;}
-  const user=await docManager.getUser();
-  if(!user)return;
-  document.getElementById('as').textContent='리뷰 요청 중...';
   try{
+  const user=await docManager.getUser();
+  if(!user){document.getElementById('as').textContent='[!] 로그인 필요';return;}
+  document.getElementById('as').textContent='리뷰 요청 중...';
     for(const rev of selectedReviewers){
       await docManager.createReview(path,rev);
     }
@@ -5354,8 +5354,8 @@ document.getElementById('annot-type').addEventListener('change',function(){
 async function submitAnnotation(){
   const path=docManager.getCurrentFile();
   if(!path){alert('문서가 로드되지 않았습니다.');return;}
-  const user=await docManager.getUser();
-  if(!user)return;
+  let user;try{user=await docManager.getUser();}catch(e){document.getElementById('as').textContent='[!] 인증 오류';return;}
+  if(!user){document.getElementById('as').textContent='[!] 로그인 필요';return;}
   const ann={
     paragraph:_annotParagraph.substring(0,300),
     originalText:_annotParagraph,

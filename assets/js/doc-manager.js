@@ -184,14 +184,14 @@
     _lastHash=simpleHash(content);
     const parsed=parseFrontMatter(content);
     // Check ACL
-    const user=await getUser();
-    const acl=checkACL(parsed.meta,user.login);
+    let user;try{user=await getUser();}catch(e){user=null;}
+    const acl=checkACL(parsed.meta,user?.login||'');
     return{meta:parsed.meta,body:parsed.body,path:path,sha:d.sha,acl:acl};
   }
 
   // === ACL ===
   function checkACL(meta,login){
-    const lc=login.toLowerCase();
+    const lc=(login||'').toLowerCase();
     const author=(meta.author||'').toLowerCase();
     const coauthors=Array.isArray(meta.authors)?meta.authors.map(a=>(typeof a==='string'?a:a.id||'').toLowerCase()):[];
     const corresponding=(meta.corresponding_author||'').toLowerCase();
