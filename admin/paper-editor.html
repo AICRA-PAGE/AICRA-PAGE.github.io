@@ -1741,8 +1741,8 @@ function render(){
       }
       anyChanged=true;
       const startCounters=JSON.parse(JSON.stringify(envCounters));const startEq=eqCounter;
-      let t=sec;t=processEnvs(t);t=processNumberedEq(t);t=processCitations(t);t=processFootnotes(t);t=processSubfigures(t);
-      let html=marked.parse(t);html=restoreEnvs(html);html=processImageSize(html);
+      let t=sec||'';t=processEnvs(t);t=processNumberedEq(t);t=processCitations(t);t=processFootnotes(t);t=processSubfigures(t);
+      let html=marked.parse(t)||'';html=restoreEnvs(html);html=processImageSize(html);
       sectionCache.set(i,{hash:hash,html:html,endCounters:JSON.parse(JSON.stringify(envCounters)),endEq:eqCounter});
       return html;
     });
@@ -1750,8 +1750,8 @@ function render(){
   }else{
     // Small doc: full render (original behavior)
     envCounters={theorem:0,lemma:0,definition:0,corollary:0,proposition:0,algorithm:0};eqCounter=0;
-    let t=preprocessed;t=processEnvs(t);t=processNumberedEq(t);t=processCitations(t);t=processFootnotes(t);t=processSubfigures(t);
-    let html=marked.parse(t);html=restoreEnvs(html);html=processImageSize(html);
+    let t=preprocessed||'';t=processEnvs(t);t=processNumberedEq(t);t=processCitations(t);t=processFootnotes(t);t=processSubfigures(t);
+    let html=marked.parse(t)||'';html=restoreEnvs(html);html=processImageSize(html);
     htmlParts=[html];
   }
   if(token!==renderToken)return; // stale render
@@ -1958,13 +1958,15 @@ function preprocessRefsAndCaptions(text){
 
 // === APPENDIX NUMBERING (A, B, C instead of numbers) ===
 function processAppendix(html){
+  if(!html)return '';
   let inAppendix=false;let appIdx=0;
   return html.replace(/<h2[^>]*>(.*?)<\/h2>/gi,(m,content)=>{
+    if(!content)return m;
     if(/appendix|부록/i.test(content))inAppendix=true;
     if(inAppendix&&!/appendix|부록/i.test(content)){
       appIdx++;
-      const letter=String.fromCharCode(64+appIdx); // A, B, C...
-      return m.replace(content,'Appendix '+letter+'. '+content.replace(/^\d+\.\s*/,''));
+      const letter=String.fromCharCode(64+appIdx);
+      return m.replace(content,'Appendix '+letter+'. '+(content||'').replace(/^\d+\.\s*/,''));
     }
     return m;
   });
@@ -5868,13 +5870,24 @@ function _showDsEval(d){
     el.appendChild(row);
   });
   // Evaluation checklist
-  const checks=['연구 질문에 적합','벤치마크/훈련 데이터','공개/비공개 확인','라이선스 검토','공식 분할(split) 존재','선행연구와 비교 가능','알려진 한계점 확인'];
+  const checks=[
+    {label:'연구 질문에 적합',desc:'이 데이터셋이 연구 가설을 검증하는 데 적합한가?'},
+    {label:'벤치마크/훈련 데이터',desc:'벤치마크(비교 평가)용인지 모델 훈련용인지 명확한가?'},
+    {label:'공개/비공개 확인',desc:'데이터셋에 자유롭게 접근 가능한가? 신청 필요?'},
+    {label:'라이선스 검토',desc:'상업적/학술적 사용이 허용되는 라이선스인가?'},
+    {label:'공식 분할(split) 존재',desc:'Train/Val/Test 공식 분할이 제공되어 결과 재현 가능한가?'},
+    {label:'선행연구와 비교 가능',desc:'동일 데이터셋을 사용한 선행연구 결과와 직접 비교 가능한가?'},
+    {label:'알려진 한계점 확인',desc:'데이터 편향, 노이즈, 시대적 한계 등을 인지했는가?'}
+  ];
   const checkDiv=document.createElement('div');checkDiv.style.cssText='margin-top:10px;padding-top:8px;border-top:1px solid var(--line)';
   const checkTitle=document.createElement('b');checkTitle.style.cssText='font-size:.65rem;color:var(--brand)';checkTitle.textContent='평가 체크리스트';checkDiv.appendChild(checkTitle);
   checks.forEach(c=>{
-    const row=document.createElement('label');row.style.cssText='display:flex;gap:4px;align-items:center;font-size:.62rem;padding:2px 0';
-    const cb=document.createElement('input');cb.type='checkbox';cb.style.width='auto';row.appendChild(cb);
-    row.appendChild(document.createTextNode(c));checkDiv.appendChild(row);
+    const row=document.createElement('label');row.style.cssText='display:flex;gap:4px;align-items:flex-start;font-size:.62rem;padding:3px 0;border-bottom:1px dotted var(--line)';
+    const cb=document.createElement('input');cb.type='checkbox';cb.style.cssText='width:auto;margin-top:2px;flex-shrink:0';row.appendChild(cb);
+    const txt=document.createElement('div');
+    const lbl=document.createElement('span');lbl.style.fontWeight='600';lbl.textContent=c.label;txt.appendChild(lbl);
+    const desc=document.createElement('div');desc.style.cssText='font-size:.52rem;color:var(--muted);line-height:1.3;margin-top:1px';desc.textContent=c.desc;txt.appendChild(desc);
+    row.appendChild(txt);checkDiv.appendChild(row);
   });
   el.appendChild(checkDiv);
   // Insert buttons
@@ -5889,24 +5902,49 @@ function _showDsEval(d){
 }
 async function _loadDsRelatedPapers(d){
   const el=document.getElementById('dsRelatedPapers');el.innerHTML='';
-  const loading=document.createElement('p');loading.style.cssText='padding:10px;color:var(--muted)';loading.textContent='"'+d.name+'" 관련 논문 검색 중...';el.appendChild(loading);
+  const loading=document.createElement('p');loading.style.cssText='padding:10px;color:var(--muted)';loading.textContent='"'+d.name+'" 관련 논문 검색 중 (3단계)...';el.appendChild(loading);
+  const allResults=[];const seen=new Set();
+  function _addPaperCard(p,source){
+    const key=(p.title||'').toLowerCase().replace(/[^a-z0-9]/g,'').substring(0,30);
+    if(seen.has(key))return;seen.add(key);
+    const authors=(p.authors||[]).map(a=>typeof a==='string'?a:a.name||'').join(', ');
+    const ref=authors+'. "'+p.title+'." '+(p.venue||'')+', '+(p.year||'')+'.';
+    const div=document.createElement('div');div.style.cssText='padding:4px 6px;border-bottom:1px dotted var(--line);cursor:pointer;font-size:.62rem';
+    div.dataset.ref=ref;div.addEventListener('click',function(){addScholarRef(this);});
+    const b=document.createElement('b');b.style.cssText='color:var(--brand);font-size:.6rem';b.textContent=(p.title||'').substring(0,80);div.appendChild(b);
+    const src=document.createElement('span');src.style.cssText='font-size:.44rem;color:var(--accent);margin-left:4px;background:var(--surface);padding:0 3px;border-radius:2px';src.textContent=source;div.appendChild(src);
+    div.appendChild(document.createElement('br'));
+    const sp=document.createElement('span');sp.style.cssText='color:var(--muted);font-size:.5rem';sp.textContent=authors.substring(0,50)+' ('+p.year+') '+(p.citationCount?'인용:'+p.citationCount:'');div.appendChild(sp);
+    el.appendChild(div);
+  }
+  // Stage 1: 로컬 papers.json 매칭 (즉시)
   try{
-    const r=await fetch('https://api.semanticscholar.org/graph/v1/paper/search?query='+encodeURIComponent(d.name)+' dataset&limit=8&fields=title,authors,year,venue,citationCount');
-    if(!r.ok)throw new Error();
-    const data=await r.json();el.innerHTML='';
-    if(!data.data||!data.data.length){el.textContent='관련 논문을 찾지 못했습니다';return;}
-    const label=document.createElement('div');label.style.cssText='font-size:.6rem;color:var(--muted);font-weight:600;margin-bottom:4px';label.textContent='"'+d.name+'" 사용 논문 ('+data.data.length+'건)';el.appendChild(label);
-    data.data.forEach(p=>{
-      const authors=(p.authors||[]).map(a=>a.name).join(', ');
-      const ref=authors+'. "'+p.title+'." '+(p.venue||'')+', '+(p.year||'')+'.';
-      const div=document.createElement('div');div.style.cssText='padding:4px 6px;border-bottom:1px dotted var(--line);cursor:pointer;font-size:.62rem';
-      div.dataset.ref=ref;div.addEventListener('click',function(){addScholarRef(this);});
-      const b=document.createElement('b');b.style.cssText='color:var(--brand);font-size:.6rem';b.textContent=p.title;div.appendChild(b);
-      div.appendChild(document.createElement('br'));
-      const sp=document.createElement('span');sp.style.cssText='color:var(--muted);font-size:.52rem';sp.textContent=authors.substring(0,60)+' ('+p.year+') 인용:'+p.citationCount;div.appendChild(sp);
-      el.appendChild(div);
-    });
-  }catch(e){el.innerHTML='';el.textContent='검색 실패';}
+    const papers=await _loadPapersCache();
+    const dsName=(d.name||'').toLowerCase();
+    const localMatches=papers.filter(p=>{
+      const hay=((p.title||'')+' '+(p.abstract||'')+' '+(p.match_reasons||[]).join(' ')).toLowerCase();
+      return dsName.length>3&&hay.includes(dsName);
+    }).sort((a,b)=>(b.citation_count||b.relevance_score||0)-(a.citation_count||a.relevance_score||0)).slice(0,5);
+    if(localMatches.length){
+      el.innerHTML='';
+      const lbl=document.createElement('div');lbl.style.cssText='font-size:.52rem;color:var(--muted);font-weight:600';lbl.textContent='로컬 매칭 ('+localMatches.length+'건)';el.appendChild(lbl);
+      localMatches.forEach(p=>_addPaperCard(p,'로컬'));
+    }
+  }catch(e){}
+  // Stage 2: Semantic Scholar (API)
+  try{
+    const r=await fetch('https://api.semanticscholar.org/graph/v1/paper/search?query='+encodeURIComponent(d.name)+' dataset benchmark&limit=10&fields=title,authors,year,venue,citationCount');
+    if(r.ok){
+      const data=await r.json();
+      if(data.data&&data.data.length){
+        if(el.querySelector('p'))el.innerHTML=''; // remove loading
+        const lbl=document.createElement('div');lbl.style.cssText='font-size:.52rem;color:var(--muted);font-weight:600;margin-top:4px';lbl.textContent='Semantic Scholar ('+data.data.length+'건)';el.appendChild(lbl);
+        data.data.forEach(p=>_addPaperCard(p,'S2'));
+      }
+    }
+  }catch(e){}
+  if(el.querySelector('p')&&!el.querySelector('b')){el.innerHTML='';el.textContent='관련 논문을 찾지 못했습니다';}
+  else if(el.querySelector('p'))el.querySelector('p').remove();
 }
 function insertDsTemplate(type){
   const d=_selectedDs;
