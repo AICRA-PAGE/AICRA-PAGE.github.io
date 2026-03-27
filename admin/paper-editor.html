@@ -521,9 +521,9 @@ body.simple-mode .ins button[onclick*="fn"]{display:inline-block}
   </div>
 </div>
 
-<div id="optBar" style="display:flex;gap:8px;padding:3px 12px;background:var(--surface);border-bottom:1px solid var(--line);flex-shrink:0;align-items:center;flex-wrap:wrap">
+<div id="optBar" style="display:flex;gap:6px;padding:3px 12px;background:var(--surface);border-bottom:1px solid var(--line);flex-shrink:0;align-items:center;flex-wrap:wrap">
   <span style="font-size:.55rem;color:var(--brand);font-weight:700">논문 유형:</span>
-  <select id="paperType" class="meta-sel" style="width:auto;padding:2px 5px" onchange="applyPaperType(this.value)">
+  <select id="paperType" class="meta-sel" style="width:auto;padding:2px 5px" onchange="applyPaperType(this.value)" title="논문의 유형을 선택합니다. 유형에 따라 페이지 제한과 구조가 달라집니다.">
     <option value="">자유형식</option>
     <option value="short">소논문 (4-6p)</option>
     <option value="journal">학술지</option>
@@ -531,20 +531,22 @@ body.simple-mode .ins button[onclick*="fn"]{display:inline-block}
     <option value="symp">학술대회</option>
   </select>
   <span style="width:1px;height:14px;background:var(--line)"></span>
-  <span style="font-size:.55rem;color:var(--brand);font-weight:700">투고 옵션:</span>
-  <label style="font-size:.52rem;display:flex;align-items:center;gap:2px;cursor:pointer"><input type="checkbox" id="opt-cover" style="width:auto" onchange="toggleOption('cover',this.checked)"> 표지</label>
-  <label style="font-size:.52rem;display:flex;align-items:center;gap:2px;cursor:pointer"><input type="checkbox" id="opt-coverletter" style="width:auto" onchange="toggleOption('coverletter',this.checked)"> 커버레터</label>
-  <label style="font-size:.52rem;display:flex;align-items:center;gap:2px;cursor:pointer"><input type="checkbox" id="opt-enabs" style="width:auto" onchange="toggleOption('enabs',this.checked)"> 영문 초록</label>
-  <span style="width:1px;height:14px;background:var(--line)"></span>
-  <label style="font-size:.52rem;display:flex;align-items:center;gap:2px;cursor:pointer;color:#b42318;font-weight:600"><input type="checkbox" id="opt-blind" style="width:auto" onchange="toggleBlindMode(this.checked)"> Anonymous (블라인드)</label>
-  <select id="citeStyle" style="padding:1px 3px;border:1px solid var(--line);border-radius:2px;font-size:.5rem;background:var(--panel);color:var(--text)" onchange="render()" title="인용 스타일">
-    <option value="numeric">[1] IEEE/번호</option>
-    <option value="author-year">(Author, Year) APA</option>
-    <option value="superscript">1 위첨자</option>
-  </select>
-  <button class="bt" onclick="runAnonymizationLint()" style="font-size:.48rem;padding:1px 4px" title="익명화 점검: 저자명/소속/URL 노출 감지">익명린트</button>
-  <button class="bt" onclick="submissionPreflight()" style="font-size:.48rem;padding:1px 4px;background:var(--brand);color:#fff;border-color:var(--brand)" title="투고 프리플라이트: 학회별 체크리스트">프리플라이트</button>
-  <button class="bt" onclick="showCreditModal()" style="font-size:.48rem;padding:1px 4px" title="CRediT 저자 기여도 명세">기여도</button>
+  <span style="font-size:.52rem;color:var(--muted);cursor:pointer;user-select:none" id="advOptToggle" onclick="document.getElementById('advOpts').style.display=document.getElementById('advOpts').style.display==='none'?'flex':'none';this.textContent=document.getElementById('advOpts').style.display==='none'?'고급 옵션 +':'고급 옵션 -'">고급 옵션 +</span>
+  <div id="advOpts" style="display:none;gap:6px;align-items:center;flex-wrap:wrap">
+    <label style="font-size:.52rem;display:flex;align-items:center;gap:2px;cursor:pointer" title="저널 투고 시 표지 페이지를 포함합니다. 학회 투고에서는 대부분 불필요합니다."><input type="checkbox" id="opt-cover" style="width:auto" onchange="toggleOption('cover',this.checked)"> 표지</label>
+    <label style="font-size:.52rem;display:flex;align-items:center;gap:2px;cursor:pointer" title="저널(학술지) 투고 시 편집장에게 보내는 커버레터입니다. 학회 투고에서는 보통 불필요합니다."><input type="checkbox" id="opt-coverletter" style="width:auto" onchange="toggleOption('coverletter',this.checked)"> 커버레터</label>
+    <label style="font-size:.52rem;display:flex;align-items:center;gap:2px;cursor:pointer" title="한국어 논문에 영문 초록을 추가합니다. 국내 저널(KCI)에서 주로 요구합니다."><input type="checkbox" id="opt-enabs" style="width:auto" onchange="toggleOption('enabs',this.checked)"> 영문 초록</label>
+    <span style="width:1px;height:14px;background:var(--line)"></span>
+    <label style="font-size:.52rem;display:flex;align-items:center;gap:2px;cursor:pointer;color:#b42318;font-weight:600" title="Double-blind 심사 학회(S&P, CCS, NeurIPS 등) 투고 시 필수. 저자/소속 정보를 숨깁니다. 해당 양식 선택 시 자동 활성화됩니다."><input type="checkbox" id="opt-blind" style="width:auto" onchange="toggleBlindMode(this.checked)"> 블라인드</label>
+    <select id="citeStyle" style="padding:1px 3px;border:1px solid var(--line);border-radius:2px;font-size:.5rem;background:var(--panel);color:var(--text)" onchange="render()" title="인용 표기 스타일. IEEE/ACM 학회는 [1] 번호, APA 스타일 저널은 (Author, Year), 의학 저널은 위첨자를 사용합니다.">
+      <option value="numeric">[1] 번호 (IEEE/ACM)</option>
+      <option value="author-year">(Author, Year) APA</option>
+      <option value="superscript">위첨자 (의학)</option>
+    </select>
+    <button class="bt" onclick="runAnonymizationLint()" style="font-size:.48rem;padding:1px 4px" title="블라인드 투고 전 점검: 본문/초록/참고문헌에서 저자명, 소속, GitHub URL, ORCID, 셀프인용 패턴을 자동 감지합니다.">익명린트</button>
+    <button class="bt" onclick="submissionPreflight()" style="font-size:.48rem;padding:1px 4px;background:var(--brand);color:#fff;border-color:var(--brand)" title="선택한 양식(S&P/CCS/NeurIPS 등)의 투고 규격을 자동 점검합니다. 페이지수, 참고문헌 수, 필수 섹션, 블라인드 요구 등을 확인합니다.">프리플라이트</button>
+    <button class="bt" onclick="showCreditModal()" style="font-size:.48rem;padding:1px 4px" title="CRediT(Contributor Roles Taxonomy) 14개 역할로 저자별 기여도를 명시합니다. 많은 탑 저널이 Author Contribution Statement를 요구합니다.">기여도</button>
+  </div>
 </div>
 
 <div class="ins" id="insBar">
