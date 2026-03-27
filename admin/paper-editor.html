@@ -4372,13 +4372,16 @@ function exportTeX(){
   if(!body.trim())return alert('내용을 입력해 주세요.');
 
   // Select venue class
-  const venue=prompt('LaTeX 클래스를 선택하세요:\n1) IEEEtran (IEEE 학회/저널)\n2) acmart (ACM 학회)\n3) article (일반)\n\n번호 입력:','1');
-  const classes={'1':'IEEEtran','2':'acmart','3':'article'};
+  const venue=prompt('LaTeX 클래스를 선택하세요:\n1) IEEEtran compsoc (IEEE S&P/TDSC/TIFS)\n2) IEEEtran conference (IEEE 학회)\n3) acmart sigconf (ACM CCS)\n4) article (일반)\n\n번호 입력:','1');
+  const classes={'1':'IEEEtran-compsoc','2':'IEEEtran','3':'acmart','4':'article'};
   const cls=classes[venue]||'article';
 
   // Build preamble
   let tex='';
-  if(cls==='IEEEtran'){
+  if(cls==='IEEEtran-compsoc'){
+    tex+='\\documentclass[conference,compsoc]{IEEEtran}\n';
+    tex+='\\usepackage{amsmath,amssymb,amsfonts}\n\\usepackage{algorithmic}\n\\usepackage{graphicx}\n\\usepackage{textcomp}\n\\usepackage{kotex}\n\\usepackage{hyperref}\n\\usepackage{cite}\n';
+  }else if(cls==='IEEEtran'){
     tex+='\\documentclass[conference]{IEEEtran}\n';
     tex+='\\usepackage{amsmath,amssymb,amsfonts}\n\\usepackage{algorithmic}\n\\usepackage{graphicx}\n\\usepackage{textcomp}\n\\usepackage{kotex}\n\\usepackage{hyperref}\n';
   }else if(cls==='acmart'){
@@ -4390,11 +4393,15 @@ function exportTeX(){
   }
   tex+='\\usepackage[utf8]{inputenc}\n\n';
 
-  // Title, authors
+  // Title, authors (blind mode: anonymous)
   tex+='\\title{'+escTeX(ti)+'}\n';
+  if(_blindMode){
+    tex+='% Anonymous submission - author info suppressed\n';
+    tex+='\\author{Anonymous Author(s)}\n';
+  }else{
   const allAuthors=[au,...(coau?coau.split(',').map(s=>s.trim()):[])].filter(Boolean);
   const authorNames=allAuthors.map(a=>{const m=nameMap[a];return m&&m.name?m.name:a;});
-  if(cls==='IEEEtran'){
+  if(cls==='IEEEtran'||cls==='IEEEtran-compsoc'){
     tex+='\\author{'+authorNames.join(' \\and ')+'}\n';
   }else if(cls==='acmart'){
     authorNames.forEach(n=>{tex+='\\author{'+escTeX(n)+'}\n';});
@@ -4403,6 +4410,7 @@ function exportTeX(){
     if(corr)tex+='\\\\\\small Corresponding: '+corr;
     tex+='}\n';
   }
+  } // end of non-blind author block
   tex+='\\date{'+new Date().toISOString().split('T')[0]+'}\n\n';
   tex+='\\begin{document}\n\\maketitle\n\n';
 
