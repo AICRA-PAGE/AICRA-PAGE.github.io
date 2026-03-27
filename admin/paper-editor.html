@@ -442,6 +442,7 @@ body.simple-mode .ins button[onclick*="fn"]{display:inline-block}
     <option value="TeX">LaTeX (.tex)</option>
     <option value="PPT">발표자료 (.pptx)</option>
     <option value="DOCX">Word (.docx)</option>
+    <option value="Split">본문+부록 분리 (.md)</option>
   </select>
   <div class="sep"></div>
   <button class="bt" onclick="startTutorial()" title="기능 체험 튜토리얼" style="background:var(--accent);color:#fff;border-color:var(--accent)">튜토리얼</button>
@@ -5981,6 +5982,35 @@ function showCreditModal(){
   const btnCancel=document.createElement('button');btnCancel.className='bt';btnCancel.textContent='취소';
   btnCancel.addEventListener('click',()=>closeModal('loadModal'));foot.appendChild(btnCancel);
   modal.classList.add('show');
+}
+
+// === SPLIT EXPORT (Main + Appendix/Supplementary) ===
+function exportSplit(){
+  const body=inp.value;if(!body.trim()){alert('내용이 비어 있습니다.');return;}
+  const ti=document.getElementById('ti').value||'paper';
+  const slug=ti.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'').substring(0,40);
+  // Split at ## Appendix
+  const appIdx=body.search(/^## Appendix/im);
+  let mainBody,appendixBody;
+  if(appIdx>-1){
+    mainBody=body.substring(0,appIdx).trim();
+    appendixBody=body.substring(appIdx).trim();
+  }else{
+    mainBody=body;appendixBody='';
+  }
+  // Download main
+  const mainBlob=new Blob([mainBody],{type:'text/markdown'});
+  const a1=document.createElement('a');a1.href=URL.createObjectURL(mainBlob);a1.download=slug+'-main.md';a1.click();
+  // Download appendix if exists
+  if(appendixBody){
+    setTimeout(()=>{
+      const appBlob=new Blob([appendixBody],{type:'text/markdown'});
+      const a2=document.createElement('a');a2.href=URL.createObjectURL(appBlob);a2.download=slug+'-appendix.md';a2.click();
+    },500);
+    document.getElementById('as').textContent='[+] 본문 + 부록 분리 내보내기 완료';
+  }else{
+    document.getElementById('as').textContent='[+] 본문 내보내기 완료 (부록 없음)';
+  }
 }
 
 // === INSERT TEMPLATES (toolbar buttons) ===
