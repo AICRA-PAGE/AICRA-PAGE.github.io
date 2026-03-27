@@ -536,17 +536,13 @@ function showRoleSelect(){
 // === Public API ===
 window._tRole=function(role){
   if(role==='author')activeStory=FULL_STORY;
-  else if(role==='basic')activeStory=FULL_STORY.filter(s=>!s.ch||!s.ch.startsWith('Ch.1')||s.ch<='Ch.9'||s.ch==='완료').filter(s=>{
-    // Basic: Ch.1~Ch.9 + ending only
-    if(!s.ch)return true;
-    const num=parseInt((s.ch.match(/Ch\.(\d+)/)||[])[1]||'0');
-    return num<=9||num===0||s.ch==='완료';
+  else if(role==='basic')activeStory=FULL_STORY.filter(s=>{
+    if(!s.ch||s.ch==='완료')return true;
+    const m=s.ch.match(/Ch\.(\d+)/);return m?parseInt(m[1])<=9:true;
   });
   else if(role==='advanced')activeStory=FULL_STORY.filter(s=>{
-    // Advanced: Ch.10~Ch.13 + ending only
-    if(!s.ch)return true;
-    const num=parseInt((s.ch.match(/Ch\.(\d+)/)||[])[1]||'0');
-    return num>=10||s.ch==='완료';
+    if(!s.ch||s.ch==='완료')return true;
+    const m=s.ch.match(/Ch\.(\d+)/);return m?parseInt(m[1])>=10:false;
   });
   else if(role==='coauthor')activeStory=COAUTHOR_STORY;
   else if(role==='corresponding')activeStory=CORRESPONDING_STORY;

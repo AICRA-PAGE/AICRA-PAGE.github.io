@@ -225,7 +225,8 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
   @page:first{margin-top:15mm;@bottom-center{content:none}}
   title{display:none!important}
   #pv{padding:10mm 0 0 0!important;font-family:'Times New Roman','Noto Serif KR',serif!important;font-size:11pt!important;line-height:1.5!important;color:#000!important;background:#fff!important;column-count:auto!important;overflow:visible!important;max-width:100%!important}
-  #pv *{box-sizing:border-box;max-width:100%!important;page-break-inside:avoid;orphans:3;widows:3}
+  #pv *{box-sizing:border-box;max-width:100%!important;orphans:3;widows:3}
+  #pv table,#pv figure,#pv pre,#pv .env-block,#pv .abstract-box,#pv .mermaid,#pv .eq-row{page-break-inside:avoid}
   #pv .table-scroll{overflow:visible!important}
   #pv .wide-block,.table-scroll,.mermaid,.env-block,.katex-display,pre{column-span:all!important;break-inside:avoid!important}
   #pv h1{font-size:14pt!important;margin-bottom:6pt;page-break-after:avoid}
@@ -334,7 +335,7 @@ body.simple-mode .ins button[onclick*="fn"]{display:inline-block}
   #pv{padding:14px 16px;font-size:.82rem;line-height:1.7}
   .ref-panel{position:fixed!important;left:0;top:0;width:100%!important;height:100vh;z-index:100;border:none}
   .ref-panel.open{width:100%!important}
-  .help{width:100%!important;max-width:100%!important}
+  .help{width:100%!important;max-width:100%!important;left:0!important;right:0!important;top:0!important;bottom:0!important;transform:none!important;border-radius:0!important;max-height:100vh!important}
   .modal-box{width:95vw!important;max-width:95vw!important;max-height:90vh}
   /* Mobile tab switcher */
   .mobile-tabs{display:flex!important;gap:0;border-bottom:1px solid var(--line);background:var(--surface);flex-shrink:0}
@@ -1357,7 +1358,11 @@ F(df1, df2)=값, p=값, eta^2=값</div>
       <b>인용 스타일:</b> [N] 번호 또는 (Author, Year) 스타일 전환<br>
       <b>커맨드 팔레트:</b> Ctrl+P -> 명령어 직접 입력 (save, diagnose, blind, dataset 등)<br>
       <b>툴바 접이식:</b> 카테고리 라벨 클릭시 해당 버튼 그룹 접기/펼치기<br>
-      <b>본문+부록 분리:</b> 내보내기 -> 본문과 Appendix를 별도 파일로 분리
+      <b>본문+부록 분리:</b> 내보내기 -> 본문과 Appendix를 별도 파일로 분리<br>
+      <b>튜토리얼 기본/고급:</b> 기본(Ch.1-9 작성 기초) / 고급(Ch.10-13 도구+투고) / 역할별 선택 가능<br>
+      <b>데이터셋 리포 저장:</b> 데이터셋 워크스페이스에서 "리포지터리에 저장" 클릭 -> GitHub에 사용 기록 저장<br>
+      <b>DOCX 수식:</b> Word 네이티브 수식 객체로 내보내기 (KaTeX->OMML 변환)<br>
+      <b>Mermaid->TikZ:</b> LaTeX 내보내기 시 flowchart가 자동으로 TikZ 코드로 변환
     </div>
   </div>
 
@@ -1637,7 +1642,7 @@ function buildPreviewHeader(){
   let h='<div style="border-bottom:1px solid #bbb;padding-bottom:14px;margin-bottom:18px;text-align:center">';
   if(ti)h+='<h1 style="margin-bottom:.3rem">'+escHtml(ti)+'</h1>';
   // Blind mode: suppress all author information
-  if(_blindMode){
+  if(typeof _blindMode!=='undefined'&&_blindMode){
     h+='<div style="font-size:.82rem;color:#b42318;font-weight:600;margin:.5rem 0">Anonymous Submission</div>';
     if(dm)h+='<div style="font-size:.72rem;color:#666;margin-bottom:.2rem">'+escHtml(dm)+'</div>';
     if(ab)h+='<div style="border-top:1px solid #ccc;border-bottom:1px solid #ccc;padding:8px 0;margin:8px 0;font-size:.82rem;text-align:justify;font-style:italic"><strong style="font-style:normal;display:block;margin-bottom:2px;font-size:.7rem;text-transform:uppercase;letter-spacing:.5px">Abstract</strong>'+escHtml(ab)+'</div>';
@@ -2047,7 +2052,7 @@ function insTpl(type){
   const blindVenues=['sp','ccs','neurips_en','ndss','usenix','ieee_en','acm_en'];
   if(blindVenues.includes(type)){
     const cb=document.getElementById('opt-blind');
-    if(cb&&!cb.checked){cb.checked=true;toggleBlindMode(true);document.getElementById('as').textContent='[*] '+type+' 선택 - 블라인드 모드 자동 활성화';}
+    if(cb&&!cb.checked){cb.checked=true;if(typeof toggleBlindMode==='function')toggleBlindMode(true);document.getElementById('as').textContent='[*] '+type+' 선택 - 블라인드 모드 자동 활성화';}
   }
   const T={
 ieee_en:`# [Paper Title]
@@ -3883,7 +3888,7 @@ document.addEventListener('keydown',e=>{
     const c=cmd.trim().toLowerCase();
     const cmds={
       'save':()=>{save();ghSave();},'export-tex':exportTeX,'export-docx':exportDOCX,
-      'blind':()=>{const cb=document.getElementById('opt-blind');cb.checked=!cb.checked;toggleBlindMode(cb.checked);},
+      'blind':()=>{const cb=document.getElementById('opt-blind');if(cb){cb.checked=!cb.checked;toggleBlindMode(cb.checked);}},
       'preflight':submissionPreflight,'diagnose':diagnosePaper,'style':analyzeStyle,
       'review':showReviewChecklist,'dataset':openDatasetWorkspace,'recommend':recommendPapers,
       'credit':showCreditModal,'help':toggleHelp,'tutorial':startTutorial,
@@ -3949,7 +3954,7 @@ function extractDocumentContext(){
   // Detect section intents
   const hasExperiments=sections.some(s=>/experiment|evaluation|result|실험|평가/.test(s));
   const hasRelatedWork=sections.some(s=>/related|prior|선행|관련/.test(s));
-  const hasDatasetSection=body.toLowerCase().includes('dataset');
+  const hasDatasetSection=/dataset|data set|corpus|benchmark|실험\s?데이터|데이터셋|evaluation\s+data/i.test(body);
   // Extract used refs
   const usedRefs=refs.map(r=>r.toLowerCase());
   // Combine keywords
@@ -3987,10 +3992,10 @@ async function findEvidence(ctx){
   if(!ctx.hasRelatedWork&&ctx.body.length>1000)gaps.push({type:'gap',msg:'Related Work / 선행연구 섹션이 없습니다',icon:'[!]'});
   if(refs.length<5&&ctx.body.length>2000)gaps.push({type:'gap',msg:'참고문헌이 '+refs.length+'개로 부족합니다 (최소 5개 권장)',icon:'[!]'});
   // Claim without citation detection
-  const claimPatterns=/(?:을 보였다|을 달성했다|significantly|outperform|demonstrates?|achieve[ds]?|show[ns]?|prove[dns]?|result[s]? indicate)/gi;
+  const claimPat=/(?:을 보였다|을 달성했다|significantly|outperform|demonstrates?|achieve[ds]?|show[ns]?|prove[dns]?|result[s]? indicate)/i;
   const lines=ctx.body.split('\n');
   let unsupportedClaims=0;
-  lines.forEach(line=>{if(claimPatterns.test(line)&&!line.includes('[cite:'))unsupportedClaims++;});
+  lines.forEach(line=>{if(claimPat.test(line)&&!line.includes('[cite:'))unsupportedClaims++;});
   if(unsupportedClaims>0)gaps.push({type:'gap',msg:unsupportedClaims+'개 주장 문장에 인용이 없습니다',icon:'[!]'});
   return{papers:matchedPapers,datasets:matchedDatasets,gaps};
 }
@@ -4318,8 +4323,8 @@ function diagnosePaper(){
   if(evCtx.hasExperiments&&!evCtx.hasDatasetSection)evGaps.push('[!] Experiments 섹션에 데이터셋이 명시되지 않았습니다');
   if(!evCtx.hasRelatedWork&&wc>1000)evGaps.push('[!] Related Work / 선행연구 섹션이 없습니다');
   if(refs.length<5&&wc>2000)evGaps.push('[!] 참고문헌 '+refs.length+'개 (최소 5개 권장)');
-  const claimPat2=/(?:을 보였다|을 달성했다|significantly|outperform|demonstrates?|achieve[ds]?|show[ns]? that)/gi;
-  let unClaims=0;lines.forEach(l=>{if(claimPat2.test(l)&&!l.includes('[cite:'))unClaims++;});
+  const claimPat3=/(?:을 보였다|을 달성했다|significantly|outperform|demonstrates?|achieve[ds]?|show[ns]? that)/i;
+  let unClaims=0;lines.forEach(l=>{if(claimPat3.test(l)&&!l.includes('[cite:'))unClaims++;});
   if(unClaims>0)evGaps.push('[!] '+unClaims+'개 주장 문장에 인용 없음');
   if(evGaps.length){
     rpt+='<div style="font-size:.68rem;font-weight:700;color:#b42318;margin:8px 0 3px">증거 갭 (Evidence Gaps)</div>';
@@ -4488,7 +4493,7 @@ function exportTeX(){
 
   // Title, authors (blind mode: anonymous)
   tex+='\\title{'+escTeX(ti)+'}\n';
-  if(_blindMode){
+  if(typeof _blindMode!=='undefined'&&_blindMode){
     tex+='% Anonymous submission - author info suppressed\n';
     tex+='\\author{Anonymous Author(s)}\n';
   }else{
@@ -5827,8 +5832,11 @@ async function searchDatasetModal(){
   // External APIs
   try{const r=await fetch('https://paperswithcode.com/api/v1/datasets/?q='+encodeURIComponent(q)+'&items_per_page=10');if(r.ok){const data=await r.json();(data.results||[]).forEach(p=>all.push({id:p.name.toLowerCase().replace(/\s+/g,'-'),name:p.name,description:(p.description||'').substring(0,200),url:p.url?'https://paperswithcode.com'+p.url:'',source:'Papers With Code'}));}}catch(e){}
   try{const r=await fetch('https://huggingface.co/api/datasets?search='+encodeURIComponent(q)+'&sort=downloads&limit=10');if(r.ok){const data=await r.json();data.forEach(p=>all.push({id:p.id,name:p.id.split('/').pop(),description:'HuggingFace: '+p.id,url:'https://huggingface.co/datasets/'+p.id,source:'HuggingFace',tags:(p.tags||[]).slice(0,5)}));}}catch(e){}
-  if(!all.length){const empty=document.createElement('p');empty.style.cssText='padding:10px;color:var(--muted)';empty.textContent='결과 없음';results.appendChild(empty);return;}
-  all.forEach(d=>{
+  // Deduplicate by normalized name
+  const seen=new Map();const deduped=[];
+  all.forEach(d=>{const key=(d.name||d.id||'').toLowerCase().replace(/[^a-z0-9]/g,'');if(!seen.has(key)){seen.set(key,true);deduped.push(d);}});
+  if(!deduped.length){const empty=document.createElement('p');empty.style.cssText='padding:10px;color:var(--muted)';empty.textContent='결과 없음';results.appendChild(empty);return;}
+  deduped.forEach(d=>{
     const card=document.createElement('div');card.style.cssText='padding:6px 8px;border:1px solid var(--line);border-radius:4px;margin-bottom:4px;cursor:pointer;transition:.15s';
     card.addEventListener('mouseenter',()=>{card.style.background='var(--surface)';});
     card.addEventListener('mouseleave',()=>{card.style.background='';});
@@ -6379,7 +6387,15 @@ function _mathmlToOmml(node){
     case 'mfrac':{const[n,d]=node.children;return '<m:f><m:num>'+_mathmlToOmml(n)+'</m:num><m:den>'+_mathmlToOmml(d)+'</m:den></m:f>';}
     case 'msup':{const[b,s]=node.children;return '<m:sSup><m:e>'+_mathmlToOmml(b)+'</m:e><m:sup>'+_mathmlToOmml(s)+'</m:sup></m:sSup>';}
     case 'msub':{const[b,s]=node.children;return '<m:sSub><m:e>'+_mathmlToOmml(b)+'</m:e><m:sub>'+_mathmlToOmml(s)+'</m:sub></m:sSub>';}
+    case 'msubsup':{const[b,sub,sup]=node.children;return '<m:sSubSup><m:e>'+_mathmlToOmml(b)+'</m:e><m:sub>'+_mathmlToOmml(sub)+'</m:sub><m:sup>'+_mathmlToOmml(sup)+'</m:sup></m:sSubSup>';}
     case 'msqrt':return '<m:rad><m:radPr><m:degHide m:val="1"/></m:radPr><m:e>'+ch()+'</m:e></m:rad>';
+    case 'mroot':{const[b,d]=node.children;return '<m:rad><m:deg>'+_mathmlToOmml(d)+'</m:deg><m:e>'+_mathmlToOmml(b)+'</m:e></m:rad>';}
+    case 'munder':{const[b,u]=node.children;return '<m:limLow><m:e>'+_mathmlToOmml(b)+'</m:e><m:lim>'+_mathmlToOmml(u)+'</m:lim></m:limLow>';}
+    case 'mover':{const[b,o]=node.children;return '<m:limUpp><m:e>'+_mathmlToOmml(b)+'</m:e><m:lim>'+_mathmlToOmml(o)+'</m:lim></m:limUpp>';}
+    case 'munderover':{const[b,u,o]=node.children;return '<m:nary><m:naryPr><m:chr m:val="'+escAttr(b.textContent||'\u2211')+'"/></m:naryPr><m:sub>'+_mathmlToOmml(u)+'</m:sub><m:sup>'+_mathmlToOmml(o)+'</m:sup><m:e></m:e></m:nary>';}
+    case 'mfenced':{const op=node.getAttribute('open')||'(';const cl=node.getAttribute('close')||')';return '<m:d><m:dPr><m:begChr m:val="'+escAttr(op)+'"/><m:endChr m:val="'+escAttr(cl)+'"/></m:dPr><m:e>'+ch()+'</m:e></m:d>';}
+    case 'mtable':return '<m:m>'+Array.from(node.children).map(tr=>'<m:mr>'+Array.from(tr.children).map(td=>'<m:e>'+_mathmlToOmml(td)+'</m:e>').join('')+'</m:mr>').join('')+'</m:m>';
+    case 'mtr':case 'mtd':return ch();
     default:return ch();
   }
 }
