@@ -22,7 +22,10 @@ This report surveys malicious AI uses across three security domains. As AI capab
 
 Artificial intelligence is a dual-use technology: the same capabilities that enable beneficial applications also create novel attack vectors [cite:1]. As AI systems become more capable and accessible, the barrier to malicious use decreases [cite:2].
 
-This report addresses three questions:
+This report addresses three questio[^1]
+
+[^1]: [각주 내용을 여기에 작성합니다.]
+ns:
 1. What new attacks does advancing AI enable?
 2. How do existing threats change as AI improves?
 3. What interventions can mitigate malicious use?
