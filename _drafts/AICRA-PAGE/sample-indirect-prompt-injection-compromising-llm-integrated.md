@@ -139,6 +139,13 @@ flowchart LR
 
 ## 7. Conclusion
 
+**Dataset: AdvBench**
+> Adversarial behavior benchmark for LLMs. 520 harmful behaviors and 500 harmful strings for evaluating jailbreak attacks and safety alignment.
+> URL: https://github.com/llm-attacks/llm-attacks
+> Size: 1MB | Format: CSV
+
+
+
 본 연구는 간접 프롬프트 인젝션이 LLM 통합 시스템의 근본적 보안 위협임을 입증하였다. 제안된 분류 체계는 6가지 공격 벡터를 체계적으로 정리하며, 실험 결과 평균 92%의 공격 성공률을 확인하였다 [cite:6]. 향후 연구에서는 형식 검증 기반의 방어 메커니즘 개발이 필요하다.
 
 ### Ethics and Responsible Disclosure
@@ -155,4 +162,4 @@ flowchart LR
 > URL: https://owasp.org/www-project-top-ten/
 > Size: 5MB | Format: HTML/PDF
 
-[cite:4]
+[cite:4][cite:5][cite:6]
