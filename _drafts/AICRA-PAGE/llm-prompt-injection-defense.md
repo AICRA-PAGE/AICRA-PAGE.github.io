@@ -3,7 +3,7 @@ layout: paper
 title: "LLM Prompt Injection Defense"
 author: AICRA-PAGE
 authors: ["0blueteam0"]
-date: 2026-03-26
+date: 2026-03-27
 status: published
 domain: "Prompt Injection"
 keywords: ["DDDD"]
