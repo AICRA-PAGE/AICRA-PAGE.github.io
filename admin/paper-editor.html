@@ -48,6 +48,11 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
 .ins button:hover{background:var(--surface);color:var(--text)}
 .ins .gl{font-size:.5rem;color:var(--brand);font-weight:700;padding:0 3px 0 5px;border-left:2px solid var(--brand);margin-left:3px}
 .ins .gl:first-child{border-left:none;margin-left:0}
+.ins .gl{cursor:pointer;user-select:none}
+.ins .gl::after{content:' \25BE';font-size:.4rem}
+.ins .gl.collapsed::after{content:' \25B8'}
+.ins .gl.collapsed~button:not(.gl){display:none}
+.ins .gl.collapsed~.gl{display:inline}
 .ed{display:flex;flex:1;overflow:hidden}
 .pn{flex:1;display:flex;flex-direction:column;overflow:hidden}
 .pn-label{padding:3px 12px;font-size:.56rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;background:var(--surface);border-bottom:1px solid var(--line);flex-shrink:0;display:flex;justify-content:space-between;align-items:center}
@@ -211,10 +216,11 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
 /* Print/Export - journal-grade monochrome */
 @media print{
   .tb,.meta,.meta2,.ins,.st,.dv,.ref-panel,#input,.pn-label,.help,#auth-gate,#ext-author-bar,#checkResult,.modal-overlay{display:none!important}
-  .ed{display:block!important}
-  .pn:first-child{display:none!important}
-  .pn:last-child{display:block!important;overflow:visible!important}
-  body{height:auto;overflow:visible;background:#fff}
+  .ed{display:block!important;height:auto!important;overflow:visible!important}
+  .pn{display:none!important}
+  .pn:last-child,#previewPane{display:block!important;overflow:visible!important;height:auto!important;flex:none!important}
+  body{height:auto!important;overflow:visible!important;background:#fff!important;display:block!important}
+  .mobile-tabs,#mobileTabs,#optBar,#metaBar2{display:none!important}
   @page{margin:20mm 15mm 25mm 15mm;size:A4;@bottom-center{content:counter(page);font-size:9pt;color:#555}}
   @page:first{margin-top:15mm;@bottom-center{content:none}}
   title{display:none!important}
@@ -245,6 +251,16 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
   /* Optional 2-column print */
   #pv.print-two-col{column-count:2!important;column-gap:18px!important;font-size:9pt!important;line-height:1.35!important}
   @page:first{margin-top:15mm}
+  /* Venue-specific print profiles */
+  #pv.print-ieee{column-count:2!important;column-gap:4.22mm!important;font-size:10pt!important;line-height:1.1!important;font-family:'Times New Roman',serif!important}
+  #pv.print-ieee h1{font-size:24pt!important;text-align:center!important;column-span:all!important}
+  #pv.print-ieee h2{font-size:10pt!important;font-variant:small-caps!important;text-transform:none!important}
+  #pv.print-acm{font-size:10pt!important;line-height:1.2!important;font-family:'Linux Libertine','Times New Roman',serif!important}
+  #pv.print-acm h1{font-size:17pt!important;text-align:left!important}
+  #pv.print-neurips{font-size:10pt!important;line-height:1.4!important;font-family:'Times New Roman',serif!important;max-width:5.5in!important;margin:0 auto!important}
+  /* US Letter page size */
+  @page{size:letter}
+  body.page-a4 @page{size:A4}
 }
 /* Simple mode (beginner) */
 body.simple-mode .ins button{display:none}
@@ -520,6 +536,10 @@ body.simple-mode .ins button[onclick*="fn"]{display:inline-block}
   <label style="font-size:.52rem;display:flex;align-items:center;gap:2px;cursor:pointer"><input type="checkbox" id="opt-enabs" style="width:auto" onchange="toggleOption('enabs',this.checked)"> 영문 초록</label>
   <span style="width:1px;height:14px;background:var(--line)"></span>
   <label style="font-size:.52rem;display:flex;align-items:center;gap:2px;cursor:pointer;color:#b42318;font-weight:600"><input type="checkbox" id="opt-blind" style="width:auto" onchange="toggleBlindMode(this.checked)"> Anonymous (블라인드)</label>
+  <select id="citeStyle" style="padding:1px 3px;border:1px solid var(--line);border-radius:2px;font-size:.5rem;background:var(--panel);color:var(--text)" onchange="render()" title="인용 스타일">
+    <option value="numeric">[1] 번호</option>
+    <option value="author-year">(Author, Year)</option>
+  </select>
   <button class="bt" onclick="runAnonymizationLint()" style="font-size:.48rem;padding:1px 4px" title="익명화 점검: 저자명/소속/URL 노출 감지">익명린트</button>
   <button class="bt" onclick="submissionPreflight()" style="font-size:.48rem;padding:1px 4px;background:var(--brand);color:#fff;border-color:var(--brand)" title="투고 프리플라이트: 학회별 체크리스트">프리플라이트</button>
   <button class="bt" onclick="showCreditModal()" style="font-size:.48rem;padding:1px 4px" title="CRediT 저자 기여도 명세">기여도</button>
@@ -1326,7 +1346,17 @@ F(df1, df2)=값, p=값, eta^2=값</div>
       <b>데이터셋 검색:</b> 참고문헌 패널에서 AI/보안 데이터셋 검색 + 클릭으로 삽입. 51개 로컬 카탈로그 + Papers With Code + HuggingFace 실시간 검색<br>
       <b>데이터셋 도메인 필터:</b> LLM/Adversarial/Malware/IDS/Code/Vuln 카테고리 버튼으로 빠른 필터링<br>
       <b>관련 논문 추천:</b> 키워드/초록 기반으로 Semantic Scholar API가 관련 논문을 자동 추천. 클릭시 참고문헌 자동 등록<br>
-      <b>참고문헌 기반 추천:</b> 이미 등록된 참고문헌을 기반으로 유사 논문 탐색
+      <b>참고문헌 기반 추천:</b> 이미 등록된 참고문헌을 기반으로 유사 논문 탐색<br>
+      <b>Evidence Layer:</b> 참고문헌 패널 상단에 증거 제안 카드 자동 표시. 키워드 기반으로 papers.json+datasets.json에서 매칭. 증거 갭 4규칙 자동 탐지 (데이터셋 미사용, 인용 없는 주장, 참고문헌 부족, Related Work 없음)<br>
+      <b>블라인드 모드:</b> Anonymous 체크박스 -> 미리보기/내보내기에서 저자 정보 완전 숨김. Double-blind 학회 (S&P/CCS/NeurIPS) 필수<br>
+      <b>익명화 린터:</b> 본문/초록/참고문헌에서 저자명/소속/셀프인용/URL/ORCID/감사의글 자동 감지<br>
+      <b>투고 프리플라이트:</b> IEEE S&P/CCS/NeurIPS/TDSC/TIFS 학회별 체크리스트 (페이지/참고문헌/필수섹션/윤리/블라인드)<br>
+      <b>CRediT 기여도:</b> 14역할 저자 기여도 체크박스 -> Author Contribution Statement 자동 생성<br>
+      <b>실험 차트:</b> 막대차트/선차트 (Mermaid xychart-beta) 삽입 버튼<br>
+      <b>인용 스타일:</b> [N] 번호 또는 (Author, Year) 스타일 전환<br>
+      <b>커맨드 팔레트:</b> Ctrl+P -> 명령어 직접 입력 (save, diagnose, blind, dataset 등)<br>
+      <b>툴바 접이식:</b> 카테고리 라벨 클릭시 해당 버튼 그룹 접기/펼치기<br>
+      <b>본문+부록 분리:</b> 내보내기 -> 본문과 Appendix를 별도 파일로 분리
     </div>
   </div>
 
@@ -1814,7 +1844,20 @@ function processEnvs(t){
 }
 function restoreEnvs(html){for(let i=0;i<envPH.length;i++){html=html.replace('<p>\x00E'+i+'\x00</p>',envPH[i]);html=html.replace('\x00E'+i+'\x00',envPH[i]);}return html;}
 function processNumberedEq(t){return t.replace(/^\$\$\s*\n?([\s\S]*?)\n?\$\$\s*$/gm,(m,eq)=>{eqCounter++;return '<div class="eq-row"><div class="katex-display">$$'+eq.trim()+'$$</div><div class="eq-num">('+eqCounter+')</div></div>';});}
-function processCitations(t){return t.replace(/\[cite:(\d+)\]/g,(m,n)=>'<span class="cite" title="'+escAttr(refs[parseInt(n)-1]||'Ref '+n)+'">['+n+']</span>');}
+function processCitations(t){
+  const style=(document.getElementById('citeStyle')||{}).value||'numeric';
+  return t.replace(/\[cite:(\d+)\]/g,(m,n)=>{
+    const idx=parseInt(n)-1;const ref=refs[idx]||'Ref '+n;
+    const titleAttr=escAttr(ref);
+    if(style==='author-year'){
+      // Extract "Author (Year)" from ref text
+      const authorMatch=ref.match(/^([^.,"]+)/);const yearMatch=ref.match(/(\d{4})/);
+      const short=(authorMatch?authorMatch[1].trim():'Author')+(yearMatch?' ('+yearMatch[1]+')':' (n.d.)');
+      return '<span class="cite cite-ay" title="'+titleAttr+'">'+escHtml(short)+'</span>';
+    }
+    return '<span class="cite" title="'+titleAttr+'">['+n+']</span>';
+  });
+}
 
 // === FOOTNOTES ===
 function processFootnotes(t){
@@ -3801,6 +3844,39 @@ window.addEventListener('unhandledrejection',e=>{
 });
 window.addEventListener('error',e=>{
   console.warn('[Paper Editor] Runtime error:',e.message,e.filename,e.lineno);
+});
+
+// === TOOLBAR COLLAPSE (category toggle) ===
+document.querySelectorAll('.ins .gl').forEach(gl=>{
+  gl.addEventListener('click',()=>{
+    gl.classList.toggle('collapsed');
+    let next=gl.nextElementSibling;
+    while(next&&!next.classList.contains('gl')){
+      next.style.display=gl.classList.contains('collapsed')?'none':'';
+      next=next.nextElementSibling;
+    }
+  });
+});
+
+// === COMMAND PALETTE (Ctrl+P) ===
+document.addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey)&&e.key==='p'&&!e.shiftKey){
+    e.preventDefault();
+    const cmd=prompt('명령어 입력:\nsave, export-tex, export-docx, blind, preflight,\ndiagnose, style, review, dataset, recommend, credit,\nhelp, tutorial, zoom-in, zoom-out, simple');
+    if(!cmd)return;
+    const c=cmd.trim().toLowerCase();
+    const cmds={
+      'save':()=>{save();ghSave();},'export-tex':exportTeX,'export-docx':exportDOCX,
+      'blind':()=>{const cb=document.getElementById('opt-blind');cb.checked=!cb.checked;toggleBlindMode(cb.checked);},
+      'preflight':submissionPreflight,'diagnose':diagnosePaper,'style':analyzeStyle,
+      'review':showReviewChecklist,'dataset':openDatasetWorkspace,'recommend':recommendPapers,
+      'credit':showCreditModal,'help':toggleHelp,'tutorial':startTutorial,
+      'zoom-in':()=>zoomPreview(10),'zoom-out':()=>zoomPreview(-10),
+      'simple':toggleSimpleMode
+    };
+    if(cmds[c])cmds[c]();
+    else document.getElementById('as').textContent='[!] 알 수 없는 명령: '+c;
+  }
 });
 
 // === ACCESSIBILITY IMPROVEMENTS ===

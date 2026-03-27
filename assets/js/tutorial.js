@@ -258,9 +258,31 @@ const FULL_STORY=[
    auto:()=>{if(window.recommendPapers)window.recommendPapers();},
    verify:()=>document.getElementById('recResults').style.display==='block'},
 
+  // Chapter 13: Submission Ops
+  {ch:'Ch.13 투고',title:'블라인드 모드',
+   story:'Double-blind 학회 투고 시 저자 정보를 숨깁니다. S&P/CCS/NeurIPS 양식 선택 시 자동 활성화됩니다.',
+   task:'투고 옵션에서 <b>Anonymous (블라인드)</b> 체크박스를 클릭하세요.',
+   highlight:'#opt-blind',
+   auto:()=>{const cb=document.getElementById('opt-blind');if(cb){cb.checked=true;if(window.toggleBlindMode)window.toggleBlindMode(true);}},
+   verify:()=>document.getElementById('opt-blind')?.checked},
+
+  {ch:'Ch.13 투고',title:'투고 프리플라이트',
+   story:'선택한 학회(S&P/CCS/NeurIPS)의 투고 규격을 자동으로 점검합니다. 페이지 수, 참고문헌, 필수 섹션, 블라인드 요구 등.',
+   task:'<b>프리플라이트</b> 버튼을 클릭하세요.',
+   highlight:'button[onclick="submissionPreflight()"]',
+   auto:()=>{if(window.submissionPreflight)window.submissionPreflight();},
+   verify:()=>document.getElementById('checkResult').style.display==='block'},
+
+  {ch:'Ch.13 투고',title:'CRediT 기여도',
+   story:'14개 역할(개념화, 데이터큐레이션, 형식분석, 소프트웨어 등)로 저자별 기여도를 명시합니다.',
+   task:'<b>기여도</b> 버튼을 클릭하세요.',
+   highlight:'button[onclick="showCreditModal()"]',
+   auto:null,
+   verify:()=>true},
+
   // Ending
   {ch:'완료',title:'축하합니다!',
-   story:'논문 작성의 전 과정을 체험했습니다!<br><br>주요 기능 요약:<br>- <b>심사</b>: 구조적 리뷰 + 심사의견<br>- <b>규격</b>: 양식별 투고 규격 점검<br>- <b>진단/문체</b>: 논문 품질 자동 분석<br>- <b>간편</b>: 초보자 모드<br>- <b>이력</b>: 이전 버전 복원<br>- <b>인쇄</b>: 1단/2단 선택 + PDF<br>- <b>?</b> 도움말에서 100+ 기능 확인',
+   story:'논문 작성의 전 과정을 체험했습니다!<br><br>주요 기능 요약:<br>- <b>블라인드</b>: 익명 투고 모드<br>- <b>프리플라이트</b>: 학회별 투고 규격 자동 점검<br>- <b>증거 제안</b>: 데이터셋+논문 자동 추천<br>- <b>데이터셋</b>: 91개 카탈로그 검색+삽입<br>- <b>심사</b>: 구조적 리뷰 + 심사의견<br>- <b>Ctrl+P</b>: 커맨드 팔레트<br>- <b>?</b> 도움말에서 120+ 기능 확인',
    task:'',highlight:null,auto:null,verify:()=>true}
 ];
 
