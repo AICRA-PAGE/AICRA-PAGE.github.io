@@ -9,3 +9,6 @@
 
 - name: Blog
   url: /blog/
+
+- name: Paper Editor
+  url: /admin/paper-editor.html

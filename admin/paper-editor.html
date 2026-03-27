@@ -134,8 +134,8 @@ select.sel{padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-s
 #pv .fig-caption{text-align:center;font-size:.78rem;color:#222;margin:6px 0 14px;line-height:1.4;font-style:normal}
 #pv .tbl-caption{font-size:.78rem;color:#222;margin:14px 0 4px;font-style:italic;line-height:1.4}
 /* Mermaid diagrams - academic publication quality */
-#pv .mermaid{display:block;max-width:100%;margin:.8rem auto;padding:.5rem 0;background:#fff;border:none;border-radius:0;overflow-x:auto}
-#pv .mermaid svg{display:block;max-width:100%;height:auto;margin:0 auto;background:#fff;font-family:'Helvetica Neue',Arial,sans-serif!important}
+#pv .mermaid{display:block;max-width:100%;margin:.8rem auto;padding:.5rem 0;background:#fff;border:none;border-radius:0;overflow-x:auto;min-height:60px}
+#pv .mermaid svg{display:block;width:100%;min-width:200px;height:auto;min-height:60px;margin:0 auto;background:#fff;font-family:'Helvetica Neue',Arial,sans-serif!important}
 #pv .mermaid .label,#pv .mermaid .nodeLabel,#pv .mermaid .edgeLabel,#pv .mermaid .messageText{font-family:'Helvetica Neue',Arial,sans-serif!important;font-size:11px!important;fill:#111!important;color:#111!important}
 #pv .mermaid .node rect,#pv .mermaid .node polygon,#pv .mermaid .node circle{fill:#fff!important;stroke:#111!important;stroke-width:1.2px!important;rx:0!important;ry:0!important}
 #pv .mermaid .cluster rect{fill:#fafafa!important;stroke:#999!important;rx:0!important;ry:0!important}
@@ -1801,14 +1801,22 @@ function autoFitVisuals(opts){
   });
   // Mermaid SVGs: ensure viewBox + max-width
   pv.querySelectorAll('.mermaid svg').forEach(svg=>{
-    if(!svg.getAttribute('viewBox')){
+    try{
       const bb=svg.getBBox();
-      if(bb&&bb.width>0)svg.setAttribute('viewBox','0 0 '+bb.width+' '+bb.height);
-    }
-    svg.style.width='100%';
-    svg.style.maxWidth=(parseFloat(svg.getAttribute('width'))||svg.getBBox().width||600)+'px';
-    svg.style.height='auto';
-    svg.setAttribute('preserveAspectRatio','xMidYMid meet');
+      if(!svg.getAttribute('viewBox')&&bb&&bb.width>0){
+        svg.setAttribute('viewBox',(bb.x||0)+' '+(bb.y||0)+' '+bb.width+' '+bb.height);
+      }
+      // Ensure minimum readable size and fit container
+      const origW=parseFloat(svg.getAttribute('width'))||bb.width||400;
+      const containerW=svg.parentElement?svg.parentElement.clientWidth:600;
+      const targetW=Math.max(origW,Math.min(containerW,800)); // At least origW, up to container or 800px
+      svg.style.width='100%';
+      svg.style.minWidth=Math.min(targetW,300)+'px';
+      svg.style.maxWidth=Math.max(targetW,containerW)+'px';
+      svg.style.height='auto';
+      svg.style.minHeight='80px';
+      svg.setAttribute('preserveAspectRatio','xMidYMid meet');
+    }catch(e){}
   });
   // Math blocks: scale down if overflowing
   pv.querySelectorAll('.katex-display').forEach(d=>{
@@ -4427,7 +4435,7 @@ function publish(downloadName){
   const ti=document.getElementById('ti').value||'Untitled';const au=document.getElementById('au').value||'AICRA';
   const coau=document.getElementById('coau').value;const ab=document.getElementById('ab').value;
   const kw=document.getElementById('kw').value;const dm=document.getElementById('dm').value;
-  const status=document.getElementById('st-sel').value;const collab=document.getElementById('collab').checked;
+  const status=document.getElementById('st-sel').value;const collab=(document.getElementById('collab')||{}).checked||false;
   const body=inp.value;const today=new Date().toISOString().split('T')[0];
   if(!body.trim())return alert('Content is empty.');
   const authors=coau?'\nauthors: ['+coau.split(',').map(s=>'"'+s.trim()+'"').join(', ')+']':'';
@@ -4623,8 +4631,8 @@ function exportTeX(){
 function escTeX(s){return s.replace(/[&%$#_{}~^]/g,m=>'\\'+m);}
 
 function toggleCol(two){pv.classList.toggle('two-col',two);document.getElementById('col1btn').classList.toggle('active',!two);document.getElementById('col2btn').classList.toggle('active',two);}
-function save(){localStorage.setItem('aicra.paper.v4',JSON.stringify({ti:document.getElementById('ti').value,au:document.getElementById('au').value,coau:document.getElementById('coau').value,ab:document.getElementById('ab').value,kw:document.getElementById('kw').value,dm:document.getElementById('dm').value,status:document.getElementById('st-sel').value,collab:document.getElementById('collab').checked,body:inp.value,refs:refs,at:Date.now()}));}
-function restore(){const d=localStorage.getItem('aicra.paper.v4');if(!d)return;const s=JSON.parse(d);if(Date.now()-s.at>604800000)return;inp.value=s.body||'';document.getElementById('ti').value=s.ti||'';document.getElementById('au').value=s.au||'AICRA';document.getElementById('coau').value=s.coau||'';document.getElementById('ab').value=s.ab||'';document.getElementById('kw').value=s.kw||'';if(s.dm)document.getElementById('dm').value=s.dm;if(s.status)document.getElementById('st-sel').value=s.status;if(s.collab)document.getElementById('collab').checked=s.collab;if(s.refs){refs=s.refs;renderRefs();}if(s.body)inp.dispatchEvent(new Event('input'));document.getElementById('as').textContent='Draft restored';}
+function save(){localStorage.setItem('aicra.paper.v4',JSON.stringify({ti:document.getElementById('ti').value,au:document.getElementById('au').value,coau:document.getElementById('coau').value,ab:document.getElementById('ab').value,kw:document.getElementById('kw').value,dm:document.getElementById('dm').value,status:document.getElementById('st-sel').value,collab:(document.getElementById('collab')||{}).checked||false,body:inp.value,refs:refs,at:Date.now()}));}
+function restore(){const d=localStorage.getItem('aicra.paper.v4');if(!d)return;const s=JSON.parse(d);if(Date.now()-s.at>604800000)return;inp.value=s.body||'';document.getElementById('ti').value=s.ti||'';document.getElementById('au').value=s.au||'AICRA';document.getElementById('coau').value=s.coau||'';document.getElementById('ab').value=s.ab||'';document.getElementById('kw').value=s.kw||'';if(s.dm)document.getElementById('dm').value=s.dm;if(s.status)document.getElementById('st-sel').value=s.status;if(s.collab){const cb=document.getElementById('collab');if(cb)cb.checked=s.collab;}if(s.refs){refs=s.refs;renderRefs();}if(s.body)inp.dispatchEvent(new Event('input'));document.getElementById('as').textContent='Draft restored';}
 setInterval(save,30000);restore();
 // === SAMPLE PAPER LOADER ===
 async function loadSamplePaper(slug){
@@ -6346,7 +6354,7 @@ function getEditorMeta(){
     keywords:document.getElementById('kw').value,
     domain:document.getElementById('dm').value,
     status:document.getElementById('st-sel').value,
-    collaborative:document.getElementById('collab').checked,
+    collaborative:(document.getElementById('collab')||{}).checked||false,
     reviewers:document.getElementById('reviewers').value
   };
 }
@@ -6378,8 +6386,8 @@ async function executeSave(forcedName){
   if(!rawName){alert('파일명을 입력해 주세요.');return;}
   const cleanName=rawName.replace(/\.md$/,'').replace(/[^a-z0-9가-힣_-]/gi,'-').replace(/-+/g,'-');
   _savedFileName=cleanName;
-  const saveGH=forcedName?true:document.getElementById('saveGH').checked;
-  const saveLocal=forcedName?false:document.getElementById('saveLocal').checked;
+  const saveGH=forcedName?true:(document.getElementById('saveGH')||{}).checked!==false;
+  const saveLocal=forcedName?false:(document.getElementById('saveLocal')||{}).checked||false;
   if(!saveGH&&!saveLocal){alert('저장 방식을 하나 이상 선택해 주세요.');return;}
   if(!forcedName)document.getElementById('saveModal').classList.remove('show');
   if(saveGH){
@@ -6695,7 +6703,7 @@ async function loadDoc(path){
     if(data.meta.keywords)document.getElementById('kw').value=Array.isArray(data.meta.keywords)?data.meta.keywords.join(', '):data.meta.keywords;
     if(data.meta.domain)document.getElementById('dm').value=data.meta.domain;
     if(data.meta.status)document.getElementById('st-sel').value=data.meta.status;
-    if(data.meta.collaborative)document.getElementById('collab').checked=true;
+    if(data.meta.collaborative){const cb=document.getElementById('collab');if(cb)cb.checked=true;}
     // Update lock button
     updateLockUI(data.meta.locked);
     // Set readonly if needed
