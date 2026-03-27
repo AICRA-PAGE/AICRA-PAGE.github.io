@@ -517,6 +517,11 @@ body.simple-mode .ins button[onclick*="fn"]{display:inline-block}
   <label style="font-size:.52rem;display:flex;align-items:center;gap:2px;cursor:pointer"><input type="checkbox" id="opt-cover" style="width:auto" onchange="toggleOption('cover',this.checked)"> 표지</label>
   <label style="font-size:.52rem;display:flex;align-items:center;gap:2px;cursor:pointer"><input type="checkbox" id="opt-coverletter" style="width:auto" onchange="toggleOption('coverletter',this.checked)"> 커버레터</label>
   <label style="font-size:.52rem;display:flex;align-items:center;gap:2px;cursor:pointer"><input type="checkbox" id="opt-enabs" style="width:auto" onchange="toggleOption('enabs',this.checked)"> 영문 초록</label>
+  <span style="width:1px;height:14px;background:var(--line)"></span>
+  <label style="font-size:.52rem;display:flex;align-items:center;gap:2px;cursor:pointer;color:#b42318;font-weight:600"><input type="checkbox" id="opt-blind" style="width:auto" onchange="toggleBlindMode(this.checked)"> Anonymous (블라인드)</label>
+  <button class="bt" onclick="runAnonymizationLint()" style="font-size:.48rem;padding:1px 4px" title="익명화 점검: 저자명/소속/URL 노출 감지">익명린트</button>
+  <button class="bt" onclick="submissionPreflight()" style="font-size:.48rem;padding:1px 4px;background:var(--brand);color:#fff;border-color:var(--brand)" title="투고 프리플라이트: 학회별 체크리스트">프리플라이트</button>
+  <button class="bt" onclick="showCreditModal()" style="font-size:.48rem;padding:1px 4px" title="CRediT 저자 기여도 명세">기여도</button>
 </div>
 
 <div class="ins" id="insBar">
@@ -556,6 +561,8 @@ body.simple-mode .ins button[onclick*="fn"]{display:inline-block}
   <button onclick="ins('dfd')" title="데이터 흐름도 (DFD)">DFD</button>
   <button onclick="ins('flowchart')" title="프로토콜 시퀀스 다이어그램">시퀀스</button>
   <button onclick="ins('timeline')" title="타임라인 다이어그램">타임라인</button>
+  <button onclick="ins('barchart')" title="막대 차트 (실험 결과)">막대차트</button>
+  <button onclick="ins('linechart')" title="선 차트 (성능 추이)">선차트</button>
   <button onclick="ins('ethics')" title="윤리 및 책임 공개 섹션">윤리</button>
 
   <span class="gl">데이터</span>
@@ -1584,6 +1591,14 @@ function buildPreviewHeader(){
   if(!ti&&!au&&!dm&&!kw&&!ab)return '';
   let h='<div style="border-bottom:1px solid #bbb;padding-bottom:14px;margin-bottom:18px;text-align:center">';
   if(ti)h+='<h1 style="margin-bottom:.3rem">'+escHtml(ti)+'</h1>';
+  // Blind mode: suppress all author information
+  if(_blindMode){
+    h+='<div style="font-size:.82rem;color:#b42318;font-weight:600;margin:.5rem 0">Anonymous Submission</div>';
+    if(dm)h+='<div style="font-size:.72rem;color:#666;margin-bottom:.2rem">'+escHtml(dm)+'</div>';
+    if(ab)h+='<div style="border-top:1px solid #ccc;border-bottom:1px solid #ccc;padding:8px 0;margin:8px 0;font-size:.82rem;text-align:justify;font-style:italic"><strong style="font-style:normal;display:block;margin-bottom:2px;font-size:.7rem;text-transform:uppercase;letter-spacing:.5px">Abstract</strong>'+escHtml(ab)+'</div>';
+    if(kw)h+='<div style="font-size:.72rem;color:#555"><strong>Keywords:</strong> '+escHtml(kw)+'</div>';
+    h+='</div>';return h;
+  }
   const aff=(document.getElementById('affiliation')||{}).value||'';
   const authors=[au];if(coau)coau.split(',').forEach(a=>{if(a.trim())authors.push(a.trim());});
   // Resolve GitHub IDs to display names via nameMap; mark corresponding authors with dagger
@@ -3615,6 +3630,10 @@ function ins(type){
     nettopo:'```mermaid\nflowchart LR\n    I[Internet] --> FW[Firewall]\n    FW --> IDS[IDS/IPS]\n    IDS --> WEB[Web Tier]\n    WEB --> APP[App Tier]\n    APP --> DB[(Database)]\n```\n*Fig. N. [네트워크 토폴로지.]*\n\n',
 
     killchain:'```mermaid\nflowchart LR\n    R[Reconnaissance] --> W[Weaponization]\n    W --> D[Delivery]\n    D --> E[Exploitation]\n    E --> I[Installation]\n    I --> C2[C2]\n    C2 --> A[Actions on Objectives]\n```\n*Fig. N. [공격 Kill Chain.]*\n\n',
+
+    barchart:'```mermaid\nxychart-beta\n    title "Performance Comparison"\n    x-axis ["Method A", "Method B", "Method C", "Ours"]\n    y-axis "Accuracy (%)" 0 --> 100\n    bar [75, 82, 78, 94]\n```\n*Fig. N. [실험 결과 비교.]*\n\n',
+
+    linechart:'```mermaid\nxychart-beta\n    title "Training Convergence"\n    x-axis "Epoch" [1, 5, 10, 15, 20, 25, 30]\n    y-axis "Loss" 0 --> 2.0\n    line [1.8, 1.2, 0.8, 0.5, 0.35, 0.25, 0.2]\n```\n*Fig. N. [학습 수렴 추이.]*\n\n',
 
     trustbnd:'```mermaid\nflowchart TB\n    subgraph Untrusted[비신뢰 영역]\n      A[External Client]\n    end\n    subgraph DMZ[DMZ]\n      B[WAF / API Gateway]\n    end\n    subgraph Trusted[신뢰 영역]\n      C[Application]\n      D[(Database)]\n    end\n    A --> B --> C --> D\n```\n*Fig. N. [신뢰 경계 다이어그램.]*\n\n',
 
@@ -5785,6 +5804,145 @@ async function saveDsToRepo(){
 }
 // Keyboard shortcut
 document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.shiftKey&&(e.key==='d'||e.key==='D')&&!e.altKey){e.preventDefault();openDatasetWorkspace();}});
+
+// === BLIND MODE (Anonymous Submission) ===
+let _blindMode=false;
+function toggleBlindMode(on){
+  _blindMode=on;
+  render();
+  document.getElementById('as').textContent=on?'[*] 블라인드 모드 활성 - 저자 정보 숨김':'[*] 블라인드 모드 해제';
+}
+
+// === ANONYMIZATION LINTER ===
+function runAnonymizationLint(){
+  const t=inp.value;const issues=[];
+  // Check for author names in body
+  const au=document.getElementById('au').value;
+  const coau=(document.getElementById('coau').value||'').split(',').map(s=>s.trim()).filter(Boolean);
+  const allAuthors=[au,...coau].filter(Boolean);
+  allAuthors.forEach(a=>{
+    const m=nameMap[a];const names=[a];if(m&&m.name)names.push(m.name);
+    names.forEach(n=>{if(n.length>2&&t.toLowerCase().includes(n.toLowerCase()))issues.push('[!] 본문에 저자명 "'+n+'" 노출');});
+  });
+  // Check for affiliation
+  const aff=(document.getElementById('affiliation')||{}).value||'';
+  if(aff&&aff.length>3&&t.toLowerCase().includes(aff.toLowerCase()))issues.push('[!] 본문에 소속 "'+aff+'" 노출');
+  // Check for self-citing patterns
+  const selfPat=/(?:our previous work|our prior|we previously|in \[cite:\d+\], we)/gi;
+  const selfMatches=t.match(selfPat)||[];
+  if(selfMatches.length)issues.push('[!] 셀프인용 패턴 '+selfMatches.length+'건: "'+selfMatches[0]+'"...');
+  // Check for URLs with identifying info
+  const urlPat=/https?:\/\/(?:github\.com|gitlab\.com|bitbucket\.org)\/[^\s)]+/g;
+  const urls=t.match(urlPat)||[];
+  if(urls.length)issues.push('[!] 식별 가능 URL '+urls.length+'건: '+urls[0]);
+  // Check for ORCID
+  if(/\d{4}-\d{4}-\d{4}-\d{3}[\dX]/g.test(t))issues.push('[!] 본문에 ORCID 노출');
+  // Check for acknowledgments
+  if(/(?:acknowledgment|감사의\s?글|사사)/i.test(t))issues.push('[!] 감사의 글/Acknowledgment 섹션이 본문에 있음 (블라인드 시 제거 필요)');
+  // Display
+  const cr=document.getElementById('checkResult');
+  let html='<strong style="color:#b42318">익명화 점검 결과</strong>';
+  if(!issues.length)html+='<div style="color:var(--brand);font-size:.65rem;margin-top:6px">[+] 익명화 위반 없음</div>';
+  else issues.forEach(i=>{html+='<div style="font-size:.62rem;color:#b42318;margin-top:2px">'+escHtml(i)+'</div>';});
+  cr.innerHTML=html;_addCrClose(cr);cr.style.display='block';
+}
+
+// === SUBMISSION PREFLIGHT ===
+function submissionPreflight(){
+  const tpl=document.getElementById('tplSel').dataset.lastTpl||'';
+  const t=inp.value;const wc=t.trim().split(/\s+/).length;
+  const pages=Math.ceil(wc/300);
+  const sections=[];t.replace(/^## (.+)$/gm,(m,h)=>sections.push(h.trim().toLowerCase()));
+  const venues={
+    'ieee_en':{name:'IEEE S&P',maxPages:13,minRefs:30,blind:true,required:['introduction','related work','conclusion','ethics'],extra:['ORCID at registration','Ethics section','Vulnerability disclosure','US Letter format']},
+    'acm_en':{name:'ACM CCS',maxPages:15,minRefs:25,blind:true,required:['introduction','related work','conclusion'],extra:['ACM CCS concepts','Artifact appendix','COI declaration']},
+    'neurips_en':{name:'NeurIPS',maxPages:9,minRefs:20,blind:true,required:['introduction','related work','conclusion','limitations'],extra:['NeurIPS checklist (mandatory)','Broader impact','Single PDF with appendix']},
+    'tdsc_en':{name:'IEEE TDSC',maxPages:14,minRefs:30,blind:false,required:['introduction','related work','conclusion'],extra:['IEEE journal template','Author bio','Graphical abstract (optional)']},
+    'tifs_en':{name:'IEEE TIFS',maxPages:14,minRefs:30,blind:false,required:['introduction','related work','conclusion'],extra:['IEEE journal template','Double-column format']}
+  };
+  // Find best matching venue
+  let venue=venues[tpl];
+  if(!venue){
+    // Try to match by template name keywords
+    for(const[k,v]of Object.entries(venues)){if(tpl.includes(k.split('_')[0]))venue=v;}
+  }
+  if(!venue)venue={name:'일반',maxPages:20,minRefs:10,blind:false,required:['introduction','conclusion'],extra:[]};
+  const issues=[];
+  // Page check
+  if(pages>venue.maxPages)issues.push('[!] 페이지 초과: 약 '+pages+'p (최대 '+venue.maxPages+'p)');
+  else issues.push('[+] 페이지: 약 '+pages+'p / '+venue.maxPages+'p');
+  // Refs check
+  if(refs.length<venue.minRefs)issues.push('[!] 참고문헌 부족: '+refs.length+'편 (최소 '+venue.minRefs+'편 권장)');
+  else issues.push('[+] 참고문헌: '+refs.length+'편');
+  // Required sections
+  venue.required.forEach(sec=>{
+    if(sections.some(s=>s.includes(sec)))issues.push('[+] '+sec+' 섹션 존재');
+    else issues.push('[!] '+sec+' 섹션 없음');
+  });
+  // Blind mode
+  if(venue.blind&&!_blindMode)issues.push('[!] 이 학회는 Double-blind 필수 - 블라인드 모드를 활성화하세요');
+  else if(venue.blind)issues.push('[+] 블라인드 모드 활성');
+  // Abstract
+  const abWords=(document.getElementById('ab').value||'').trim().split(/\s+/).length;
+  if(abWords<50)issues.push('[!] 초록이 너무 짧습니다 ('+abWords+'단어, 최소 150 권장)');
+  // Extra venue-specific
+  venue.extra.forEach(e=>{issues.push('[*] '+venue.name+' 요구: '+e);});
+  // Display
+  const cr=document.getElementById('checkResult');
+  cr.innerHTML='<strong style="color:var(--brand)">'+escHtml(venue.name)+' 투고 프리플라이트</strong><br>'+issues.map(i=>'<div style="font-size:.62rem;margin-top:2px;color:'+(i.startsWith('[!]')?'#b42318':i.startsWith('[+]')?'var(--brand)':'var(--muted)')+'">'+escHtml(i)+'</div>').join('');
+  _addCrClose(cr);cr.style.display='block';
+}
+
+// === CRediT AUTHOR CONTRIBUTIONS ===
+const CREDIT_ROLES=['Conceptualization','Data curation','Formal analysis','Funding acquisition','Investigation','Methodology','Project administration','Resources','Software','Supervision','Validation','Visualization','Writing - original draft','Writing - review & editing'];
+function showCreditModal(){
+  const modal=document.getElementById('loadModal');
+  modal.querySelector('.modal-head span').textContent='CRediT 저자 기여도';
+  const body=modal.querySelector('.modal-body');body.innerHTML='';
+  const wrap=document.createElement('div');wrap.style.cssText='font-size:.7rem;line-height:1.6';
+  const desc=document.createElement('p');desc.style.cssText='color:var(--muted);margin-bottom:8px;font-size:.62rem';desc.textContent='각 저자의 기여 역할을 선택하세요. 내보내기 시 Author Contribution Statement가 자동 생성됩니다.';wrap.appendChild(desc);
+  // Get all authors
+  const au=document.getElementById('au').value;const coau=(document.getElementById('coau').value||'').split(',').map(s=>s.trim()).filter(Boolean);
+  const allAuthors=[au,...coau].filter(Boolean);
+  if(!allAuthors.length){const p=document.createElement('p');p.textContent='저자를 먼저 추가하세요.';wrap.appendChild(p);body.appendChild(wrap);modal.classList.add('show');return;}
+  // Table
+  const tbl=document.createElement('table');tbl.style.cssText='width:100%;border-collapse:collapse;font-size:.58rem';
+  const thead=document.createElement('tr');
+  const th0=document.createElement('th');th0.textContent='역할';th0.style.cssText='text-align:left;padding:2px 4px;border-bottom:1px solid var(--line);font-size:.52rem';thead.appendChild(th0);
+  allAuthors.forEach(a=>{const th=document.createElement('th');th.style.cssText='text-align:center;padding:2px 3px;border-bottom:1px solid var(--line);font-size:.5rem;max-width:60px;overflow:hidden';th.textContent=(nameMap[a]&&nameMap[a].name)||a;thead.appendChild(th);});
+  tbl.appendChild(thead);
+  CREDIT_ROLES.forEach(role=>{
+    const tr=document.createElement('tr');
+    const td0=document.createElement('td');td0.style.cssText='padding:2px 4px;font-size:.54rem;border-bottom:1px dotted var(--line)';td0.textContent=role;tr.appendChild(td0);
+    allAuthors.forEach(a=>{
+      const td=document.createElement('td');td.style.cssText='text-align:center;padding:2px;border-bottom:1px dotted var(--line)';
+      const cb=document.createElement('input');cb.type='checkbox';cb.style.width='auto';cb.dataset.author=a;cb.dataset.role=role;
+      td.appendChild(cb);tr.appendChild(td);
+    });
+    tbl.appendChild(tr);
+  });
+  wrap.appendChild(tbl);body.appendChild(wrap);
+  const foot=modal.querySelector('.modal-foot');foot.innerHTML='';
+  const btnInsert=document.createElement('button');btnInsert.className='bt p';btnInsert.textContent='본문에 삽입';
+  btnInsert.addEventListener('click',()=>{
+    // Build contribution statement
+    const contributions={};
+    tbl.querySelectorAll('input[type=checkbox]:checked').forEach(cb=>{
+      const a=cb.dataset.author;const r=cb.dataset.role;
+      if(!contributions[a])contributions[a]=[];contributions[a].push(r);
+    });
+    let stmt='\n\n## Author Contributions\n\n';
+    for(const[a,roles]of Object.entries(contributions)){
+      const name=(nameMap[a]&&nameMap[a].name)||a;
+      stmt+='**'+name+'**: '+roles.join(', ')+'.\n\n';
+    }
+    inp.focus();typeText(stmt);render();closeModal('loadModal');
+    document.getElementById('as').textContent='[+] CRediT 기여도 삽입됨';
+  });foot.appendChild(btnInsert);
+  const btnCancel=document.createElement('button');btnCancel.className='bt';btnCancel.textContent='취소';
+  btnCancel.addEventListener('click',()=>closeModal('loadModal'));foot.appendChild(btnCancel);
+  modal.classList.add('show');
+}
 
 // === INSERT TEMPLATES (toolbar buttons) ===
 function _insTemplate(key){
