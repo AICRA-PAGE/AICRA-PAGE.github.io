@@ -1,15 +1,18 @@
 ---
-layout: paper
+layout: "paper"
 title: "[SAMPLE] Indirect Prompt Injection: Compromising LLM-Integrated Applications"
-author: AICRA-PAGE
+author: "AICRA-PAGE"
 authors: ["0blueteam0"]
-date: 2026-03-27
-status: published
+date: "2026-03-27"
+status: "published"
 domain: "Prompt Injection"
 keywords: ["prompt injection", "LLM security", "retrieval-augmented generation", "adversarial attacks"]
 abstract: "We propose a taxonomy of indirect prompt injection attacks targeting LLM-integrated applications. Unlike direct prompt injection, our attack model assumes the adversary cannot directly interact with the target LLM but instead plants malicious instructions in content likely to be retrieved during inference. We demonstrate practical attacks on retrieval-augmented generation systems including data exfiltration, fraud, and persistent compromise, achieving a 92% success rate across tested scenarios."
-lang: ko
+lang: "ko"
+locked: true
+locked_by: "AICRA-PAGE"
 ---
+
 
 # Indirect Prompt Injection: Compromising LLM-Integrated Applications
 
