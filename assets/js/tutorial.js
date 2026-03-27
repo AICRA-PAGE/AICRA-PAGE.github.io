@@ -503,20 +503,29 @@ function showRoleSelect(){
   body.innerHTML=
     '<div style="text-align:center;padding:8px 0">'+
     '<div style="font-size:.88rem;font-weight:700;color:var(--brand);margin-bottom:4px">AICRA Paper Editor</div>'+
-    '<div style="font-size:.65rem;color:var(--muted);margin-bottom:12px">역할에 맞는 튜토리얼을 시작합니다</div>'+
-    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">'+
-    '<div onclick="window._tRole(\'author\')" style="cursor:pointer;padding:10px 8px;border:2px solid var(--brand);border-radius:6px;transition:.2s" onmouseover="this.style.background=\'var(--surface)\'" onmouseout="this.style.background=\'\'">'+
-    '<div style="font-size:.82rem;font-weight:700">1저자</div>'+
-    '<div style="font-size:.55rem;color:var(--muted)">논문 작성 전 과정</div></div>'+
-    '<div onclick="window._tRole(\'coauthor\')" style="cursor:pointer;padding:10px 8px;border:2px solid var(--line);border-radius:6px;transition:.2s" onmouseover="this.style.background=\'var(--surface)\'" onmouseout="this.style.background=\'\'">'+
-    '<div style="font-size:.82rem;font-weight:700">공동저자</div>'+
-    '<div style="font-size:.55rem;color:var(--muted)">불러오기 + 편집</div></div>'+
-    '<div onclick="window._tRole(\'corresponding\')" style="cursor:pointer;padding:10px 8px;border:2px solid var(--line);border-radius:6px;transition:.2s" onmouseover="this.style.background=\'var(--surface)\'" onmouseout="this.style.background=\'\'">'+
-    '<div style="font-size:.82rem;font-weight:700">교신저자</div>'+
-    '<div style="font-size:.55rem;color:var(--muted)">검증 + 투고</div></div>'+
-    '<div onclick="window._tRole(\'reviewer\')" style="cursor:pointer;padding:10px 8px;border:2px solid var(--line);border-radius:6px;transition:.2s" onmouseover="this.style.background=\'var(--surface)\'" onmouseout="this.style.background=\'\'">'+
-    '<div style="font-size:.82rem;font-weight:700">검토자</div>'+
-    '<div style="font-size:.55rem;color:var(--muted)">읽기 + 첨삭</div></div>'+
+    '<div style="font-size:.65rem;color:var(--muted);margin-bottom:8px">수준에 맞는 튜토리얼을 선택하세요</div>'+
+    '<div style="display:flex;gap:6px;margin-bottom:10px">'+
+    '<div onclick="window._tRole(\'basic\')" style="cursor:pointer;flex:1;padding:10px 8px;border:2px solid var(--brand);border-radius:6px;text-align:center;transition:.2s" onmouseover="this.style.background=\'var(--surface)\'" onmouseout="this.style.background=\'\'">'+
+    '<div style="font-size:.82rem;font-weight:700">기본 과정</div>'+
+    '<div style="font-size:.52rem;color:var(--muted)">Ch.1~9: 양식, 작성, 인용, 저장, 내보내기</div></div>'+
+    '<div onclick="window._tRole(\'advanced\')" style="cursor:pointer;flex:1;padding:10px 8px;border:2px solid var(--accent);border-radius:6px;text-align:center;transition:.2s" onmouseover="this.style.background=\'var(--surface)\'" onmouseout="this.style.background=\'\'">'+
+    '<div style="font-size:.82rem;font-weight:700;color:var(--accent)">고급 과정</div>'+
+    '<div style="font-size:.52rem;color:var(--muted)">Ch.10~13: 도구, 데이터셋, 선행연구, 투고</div></div>'+
+    '</div>'+
+    '<div style="font-size:.55rem;color:var(--muted);margin-bottom:6px">또는 역할별 맞춤 학습:</div>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px">'+
+    '<div onclick="window._tRole(\'author\')" style="cursor:pointer;padding:6px 4px;border:1px solid var(--line);border-radius:4px;text-align:center;transition:.2s" onmouseover="this.style.background=\'var(--surface)\'" onmouseout="this.style.background=\'\'">'+
+    '<div style="font-size:.68rem;font-weight:600">1저자</div>'+
+    '<div style="font-size:.45rem;color:var(--muted)">전 과정</div></div>'+
+    '<div onclick="window._tRole(\'coauthor\')" style="cursor:pointer;padding:6px 4px;border:1px solid var(--line);border-radius:4px;text-align:center;transition:.2s" onmouseover="this.style.background=\'var(--surface)\'" onmouseout="this.style.background=\'\'">'+
+    '<div style="font-size:.68rem;font-weight:600">공동저자</div>'+
+    '<div style="font-size:.45rem;color:var(--muted)">편집</div></div>'+
+    '<div onclick="window._tRole(\'corresponding\')" style="cursor:pointer;padding:6px 4px;border:1px solid var(--line);border-radius:4px;text-align:center;transition:.2s" onmouseover="this.style.background=\'var(--surface)\'" onmouseout="this.style.background=\'\'">'+
+    '<div style="font-size:.68rem;font-weight:600">교신저자</div>'+
+    '<div style="font-size:.45rem;color:var(--muted)">투고</div></div>'+
+    '<div onclick="window._tRole(\'reviewer\')" style="cursor:pointer;padding:6px 4px;border:1px solid var(--line);border-radius:4px;text-align:center;transition:.2s" onmouseover="this.style.background=\'var(--surface)\'" onmouseout="this.style.background=\'\'">'+
+    '<div style="font-size:.68rem;font-weight:600">검토자</div>'+
+    '<div style="font-size:.45rem;color:var(--muted)">첨삭</div></div>'+
     '</div>'+
     '</div>';
   document.getElementById('twNav').innerHTML=
@@ -527,6 +536,18 @@ function showRoleSelect(){
 // === Public API ===
 window._tRole=function(role){
   if(role==='author')activeStory=FULL_STORY;
+  else if(role==='basic')activeStory=FULL_STORY.filter(s=>!s.ch||!s.ch.startsWith('Ch.1')||s.ch<='Ch.9'||s.ch==='완료').filter(s=>{
+    // Basic: Ch.1~Ch.9 + ending only
+    if(!s.ch)return true;
+    const num=parseInt((s.ch.match(/Ch\.(\d+)/)||[])[1]||'0');
+    return num<=9||num===0||s.ch==='완료';
+  });
+  else if(role==='advanced')activeStory=FULL_STORY.filter(s=>{
+    // Advanced: Ch.10~Ch.13 + ending only
+    if(!s.ch)return true;
+    const num=parseInt((s.ch.match(/Ch\.(\d+)/)||[])[1]||'0');
+    return num>=10||s.ch==='완료';
+  });
   else if(role==='coauthor')activeStory=COAUTHOR_STORY;
   else if(role==='corresponding')activeStory=CORRESPONDING_STORY;
   else if(role==='reviewer')activeStory=REVIEWER_STORY;

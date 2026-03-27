@@ -537,8 +537,9 @@ body.simple-mode .ins button[onclick*="fn"]{display:inline-block}
   <span style="width:1px;height:14px;background:var(--line)"></span>
   <label style="font-size:.52rem;display:flex;align-items:center;gap:2px;cursor:pointer;color:#b42318;font-weight:600"><input type="checkbox" id="opt-blind" style="width:auto" onchange="toggleBlindMode(this.checked)"> Anonymous (블라인드)</label>
   <select id="citeStyle" style="padding:1px 3px;border:1px solid var(--line);border-radius:2px;font-size:.5rem;background:var(--panel);color:var(--text)" onchange="render()" title="인용 스타일">
-    <option value="numeric">[1] 번호</option>
-    <option value="author-year">(Author, Year)</option>
+    <option value="numeric">[1] IEEE/번호</option>
+    <option value="author-year">(Author, Year) APA</option>
+    <option value="superscript">1 위첨자</option>
   </select>
   <button class="bt" onclick="runAnonymizationLint()" style="font-size:.48rem;padding:1px 4px" title="익명화 점검: 저자명/소속/URL 노출 감지">익명린트</button>
   <button class="bt" onclick="submissionPreflight()" style="font-size:.48rem;padding:1px 4px;background:var(--brand);color:#fff;border-color:var(--brand)" title="투고 프리플라이트: 학회별 체크리스트">프리플라이트</button>
@@ -1521,6 +1522,19 @@ F(df1, df2)=값, p=값, eta^2=값</div>
 const inp=document.getElementById('input'),pv=document.getElementById('pv');
 function escHtml(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
 function escAttr(s){return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/'/g,'&#39;');}
+function _estimatePages(wc){
+  // Venue-aware page estimation (words per page varies by format)
+  const tpl=(document.getElementById('tplSel')||{}).dataset?.lastTpl||'';
+  const wpp={'sp':750,'ccs':800,'neurips_en':600,'ieee_en':650,'acm_en':700,'tdsc':750,'tifs':750,'ndss':700,'usenix':700};
+  const wordsPerPage=wpp[tpl]||500; // 2-column ~750, 1-column ~500
+  // Add ~0.5 page per 3 figures/tables
+  const body=(document.getElementById('input')||{}).value||'';
+  const figs=(body.match(/!\[/g)||[]).length;
+  const tbls=(body.match(/^\|/gm)||[]).length/4; // rough table count
+  const merm=(body.match(/```mermaid/g)||[]).length;
+  const visualPages=(figs+tbls+merm)*0.3;
+  return Math.ceil(wc/wordsPerPage+visualPages);
+}
 function _addCrClose(cr){const btn=document.createElement('button');btn.style.cssText='position:absolute;right:8px;top:8px;border:none;background:none;cursor:pointer;font-size:.8rem;color:var(--muted)';btn.textContent='X';btn.setAttribute('aria-label','닫기');btn.addEventListener('click',()=>{cr.style.display='none';});cr.insertBefore(btn,cr.firstChild);}
 let focusMode=false,refs=[];
 let envCounters={theorem:0,lemma:0,definition:0,corollary:0,proposition:0,algorithm:0};
@@ -1850,10 +1864,12 @@ function processCitations(t){
     const idx=parseInt(n)-1;const ref=refs[idx]||'Ref '+n;
     const titleAttr=escAttr(ref);
     if(style==='author-year'){
-      // Extract "Author (Year)" from ref text
       const authorMatch=ref.match(/^([^.,"]+)/);const yearMatch=ref.match(/(\d{4})/);
       const short=(authorMatch?authorMatch[1].trim():'Author')+(yearMatch?' ('+yearMatch[1]+')':' (n.d.)');
       return '<span class="cite cite-ay" title="'+titleAttr+'">'+escHtml(short)+'</span>';
+    }
+    if(style==='superscript'){
+      return '<sup class="cite" title="'+titleAttr+'" style="font-size:.65em;cursor:help">'+n+'</sup>';
     }
     return '<span class="cite" title="'+titleAttr+'">['+n+']</span>';
   });
@@ -4247,7 +4263,7 @@ function diagnosePaper(){
   rpt+='<div style="margin-top:8px">';
   // Overall stats
   rpt+='<div style="font-size:.68rem;font-weight:700;color:var(--brand);margin:6px 0 3px">전체 통계</div>';
-  rpt+='<div style="font-size:.62rem">총 '+wc+'단어 | '+sections.length+'섹션 | '+paras.length+'문단 | 추정 '+(Math.ceil(wc/300))+'페이지</div>';
+  rpt+='<div style="font-size:.62rem">총 '+wc+'단어 | '+sections.length+'섹션 | '+paras.length+'문단 | 추정 '+(_estimatePages(wc))+'페이지</div>';
   // Section balance
   rpt+='<div style="font-size:.68rem;font-weight:700;color:var(--brand);margin:8px 0 3px">섹션별 분석</div>';
   if(sections.length===0){rpt+='<div style="font-size:.62rem;color:#b42318">[!] 섹션이 없습니다</div>';}
@@ -4457,7 +4473,7 @@ function exportTeX(){
   let tex='';
   if(cls==='IEEEtran-compsoc'){
     tex+='\\documentclass[conference,compsoc]{IEEEtran}\n';
-    tex+='\\usepackage{amsmath,amssymb,amsfonts}\n\\usepackage{algorithmic}\n\\usepackage{graphicx}\n\\usepackage{textcomp}\n\\usepackage{kotex}\n\\usepackage{hyperref}\n\\usepackage{cite}\n';
+    tex+='\\usepackage{amsmath,amssymb,amsfonts}\n\\usepackage{algorithmic}\n\\usepackage{graphicx}\n\\usepackage{textcomp}\n\\usepackage{kotex}\n\\usepackage{hyperref}\n\\usepackage{cite}\n\\usepackage{booktabs}\n\\usepackage{listings}\n';
   }else if(cls==='IEEEtran'){
     tex+='\\documentclass[conference]{IEEEtran}\n';
     tex+='\\usepackage{amsmath,amssymb,amsfonts}\n\\usepackage{algorithmic}\n\\usepackage{graphicx}\n\\usepackage{textcomp}\n\\usepackage{kotex}\n\\usepackage{hyperref}\n';
@@ -4523,18 +4539,42 @@ function exportTeX(){
   // Bold/italic
   b=b.replace(/\*\*(.+?)\*\*/g,'\\\\textbf{$1}');
   b=b.replace(/\*(.+?)\*/g,'\\\\textit{$1}');
+  // Mermaid -> comment with note (cannot render in LaTeX)
+  b=b.replace(/```mermaid\n([\s\S]*?)```/g,'% [Mermaid diagram - convert to TikZ or include as image]\n% Original Mermaid code:\n% $1');
   // Code blocks
-  b=b.replace(/```\w*\n([\s\S]*?)```/g,'\\\\begin{verbatim}\n$1\\\\end{verbatim}');
+  b=b.replace(/```(\w+)\n([\s\S]*?)```/g,'\\\\begin{lstlisting}[language=$1]\n$2\\\\end{lstlisting}');
+  b=b.replace(/```\n([\s\S]*?)```/g,'\\\\begin{verbatim}\n$1\\\\end{verbatim}');
   b=b.replace(/`([^`]+)`/g,'\\\\texttt{$1}');
   // Images
-  b=b.replace(/!\[([^\]]*)\]\(([^)]+)\)/g,'\\\\begin{figure}[h]\n\\\\centering\n\\\\includegraphics[width=0.8\\\\textwidth]{$2}\n\\\\caption{$1}\n\\\\end{figure}');
-  // Tables (basic)
-  b=b.replace(/\*Table.*?\.\s*(.*?)\*/g,'% Table: $1');
+  b=b.replace(/!\[([^\]]*)\]\(([^)]+)\)(?:\{width=(\d+%?)\})?/g,(m,cap,src,w)=>{
+    const width=w?w.replace('%','')+'\\\\textwidth':'0.8\\\\textwidth';
+    return '\\\\begin{figure}[htbp]\n\\\\centering\n\\\\includegraphics[width='+width+']{'+src+'}\n\\\\caption{'+escTeX(cap)+'}\n\\\\end{figure}';
+  });
+  // Tables (wrap in tabular environment)
+  b=b.replace(/(\*Table[^*]*\*)\n((?:\|.+\|\n?)+)/g,(m,caption,tblBody)=>{
+    const rows=tblBody.trim().split('\n').filter(Boolean);
+    if(rows.length<2)return m;
+    const headerCells=rows[0].split('|').filter(Boolean).map(c=>c.trim());
+    const colCount=headerCells.length;
+    const colSpec=headerCells.map(()=>'l').join('');
+    let result='\\\\begin{table}[htbp]\n\\\\centering\n\\\\caption{'+escTeX(caption.replace(/\*/g,'').trim())+'}\n\\\\begin{tabular}{'+colSpec+'}\n\\\\toprule\n';
+    rows.forEach((row,i)=>{
+      const cells=row.split('|').filter(Boolean).map(c=>c.trim());
+      if(cells.every(c=>/^[-:]+$/.test(c))){result+='\\\\midrule\n';return;}
+      result+=cells.join(' & ')+' \\\\\\\\\n';
+    });
+    result+='\\\\bottomrule\n\\\\end{tabular}\n\\\\end{table}';
+    return result;
+  });
+  // Remaining standalone tables without caption
   b=b.replace(/^\|(.+)\|\s*$/gm,(line)=>{
     const cells=line.split('|').filter(Boolean).map(c=>c.trim());
     if(cells.every(c=>/^[-:]+$/.test(c)))return '\\\\hline';
     return cells.join(' & ')+' \\\\\\\\';
   });
+  // Cross-references
+  b=b.replace(/\\label\{([^}]+)\}/g,'\\\\label{$1}');
+  b=b.replace(/\\ref\{([^}]+)\}/g,'\\\\ref{$1}');
   // Horizontal rules
   b=b.replace(/^---$/gm,'');
   // Lists
@@ -5476,7 +5516,7 @@ function lintVenue(){
   const rules=VENUE_RULES[tplVal];
   if(!rules){document.getElementById('as').textContent='벤뉴 규격을 확인하려면 양식을 먼저 선택하세요.';return;}
   const t=inp.value;const wc=t.trim().split(/\s+/).length;
-  const pages=Math.ceil(wc/300);const ab=document.getElementById('ab').value.trim();
+  const pages=_estimatePages(wc);const ab=document.getElementById('ab').value.trim();
   const abWords=ab?ab.split(/\s+/).length:0;
   const issues=[];
   if(pages>rules.maxPages)issues.push('[!] '+pages+'페이지 ('+rules.name+' 최대 '+rules.maxPages+'페이지)');
@@ -5960,7 +6000,7 @@ function runAnonymizationLint(){
 function submissionPreflight(){
   const tpl=document.getElementById('tplSel').dataset.lastTpl||'';
   const t=inp.value;const wc=t.trim().split(/\s+/).length;
-  const pages=Math.ceil(wc/300);
+  const pages=_estimatePages(wc);
   const sections=[];t.replace(/^## (.+)$/gm,(m,h)=>sections.push(h.trim().toLowerCase()));
   const venues={
     // Venue IDs match both template selector values AND generic names
