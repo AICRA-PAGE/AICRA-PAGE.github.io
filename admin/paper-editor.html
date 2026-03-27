@@ -452,12 +452,12 @@ body.simple-mode .ins button[onclick*="fn"]{display:inline-block}
   <select class="sel" style="font-size:.52rem;padding:1px 3px" onchange="pv.classList.toggle('print-two-col',this.value==='2')" title="인쇄 레이아웃"><option value="1">1단 인쇄</option><option value="2">2단 인쇄</option></select>
   <button class="bt icon" onclick="window.print()" title="인쇄 / PDF">&#9113;</button>
   <select class="sel" onchange="if(this.value){loadSamplePaper(this.value);this.value=''}" title="샘플 AI 보안 논문 불러오기">
-    <option value="">샘플 논문</option>
-    <option value="indirect-prompt-injection">Prompt Injection (Greshake 2023)</option>
-    <option value="adversarial-examples-fgsm">Adversarial FGSM (Goodfellow 2015)</option>
-    <option value="model-extraction-apis">Model Extraction (Tramer 2016)</option>
-    <option value="deep-leakage-gradients">Deep Leakage (Zhu 2019)</option>
-    <option value="malicious-use-ai">Malicious AI Use (Brundage 2018)</option>
+    <option value="">[SAMPLE] 샘플 논문 (개발/테스트용)</option>
+    <option value="indirect-prompt-injection">[SAMPLE] Prompt Injection (Greshake 2023)</option>
+    <option value="adversarial-examples-fgsm">[SAMPLE] Adversarial FGSM (Goodfellow 2015)</option>
+    <option value="model-extraction-apis">[SAMPLE] Model Extraction (Tramer 2016)</option>
+    <option value="deep-leakage-gradients">[SAMPLE] Deep Leakage (Zhu 2019)</option>
+    <option value="malicious-use-ai">[SAMPLE] Malicious AI Use (Brundage 2018)</option>
   </select>
   <a class="bt" href="/admin/editor.html" style="text-decoration:none">블로그</a>
   <a class="bt" href="/admin/" style="text-decoration:none">CMS</a>
@@ -1983,6 +1983,12 @@ function insertFootnote(){
 function insTpl(type){
   document.getElementById('tplSel').dataset.lastTpl=type;
   if(!type)return;
+  // Auto-enable blind mode for double-blind venues
+  const blindVenues=['sp','ccs','neurips_en','ndss','usenix','ieee_en','acm_en'];
+  if(blindVenues.includes(type)){
+    const cb=document.getElementById('opt-blind');
+    if(cb&&!cb.checked){cb.checked=true;toggleBlindMode(true);document.getElementById('as').textContent='[*] '+type+' 선택 - 블라인드 모드 자동 활성화';}
+  }
   const T={
 ieee_en:`# [Paper Title]
 
@@ -4485,6 +4491,7 @@ setInterval(save,30000);restore();
 // === SAMPLE PAPER LOADER ===
 async function loadSamplePaper(slug){
   if(inp.value.trim()&&!confirm('현재 내용이 샘플 논문으로 대체됩니다. 계속?'))return;
+  alert('[*] 이 샘플 논문은 Paper Editor 개발/테스트 목적으로 작성된 것이며, 실제 발행된 논문이 아닙니다.');
   try{
     document.getElementById('as').textContent='샘플 논문 로딩 중...';
     const r=await fetch('/assets/samples/'+slug+'.json');
@@ -5839,6 +5846,23 @@ function runAnonymizationLint(){
   if(/\d{4}-\d{4}-\d{4}-\d{3}[\dX]/g.test(t))issues.push('[!] 본문에 ORCID 노출');
   // Check for acknowledgments
   if(/(?:acknowledgment|감사의\s?글|사사)/i.test(t))issues.push('[!] 감사의 글/Acknowledgment 섹션이 본문에 있음 (블라인드 시 제거 필요)');
+  // Check abstract and metadata too
+  const abText=(document.getElementById('ab').value||'');
+  allAuthors.forEach(a=>{
+    const m=nameMap[a];const names=[a];if(m&&m.name)names.push(m.name);
+    names.forEach(n=>{if(n.length>2&&abText.toLowerCase().includes(n.toLowerCase()))issues.push('[!] 초록에 저자명 "'+n+'" 노출');});
+  });
+  // Check references for self-citation
+  refs.forEach((r,i)=>{
+    allAuthors.forEach(a=>{
+      const m=nameMap[a];const names=[a];if(m&&m.name)names.push(m.name);
+      names.forEach(n=>{if(n.length>2&&r.toLowerCase().includes(n.toLowerCase()))issues.push('[!] 참고문헌['+(i+1)+']에 저자명 "'+n+'" - 셀프인용 의심');});
+    });
+  });
+  // Check for institutional patterns
+  const instPat=/(?:university|대학교|연구소|institute|laboratory|lab\b|center for)/gi;
+  const instMatches=t.match(instPat)||[];
+  if(instMatches.length>2)issues.push('[*] 본문에 기관명 패턴 '+instMatches.length+'건 (확인 필요)');
   // Display
   const cr=document.getElementById('checkResult');
   let html='<strong style="color:#b42318">익명화 점검 결과</strong>';
@@ -5854,11 +5878,18 @@ function submissionPreflight(){
   const pages=Math.ceil(wc/300);
   const sections=[];t.replace(/^## (.+)$/gm,(m,h)=>sections.push(h.trim().toLowerCase()));
   const venues={
-    'ieee_en':{name:'IEEE S&P',maxPages:13,minRefs:30,blind:true,required:['introduction','related work','conclusion','ethics'],extra:['ORCID at registration','Ethics section','Vulnerability disclosure','US Letter format']},
-    'acm_en':{name:'ACM CCS',maxPages:15,minRefs:25,blind:true,required:['introduction','related work','conclusion'],extra:['ACM CCS concepts','Artifact appendix','COI declaration']},
-    'neurips_en':{name:'NeurIPS',maxPages:9,minRefs:20,blind:true,required:['introduction','related work','conclusion','limitations'],extra:['NeurIPS checklist (mandatory)','Broader impact','Single PDF with appendix']},
+    // Venue IDs match both template selector values AND generic names
+    'sp':{name:'IEEE S&P 2026',maxPages:13,minRefs:30,blind:true,required:['introduction','related work','conclusion','ethics'],extra:['ORCID at abstract registration','Ethics section mandatory','Vulnerability disclosure policy','US Letter format (not A4)','Double-blind: no author info anywhere','compsoc document class']},
+    'ccs':{name:'ACM CCS',maxPages:15,minRefs:25,blind:true,required:['introduction','related work','conclusion'],extra:['ACM CCS concepts required','Artifact appendix encouraged','COI declaration at submission','sigconf document class']},
+    'neurips_en':{name:'NeurIPS',maxPages:9,minRefs:20,blind:true,required:['introduction','related work','conclusion','limitations'],extra:['NeurIPS checklist (mandatory after refs)','Broader impact statement','Single PDF with appendix','natbib citation style']},
+    'ieee_en':{name:'IEEE Conference',maxPages:8,minRefs:15,blind:true,required:['introduction','related work','conclusion'],extra:['IEEEtran document class','US Letter format']},
+    'acm_en':{name:'ACM Conference',maxPages:12,minRefs:20,blind:true,required:['introduction','related work','conclusion'],extra:['sigconf document class','ACM reference format']},
     'tdsc_en':{name:'IEEE TDSC',maxPages:14,minRefs:30,blind:false,required:['introduction','related work','conclusion'],extra:['IEEE journal template','Author bio','Graphical abstract (optional)']},
-    'tifs_en':{name:'IEEE TIFS',maxPages:14,minRefs:30,blind:false,required:['introduction','related work','conclusion'],extra:['IEEE journal template','Double-column format']}
+    'tdsc':{name:'IEEE TDSC',maxPages:14,minRefs:30,blind:false,required:['introduction','related work','conclusion'],extra:['IEEE journal template','Author bio']},
+    'tifs_en':{name:'IEEE TIFS',maxPages:14,minRefs:30,blind:false,required:['introduction','related work','conclusion'],extra:['IEEE journal template','Double-column format']},
+    'tifs':{name:'IEEE TIFS',maxPages:14,minRefs:30,blind:false,required:['introduction','related work','conclusion'],extra:['IEEE journal template']},
+    'ndss':{name:'NDSS',maxPages:15,minRefs:25,blind:true,required:['introduction','related work','conclusion'],extra:['Double-blind review','NDSS format']},
+    'usenix':{name:'USENIX Security',maxPages:13,minRefs:25,blind:true,required:['introduction','related work','conclusion'],extra:['Double-blind','usenix2e format','Ethical considerations']}
   };
   // Find best matching venue
   let venue=venues[tpl];
