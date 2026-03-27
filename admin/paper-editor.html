@@ -4473,7 +4473,7 @@ function exportTeX(){
   let tex='';
   if(cls==='IEEEtran-compsoc'){
     tex+='\\documentclass[conference,compsoc]{IEEEtran}\n';
-    tex+='\\usepackage{amsmath,amssymb,amsfonts}\n\\usepackage{algorithmic}\n\\usepackage{graphicx}\n\\usepackage{textcomp}\n\\usepackage{kotex}\n\\usepackage{hyperref}\n\\usepackage{cite}\n\\usepackage{booktabs}\n\\usepackage{listings}\n';
+    tex+='\\usepackage{amsmath,amssymb,amsfonts}\n\\usepackage{algorithmic}\n\\usepackage{graphicx}\n\\usepackage{textcomp}\n\\usepackage{kotex}\n\\usepackage{hyperref}\n\\usepackage{cite}\n\\usepackage{booktabs}\n\\usepackage{listings}\n\\usepackage{tikz}\n\\usetikzlibrary{arrows.meta,fit,positioning,shapes.geometric}\n';
   }else if(cls==='IEEEtran'){
     tex+='\\documentclass[conference]{IEEEtran}\n';
     tex+='\\usepackage{amsmath,amssymb,amsfonts}\n\\usepackage{algorithmic}\n\\usepackage{graphicx}\n\\usepackage{textcomp}\n\\usepackage{kotex}\n\\usepackage{hyperref}\n';
@@ -4539,8 +4539,12 @@ function exportTeX(){
   // Bold/italic
   b=b.replace(/\*\*(.+?)\*\*/g,'\\\\textbf{$1}');
   b=b.replace(/\*(.+?)\*/g,'\\\\textit{$1}');
-  // Mermaid -> comment with note (cannot render in LaTeX)
-  b=b.replace(/```mermaid\n([\s\S]*?)```/g,'% [Mermaid diagram - convert to TikZ or include as image]\n% Original Mermaid code:\n% $1');
+  // Mermaid -> TikZ auto-conversion (flowchart) or comment fallback
+  b=b.replace(/```mermaid\n([\s\S]*?)```/g,(m,code)=>{
+    const tikz=_mermaidToTikz(code.trim());
+    if(tikz)return tikz;
+    return '% [Mermaid diagram - unsupported type, include as image]\n'+code.trim().split('\\n').map(l=>'% '+l).join('\\n');
+  });
   // Code blocks
   b=b.replace(/```(\w+)\n([\s\S]*?)```/g,'\\\\begin{lstlisting}[language=$1]\n$2\\\\end{lstlisting}');
   b=b.replace(/```\n([\s\S]*?)```/g,'\\\\begin{verbatim}\n$1\\\\end{verbatim}');
@@ -6363,6 +6367,84 @@ function buildExportContent(title,body){
 }
 
 // === DOCX EXPORT ===
+// === DOCX MATH: KaTeX -> Word OMML via MathML ===
+function _mathmlToOmml(node){
+  if(node.nodeType===3){const t=node.textContent.trim();return t?'<m:r><w:rPr><w:rFonts w:ascii="Cambria Math" w:hAnsi="Cambria Math"/></w:rPr><m:t>'+escAttr(t)+'</m:t></m:r>':'';}
+  if(node.nodeType!==1)return '';
+  const ch=()=>Array.from(node.childNodes).map(_mathmlToOmml).join('');
+  switch(node.localName){
+    case 'math':case 'semantics':case 'mrow':case 'mstyle':return ch();
+    case 'annotation':return '';
+    case 'mi':case 'mn':case 'mo':case 'mtext':return '<m:r><w:rPr><w:rFonts w:ascii="Cambria Math" w:hAnsi="Cambria Math"/></w:rPr><m:t>'+escAttr(node.textContent||'')+'</m:t></m:r>';
+    case 'mfrac':{const[n,d]=node.children;return '<m:f><m:num>'+_mathmlToOmml(n)+'</m:num><m:den>'+_mathmlToOmml(d)+'</m:den></m:f>';}
+    case 'msup':{const[b,s]=node.children;return '<m:sSup><m:e>'+_mathmlToOmml(b)+'</m:e><m:sup>'+_mathmlToOmml(s)+'</m:sup></m:sSup>';}
+    case 'msub':{const[b,s]=node.children;return '<m:sSub><m:e>'+_mathmlToOmml(b)+'</m:e><m:sub>'+_mathmlToOmml(s)+'</m:sub></m:sSub>';}
+    case 'msqrt':return '<m:rad><m:radPr><m:degHide m:val="1"/></m:radPr><m:e>'+ch()+'</m:e></m:rad>';
+    default:return ch();
+  }
+}
+function _latexToDocxMath(latex,D,display){
+  try{
+    const html=katex.renderToString(latex,{throwOnError:false,output:'mathml',displayMode:!!display});
+    const mathEl=new DOMParser().parseFromString(html,'text/html').querySelector('math');
+    if(!mathEl)throw new Error('no math');
+    const omml='<m:oMath xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math" xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'+_mathmlToOmml(mathEl)+'</m:oMath>';
+    const xmlDoc=new DOMParser().parseFromString(omml,'application/xml');
+    if(xmlDoc.querySelector('parsererror'))throw new Error('xml');
+    return D.convertToXmlComponent(xmlDoc.documentElement);
+  }catch(e){
+    return new D.TextRun({text:latex,font:'Cambria Math',size:20});
+  }
+}
+
+// === MERMAID -> TikZ CONVERTER ===
+function _mermaidToTikz(src){
+  const lines=src.split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+  const first=lines.shift()||'';
+  const dirMatch=first.match(/^flowchart\s+(LR|TB|TD)$/i);
+  if(!dirMatch)return null;
+  const dir=dirMatch[1].toUpperCase();
+  const nodes={};const edges=[];const order=[];const subs={};const stack=[];
+  function parseNode(tok){
+    tok=tok.trim();
+    const m=tok.match(/^([A-Za-z0-9_]+)(?:\[(.+)\]|\(\[(.+)\]\)|\{(.+)\}|\[\((.+)\)\])?$/);
+    if(!m)return tok;
+    const id=m[1];let shape='rect',label=id;
+    if(m[2]){shape='rect';label=m[2];}
+    else if(m[3]){shape='round';label=m[3];}
+    else if(m[4]){shape='diamond';label=m[4];}
+    else if(m[5]){shape='cylinder';label=m[5];}
+    if(!nodes[id]){nodes[id]={id,label,shape,idx:order.length,subs:[...stack]};order.push(id);}
+    return id;
+  }
+  for(const line of lines){
+    if(/^%%/.test(line))continue;
+    const sgm=line.match(/^subgraph\s+([A-Za-z0-9_]+)(?:\[(.+)\])?$/);
+    if(sgm){subs[sgm[1]]={id:sgm[1],label:sgm[2]||sgm[1]};stack.push(sgm[1]);continue;}
+    if(line==='end'){stack.pop();continue;}
+    const em=line.match(/^(.+?)\s*(-->|---)\s*(?:\|([^|]+)\|)?\s*(.+?)$/);
+    if(em){const from=parseNode(em[1]),to=parseNode(em[4]);edges.push({from,to,arrow:em[2]==='-->',label:em[3]||''});continue;}
+    parseNode(line);
+  }
+  // Compute levels
+  const level={};order.forEach(id=>{level[id]=0;});
+  let changed=true;while(changed){changed=false;edges.forEach(e=>{if(level[e.to]<=level[e.from]){level[e.to]=level[e.from]+1;changed=true;}});}
+  // Layout
+  const byLv=new Map();order.forEach(id=>{const lv=level[id];if(!byLv.has(lv))byLv.set(lv,[]);byLv.get(lv).push(id);});
+  const coords={};
+  for(const[lv,ids]of[...byLv.entries()].sort((a,b)=>a[0]-b[0])){
+    ids.forEach((id,i)=>{coords[id]=dir==='LR'?{x:lv*3.8,y:-i*2.2}:{x:i*3.8,y:-lv*2.6};});
+  }
+  const esc=s=>(s||'').replace(/[\\{}$%&_#^]/g,m=>'\\'+m);
+  const styles={rect:'draw,rectangle,align=center,minimum width=18mm,minimum height=8mm',round:'draw,rounded corners=2mm,align=center,minimum width=18mm,minimum height=8mm',diamond:'draw,diamond,aspect=2,align=center,inner sep=1.5pt',cylinder:'draw,cylinder,shape border rotate=90,aspect=0.25,align=center,minimum height=10mm'};
+  let tikz='\\begin{tikzpicture}[x=1cm,y=1cm,>=Latex,font=\\small]\n';
+  order.forEach(id=>{const n=nodes[id],c=coords[id];tikz+='\\node['+styles[n.shape]+'] ('+id+') at ('+c.x+','+c.y+') {'+esc(n.label)+'};\n';});
+  edges.forEach(e=>{const arr=e.arrow?'-{Latex[length=2mm]}':'-';const lbl=e.label?' node[midway,fill=white,inner sep=1pt] {'+esc(e.label)+'}':'';tikz+='\\draw['+arr+'] ('+e.from+') --'+lbl+' ('+e.to+');\n';});
+  Object.values(subs).forEach(sg=>{const members=order.filter(id=>(nodes[id].subs||[]).includes(sg.id));if(!members.length)return;tikz+='\\node[draw,rounded corners=1mm,inner sep=6pt,fit='+members.map(id=>'('+id+')').join('')+',label=above:{'+esc(sg.label)+'}] {};\n';});
+  tikz+='\\end{tikzpicture}';
+  return tikz;
+}
+
 async function exportDOCX(){
   const D=window.docx;if(!D){alert('docx 라이브러리 로딩 중...');return;}
   const title=document.getElementById('ti').value||'Untitled';
@@ -6444,25 +6526,34 @@ async function exportDOCX(){
       children.push(new D.Paragraph({children:[new D.TextRun({text:line.replace(/^\*|\*$/g,''),italics:true,size:18,font:'Times New Roman'})],alignment:D.AlignmentType.CENTER,spacing:{after:80}}));
       continue;
     }
-    // Math blocks
+    // Math blocks (display) -> Word OMML math object
     if(line.startsWith('$$')){
       let mathContent='';let k=i+1;
       while(k<lines.length&&!lines[k].startsWith('$$')){mathContent+=lines[k]+'\n';k++;}
-      children.push(new D.Paragraph({children:[new D.TextRun({text:mathContent.trim(),font:'Cambria Math',size:20})],alignment:D.AlignmentType.CENTER,spacing:{before:80,after:80}}));
+      try{
+        const mathObj=_latexToDocxMath(mathContent.trim(),D,true);
+        children.push(new D.Paragraph({children:[mathObj],alignment:D.AlignmentType.CENTER,spacing:{before:80,after:80}}));
+      }catch(e){
+        children.push(new D.Paragraph({children:[new D.TextRun({text:mathContent.trim(),font:'Cambria Math',size:20})],alignment:D.AlignmentType.CENTER,spacing:{before:80,after:80}}));
+      }
       i=k;continue;
     }
-    // Regular paragraph (handle citations, footnotes, bold, italic)
+    // Regular paragraph (handle citations, footnotes, bold, italic, inline math)
     if(line.trim()){
       const runs=[];
       let remaining=line;
-      // Simple inline parse
-      const parts=remaining.split(/(\*\*[^*]+\*\*|\*[^*]+\*|\[cite:\d+\]|\[\^\w+\])/g);
+      // Simple inline parse (added $..$ inline math)
+      const parts=remaining.split(/(\*\*[^*]+\*\*|\*[^*]+\*|\[cite:\d+\]|\[\^\w+\]|\$[^$]+\$)/g);
       parts.forEach(p=>{
         if(!p)return;
         if(p.startsWith('**')&&p.endsWith('**')){runs.push(new D.TextRun({text:p.slice(2,-2),bold:true,size:20,font:'Times New Roman'}));}
         else if(p.startsWith('*')&&p.endsWith('*')){runs.push(new D.TextRun({text:p.slice(1,-1),italics:true,size:20,font:'Times New Roman'}));}
         else if(p.match(/\[cite:(\d+)\]/)){const n=p.match(/\d+/)[0];runs.push(new D.TextRun({text:'['+n+']',size:20,font:'Times New Roman'}));}
         else if(p.match(/\[\^(\w+)\]/)){const n=p.match(/\w+/)[0];runs.push(new D.TextRun({text:n,superScript:true,size:16,font:'Times New Roman'}));}
+        else if(p.startsWith('$')&&p.endsWith('$')&&p.length>2){
+          try{runs.push(_latexToDocxMath(p.slice(1,-1),D,false));}
+          catch(e){runs.push(new D.TextRun({text:p.slice(1,-1),font:'Cambria Math',size:20}));}
+        }
         else{runs.push(new D.TextRun({text:p,size:20,font:'Times New Roman'}));}
       });
       if(runs.length)children.push(new D.Paragraph({children:runs,spacing:{after:80},alignment:D.AlignmentType.BOTH}));
