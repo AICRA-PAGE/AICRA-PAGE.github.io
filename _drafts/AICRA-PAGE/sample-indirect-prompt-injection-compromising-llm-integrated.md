@@ -1,18 +1,14 @@
 ---
-layout: "paper"
+layout: paper
 title: "[SAMPLE] Indirect Prompt Injection: Compromising LLM-Integrated Applications"
-author: "AICRA-PAGE"
-authors: ["0blueteam0"]
-date: "2026-03-27"
-status: "published"
+author: AICRA-PAGE
+date: 2026-03-28
+status: published
 domain: "Prompt Injection"
 keywords: ["prompt injection", "LLM security", "retrieval-augmented generation", "adversarial attacks"]
 abstract: "We propose a taxonomy of indirect prompt injection attacks targeting LLM-integrated applications. Unlike direct prompt injection, our attack model assumes the adversary cannot directly interact with the target LLM but instead plants malicious instructions in content likely to be retrieved during inference. We demonstrate practical attacks on retrieval-augmented generation systems including data exfiltration, fraud, and persistent compromise, achieving a 92% success rate across tested scenarios."
-lang: "ko"
-locked: true
-locked_by: "AICRA-PAGE"
+lang: ko
 ---
-
 
 # Indirect Prompt Injection: Compromising LLM-Integrated Applications
 
@@ -142,13 +138,6 @@ flowchart LR
 
 ## 7. Conclusion
 
-**Dataset: AdvBench**
-> Adversarial behavior benchmark for LLMs. 520 harmful behaviors and 500 harmful strings for evaluating jailbreak attacks and safety alignment.
-> URL: https://github.com/llm-attacks/llm-attacks
-> Size: 1MB | Format: CSV
-
-
-
 본 연구는 간접 프롬프트 인젝션이 LLM 통합 시스템의 근본적 보안 위협임을 입증하였다. 제안된 분류 체계는 6가지 공격 벡터를 체계적으로 정리하며, 실험 결과 평균 92%의 공격 성공률을 확인하였다 [cite:6]. 향후 연구에서는 형식 검증 기반의 방어 메커니즘 개발이 필요하다.
 
 ### Ethics and Responsible Disclosure
@@ -158,11 +147,4 @@ flowchart LR
 
 ---
 
-## References[cite:1][cite:2]
-
-**Dataset: OWASP Top 10 / LLM Top 10**
-> OWASP security risk catalogs. Web Top 10 (2021) and LLM Top 10 (2025) provide ranked lists of critical security risks with descriptions and mitigations.
-> URL: https://owasp.org/www-project-top-ten/
-> Size: 5MB | Format: HTML/PDF
-
-[cite:4][cite:5][cite:6]
+## References
