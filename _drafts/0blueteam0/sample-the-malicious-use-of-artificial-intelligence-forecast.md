@@ -2,7 +2,7 @@
 layout: paper
 title: "[SAMPLE] The Malicious Use of Artificial Intelligence: Forecasting, Prevention, and Mitigation"
 author: 0blueteam0
-date: 2026-03-27
+date: 2026-03-30
 status: published
 domain: "AI Governance"
 keywords: ["AI governance", "dual-use", "malicious AI", "digital security", "political security", "AI policy"]
