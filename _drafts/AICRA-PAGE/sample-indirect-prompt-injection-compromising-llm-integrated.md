@@ -2,7 +2,7 @@
 layout: paper
 title: "[SAMPLE] Indirect Prompt Injection: Compromising LLM-Integrated Applications"
 author: AICRA-PAGE
-date: 2026-04-03
+date: 2026-04-04
 status: published
 domain: "Prompt Injection"
 keywords: ["prompt injection", "LLM security", "retrieval-augmented generation", "adversarial attacks"]
