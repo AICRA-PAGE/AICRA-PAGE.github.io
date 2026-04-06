@@ -28,9 +28,36 @@
       GitHub 로그인이 필요합니다. 권한이 없다면
       <a href="https://github.com/AICRA-PAGE/AICRA-PAGE.github.io/issues/new?template=access-request.md" target="_blank">접근 권한 요청</a>을 해주세요.<br><br>
       <a href="https://aicra-page.github.io">블로그로 돌아가기</a> |
-      <a href="/admin/paper-editor.html">Paper Editor</a>
+      <a href="/admin/paper-editor.html">Paper Editor</a> |
+      <a href="/admin/paper-workbench/">Paper Workbench</a>
     </p>
+    <div id="manual-login" style="display:none;margin-top:16px;padding:16px;background:#fff;border-radius:8px;border:1px solid #e8e5de;">
+      <p style="font-size:.75rem;color:#6b665c;margin-bottom:8px;">CMS가 로드되지 않으면 토큰으로 직접 로그인:</p>
+      <input id="pat-input" type="password" placeholder="ghp_xxxxxxxxxxxx" style="padding:8px 12px;border:1px solid #ddd;border-radius:6px;width:240px;font-size:.8rem;">
+      <button onclick="manualLogin()" style="padding:8px 16px;background:#2f5d50;color:#fff;border:none;border-radius:6px;font-size:.8rem;cursor:pointer;margin-left:4px;">로그인</button>
+      <p id="pat-err" style="font-size:.7rem;color:#c53030;margin-top:6px;display:none;"></p>
+      <p style="font-size:.65rem;color:#999;margin-top:8px;">
+        <a href="https://github.com/settings/tokens/new?scopes=repo&description=AICRA+CMS" target="_blank" style="color:#2f5d50;">토큰 생성하기</a> (repo scope)
+      </p>
+    </div>
   </main>
   <script src="https://unpkg.com/@sveltia/cms@0.149.0/dist/sveltia-cms.js"></script>
+  <script>
+    // Show manual login fallback after 5 seconds if CMS doesn't render
+    setTimeout(function(){
+      var cms=document.querySelector('[class*="sveltia"]')||document.querySelector('main > div:not(.wrap)');
+      if(!cms){document.getElementById('manual-login').style.display='block';}
+    },5000);
+    function manualLogin(){
+      var token=document.getElementById('pat-input').value.trim();
+      var err=document.getElementById('pat-err');
+      if(!token||token.length<10){err.textContent='유효한 토큰을 입력하세요.';err.style.display='block';return;}
+      localStorage.setItem('aicra.token',token);
+      // Also store in sveltia format so CMS picks it up
+      localStorage.setItem('sveltia-cms.user',JSON.stringify({token:token}));
+      err.style.display='none';
+      location.reload();
+    }
+  </script>
 </body>
 </html>
