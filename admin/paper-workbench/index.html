@@ -261,7 +261,7 @@ body {
      기존 paper-editor.html의 인증 흐름과 동일.
      auth-guard.js의 aicraAuth.checkAccess()를 사용.
      ════════════════════════════════════════════ -->
-<div id="auth-gate" style="display:none">
+<div id="auth-gate">
   <div style="text-align:center;max-width:400px;padding:40px">
     <img src="/assets/img/logo.svg" alt="AICRA" style="width:48px;margin-bottom:16px">
     <h2 style="font-size:1.1rem;color:var(--brand);margin-bottom:8px" id="gate-title">접근 권한 확인 중...</h2>
@@ -276,7 +276,7 @@ body {
 <!-- ════════════════════════════════════════════
      Main Application Shell -- 인증 후 표시
      ════════════════════════════════════════════ -->
-<div id="app-shell" style="display:flex;height:100vh;flex-direction:column">
+<div id="app-shell" style="display:none;height:100vh;flex-direction:column">
 
   <!-- 상단 툴바 -->
   <div class="tb">
@@ -327,7 +327,7 @@ body {
 <!-- ════════════════════════════════════════════
      외부 스크립트 (기존 에디터와 공유)
      ════════════════════════════════════════════ -->
-<!-- auth-guard.js removed: editor freely accessible, auth on save only -->
+<script src="/assets/js/auth-guard.js"></script>
 
 <!-- ════════════════════════════════════════════
      메인 애플리케이션 초기화
@@ -588,14 +588,28 @@ if (localStorage.getItem('aicra.dark') === 'dark') {
   document.documentElement.dataset.theme = 'dark';
 }
 
-// App starts directly - no auth gate
-initApp(null).catch(err => {
-  console.error('[App] initApp failed:', err);
-  document.getElementById('phase-content').innerHTML =
-    '<div style="text-align:center;padding:40px;color:#c53030;">' +
-    '<p>앱 초기화 실패: ' + err.message + '</p>' +
-    '<button onclick="location.reload()" style="margin-top:12px;padding:8px 16px;cursor:pointer;">새로고침</button></div>';
-});
+aicraAuth.checkAccess(
+  /* 인증 성공 */
+  function(login) {
+    document.getElementById('auth-gate').style.display = 'none';
+    document.getElementById('app-shell').style.display = 'flex';
+    initApp(login);
+  },
+  /* 접근 거부 */
+  function(login) {
+    document.getElementById('gate-title').textContent = '접근이 거부되었습니다';
+    document.getElementById('gate-msg').textContent =
+      '이 도구는 AICRA 저장소 Collaborator만 사용할 수 있습니다.' +
+      (login ? ' (현재: ' + login + ')' : '');
+    document.getElementById('gate-actions').style.display = 'block';
+  },
+  /* 로그인 필요 */
+  function() {
+    document.getElementById('gate-title').textContent = '로그인이 필요합니다';
+    document.getElementById('gate-msg').textContent = '이 도구를 사용하려면 GitHub Collaborator 로그인이 필요합니다.';
+    document.getElementById('gate-actions').style.display = 'block';
+  }
+);
 </script>
 </body>
 </html>

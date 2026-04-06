@@ -376,7 +376,7 @@ body.simple-mode .ins button[onclick*="fn"]{display:inline-block}
 <body>
 
 <!-- Auth Gate: shown when not authorized -->
-<div id="auth-gate" style="display:none">
+<div id="auth-gate" style="display:flex;align-items:center;justify-content:center;height:100vh;background:var(--bg)">
   <div style="text-align:center;max-width:400px;padding:40px">
     <img src="/assets/img/logo.svg" alt="AICRA" style="width:48px;margin-bottom:16px">
     <h2 style="font-size:1.1rem;color:var(--brand);margin-bottom:8px" id="gate-title">접근 권한 확인 중...</h2>
@@ -389,7 +389,7 @@ body.simple-mode .ins button[onclick*="fn"]{display:inline-block}
 </div>
 
 <!-- Editor Content: hidden until authorized -->
-<div id="editor-content" style="display:flex;height:100vh;flex-direction:column">
+<div id="editor-content" style="display:none;height:100vh;flex-direction:column">
 
 <div class="tb">
   <img src="/assets/img/logo.svg" alt=""><h1>Paper Editor</h1>
@@ -4746,15 +4746,27 @@ function initAutoSave(){
   );
 }
 
-// Auth gate removed: editor is freely accessible, auth checked on save only
-(function(){
-  document.getElementById('auth-gate').style.display='none';
-  document.getElementById('editor-content').style.display='flex';
-  try{fetchCollaborators();}catch(e){}
-  initAutoSave();
-  try{enableReviewMode();}catch(e){}
-  if(window._tutorialFirstVisit)window._tutorialFirstVisit();
-})();
+aicraAuth.checkAccess(
+  function(login){
+    document.getElementById('auth-gate').style.display='none';
+    document.getElementById('editor-content').style.display='flex';
+    fetchCollaborators();
+    initAutoSave();
+    enableReviewMode();
+    // First-visit tutorial
+    if(window._tutorialFirstVisit)window._tutorialFirstVisit();
+  },
+  function(login){
+    document.getElementById('gate-title').textContent='접근이 거부되었습니다';
+    document.getElementById('gate-msg').textContent='이 편집기는 AICRA 저장소 Collaborator만 사용할 수 있습니다.'+(login?' (현재: '+login+')':'');
+    document.getElementById('gate-actions').style.display='block';
+  },
+  function(){
+    document.getElementById('gate-title').textContent='로그인이 필요합니다';
+    document.getElementById('gate-msg').textContent='이 편집기를 사용하려면 GitHub Collaborator 로그인이 필요합니다.';
+    document.getElementById('gate-actions').style.display='block';
+  }
+);
 </script>
 </body>
 </html>

@@ -103,7 +103,7 @@ STIX 2.1은 위협 정보의 표현을 위한 JSON 기반 표준입니다:
 | Malware | 악성코드 분류 | "Emotet", "WannaCry" |
 | Threat-Actor | 위협 주체 | "APT28", "Lazarus Group" |
 | Tool | 공격 도구 | "Mimikatz", "Cobalt Strike" |
-| Vulnerability | CVE 기반 취약점 | "CVE-2024-01234" |
+| Vulnerability | CVE 기반 취약점 | "CVE-2024-3094" |
 | X-Custom | 확장 객체 | 도메인 특화 데이터 |
 
 **STIX Relationship Objects (SROs):**
@@ -690,13 +690,13 @@ A: 지식 그래프는 그래프 신경망(GNN)의 이상적인 입력 데이터
 - 목표: 보안 분석 팀 전체에서 활용 가능
 - 범위: 국내 위협 인텔리전스 + 모든 기법
 - 도구: Neo4j Enterprise, 자동화 플레이북
-- 성과 지표: 탐지 정확도 15% 증가, 거짓 긍정률 20% 감소
+- 성과 목표(예시): 탐지 정확도 15% 증가, 거짓 긍정률 20% 감소 (조직 환경에 따라 상이)
 
 **장기: 전사 통합**
 - 목표: SIEM, EDR, 네트워크 방어 시스템 연동
 - 범위: 전국내 위협 정보 + 모든 방어 제어
 - 도구: GraphDB, Kubernetes 기반 마이크로서비스
-- 성과 지표: 평균 탐지 시간(MTTD) 50% 단축, 자동화 비율 60% 달성
+- 성과 목표(예시): 평균 탐지 시간(MTTD) 50% 단축, 자동화 비율 60% 달성 (업계 벤치마크 기반 목표치)
 
 ### 6.2 기술 스택 추천
 

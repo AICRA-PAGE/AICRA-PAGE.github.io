@@ -1,7 +1,7 @@
 // 사용자 수준 시스템 - 경험도에 따른 적응형 UI
 // User Level System - adaptive UI based on experience level
 
-import { bus, EVT } from './event-bus.js';
+import { bus, EVT } from '../event-bus.js';
 
 const LEVELS = ['beginner', 'intermediate', 'advanced', 'expert'];
 

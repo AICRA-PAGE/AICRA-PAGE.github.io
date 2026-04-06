@@ -1,7 +1,7 @@
 // 논문 작성 단계별 안내 시스템
 // Paper Writing Phase Guide System - contextual help and checklists
 
-import { bus, EVT } from '../core/event-bus.js';
+import { bus, EVT } from '../event-bus.js';
 
 const PHASE_GUIDES = {
   research: {
