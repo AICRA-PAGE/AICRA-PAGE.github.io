@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self' https://cdn.jsdelivr.net https://api.github.com https://api.semanticscholar.org https://api.crossref.org https://fonts.googleapis.com https://fonts.gstatic.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; img-src * data: blob:; connect-src *">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https://cdn.jsdelivr.net https://api.github.com https://api.semanticscholar.org https://api.crossref.org https://fonts.googleapis.com https://fonts.gstatic.com https://huggingface.co; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; img-src 'self' https: data: blob:; connect-src 'self' https://api.github.com https://api.semanticscholar.org https://api.crossref.org https://huggingface.co https://cdn.jsdelivr.net">
 <title>AICRA Paper Editor</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&family=Pretendard:wght@400;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
@@ -5922,19 +5922,26 @@ async function exportDOCX(){
   const title=document.getElementById('ti').value||'Untitled';
   const docxFileName=askFileName(docManager?docManager.slugify(title):title.replace(/\s+/g,'-'),'docx');
   if(!docxFileName)return;
-  const au=document.getElementById('au').value||'AICRA';
-  const coau=document.getElementById('coau').value;
+  const isBlind=typeof _blindMode!=='undefined'&&_blindMode;
+  const au=isBlind?'Anonymous Author(s)':(document.getElementById('au').value||'AICRA');
+  const coau=isBlind?'':(document.getElementById('coau').value);
   const ab=document.getElementById('ab').value;
   const kw=document.getElementById('kw').value;
+  const affiliation=isBlind?'':(document.getElementById('affiliation')||{}).value||'';
   const t=inp.value;
-  document.getElementById('as').textContent='DOCX 생성 중...';
+  document.getElementById('as').textContent='DOCX 생성 중...'+(isBlind?' (블라인드 모드)':'');
 
   const children=[];
   // Title
   children.push(new D.Paragraph({children:[new D.TextRun({text:title,bold:true,size:32,font:'Times New Roman'})],alignment:D.AlignmentType.CENTER,spacing:{after:120}}));
-  // Authors
-  const allAuthors=[au];if(coau)coau.split(',').forEach(a=>allAuthors.push(a.trim()));
-  children.push(new D.Paragraph({children:[new D.TextRun({text:allAuthors.join(', '),size:22,font:'Times New Roman'})],alignment:D.AlignmentType.CENTER,spacing:{after:200}}));
+  // Authors (blind mode: anonymous)
+  const allAuthors=isBlind?['Anonymous Author(s)']:[au];
+  if(!isBlind&&coau)coau.split(',').forEach(a=>allAuthors.push(a.trim()));
+  children.push(new D.Paragraph({children:[new D.TextRun({text:allAuthors.join(', '),size:22,font:'Times New Roman'})],alignment:D.AlignmentType.CENTER,spacing:{after:isBlind?200:80}}));
+  // Affiliation (hidden in blind mode)
+  if(!isBlind&&affiliation){
+    children.push(new D.Paragraph({children:[new D.TextRun({text:affiliation,size:20,font:'Times New Roman',italics:true})],alignment:D.AlignmentType.CENTER,spacing:{after:200}}));
+  }
   // Abstract
   if(ab){
     children.push(new D.Paragraph({children:[new D.TextRun({text:'Abstract',bold:true,size:20,font:'Times New Roman'})],spacing:{before:200,after:80}}));
@@ -5967,9 +5974,14 @@ async function exportDOCX(){
       continue;
     }
     if(inEnv){envContent.push(line);continue;}
-    // Headings
+    // Headings (skip acknowledgements in blind mode)
     const hm=line.match(/^(#{1,4})\s+(.+)/);
     if(hm){
+      if(isBlind&&/acknowledgment|감사의?\s?글|사사/i.test(hm[2])){
+        // Skip entire acknowledgements section in blind mode
+        while(i+1<lines.length&&!/^#{1,4}\s/.test(lines[i+1]))i++;
+        continue;
+      }
       const level=hm[1].length;
       const hStyle=[D.HeadingLevel.HEADING_1,D.HeadingLevel.HEADING_2,D.HeadingLevel.HEADING_3,D.HeadingLevel.HEADING_4];
       children.push(new D.Paragraph({children:[new D.TextRun({text:hm[2],bold:true,size:level===1?28:level===2?24:22,font:'Times New Roman'})],heading:hStyle[level-1],spacing:{before:240,after:80}}));
@@ -6126,9 +6138,21 @@ async function loadDoc(path){
   }
 }
 
+/** 문서 삭제 - ACL 검증 후 본인 소유 문서만 삭제 허용 */
 async function deleteDocument(path,sha){
   if(!confirm('이 문서를 삭제하시겠습니까?\n'+path))return;
   try{
+    // ACL check: only allow deletion of own drafts
+    const currentUser=await docManager.getUser();
+    const login=currentUser?currentUser.login:'';
+    if(login&&path.includes('_drafts/')&&!path.includes('_drafts/'+login+'/')){
+      alert('다른 저자의 문서는 삭제할 수 없습니다.');return;
+    }
+    // Check lock status before deletion
+    const data=await docManager.loadFile(path);
+    if(data&&data.meta&&data.meta.locked){
+      alert('잠긴 문서는 삭제할 수 없습니다. 먼저 잠금을 해제하세요.');return;
+    }
     await docManager.deleteFile(path,sha);
     loadFromGitHub(); // Refresh list
   }catch(e){alert('삭제 실패: '+e.message);}
