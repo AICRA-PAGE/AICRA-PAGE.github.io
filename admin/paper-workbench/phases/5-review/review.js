@@ -54,92 +54,11 @@ function _buildUI() {
   const rebuttals = rv.rebuttal || [];
   const versions = rv.versions || [];
 
-  const internalReviews = rv.internalReviews || [];
-  const anonymousReviews = rv.anonymousReviews || [];
-  const activeLane = rv.activeReviewLane || 'internal';
-
   return `
     <div style="display:flex;height:100%;overflow:hidden">
       <!-- 좌측: 도구 + 의견 입력 -->
       <div style="width:300px;border-right:1px solid var(--line);overflow-y:auto;padding:12px;background:var(--surface);flex-shrink:0">
-        <h2 style="font-size:.88rem;color:var(--brand);margin-bottom:8px">심사 대응</h2>
-
-        <!-- v2: 리뷰 레인 탭 (내부 검증 / 외부 심사 / 익명 리뷰) -->
-        <div style="display:flex;gap:0;margin-bottom:12px;border:1px solid var(--line);border-radius:5px;overflow:hidden">
-          <button class="bt rv-lane-tab" data-lane="internal" style="flex:1;border:none;border-radius:0;font-size:.55rem;padding:5px;${activeLane === 'internal' ? 'background:var(--brand);color:#fff' : ''}">내부 검증 (${internalReviews.length})</button>
-          <button class="bt rv-lane-tab" data-lane="external" style="flex:1;border:none;border-radius:0;font-size:.55rem;padding:5px;${activeLane === 'external' ? 'background:var(--brand);color:#fff' : ''}">외부 심사 (${sims.length})</button>
-          <button class="bt rv-lane-tab" data-lane="anonymous" style="flex:1;border:none;border-radius:0;font-size:.55rem;padding:5px;${activeLane === 'anonymous' ? 'background:var(--brand);color:#fff' : ''}">익명 리뷰 (${anonymousReviews.length})</button>
-        </div>
-
-        <!-- 내부 검증 입력 (activeLane === internal) -->
-        <div id="rv-internal-panel" style="${activeLane === 'internal' ? '' : 'display:none'}">
-          <div style="margin-bottom:12px">
-            <b style="font-size:.68rem;color:var(--text)">내부 검증자 추가</b>
-            <input id="rv-int-name" placeholder="검증자 이름 (예: 김교수)" style="width:100%;margin:3px 0;padding:4px;border:1px solid var(--line);border-radius:4px;font-size:.62rem;background:var(--panel)">
-            <select id="rv-int-title" style="width:100%;margin:3px 0;padding:4px;border:1px solid var(--line);border-radius:4px;font-size:.62rem;background:var(--panel)">
-              <option value="professor">교수 (Professor)</option>
-              <option value="associate_professor">부교수 (Assoc. Prof.)</option>
-              <option value="phd">박사 (PhD)</option>
-              <option value="phd_candidate">박사과정 (PhD Candidate)</option>
-              <option value="researcher">연구원 (Researcher)</option>
-              <option value="other">기타</option>
-            </select>
-            <select id="rv-int-scope" style="width:100%;margin:3px 0;padding:4px;border:1px solid var(--line);border-radius:4px;font-size:.62rem;background:var(--panel)">
-              <option value="full">전체 논문</option>
-              <option value="intro">서론</option>
-              <option value="method">연구 방법</option>
-              <option value="results">결과</option>
-              <option value="discussion">논의/결론</option>
-            </select>
-            <button class="bt p rv-action" data-action="addInternalReviewer" style="width:100%;margin-top:4px">내부 검증자 추가</button>
-          </div>
-          <div style="margin-bottom:12px">
-            <b style="font-size:.68rem;color:var(--text)">내부 검증 현황</b>
-            ${internalReviews.length === 0 ? '<p style="font-size:.6rem;color:var(--muted)">등록된 내부 검증자가 없습니다.</p>' :
-              internalReviews.map((ir, i) => '<div style="padding:4px 6px;margin:3px 0;border:1px solid var(--line);border-radius:4px;font-size:.58rem;background:var(--panel)">' +
-                '<b>' + (ir.reviewerName || 'Reviewer ' + (i+1)) + '</b> <span style="color:var(--muted)">(' + (ir.reviewerTitle || '') + ')</span> ' +
-                '<span style="padding:1px 4px;border-radius:3px;font-size:.48rem;color:#fff;background:' + ({pending:'var(--accent)',in_progress:'#2196F3',completed:'#2E7D32'}[ir.status]||'var(--muted)') + '">' + ir.status + '</span>' +
-                (ir.comments.length ? ' <span style="font-size:.5rem;color:var(--muted)">' + ir.comments.length + '건 코멘트</span>' : '') +
-              '</div>').join('')}
-          </div>
-        </div>
-
-        <!-- 익명 리뷰 입력 (activeLane === anonymous) -->
-        <div id="rv-anonymous-panel" style="${activeLane === 'anonymous' ? '' : 'display:none'}">
-          <div style="margin-bottom:12px">
-            <b style="font-size:.68rem;color:var(--text)">익명 리뷰 추가</b>
-            <p style="font-size:.55rem;color:var(--muted);margin:2px 0">실제 심사의견을 익명으로 기록합니다. 리뷰어 실명이 노출되지 않습니다.</p>
-            <select id="rv-anon-id" style="width:100%;margin:3px 0;padding:4px;border:1px solid var(--line);border-radius:4px;font-size:.62rem;background:var(--panel)">
-              <option value="Reviewer A">Reviewer A</option>
-              <option value="Reviewer B">Reviewer B</option>
-              <option value="Reviewer C">Reviewer C</option>
-              <option value="Reviewer D">Reviewer D</option>
-            </select>
-            <textarea id="rv-anon-text" placeholder="익명 심사 의견..." rows="4" style="width:100%;padding:4px;border:1px solid var(--line);border-radius:4px;font-size:.62rem;background:var(--panel);resize:vertical"></textarea>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;margin:4px 0;font-size:.55rem">
-              <label>Novelty <input id="rv-anon-s1" type="range" min="1" max="5" value="3" style="width:100%"></label>
-              <label>Soundness <input id="rv-anon-s2" type="range" min="1" max="5" value="3" style="width:100%"></label>
-              <label>Clarity <input id="rv-anon-s3" type="range" min="1" max="5" value="3" style="width:100%"></label>
-              <label>Significance <input id="rv-anon-s4" type="range" min="1" max="5" value="3" style="width:100%"></label>
-            </div>
-            <select id="rv-anon-decision" style="width:100%;margin:3px 0;padding:4px;border:1px solid var(--line);border-radius:4px;font-size:.62rem;background:var(--panel)">
-              <option value="">-- 판정 --</option>
-              <option value="accept">Accept</option>
-              <option value="minor">Minor Revision</option>
-              <option value="major">Major Revision</option>
-              <option value="reject">Reject</option>
-            </select>
-            <button class="bt p rv-action" data-action="addAnonymousReview" style="width:100%;margin-top:4px">익명 리뷰 추가</button>
-          </div>
-          ${anonymousReviews.length ? '<div style="margin-bottom:12px"><b style="font-size:.68rem;color:var(--text)">익명 리뷰 목록</b>' +
-            anonymousReviews.map((ar, i) => '<div style="padding:4px 6px;margin:3px 0;border:1px solid var(--line);border-radius:4px;font-size:.58rem;background:var(--panel)">' +
-              '<b>' + ar.anonymousId + '</b> (Round ' + (ar.round || 1) + ') ' +
-              '<span style="padding:1px 4px;border-radius:3px;font-size:.48rem;color:#fff;background:' + ({accept:'#2E7D32',minor:'#E65100',major:'#C62828',reject:'#333'}[ar.decision]||'var(--muted)') + '">' + (ar.decision || 'pending') + '</span>' +
-            '</div>').join('') + '</div>' : ''}
-        </div>
-
-        <!-- 외부 심사 (기존) -->
-        <div id="rv-external-panel" style="${activeLane === 'external' ? '' : 'display:none'}">
+        <h2 style="font-size:.88rem;color:var(--brand);margin-bottom:12px">심사 대응</h2>
 
         <!-- 모의 심사 -->
         <div style="margin-bottom:16px">
@@ -180,7 +99,6 @@ function _buildUI() {
           <button class="bt rv-action" data-action="diff">버전 비교 (diff)</button>
           <button class="bt rv-action" data-action="export">반박문 내보내기</button>
         </div>
-        </div><!-- /rv-external-panel -->
       </div>
 
       <!-- 우측: 결과 영역 -->
@@ -192,21 +110,6 @@ function _buildUI() {
 }
 
 function _setupHandlers() {
-  /* v2: 레인 탭 전환 */
-  document.querySelectorAll('.rv-lane-tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      const lane = tab.dataset.lane;
-      _state.set('review.activeReviewLane', lane);
-      document.querySelectorAll('.rv-lane-tab').forEach(t => { t.style.background = ''; t.style.color = ''; });
-      tab.style.background = 'var(--brand)';
-      tab.style.color = '#fff';
-      ['internal', 'external', 'anonymous'].forEach(l => {
-        const panel = document.getElementById('rv-' + l + '-panel');
-        if (panel) panel.style.display = l === lane ? '' : 'none';
-      });
-    });
-  });
-
   document.querySelectorAll('.rv-action[data-action]').forEach(btn => {
     btn.addEventListener('click', () => _handleAction(btn.dataset.action));
   });
@@ -226,69 +129,7 @@ function _handleAction(action) {
     case 'response': _showResult(buildResponseDoc(rv)); break;
     case 'diff': _showResult(highlightDiff(rv.versions || [])); break;
     case 'export': exportRebuttal(rv); break;
-    /* v2: 내부 검증자 추가 */
-    case 'addInternalReviewer': _addInternalReviewer(); break;
-    /* v2: 익명 리뷰 추가 */
-    case 'addAnonymousReview': _addAnonymousReview(); break;
   }
-}
-
-/* ═══════════════════════════════════════════
- * v2: 내부 검증자 추가
- * ═══════════════════════════════════════════ */
-function _addInternalReviewer() {
-  const name = (document.getElementById('rv-int-name') || {}).value?.trim();
-  if (!name) return;
-  const title = (document.getElementById('rv-int-title') || {}).value || 'other';
-  const scope = (document.getElementById('rv-int-scope') || {}).value || 'full';
-
-  const reviews = _state.get('review.internalReviews') || [];
-  reviews.push({
-    reviewerId: 'int-' + Date.now(),
-    reviewerName: name,
-    reviewerTitle: title,
-    scope: scope,
-    status: 'pending',
-    round: 1,
-    comments: [],
-    decision: '',
-    createdAt: new Date().toISOString(),
-    completedAt: null,
-  });
-  _state.set('review.internalReviews', reviews);
-
-  /* UI 갱신 */
-  if (document.getElementById('rv-int-name')) document.getElementById('rv-int-name').value = '';
-  activate();
-}
-
-/* ═══════════════════════════════════════════
- * v2: 익명 리뷰 추가
- * ═══════════════════════════════════════════ */
-function _addAnonymousReview() {
-  const anonId = (document.getElementById('rv-anon-id') || {}).value || 'Reviewer A';
-  const text = (document.getElementById('rv-anon-text') || {}).value?.trim();
-  if (!text) return;
-
-  const s1 = parseInt((document.getElementById('rv-anon-s1') || {}).value) || 3;
-  const s2 = parseInt((document.getElementById('rv-anon-s2') || {}).value) || 3;
-  const s3 = parseInt((document.getElementById('rv-anon-s3') || {}).value) || 3;
-  const s4 = parseInt((document.getElementById('rv-anon-s4') || {}).value) || 3;
-  const decision = (document.getElementById('rv-anon-decision') || {}).value || '';
-
-  const reviews = _state.get('review.anonymousReviews') || [];
-  reviews.push({
-    anonymousId: anonId,
-    comments: [{ text: text, category: 'general', timestamp: new Date().toISOString() }],
-    scores: { novelty: s1, soundness: s2, clarity: s3, significance: s4 },
-    decision: decision,
-    round: 1,
-    createdAt: new Date().toISOString(),
-  });
-  _state.set('review.anonymousReviews', reviews);
-
-  if (document.getElementById('rv-anon-text')) document.getElementById('rv-anon-text').value = '';
-  activate();
 }
 
 

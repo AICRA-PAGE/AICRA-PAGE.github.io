@@ -324,9 +324,6 @@ export class PaperRouter {
       >
         <span class="phase-num">${phase.order}</span>
         <span class="phase-label">${phase.label}</span>
-        <span class="phase-progress" style="width:24px;height:3px;border-radius:2px;background:var(--line);overflow:hidden;flex-shrink:0">
-          <span class="phase-progress-bar" style="display:block;height:100%;width:0%;background:var(--brand);border-radius:2px;transition:width .3s"></span>
-        </span>
         <span class="ready-dot pending"></span>
       </button>
     `).join('');
@@ -361,18 +358,6 @@ export class PaperRouter {
       if (dot) {
         dot.className = 'ready-dot ' + (check.ready ? 'ready' : 'pending');
         dot.title = check.hint || (check.ready ? '준비 완료' : '');
-      }
-
-      /* Progress bar 갱신 -- getStatus()가 있으면 진행률 표시 */
-      const progressBar = tab.querySelector('.phase-progress-bar');
-      if (progressBar) {
-        const mod = this._loadedModules[phase.id];
-        let pct = 0;
-        if (mod && typeof mod.getStatus === 'function') {
-          pct = mod.getStatus().progress || 0;
-        }
-        progressBar.style.width = Math.min(100, pct) + '%';
-        progressBar.style.background = pct >= 80 ? '#2E7D32' : pct >= 30 ? 'var(--accent)' : 'var(--brand)';
       }
     });
   }
