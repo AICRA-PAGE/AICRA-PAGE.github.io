@@ -30,8 +30,7 @@ import { bus, EVT } from './event-bus.js';
 export const PHASES = [
   {
     id: 'research',
-    label: '논문 찾기',
-    labelFull: '관련 논문 찾기 (문헌 조사)',
+    label: '문헌 조사',
     labelEn: 'Research',
     order: 1,
     module: '../phases/1-research/research.js',
@@ -40,8 +39,7 @@ export const PHASES = [
   },
   {
     id: 'plan',
-    label: '구조 잡기',
-    labelFull: '주장과 구조 만들기 (논증 설계)',
+    label: '논증 설계',
     labelEn: 'Plan',
     order: 2,
     module: '../phases/2-plan/plan.js',
@@ -57,8 +55,7 @@ export const PHASES = [
   },
   {
     id: 'draft',
-    label: '글쓰기',
-    labelFull: '논문 쓰기 (집필)',
+    label: '집필',
     labelEn: 'Draft',
     order: 3,
     module: '../phases/3-draft/draft.js',
@@ -67,8 +64,7 @@ export const PHASES = [
   },
   {
     id: 'refine',
-    label: '품질 높이기',
-    labelFull: '논문 품질 점검 (품질 검증)',
+    label: '품질 검증',
     labelEn: 'Refine',
     order: 4,
     module: '../phases/4-refine/refine.js',
@@ -83,8 +79,7 @@ export const PHASES = [
   },
   {
     id: 'review',
-    label: '심사 준비',
-    labelFull: '심사 준비와 대응 (심사 대응)',
+    label: '심사 대응',
     labelEn: 'Review',
     order: 5,
     module: '../phases/5-review/review.js',
@@ -99,8 +94,7 @@ export const PHASES = [
   },
   {
     id: 'submit',
-    label: '제출하기',
-    labelFull: '저널/학회에 투고하기 (투고)',
+    label: '투고',
     labelEn: 'Submit',
     order: 6,
     module: '../phases/6-submit/submit.js',
@@ -115,8 +109,7 @@ export const PHASES = [
   },
   {
     id: 'postpub',
-    label: '게재 후',
-    labelFull: '게재 후 관리 (출판 후)',
+    label: '출판 후',
     labelEn: 'Post-pub',
     order: 7,
     module: '../phases/7-postpub/postpub.js',
