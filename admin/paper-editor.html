@@ -394,7 +394,7 @@ body.simple-mode .ins button[onclick*="fn"]{display:inline-block}
 <div class="tb">
   <img src="/assets/img/logo.svg" alt=""><h1>Paper Editor</h1>
   <div class="sep"></div>
-  <select class="sel" id="tplSel" onchange="if(this.value){if(inp.value.trim()&&!confirm('현재 내용이 대체됩니다. 계속?'))return;insTpl(this.value);this.value=''}">
+  <select class="sel" id="tplSel" onchange="if(this.value){if(inp.value.trim()&&!confirm('현재 내용이 대체됩니다. 계속?'))return;applyVenueTemplate(this.value);this.value=''}">
     <option value="">-- Format --</option>
     <optgroup label="AI/ML 학회">
       <option value="neurips">NeurIPS</option>
@@ -437,10 +437,10 @@ body.simple-mode .ins button[onclick*="fn"]{display:inline-block}
   <button class="bt" onclick="toggleRef()">참고문헌</button>
   <button class="bt" onclick="toggleHelp()">?</button>
   <div class="sep"></div>
-  <button class="bt" onclick="ghSave()" title="현재 파일명으로 저장 (Ctrl+S)">저장</button>
-  <button class="bt" onclick="ghSave(true)" title="새 이름으로 저장">다른이름저장</button>
-  <button class="bt" onclick="ghLoad()" title="저장된 문서 불러오기">불러오기</button>
-  <button class="bt" onclick="ghLock()" title="문서 잠금/해제 (저자만)" id="lockBtn">잠금</button>
+  <button class="bt" onclick="saveToGitHub()" title="현재 파일명으로 저장 (Ctrl+S)">저장</button>
+  <button class="bt" onclick="saveToGitHub(true)" title="새 이름으로 저장">다른이름저장</button>
+  <button class="bt" onclick="loadFromGitHub()" title="저장된 문서 불러오기">불러오기</button>
+  <button class="bt" onclick="toggleDocLock()" title="문서 잠금/해제 (저자만)" id="lockBtn">잠금</button>
   <button class="bt" onclick="showNameMapModal()" title="GitHub ID에 실명/소속을 매핑">저자 정보</button>
   <div class="sep"></div>
   <button class="bt" onclick="requestReview()" title="검토자에게 리뷰를 요청합니다">리뷰 요청</button>
@@ -491,7 +491,7 @@ body.simple-mode .ins button[onclick*="fn"]{display:inline-block}
 <div class="meta2" id="metaBar2" style="grid-template-columns:1fr 1.2fr 1fr .8fr .7fr .7fr">
   <div>
     <label>1저자 (주저자)</label>
-    <select id="au" class="meta-sel" onchange="updateAuthorDDs()"><option value="">-- 선택 --</option></select>
+    <select id="au" class="meta-sel" onchange="updateAuthorDropdowns()"><option value="">-- 선택 --</option></select>
   </div>
   <div>
     <label>공동저자 (2저자, 3저자...)</label>
@@ -501,7 +501,7 @@ body.simple-mode .ins button[onclick*="fn"]{display:inline-block}
   </div>
   <div>
     <label>교신저자</label>
-    <select id="corr-add" class="meta-sel" onchange="addCorr(this.value);this.value=''"><option value="">-- 추가 (없으면 생략) --</option></select>
+    <select id="corr-add" class="meta-sel" onchange="addCorrespondingAuthor(this.value);this.value=''"><option value="">-- 추가 (없으면 생략) --</option></select>
     <div class="chip-area" id="corr-chips" style="margin-top:2px"></div>
     <input type="hidden" id="corr">
   </div>
@@ -551,44 +551,44 @@ body.simple-mode .ins button[onclick*="fn"]{display:inline-block}
 
 <div class="ins" id="insBar">
   <span class="gl">구조</span>
-  <button onclick="ins('sec')" title="## 섹션 제목 삽입">섹션</button>
-  <button onclick="ins('subsec')" title="### 소절 제목 삽입">소절</button>
-  <button onclick="ins('eq')" title="수식 블록: $$...$$">수식</button>
-  <button onclick="ins('fig')" title="그림 + 캡션 (캡션은 아래)">그림</button>
-  <button onclick="ins('tbl')" title="표 + 캡션 (캡션은 위, 학술 관례)">표</button>
-  <button onclick="ins('code')" title="코드 블록 (언어 태그 포함)">코드</button>
-  <button onclick="ins('cite')" title="번호 인용: [cite:N] -> [N]">인용</button>
-  <button onclick="ins('dquote')" title="직접인용: 원문 그대로 따옴표로 인용">직접인용</button>
-  <button onclick="ins('iquote')" title="간접인용: 내용을 재서술하여 인용">간접인용</button>
-  <button onclick="ins('fn')" title="각주: [^N] 본문 참조 (Alt+N)" style="background:var(--surface)">각주</button>
+  <button onclick="insertBlock('sec')" title="## 섹션 제목 삽입">섹션</button>
+  <button onclick="insertBlock('subsec')" title="### 소절 제목 삽입">소절</button>
+  <button onclick="insertBlock('eq')" title="수식 블록: $$...$$">수식</button>
+  <button onclick="insertBlock('fig')" title="그림 + 캡션 (캡션은 아래)">그림</button>
+  <button onclick="insertBlock('tbl')" title="표 + 캡션 (캡션은 위, 학술 관례)">표</button>
+  <button onclick="insertBlock('code')" title="코드 블록 (언어 태그 포함)">코드</button>
+  <button onclick="insertBlock('cite')" title="번호 인용: [cite:N] -> [N]">인용</button>
+  <button onclick="insertBlock('dquote')" title="직접인용: 원문 그대로 따옴표로 인용">직접인용</button>
+  <button onclick="insertBlock('iquote')" title="간접인용: 내용을 재서술하여 인용">간접인용</button>
+  <button onclick="insertBlock('fn')" title="각주: [^N] 본문 참조 (Alt+N)" style="background:var(--surface)">각주</button>
 
   <span class="gl">환경</span>
-  <button onclick="ins('thm')" title="정리: 증명 가능한 형식적 명제">정리</button>
-  <button onclick="ins('def')" title="정의: 용어의 형식적 정의">정의</button>
-  <button onclick="ins('lem')" title="보조정리: 정리를 뒷받침하는 보조 명제">보조정리</button>
-  <button onclick="ins('proof')" title="증명: QED로 끝나는 형식적 논증">증명</button>
-  <button onclick="ins('algo')" title="알고리즘: 번호 매긴 의사코드">알고리즘</button>
+  <button onclick="insertBlock('thm')" title="정리: 증명 가능한 형식적 명제">정리</button>
+  <button onclick="insertBlock('def')" title="정의: 용어의 형식적 정의">정의</button>
+  <button onclick="insertBlock('lem')" title="보조정리: 정리를 뒷받침하는 보조 명제">보조정리</button>
+  <button onclick="insertBlock('proof')" title="증명: QED로 끝나는 형식적 논증">증명</button>
+  <button onclick="insertBlock('algo')" title="알고리즘: 번호 매긴 의사코드">알고리즘</button>
 
   <span class="gl">보안</span>
-  <button onclick="ins('threat')" title="위협 모델: 자산, 공격자, 공격 표면, 가정">위협모델</button>
-  <button onclick="ins('eval')" title="평가 행렬: 기법별 지표 비교">평가표</button>
-  <button onclick="ins('framework')" title="프레임워크 매핑: MITRE/OWASP/NIST 참조">프레임워크</button>
+  <button onclick="insertBlock('threat')" title="위협 모델: 자산, 공격자, 공격 표면, 가정">위협모델</button>
+  <button onclick="insertBlock('eval')" title="평가 행렬: 기법별 지표 비교">평가표</button>
+  <button onclick="insertBlock('framework')" title="프레임워크 매핑: MITRE/OWASP/NIST 참조">프레임워크</button>
 
   <span class="gl">시각자료</span>
-  <button onclick="ins('subfig')" title="서브피겨: (a)(b) 2열 이미지 배치">서브피겨</button>
-  <button onclick="ins('imgfmt')" title="이미지 크기/정렬: {width=50%}">이미지</button>
-  <button onclick="ins('perf')" title="성능 비교 테이블 (통계치 포함)">성능표</button>
-  <button onclick="ins('confmat')" title="혼동 행렬 (분류 결과)">혼동행렬</button>
-  <button onclick="ins('arch')" title="시스템 아키텍처 (계층형)">구조도</button>
-  <button onclick="ins('nettopo')" title="네트워크 토폴로지 (방화벽/IDS/서버)">네트워크</button>
-  <button onclick="ins('killchain')" title="공격 흐름 / Kill Chain">공격흐름</button>
-  <button onclick="ins('trustbnd')" title="신뢰 경계 다이어그램 (Trusted/Untrusted)">신뢰경계</button>
-  <button onclick="ins('dfd')" title="데이터 흐름도 (DFD)">DFD</button>
-  <button onclick="ins('flowchart')" title="프로토콜 시퀀스 다이어그램">시퀀스</button>
-  <button onclick="ins('timeline')" title="타임라인 다이어그램">타임라인</button>
-  <button onclick="ins('barchart')" title="막대 차트 (실험 결과)">막대차트</button>
-  <button onclick="ins('linechart')" title="선 차트 (성능 추이)">선차트</button>
-  <button onclick="ins('ethics')" title="윤리 및 책임 공개 섹션">윤리</button>
+  <button onclick="insertBlock('subfig')" title="서브피겨: (a)(b) 2열 이미지 배치">서브피겨</button>
+  <button onclick="insertBlock('imgfmt')" title="이미지 크기/정렬: {width=50%}">이미지</button>
+  <button onclick="insertBlock('perf')" title="성능 비교 테이블 (통계치 포함)">성능표</button>
+  <button onclick="insertBlock('confmat')" title="혼동 행렬 (분류 결과)">혼동행렬</button>
+  <button onclick="insertBlock('arch')" title="시스템 아키텍처 (계층형)">구조도</button>
+  <button onclick="insertBlock('nettopo')" title="네트워크 토폴로지 (방화벽/IDS/서버)">네트워크</button>
+  <button onclick="insertBlock('killchain')" title="공격 흐름 / Kill Chain">공격흐름</button>
+  <button onclick="insertBlock('trustbnd')" title="신뢰 경계 다이어그램 (Trusted/Untrusted)">신뢰경계</button>
+  <button onclick="insertBlock('dfd')" title="데이터 흐름도 (DFD)">DFD</button>
+  <button onclick="insertBlock('flowchart')" title="프로토콜 시퀀스 다이어그램">시퀀스</button>
+  <button onclick="insertBlock('timeline')" title="타임라인 다이어그램">타임라인</button>
+  <button onclick="insertBlock('barchart')" title="막대 차트 (실험 결과)">막대차트</button>
+  <button onclick="insertBlock('linechart')" title="선 차트 (성능 추이)">선차트</button>
+  <button onclick="insertBlock('ethics')" title="윤리 및 책임 공개 섹션">윤리</button>
 
   <span class="gl">데이터</span>
   <button onclick="openDatasetWorkspace()" title="데이터셋 검색/평가/삽입 워크스페이스 (Ctrl+Shift+D)" style="background:var(--brand);color:#fff;border-color:var(--brand)">데이터셋</button>
@@ -596,12 +596,12 @@ body.simple-mode .ins button[onclick*="fn"]{display:inline-block}
   <button onclick="_insTemplate('expsetup')" title="실험 설정 블록 삽입">실험설정</button>
 
   <span class="gl">법/정책</span>
-  <button onclick="ins('statute')" title="규제조문-통제항목 매핑표">조문매핑</button>
-  <button onclick="ins('case_law')" title="판례/행정해석 분석 블록">판례분석</button>
-  <button onclick="ins('risk_matrix')" title="위험 매트릭스 (영향도 x 발생가능성)">위험매트릭스</button>
-  <button onclick="ins('stakeholder')" title="이해관계자 분석표">이해관계자</button>
-  <button onclick="ins('comp_law')" title="비교법 분석표 (EU/US/KR)">비교법</button>
-  <button onclick="ins('glossary')" title="한영 법률/거버넌스 용어집">용어집</button>
+  <button onclick="insertBlock('statute')" title="규제조문-통제항목 매핑표">조문매핑</button>
+  <button onclick="insertBlock('case_law')" title="판례/행정해석 분석 블록">판례분석</button>
+  <button onclick="insertBlock('risk_matrix')" title="위험 매트릭스 (영향도 x 발생가능성)">위험매트릭스</button>
+  <button onclick="insertBlock('stakeholder')" title="이해관계자 분석표">이해관계자</button>
+  <button onclick="insertBlock('comp_law')" title="비교법 분석표 (EU/US/KR)">비교법</button>
+  <button onclick="insertBlock('glossary')" title="한영 법률/거버넌스 용어집">용어집</button>
 </div>
 
 <div id="checkResult" style="display:none;padding:10px 14px;font-size:.75rem;line-height:1.6;background:var(--surface);border:1px solid var(--line);font-family:'Pretendard',sans-serif;max-height:220px;overflow-y:auto;flex-shrink:0;position:relative"></div>
@@ -636,8 +636,8 @@ body.simple-mode .ins button[onclick*="fn"]{display:inline-block}
     <div class="pn-label">
       <span>미리보기</span>
       <div class="opts">
-        <button onclick="toggleCol(false)" class="active" id="col1btn">1단</button>
-        <button onclick="toggleCol(true)" id="col2btn">2단</button>
+        <button onclick="toggleColumnLayout(false)" class="active" id="col1btn">1단</button>
+        <button onclick="toggleColumnLayout(true)" id="col2btn">2단</button>
         <button id="zoomOutBtn" onclick="zoomPreview(-10)" title="축소" style="font-size:.5rem">-</button>
         <button id="zoomInBtn" onclick="zoomPreview(10)" title="확대" style="font-size:.5rem">+</button>
         <button id="lofBtn" onclick="buildFigureTableList()" title="그림/표 목록" style="font-size:.48rem">LOF</button>
@@ -1527,7 +1527,9 @@ F(df1, df2)=값, p=값, eta^2=값</div>
 
 <script>
 const inp=document.getElementById('input'),pv=document.getElementById('pv');
+/** HTML 이스케이프 - XSS 방지용 텍스트 변환 */
 function escHtml(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+/** HTML 속성 이스케이프 - 속성값 내 특수문자 변환 */
 function escAttr(s){return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/'/g,'&#39;');}
 function _estimatePages(wc){
   // Venue-aware page estimation (words per page varies by format)
@@ -1718,6 +1720,7 @@ pv.addEventListener('click',function(e){
 });
 
 // === RENDER (section-cache for 200-page perf) ===
+/** 마크다운 -> HTML 미리보기 렌더링 파이프라인 (KaTeX, Mermaid, 인용, 각주, 서브피겨 등 포함) */
 function render(){
   const token=++renderToken;
   const raw=inp.value;
@@ -1993,6 +1996,7 @@ function processImageSize(html){
 
 // === UNDO-SAFE TEXT HELPERS ===
 // Uses execCommand to preserve browser native Ctrl+Z / Ctrl+Y
+/** 에디터에 텍스트 삽입 (Undo 가능한 execCommand 사용) */
 function typeText(text){inp.focus();document.execCommand('insertText',false,text);}
 function replaceAll(text){inp.focus();inp.select();document.execCommand('insertText',false,text);}
 
@@ -2019,11 +2023,11 @@ inp.addEventListener('keydown',e=>{
       }
     }
   }
-  if((e.ctrlKey||e.metaKey)&&e.key==='b'){e.preventDefault();wrap('**','**');}
-  if((e.ctrlKey||e.metaKey)&&e.key==='i'){e.preventDefault();wrap('*','*');}
-  if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();wrap('[','](url)');}
-  if((e.ctrlKey||e.metaKey)&&e.key==='m'){e.preventDefault();wrap('$','$');}
-  if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();save();ghSave();}
+  if((e.ctrlKey||e.metaKey)&&e.key==='b'){e.preventDefault();wrapSelection('**','**');}
+  if((e.ctrlKey||e.metaKey)&&e.key==='i'){e.preventDefault();wrapSelection('*','*');}
+  if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();wrapSelection('[','](url)');}
+  if((e.ctrlKey||e.metaKey)&&e.key==='m'){e.preventDefault();wrapSelection('$','$');}
+  if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();save();saveToGitHub();}
   if(e.altKey&&(e.key==='n'||e.key==='N')){e.preventDefault();insertFootnote();}
   if(e.altKey&&(e.key==='c'||e.key==='C')){e.preventDefault();handleCiteInsert();}
   if((e.ctrlKey||e.metaKey)&&e.shiftKey&&e.key==='D'){e.preventDefault();diagnosePaper();}
@@ -2032,7 +2036,8 @@ inp.addEventListener('keydown',e=>{
   if((e.ctrlKey||e.metaKey)&&e.key==='z'){/* native undo */}
   if((e.ctrlKey||e.metaKey)&&e.key==='y'){/* native redo */}
 });
-function wrap(a,b){const s=inp.selectionStart,e=inp.selectionEnd,sel=inp.value.substring(s,e);inp.focus();inp.setSelectionRange(s,e);document.execCommand('insertText',false,a+sel+b);inp.dispatchEvent(new Event('input'));}
+/** 선택 텍스트를 접두사(a)/접미사(b)로 감싸기 (볼드, 이탤릭 등) */
+function wrapSelection(a,b){const s=inp.selectionStart,e=inp.selectionEnd,sel=inp.value.substring(s,e);inp.focus();inp.setSelectionRange(s,e);document.execCommand('insertText',false,a+sel+b);inp.dispatchEvent(new Event('input'));}
 
 // === FOOTNOTE SHORTCUT ===
 function insertFootnote(){
@@ -2057,7 +2062,8 @@ function insertFootnote(){
 }
 
 // === VENUE FORMAT TEMPLATES ===
-function insTpl(type){
+/** 학회/저널 투고 양식 템플릿 적용 (NeurIPS, IEEE, KCI 등 20+ 양식) */
+function applyVenueTemplate(type){
   document.getElementById('tplSel').dataset.lastTpl=type;
   if(!type)return;
   // Auto-enable blind mode for double-blind venues
@@ -3678,7 +3684,8 @@ policy:`# [논문 제목]
 }
 
 // === INSERT SNIPPETS ===
-function ins(type){
+/** 학술 블록 삽입 (섹션, 수식, 그림, 표, 코드, 정리, 위협모델 등) */
+function insertBlock(type){
   const T={
     sec:'## [Section Title]\n\n',
     subsec:'### [Subsection Title]\n\n',
@@ -3899,7 +3906,7 @@ document.addEventListener('keydown',e=>{
     if(!cmd)return;
     const c=cmd.trim().toLowerCase();
     const cmds={
-      'save':()=>{save();ghSave();},'export-tex':exportTeX,'export-docx':exportDOCX,
+      'save':()=>{save();saveToGitHub();},'export-tex':exportTeX,'export-docx':exportDOCX,
       'blind':()=>{const cb=document.getElementById('opt-blind');if(cb){cb.checked=!cb.checked;toggleBlindMode(cb.checked);}},
       'preflight':submissionPreflight,'diagnose':diagnosePaper,'style':analyzeStyle,
       'review':showReviewChecklist,'dataset':openDatasetWorkspace,'recommend':recommendPapers,
@@ -4021,6 +4028,7 @@ async function restoreSnapshot(idx){
 }
 
 // === VALIDATE ===
+/** 논문 구조 검증 - 필수 섹션, 참고문헌 수, 초록 길이 등 자동 점검 */
 function validatePaper(){
   const t=inp.value;const issues=[];
   if(!t.match(/^#\s/m))issues.push('[-] No title');else issues.push('[+] Title');
@@ -4069,6 +4077,7 @@ function validatePaper(){
 }
 
 // === DIAGNOSTIC REPORT ===
+/** 논문 상세 진단 - 구조/인용/문단/어휘/수식 균형 분석 리포트 생성 */
 function diagnosePaper(){
   const t=inp.value;if(!t.trim()){alert('본문이 비어 있습니다.');return;}
   const lines=t.split('\n');const wc=t.trim().split(/\s+/).length;
@@ -4175,6 +4184,7 @@ function diagnosePaper(){
 }
 
 // === STYLE CONSISTENCY ===
+/** 문체 분석 - 한국어/영어 혼용 일관성, 수동태 비율, 어휘 다양성 점검 */
 function analyzeStyle(){
   const t=inp.value;if(!t.trim()){alert('본문이 비어 있습니다.');return;}
   // Robust sentence splitting (no lookbehind for browser compat)
@@ -4292,6 +4302,7 @@ function exportMD(){
 // exportPPT -> extracted to /assets/js/ppt-export.js
 
 // === TEX EXPORT ===
+/** LaTeX(.tex) 내보내기 - 학회 양식 변환, 수식/표/그림 포함 */
 function exportTeX(){
   const ti=document.getElementById('ti').value||'Untitled';
   const au=document.getElementById('au').value||'AICRA';
@@ -4325,7 +4336,7 @@ function exportTeX(){
   tex+='\\usepackage[utf8]{inputenc}\n\n';
 
   // Title, authors (blind mode: anonymous)
-  tex+='\\title{'+escTeX(ti)+'}\n';
+  tex+='\\title{'+escapeLatex(ti)+'}\n';
   if(typeof _blindMode!=='undefined'&&_blindMode){
     tex+='% Anonymous submission - author info suppressed\n';
     tex+='\\author{Anonymous Author(s)}\n';
@@ -4335,7 +4346,7 @@ function exportTeX(){
   if(cls==='IEEEtran'||cls==='IEEEtran-compsoc'){
     tex+='\\author{'+authorNames.join(' \\and ')+'}\n';
   }else if(cls==='acmart'){
-    authorNames.forEach(n=>{tex+='\\author{'+escTeX(n)+'}\n';});
+    authorNames.forEach(n=>{tex+='\\author{'+escapeLatex(n)+'}\n';});
   }else{
     tex+='\\author{'+authorNames.join(', ');
     if(corr)tex+='\\\\\\small Corresponding: '+corr;
@@ -4346,12 +4357,12 @@ function exportTeX(){
   tex+='\\begin{document}\n\\maketitle\n\n';
 
   // Abstract
-  if(ab){tex+='\\begin{abstract}\n'+escTeX(ab)+'\n\\end{abstract}\n\n';}
+  if(ab){tex+='\\begin{abstract}\n'+escapeLatex(ab)+'\n\\end{abstract}\n\n';}
   const absMatch=body.match(/:::abstract\n([\s\S]*?)\n:::/);
-  if(absMatch&&!ab){tex+='\\begin{abstract}\n'+escTeX(absMatch[1].trim())+'\n\\end{abstract}\n\n';}
+  if(absMatch&&!ab){tex+='\\begin{abstract}\n'+escapeLatex(absMatch[1].trim())+'\n\\end{abstract}\n\n';}
 
   // Keywords
-  if(kw){tex+='\\textbf{Keywords:} '+escTeX(kw)+'\n\n';}
+  if(kw){tex+='\\textbf{Keywords:} '+escapeLatex(kw)+'\n\n';}
 
   // Convert body
   let b=body;
@@ -4373,7 +4384,7 @@ function exportTeX(){
   // Footnotes
   const fnDefs={};
   b=b.replace(/^\[\^(\w+)\]:\s*(.+)$/gm,(m,id,text)=>{fnDefs[id]=text;return '';});
-  b=b.replace(/\[\^(\w+)\]/g,(m,id)=>fnDefs[id]?'\\\\footnote{'+escTeX(fnDefs[id])+'}':m);
+  b=b.replace(/\[\^(\w+)\]/g,(m,id)=>fnDefs[id]?'\\\\footnote{'+escapeLatex(fnDefs[id])+'}':m);
   // Bold/italic
   b=b.replace(/\*\*(.+?)\*\*/g,'\\\\textbf{$1}');
   b=b.replace(/\*(.+?)\*/g,'\\\\textit{$1}');
@@ -4390,7 +4401,7 @@ function exportTeX(){
   // Images
   b=b.replace(/!\[([^\]]*)\]\(([^)]+)\)(?:\{width=(\d+%?)\})?/g,(m,cap,src,w)=>{
     const width=w?w.replace('%','')+'\\\\textwidth':'0.8\\\\textwidth';
-    return '\\\\begin{figure}[htbp]\n\\\\centering\n\\\\includegraphics[width='+width+']{'+src+'}\n\\\\caption{'+escTeX(cap)+'}\n\\\\end{figure}';
+    return '\\\\begin{figure}[htbp]\n\\\\centering\n\\\\includegraphics[width='+width+']{'+src+'}\n\\\\caption{'+escapeLatex(cap)+'}\n\\\\end{figure}';
   });
   // Tables (wrap in tabular environment)
   b=b.replace(/(\*Table[^*]*\*)\n((?:\|.+\|\n?)+)/g,(m,caption,tblBody)=>{
@@ -4399,7 +4410,7 @@ function exportTeX(){
     const headerCells=rows[0].split('|').filter(Boolean).map(c=>c.trim());
     const colCount=headerCells.length;
     const colSpec=headerCells.map(()=>'l').join('');
-    let result='\\\\begin{table}[htbp]\n\\\\centering\n\\\\caption{'+escTeX(caption.replace(/\*/g,'').trim())+'}\n\\\\begin{tabular}{'+colSpec+'}\n\\\\toprule\n';
+    let result='\\\\begin{table}[htbp]\n\\\\centering\n\\\\caption{'+escapeLatex(caption.replace(/\*/g,'').trim())+'}\n\\\\begin{tabular}{'+colSpec+'}\n\\\\toprule\n';
     rows.forEach((row,i)=>{
       const cells=row.split('|').filter(Boolean).map(c=>c.trim());
       if(cells.every(c=>/^[-:]+$/.test(c))){result+='\\\\midrule\n';return;}
@@ -4429,7 +4440,7 @@ function exportTeX(){
   // References
   if(refs.length){
     tex+='\\\\begin{thebibliography}{'+refs.length+'}\n';
-    refs.forEach((r,i)=>{tex+='\\\\bibitem{ref'+(i+1)+'} '+escTeX(r)+'\n';});
+    refs.forEach((r,i)=>{tex+='\\\\bibitem{ref'+(i+1)+'} '+escapeLatex(r)+'\n';});
     tex+='\\\\end{thebibliography}\n';
   }
 
@@ -4449,9 +4460,9 @@ function exportTeX(){
   document.getElementById('as').textContent='.tex 내보내기 완료: '+texFileName;
 }
 
-function escTeX(s){return s.replace(/[&%$#_{}~^]/g,m=>'\\'+m);}
+function escapeLatex(s){return s.replace(/[&%$#_{}~^]/g,m=>'\\'+m);}
 
-function toggleCol(two){pv.classList.toggle('two-col',two);document.getElementById('col1btn').classList.toggle('active',!two);document.getElementById('col2btn').classList.toggle('active',two);}
+function toggleColumnLayout(two){pv.classList.toggle('two-col',two);document.getElementById('col1btn').classList.toggle('active',!two);document.getElementById('col2btn').classList.toggle('active',two);}
 function save(){localStorage.setItem('aicra.paper.v4',JSON.stringify({ti:document.getElementById('ti').value,au:document.getElementById('au').value,coau:document.getElementById('coau').value,ab:document.getElementById('ab').value,kw:document.getElementById('kw').value,dm:document.getElementById('dm').value,status:document.getElementById('st-sel').value,collab:(document.getElementById('collab')||{}).checked||false,body:inp.value,refs:refs,at:Date.now()}));}
 function restore(){const d=localStorage.getItem('aicra.paper.v4');if(!d)return;const s=JSON.parse(d);if(Date.now()-s.at>604800000)return;inp.value=s.body||'';document.getElementById('ti').value=s.ti||'';document.getElementById('au').value=s.au||'AICRA';document.getElementById('coau').value=s.coau||'';document.getElementById('ab').value=s.ab||'';document.getElementById('kw').value=s.kw||'';if(s.dm)document.getElementById('dm').value=s.dm;if(s.status)document.getElementById('st-sel').value=s.status;if(s.collab){const cb=document.getElementById('collab');if(cb)cb.checked=s.collab;}if(s.refs){refs=s.refs;renderRefs();}if(s.body)inp.dispatchEvent(new Event('input'));document.getElementById('as').textContent='Draft restored';}
 setInterval(save,30000);restore();
@@ -4531,6 +4542,7 @@ function getBestSentence(text,n=2){
   const scored=sents.map(s=>({s,score:scoreSentence(s)})).sort((a,b)=>b.score-a.score);
   return scored.slice(0,n).map(x=>x.s.trim()).join(' ');
 }
+/** 규칙 기반 구조화 초록 자동 생성 (목적/방법/결과/결론 추출) */
 function genAbstract(){
   const text=inp.value;if(!text.trim())return alert('Write paper content first.');
   const secs=parseSections(text);
@@ -4863,10 +4875,10 @@ function populateAuthorUI(){
   sel.innerHTML='';
   const defOpt=document.createElement('option');defOpt.value='';defOpt.textContent='-- 선택 --';sel.appendChild(defOpt);
   for(const c of collabList){const o=document.createElement('option');o.value=c.login;o.textContent=getDisplayName(c.login);sel.appendChild(o);}
-  docManager.getUser().then(u=>{if(u)sel.value=u.login;updateAuthorDDs();updateReviewerDD();}).catch(()=>{});
+  docManager.getUser().then(u=>{if(u)sel.value=u.login;updateAuthorDropdowns();updateReviewerDD();}).catch(()=>{});
 }
 
-function updateAuthorDDs(){
+function updateAuthorDropdowns(){
   const author=document.getElementById('au').value;
   const coSel=document.getElementById('coau-add');
   coSel.innerHTML='';
@@ -4890,7 +4902,7 @@ function addCoauthor(login){
   selectedCoauthors.push(login);
   renderChips('coau-chips',selectedCoauthors,'removeCoauthor');
   document.getElementById('coau').value=selectedCoauthors.join(', ');
-  updateAuthorDDs();
+  updateAuthorDropdowns();
 }
 
 function removeCoauthor(login){
@@ -4900,22 +4912,22 @@ function removeCoauthor(login){
   renderChips('corr-chips',selectedCorr,'removeCorr');
   document.getElementById('coau').value=selectedCoauthors.join(', ');
   document.getElementById('corr').value=selectedCorr.join(', ');
-  updateAuthorDDs();
+  updateAuthorDropdowns();
 }
 
-function addCorr(login){
+function addCorrespondingAuthor(login){
   if(!login||selectedCorr.includes(login))return;
   selectedCorr.push(login);
   renderChips('corr-chips',selectedCorr,'removeCorr');
   document.getElementById('corr').value=selectedCorr.join(', ');
-  updateAuthorDDs();
+  updateAuthorDropdowns();
 }
 
-function removeCorr(login){
+function removeCorrespondingAuthor(login){
   selectedCorr=selectedCorr.filter(l=>l!==login);
   renderChips('corr-chips',selectedCorr,'removeCorr');
   document.getElementById('corr').value=selectedCorr.join(', ');
-  updateAuthorDDs();
+  updateAuthorDropdowns();
 }
 
 function renderChips(areaId,list,removeFn){
@@ -4943,7 +4955,7 @@ function addExtAuthor(){
   renderChips('coau-chips',selectedCoauthors,'removeCoauthor');
   document.getElementById('coau').value=selectedCoauthors.join(', ');
   document.getElementById('ext-name').value='';
-  updateAuthorDDs();
+  updateAuthorDropdowns();
 }
 
 // === REVIEWER SYSTEM ===
@@ -4973,6 +4985,7 @@ function updateReviewerDD(){
   }
 }
 
+/** 검토자에게 리뷰 요청 - GitHub Issues API를 통한 리뷰 할당 */
 async function requestReview(){
   const path=docManager.getCurrentFile();
   if(!path){alert('먼저 문서를 저장해 주세요.');return;}
@@ -5239,6 +5252,7 @@ const VENUE_RULES={
   kci_kr:{name:'KCI',maxPages:20,minRefs:10,maxAbstractWords:200,requiredSections:['서론','관련 연구','결론']},
   journal_en:{name:'Journal',maxPages:30,minRefs:30,maxAbstractWords:300,requiredSections:['Introduction','Methodology','Results','Discussion','Conclusion']}
 };
+/** 투고 양식 규격 검증 - 단어수/참고문헌/섹션 규칙 학회별 체크 */
 function lintVenue(){
   const tplVal=document.getElementById('tplSel').dataset.lastTpl||'';
   const rules=VENUE_RULES[tplVal];
@@ -5449,6 +5463,7 @@ let _recAbort=null;
 
 // === BLIND MODE (Anonymous Submission) ===
 let _blindMode=false;
+/** 블라인드 심사 모드 토글 - 저자/소속 정보 숨김 처리 */
 function toggleBlindMode(on){
   _blindMode=on;
   render();
@@ -5456,6 +5471,7 @@ function toggleBlindMode(on){
 }
 
 // === ANONYMIZATION LINTER ===
+/** 익명화 린트 - 본문 내 저자명/소속/자기인용 노출 자동 탐지 */
 function runAnonymizationLint(){
   const t=inp.value;const issues=[];
   // Check for author names in body
@@ -5507,6 +5523,7 @@ function runAnonymizationLint(){
 }
 
 // === SUBMISSION PREFLIGHT ===
+/** 투고 전 최종 체크리스트 - 블라인드, 참고문헌, 페이지수, 익명화 검증 */
 function submissionPreflight(){
   const tpl=document.getElementById('tplSel').dataset.lastTpl||'';
   const t=inp.value;const wc=t.trim().split(/\s+/).length;
@@ -5749,7 +5766,8 @@ function getEditorMeta(){
 }
 
 let _savedFileName='';
-function ghSave(forceSaveAs){
+/** GitHub 리포지토리에 논문 저장 (forceSaveAs=true: 새 파일명으로 저장) */
+function saveToGitHub(forceSaveAs){
   const title=document.getElementById('ti').value;
   if(!title){alert('제목을 입력해 주세요.');return;}
   if(!inp.value.trim()){alert('내용을 입력해 주세요.');return;}
@@ -5898,6 +5916,7 @@ function _mermaidToTikz(src){
   return tikz;
 }
 
+/** Word(.docx) 내보내기 - 네이티브 수식 객체 + Mermaid->TikZ 변환 포함 */
 async function exportDOCX(){
   const D=window.docx;if(!D){alert('docx 라이브러리 로딩 중...');return;}
   const title=document.getElementById('ti').value||'Untitled';
@@ -6030,7 +6049,8 @@ async function exportDOCX(){
   document.getElementById('as').textContent='DOCX 저장됨: '+docxFileName;
 }
 
-async function ghLoad(){
+/** GitHub 리포지토리에서 저장된 논문 목록 불러오기 */
+async function loadFromGitHub(){
   document.getElementById('loadModal').classList.add('show');
   document.getElementById('loadList').innerHTML='<p style="color:var(--muted);text-align:center;padding:20px">로딩 중...</p>';
   try{
@@ -6050,7 +6070,7 @@ async function ghLoad(){
       const badge=document.createElement('span');badge.style.cssText='padding:1px 5px;border-radius:3px;font-size:.55rem;color:#fff;background:'+(f.own?'var(--brand)':'var(--accent)');badge.textContent=f.own?'내 문서':'공유:'+f.folder;info.appendChild(badge);
       row.appendChild(info);
       const del=document.createElement('button');del.className='bt';del.style.cssText='font-size:.55rem;padding:1px 5px;color:#b42318';del.textContent='삭제';
-      del.addEventListener('click',function(e){e.stopPropagation();delDoc(f.path,f.sha);});row.appendChild(del);
+      del.addEventListener('click',function(e){e.stopPropagation();deleteDocument(f.path,f.sha);});row.appendChild(del);
       list.appendChild(row);
     }
   }catch(e){
@@ -6087,7 +6107,7 @@ async function loadDoc(path){
       renderChips('corr-chips',selectedCorr,'removeCorr');
       document.getElementById('corr').value=selectedCorr.join(', ');
     }
-    updateAuthorDDs();
+    updateAuthorDropdowns();
     if(data.meta.abstract)document.getElementById('ab').value=data.meta.abstract;
     if(data.meta.keywords)document.getElementById('kw').value=Array.isArray(data.meta.keywords)?data.meta.keywords.join(', '):data.meta.keywords;
     if(data.meta.domain)document.getElementById('dm').value=data.meta.domain;
@@ -6106,15 +6126,15 @@ async function loadDoc(path){
   }
 }
 
-async function delDoc(path,sha){
+async function deleteDocument(path,sha){
   if(!confirm('이 문서를 삭제하시겠습니까?\n'+path))return;
   try{
     await docManager.deleteFile(path,sha);
-    ghLoad(); // Refresh list
+    loadFromGitHub(); // Refresh list
   }catch(e){alert('삭제 실패: '+e.message);}
 }
 
-async function ghLock(){
+async function toggleDocLock(){
   const path=docManager.getCurrentFile();
   if(!path){alert('먼저 문서를 저장하거나 불러와 주세요.');return;}
   try{
@@ -6152,7 +6172,7 @@ async function conflictResolve(action){
     await loadDoc(path);
   }else if(action==='copy'){
     document.getElementById('ti').value+=' (사본)';
-    ghSave(true);
+    saveToGitHub(true);
   }
 }
 
