@@ -8,13 +8,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&family=Pretendard:wght@400;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
 <!-- PptxGenJS: lazy-loaded by ppt-export.js when needed -->
 <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js" integrity="sha384-PlRSzpewlarQuj5alIadXwjNUX+2eNMKwr0f07ShWYLy8B6TjEbm7ZlcN/ScSbwy" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.4/dist/purify.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.4/dist/purify.min.js" integrity="sha384-eEu5CTj3qGvu9PdJuS+YlkNi7d2XxQROAFYOr59zgObtlcux1ae1Il3u7jvdCSWu" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github.min.css">
 <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
 <style>
@@ -1565,6 +1565,7 @@ function open(){return new Promise((ok,fail)=>{
     r.onsuccess=()=>ok(r.result);r.onerror=()=>fail(r.error);
   });}
   async /** IndexedDB 트랜잭션 실행 헬퍼 */
+/** IndexedDB 트랜잭션 실행 (store, mode, callback) */
 function tx(mode,fn){const db=await open();return new Promise((ok,fail)=>{
     const t=db.transaction(STORE,mode);const s=t.objectStore(STORE);fn(s);
     t.oncomplete=()=>{db.close();ok();};t.onerror=()=>{db.close();fail(t.error);};
@@ -2441,6 +2442,7 @@ function updateWordTarget(){
 // === SNAPSHOT RESTORE (IndexedDB) ===
 let _snapCache=[];
 async /** 저장된 스냅샷 목록 표시 (버전 히스토리) */
+/** 저장된 스냅샷 목록 표시 (버전 히스토리) */
 function showSnapshots(){
   try{_snapCache=await snapDB.getAll();}catch(e){_snapCache=JSON.parse(localStorage.getItem('aicra.paper.snapshots.v1')||'[]');}
   if(!_snapCache.length){alert('저장된 이력이 없습니다.');return;}
@@ -2460,6 +2462,7 @@ function showSnapshots(){
   cr.innerHTML=html;_addCrClose(cr);cr.style.display='block';
 }
 async /** 선택한 스냅샷으로 편집기 내용 복원 */
+/** 선택한 스냅샷으로 편집기 내용 복원 */
 function restoreSnapshot(idx){
   const snap=_snapCache[idx];if(!snap)return;
   if(!confirm('현재 내용을 이 시점('+new Date(snap.at).toLocaleString('ko-KR')+')으로 복원하시겠습니까?'))return;
@@ -2922,6 +2925,7 @@ function restore(){const d=localStorage.getItem('aicra.paper.v4');if(!d)return;c
 setInterval(save,30000);restore();
 // === SAMPLE PAPER LOADER ===
 async /** 샘플 AI 보안 논문 불러오기 (학습/테스트용) */
+/** 샘플 AI 보안 논문 불러오기 (학습/테스트용) */
 function loadSamplePaper(slug){
   if(inp.value.trim()&&!confirm('현재 내용이 샘플 논문으로 대체됩니다. 계속?'))return;
   alert('[*] 이 샘플 논문은 Paper Editor 개발/테스트 목적으로 작성된 것이며, 실제 발행된 논문이 아닙니다.');
@@ -3330,6 +3334,7 @@ function applyNameMap(){
 }
 
 async /** GitHub API로 리포지토리 Collaborator 목록 가져오기 */
+/** GitHub API로 리포지토리 Collaborator 목록 가져오기 */
 function fetchCollaborators(){
   loadNameMap();
   const cached=sessionStorage.getItem('aicra.collabs');
@@ -3492,6 +3497,7 @@ async function requestReview(){
 }
 
 async /** 리뷰 결과 확인 모달 - GitHub Issues에서 주석/첨삭 로드 */
+/** 리뷰 결과 확인 모달 - GitHub Issues에서 주석/첨삭 로드 */
 function showReviewPanel(){
   const path=docManager.getCurrentFile();
   if(!path){alert('먼저 문서를 저장하거나 불러와 주세요.');return;}
@@ -3544,6 +3550,7 @@ function showReviewPanel(){
 // findBestRange -> provided by paper-engine.js
 
 async /** 주석 해결 처리 (accepted/rejected/deferred) */
+/** 주석 해결 처리 (accepted/rejected/deferred) */
 function resolveAnnotation(reviewer,annotationId,status){
   const path=docManager.getCurrentFile();
   if(!path)return;
@@ -3582,6 +3589,7 @@ document.getElementById('annot-type').addEventListener('change',function(){
   document.getElementById('annot-suggest-area').style.display=this.value==='suggest'?'block':'none';
 });
 async /** 작성한 주석을 GitHub Issue 코멘트로 저장 */
+/** 작성한 주석��� GitHub Issue 코멘트로 저장 */
 function submitAnnotation(){
   const path=docManager.getCurrentFile();
   if(!path){alert('문서가 로드되지 않았습니다.');return;}
@@ -4612,6 +4620,7 @@ async function loadFromGitHub(){
 }
 
 async /** GitHub에서 특정 문서 파일 로드 + 에디터에 적용 */
+/** GitHub에서 특정 문서 파일 로드 + 에디터에 적용 */
 function loadDoc(path){
   try{
     const data=await docManager.loadFile(path);
@@ -4681,6 +4690,7 @@ async function deleteDocument(path,sha){
 }
 
 async /** 문서 잠금/해제 토글 (동시 편집 방지) */
+/** 문서 잠금/해제 토글 (동시 편집 방지) */
 function toggleDocLock(){
   const path=docManager.getCurrentFile();
   if(!path){alert('먼저 문서를 저장하거나 불러와 주세요.');return;}

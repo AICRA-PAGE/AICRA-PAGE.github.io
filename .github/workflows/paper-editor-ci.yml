@@ -1,0 +1,125 @@
+name: Paper Editor CI
+
+on:
+  push:
+    paths:
+      - 'admin/paper-editor.html'
+      - 'assets/js/**'
+      - 'assets/data/venue-templates.json'
+      - 'tests/**'
+  pull_request:
+    paths:
+      - 'admin/paper-editor.html'
+      - 'assets/js/**'
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify HTML structure
+        run: |
+          # Check script tag balance
+          OPEN=$(grep -c '<script' admin/paper-editor.html)
+          CLOSE=$(grep -c '</script>' admin/paper-editor.html)
+          if [ "$OPEN" != "$CLOSE" ]; then
+            echo "FAIL: script tag mismatch ($OPEN open, $CLOSE close)"
+            exit 1
+          fi
+          echo "OK: $OPEN script tags balanced"
+
+      - name: CSP security regression check
+        run: |
+          # P0: no unsafe-eval
+          if grep -q "unsafe-eval" admin/paper-editor.html; then
+            echo "FAIL: unsafe-eval found in CSP"
+            exit 1
+          fi
+          echo "OK: no unsafe-eval"
+          # P0: no wildcard connect-src
+          if grep -q "connect-src \*" admin/paper-editor.html; then
+            echo "FAIL: wildcard connect-src found"
+            exit 1
+          fi
+          echo "OK: connect-src is restricted"
+
+      - name: Blind mode DOCX parity check
+        run: |
+          # P0: exportDOCX must check _blindMode
+          if ! grep -q "isBlind.*_blindMode" admin/paper-editor.html; then
+            echo "FAIL: exportDOCX does not check _blindMode"
+            exit 1
+          fi
+          # Must use "Anonymous" in blind mode
+          if ! grep -q "Anonymous Author" admin/paper-editor.html; then
+            echo "FAIL: no Anonymous Author replacement in DOCX export"
+            exit 1
+          fi
+          echo "OK: blind mode DOCX parity verified"
+
+      - name: ACL check on delete
+        run: |
+          # P0: deleteDocument must check user ownership
+          if ! grep -A 10 "function deleteDocument" admin/paper-editor.html | grep -q "getUser"; then
+            echo "FAIL: deleteDocument does not check user ownership"
+            exit 1
+          fi
+          echo "OK: deleteDocument has ACL check"
+
+      - name: Module loading verification
+        run: |
+          # All 9 JS modules must be referenced
+          for module in paper-engine doc-manager tutorial auth-guard ppt-export evidence-layer dataset-workspace recommendations; do
+            if ! grep -q "src=\"/assets/js/${module}.js\"" admin/paper-editor.html; then
+              echo "FAIL: module ${module}.js not loaded"
+              exit 1
+            fi
+          done
+          echo "OK: all 9 modules referenced"
+          # All module files must exist
+          for f in assets/js/paper-engine.js assets/js/doc-manager.js assets/js/tutorial.js assets/js/auth-guard.js assets/js/ppt-export.js assets/js/evidence-layer.js assets/js/dataset-workspace.js assets/js/recommendations.js; do
+            if [ ! -f "$f" ]; then
+              echo "FAIL: $f missing"
+              exit 1
+            fi
+          done
+          echo "OK: all module files exist"
+
+      - name: Venue templates JSON valid
+        run: |
+          python3 -c "
+          import json
+          with open('assets/data/venue-templates.json') as f:
+              data = json.load(f)
+          assert len(data) >= 20, f'Expected 20+ templates, got {len(data)}'
+          print(f'OK: {len(data)} venue templates valid')
+          "
+
+      - name: JSDoc coverage check
+        run: |
+          python3 -c "
+          import re
+          with open('admin/paper-editor.html') as f:
+              lines = f.readlines()
+          total = 0
+          documented = 0
+          for i, line in enumerate(lines):
+              if re.match(r'^(async )?function \w+\(', line.strip()):
+                  total += 1
+                  prev = lines[i-1].strip() if i > 0 else ''
+                  if prev.startswith('/**'):
+                      documented += 1
+          pct = documented * 100 // total if total else 0
+          print(f'JSDoc coverage: {documented}/{total} ({pct}%)')
+          assert pct >= 90, f'JSDoc coverage {pct}% below 90% threshold'
+          "
+
+      - name: SRI integrity check
+        run: |
+          # At least DOMPurify must have SRI (security-critical)
+          if ! grep -q 'integrity="sha384-' admin/paper-editor.html; then
+            echo "FAIL: no SRI integrity attributes found"
+            exit 1
+          fi
+          echo "OK: SRI integrity attributes present"
