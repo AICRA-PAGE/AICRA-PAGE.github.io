@@ -2,8 +2,7 @@
 layout: paper
 title: "[SAMPLE] Deep Leakage from Gradients"
 author: AICRA-PAGE
-authors: ["0blueteam0"]
-date: 2026-03-27
+date: 2026-04-06
 status: published
 domain: "Privacy / FL"
 keywords: ["gradient leakage", "federated learning", "privacy", "data reconstruction", "distributed learning"]
