@@ -1531,6 +1531,7 @@ const inp=document.getElementById('input'),pv=document.getElementById('pv');
 function escHtml(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
 /** HTML 속성 이스케이프 - 속성값 내 특수문자 변환 */
 function escAttr(s){return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/'/g,'&#39;');}
+/** 학회 양식별 예상 페이지 수 계산 (단어수 기준) */
 function _estimatePages(wc){
   // Venue-aware page estimation (words per page varies by format)
   const tpl=(document.getElementById('tplSel')||{}).dataset?.lastTpl||'';
@@ -1544,6 +1545,7 @@ function _estimatePages(wc){
   const visualPages=(figs+tbls+merm)*0.3;
   return Math.ceil(wc/wordsPerPage+visualPages);
 }
+/** 크레딧/패널 요소에 닫기(X) 버튼 추가 */
 function _addCrClose(cr){const btn=document.createElement('button');btn.style.cssText='position:absolute;right:8px;top:8px;border:none;background:none;cursor:pointer;font-size:.8rem;color:var(--muted)';btn.textContent='X';btn.setAttribute('aria-label','닫기');btn.addEventListener('click',()=>{cr.style.display='none';});cr.insertBefore(btn,cr.firstChild);}
 let focusMode=false,refs=[];
 let envCounters={theorem:0,lemma:0,definition:0,corollary:0,proposition:0,algorithm:0};
@@ -1556,12 +1558,14 @@ let renderToken=0;
 // === SNAPSHOT SYSTEM (IndexedDB for large docs, localStorage fallback) ===
 const snapDB=(function(){
   const DB='aicra-snapshots',STORE='snaps',VER=1;
-  function open(){return new Promise((ok,fail)=>{
+  /** IndexedDB 데이터베이스 연결 열기 */
+function open(){return new Promise((ok,fail)=>{
     const r=indexedDB.open(DB,VER);
     r.onupgradeneeded=()=>{const db=r.result;if(!db.objectStoreNames.contains(STORE))db.createObjectStore(STORE,{keyPath:'id',autoIncrement:true}).createIndex('at','at');};
     r.onsuccess=()=>ok(r.result);r.onerror=()=>fail(r.error);
   });}
-  async function tx(mode,fn){const db=await open();return new Promise((ok,fail)=>{
+  async /** IndexedDB 트랜잭션 실행 헬퍼 */
+function tx(mode,fn){const db=await open();return new Promise((ok,fail)=>{
     const t=db.transaction(STORE,mode);const s=t.objectStore(STORE);fn(s);
     t.oncomplete=()=>{db.close();ok();};t.onerror=()=>{db.close();fail(t.error);};
   });}
@@ -1599,11 +1603,13 @@ async function saveSnapshot(){
 setInterval(saveSnapshot,5*60*1000);
 
 // Adaptive debounce: faster for short docs, slower for long docs
+/** 편집기 길이에 따른 디바운스 지연시간(ms) 계산 */
 function getDebounceMs(){const wc=inp.value.length;return wc>100000?400:wc>30000?250:150;}
 inp.addEventListener('input',()=>{clearTimeout(inp._dbt);inp._dbt=setTimeout(()=>{render();},getDebounceMs());});
 ['ti','kw','ab'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',debounce(()=>{render();},200));});
 ['dm','st-sel','au'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('change',()=>render());});
 ['affiliation'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',debounce(()=>{render();},200));});
+/** 함수 호출 디바운스 - 연속 입력 시 마지막 호출만 실행 */
 function debounce(fn,ms){let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms);};}
 
 // === BIDIRECTIONAL SCROLL SYNC ===
@@ -1638,6 +1644,7 @@ function hydrateMermaid(){
 }
 
 // Preview header from metadata
+/** 미리보기 상단에 제목/저자/초록 헤더 생성 */
 function buildPreviewHeader(){
   const ti=document.getElementById('ti').value.trim();
   const au=document.getElementById('au').value.trim();
@@ -1880,7 +1887,9 @@ function processEnvs(t){
   }
   return t;
 }
+/** 환경 블록 플레이스홀더를 원래 HTML로 복원 */
 function restoreEnvs(html){for(let i=0;i<envPH.length;i++){html=html.replace('<p>\x00E'+i+'\x00</p>',envPH[i]);html=html.replace('\x00E'+i+'\x00',envPH[i]);}return html;}
+/** $$수식$$ 블록에 자동 번호 (1), (2)... 부여 */
 function processNumberedEq(t){return t.replace(/^\$\$\s*\n?([\s\S]*?)\n?\$\$\s*$/gm,(m,eq)=>{eqCounter++;return '<div class="eq-row"><div class="katex-display">$$'+eq.trim()+'$$</div><div class="eq-num">('+eqCounter+')</div></div>';});}
 /** [cite:N] 마크업을 [N] 형식의 인용 링크로 변환 */
 function processCitations(t){
@@ -1980,6 +1989,7 @@ function preprocessRefsAndCaptions(text){
 }
 
 // === APPENDIX NUMBERING (A, B, C instead of numbers) ===
+/** 부록 섹션 HTML에 "Appendix" 라벨 자동 추가 */
 function processAppendix(html){
   if(!html)return '';
   let inAppendix=false;let appIdx=0;
@@ -1995,6 +2005,7 @@ function processAppendix(html){
   });
 }
 
+/** 이미지 태그에 width/height 속성 적용 ({width=50%} 문법) */
 function processImageSize(html){
   // Handle ![alt](src){width=50%} -> set width attribute
   return html.replace(/<img([^>]*?)src="([^"]+)"([^>]*?)>/g,(m,pre,src,post)=>{
@@ -2008,6 +2019,7 @@ function processImageSize(html){
 // Uses execCommand to preserve browser native Ctrl+Z / Ctrl+Y
 /** 에디터에 텍스트 삽입 (Undo 가능한 execCommand 사용) */
 function typeText(text){inp.focus();document.execCommand('insertText',false,text);}
+/** 에디터 전체 내용을 새 텍스트로 교체 (템플릿 적용용) */
 function replaceAll(text){inp.focus();inp.select();document.execCommand('insertText',false,text);}
 
 inp.addEventListener('keydown',e=>{
@@ -2050,6 +2062,7 @@ inp.addEventListener('keydown',e=>{
 function wrapSelection(a,b){const s=inp.selectionStart,e=inp.selectionEnd,sel=inp.value.substring(s,e);inp.focus();inp.setSelectionRange(s,e);document.execCommand('insertText',false,a+sel+b);inp.dispatchEvent(new Event('input'));}
 
 // === FOOTNOTE SHORTCUT ===
+/** 각주 마크업 [^N] 삽입 + 하단 각주 텍스트 블록 추가 */
 function insertFootnote(){
   // Count existing footnotes to get next number
   const existing=(inp.value.match(/\[\^\d+\]/g)||[]);
@@ -2164,6 +2177,7 @@ function insertBlock(type){
 }
 
 let _pendingCite=false,_citeSelStart=0,_citeSelEnd=0;
+/** 인용 삽입 시작 - 커서 위치 저장 후 참고문헌 패널 열기 */
 function handleCiteInsert(){
   // Save cursor position for later restoration
   _citeSelStart=inp.selectionStart;
@@ -2179,6 +2193,7 @@ function handleCiteInsert(){
   const sq=document.getElementById('schQuery');
   if(sq)sq.focus();
 }
+/** 인용 삽입 완료 - [cite:N] 마크업을 커서 위치에 삽입 */
 function _completeCiteInsert(){
   if(!_pendingCite)return;
   _pendingCite=false;
@@ -2191,6 +2206,7 @@ function _completeCiteInsert(){
   document.getElementById('as').textContent='[+] 참고문헌 ['+refs.length+'] 등록 + 인용 삽입 완료';
   document.getElementById('as').style.color='var(--brand)';
 }
+/** 진행 중인 인용 삽입 취소 */
 function _cancelPendingCite(){
   if(!_pendingCite)return;
   _pendingCite=false;
@@ -2202,14 +2218,18 @@ function _cancelPendingCite(){
 }
 
 // === FIND/REPLACE ===
+/** 찾기/바꾸기 패널 토글 (Ctrl+F) */
 function toggleFindPanel(){const fp=document.getElementById('findPanel');fp.style.display=fp.style.display==='none'?'flex':'none';if(fp.style.display!=='none')document.getElementById('findInput').focus();}
+/** 찾기/바꾸기 패널 닫기 */
 function closeFindPanel(){document.getElementById('findPanel').style.display='none';}
+/** 검색어를 정규식으로 변환 (대소문자/정규식 옵션 포함) */
 function _buildFindRegex(){
   const q=document.getElementById('findInput').value;if(!q)return null;
   const isRegex=document.getElementById('findRegex').checked;
   const caseSensitive=document.getElementById('findCase').checked;
   try{return new RegExp(isRegex?q:q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),caseSensitive?'g':'gi');}catch(e){return null;}
 }
+/** 다음 검색 결과로 이동 + 하이라이트 */
 function findNext(){
   const re=_buildFindRegex();if(!re)return;
   const matches=[...inp.value.matchAll(re)];
@@ -2224,6 +2244,7 @@ function findNext(){
   const linesBefore=inp.value.substring(0,next.index).split('\n').length;
   inp.scrollTop=Math.max(0,(linesBefore-5)*lineHeight);
 }
+/** 현재 선택된 검색 결과 1개 바꾸기 */
 function replaceOne(){
   const re=_buildFindRegex();if(!re)return;
   const sel=inp.value.substring(inp.selectionStart,inp.selectionEnd);
@@ -2231,6 +2252,7 @@ function replaceOne(){
   if(re.test(sel)){inp.focus();document.execCommand('insertText',false,sel.replace(re,rep));render();}
   findNext();
 }
+/** 모든 검색 결과 일괄 바꾸기 */
 function replaceAllFind(){
   const re=_buildFindRegex();if(!re)return;
   const rep=document.getElementById('replaceInput').value;
@@ -2244,6 +2266,7 @@ function replaceAllFind(){
 }
 
 // === MOBILE TAB SWITCHER ===
+/** 모바일 뷰에서 편집/미리보기 탭 전환 */
 function switchMobileTab(tab){
   const ep=document.getElementById('editorPane');
   const pp=document.getElementById('previewPane');
@@ -2267,6 +2290,7 @@ function switchMobileTab(tab){
   }
 }
 // Auto-detect mobile and handle orientation changes
+/** 화면 크기에 따른 반응형 레이아웃 자동 적용 */
 function _applyResponsiveMode(){
   const isMobile=window.innerWidth<=768 && window.matchMedia('(orientation:portrait)').matches;
   const ep=document.getElementById('editorPane'),pp=document.getElementById('previewPane'),dv=document.getElementById('dv'),ins=document.querySelector('.ins');
@@ -2348,6 +2372,7 @@ document.addEventListener('keydown',e=>{
 // === REFS ===
 /** 참고문헌 수동 추가 - 입력 필드에서 텍스트를 읽어 refs 배열에 추가 */
 function addRef(){const i=document.getElementById('refInput');const v=i.value.trim();if(!v)return;refs.push(v);i.value='';renderRefs();render();_completeCiteInsert();}
+/** 참고문헌 목록에서 N번째 항목 삭제 */
 function removeRef(idx){refs.splice(idx,1);renderRefs();render();}
 /** 참고문헌 목록 UI 렌더링 - 번호 매김, 삭제 버튼, 인용 삽입 버튼 */
 function renderRefs(){
@@ -2362,14 +2387,18 @@ function renderRefs(){
     l.appendChild(div);
   });
 }
+/** 기존 참고문헌 번호로 [cite:N] 인용 삽입 */
 function insertExistingCite(n){inp.focus();typeText('[cite:'+n+']');inp.dispatchEvent(new Event('input'));document.getElementById('as').textContent='[+] [cite:'+n+'] 삽입됨';}
+/** 참고문헌 사이드 패널 열기/닫기 */
 function toggleRef(){const rp=document.getElementById('refPanel');rp.classList.toggle('open');if(!rp.classList.contains('open'))_cancelPendingCite();else _triggerEvidence();}
 
 // === EVIDENCE LAYER -> extracted to /assets/js/evidence-layer.js ===
 
 
 
+/** 도움말 패널 토글 */
 function toggleHelp(){const hp=document.getElementById('helpPanel');hp.classList.toggle('show');if(hp.classList.contains('show')){switchHelpTab(0);}}
+/** 도움말 탭 전환 (사용법/문법/단축키) */
 function switchHelpTab(idx){
   document.querySelectorAll('.htab').forEach((t,i)=>t.classList.toggle('active',i===idx));
   [0,1,2].forEach(i=>{const el=document.getElementById('helpTab'+i);if(el)el.style.display=i===idx?'block':'none';});
@@ -2398,6 +2427,7 @@ function importBibTeX(fileInput){
 // parseBibTeX -> provided by paper-engine.js
 
 // === WORD COUNT TARGET ===
+/** 목표 단어수 설정 + 진행률 바 업데이트 */
 function updateWordTarget(){
   const target=parseInt(document.getElementById('wordTarget').value)||0;
   const current=inp.value.trim()?inp.value.trim().split(/\s+/).length:0;
@@ -2410,7 +2440,8 @@ function updateWordTarget(){
 
 // === SNAPSHOT RESTORE (IndexedDB) ===
 let _snapCache=[];
-async function showSnapshots(){
+async /** 저장된 스냅샷 목록 표시 (버전 히스토리) */
+function showSnapshots(){
   try{_snapCache=await snapDB.getAll();}catch(e){_snapCache=JSON.parse(localStorage.getItem('aicra.paper.snapshots.v1')||'[]');}
   if(!_snapCache.length){alert('저장된 이력이 없습니다.');return;}
   const cr=document.getElementById('checkResult');
@@ -2428,7 +2459,8 @@ async function showSnapshots(){
   html+='</div>';
   cr.innerHTML=html;_addCrClose(cr);cr.style.display='block';
 }
-async function restoreSnapshot(idx){
+async /** 선택한 스냅샷으로 편집기 내용 복원 */
+function restoreSnapshot(idx){
   const snap=_snapCache[idx];if(!snap)return;
   if(!confirm('현재 내용을 이 시점('+new Date(snap.at).toLocaleString('ko-KR')+')으로 복원하시겠습니까?'))return;
   await saveSnapshot();
@@ -2702,6 +2734,7 @@ function downloadMarkdown(downloadName){
 }
 
 // === EXPORT ALIASES ===
+/** 파일명 입력 다이얼로그 (기본값 제안 + 확장자 자동 추가) */
 function askFileName(defaultBase,ext){
   const raw=prompt('파일명을 입력하세요 (.'+ext+')',defaultBase);
   if(raw===null)return null;
@@ -2709,6 +2742,7 @@ function askFileName(defaultBase,ext){
   if(!clean)return null;
   return clean+'.'+ext;
 }
+/** 마크다운(.md) 내보내기 - 파일명 입력 후 다운로드 */
 function exportMD(){
   const ti=document.getElementById('ti').value||'paper';
   const fn=askFileName(docManager?docManager.slugify(ti):ti.replace(/\s+/g,'-').toLowerCase(),'md');
@@ -2876,14 +2910,19 @@ function exportTeX(){
   document.getElementById('as').textContent='.tex 내보내기 완료: '+texFileName;
 }
 
+/** LaTeX 특수문자(&%$#_{}~^) 이스케이프 처리 */
 function escapeLatex(s){return s.replace(/[&%$#_{}~^]/g,m=>'\\'+m);}
 
+/** 미리보기 1단/2단 레이아웃 전환 */
 function toggleColumnLayout(two){pv.classList.toggle('two-col',two);document.getElementById('col1btn').classList.toggle('active',!two);document.getElementById('col2btn').classList.toggle('active',two);}
+/** 로컬 스토리지에 현재 편집 상태 자동 저장 */
 function save(){localStorage.setItem('aicra.paper.v4',JSON.stringify({ti:document.getElementById('ti').value,au:document.getElementById('au').value,coau:document.getElementById('coau').value,ab:document.getElementById('ab').value,kw:document.getElementById('kw').value,dm:document.getElementById('dm').value,status:document.getElementById('st-sel').value,collab:(document.getElementById('collab')||{}).checked||false,body:inp.value,refs:refs,at:Date.now()}));}
+/** 로컬 스토리지에서 이전 편집 상태 복원 */
 function restore(){const d=localStorage.getItem('aicra.paper.v4');if(!d)return;const s=JSON.parse(d);if(Date.now()-s.at>604800000)return;inp.value=s.body||'';document.getElementById('ti').value=s.ti||'';document.getElementById('au').value=s.au||'AICRA';document.getElementById('coau').value=s.coau||'';document.getElementById('ab').value=s.ab||'';document.getElementById('kw').value=s.kw||'';if(s.dm)document.getElementById('dm').value=s.dm;if(s.status)document.getElementById('st-sel').value=s.status;if(s.collab){const cb=document.getElementById('collab');if(cb)cb.checked=s.collab;}if(s.refs){refs=s.refs;renderRefs();}if(s.body)inp.dispatchEvent(new Event('input'));document.getElementById('as').textContent='Draft restored';}
 setInterval(save,30000);restore();
 // === SAMPLE PAPER LOADER ===
-async function loadSamplePaper(slug){
+async /** 샘플 AI 보안 논문 불러오기 (학습/테스트용) */
+function loadSamplePaper(slug){
   if(inp.value.trim()&&!confirm('현재 내용이 샘플 논문으로 대체됩니다. 계속?'))return;
   alert('[*] 이 샘플 논문은 Paper Editor 개발/테스트 목적으로 작성된 것이며, 실제 발행된 논문이 아닙니다.');
   try{
@@ -2918,10 +2957,13 @@ async function loadSamplePaper(slug){
   }
 }
 
+/** 다크 모드 토글 + 설정 localStorage 저장 */
 function toggleDark(){document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'':'dark';localStorage.setItem('aicra.dark',document.documentElement.dataset.theme);}
 if(localStorage.getItem('aicra.dark')==='dark')document.documentElement.dataset.theme='dark';
+/** 집중 모드 토글 - 메타바/상태바 숨기고 편집 영역 확대 */
 function toggleFocus(){focusMode=!focusMode;['metaBar','metaBar2','stBar'].forEach(id=>document.getElementById(id).style.display=focusMode?'none':'');document.getElementById('insBar').style.display='';}
 // === ABSTRACT GENERATOR (rule-based) ===
+/** ## 헤딩 기반 섹션 파싱 - 제목 + 본문 추출 (번호 제거) */
 function parseSections(text){
   const lines=text.split('\n');const secs=[];let cur=null;
   for(const l of lines){
@@ -2930,6 +2972,7 @@ function parseSections(text){
   }
   if(cur)secs.push(cur);return secs;
 }
+/** 마크다운 아티팩트 제거 후 문장 단위 분리 */
 function splitSentences(text){
   // Clean markdown artifacts
   let t=text.replace(/```[\s\S]*?```/g,'').replace(/\|[^\n]+\|/g,'').replace(/^\s*[-*]\s+/gm,'').replace(/:::[\s\S]*?:::/g,'').replace(/\$\$[\s\S]*?\$\$/g,'').replace(/\$[^$]+\$/g,'').replace(/!\[.*?\]\(.*?\)/g,'').replace(/\[.*?\]\(.*?\)/g,'').replace(/[#*_>`|]/g,'').replace(/---/g,'').trim();
@@ -2938,6 +2981,7 @@ function splitSentences(text){
   const sents=t.split(/(?<=[.!?。])\s+/).filter(s=>s.trim().length>10);
   return sents;
 }
+/** 섹션 제목이 특정 카테고리에 해당하는지 별칭 매칭 */
 function matchSection(title,aliases){
   const t=title.toLowerCase();
   for(const[key,patterns]of Object.entries(aliases)){
@@ -2945,6 +2989,7 @@ function matchSection(title,aliases){
   }
   return null;
 }
+/** 문장의 핵심 정보 포함도 점수 (숫자/키워드 기반) */
 function scoreSentence(s){
   let score=0;
   const cues=['we propose','this paper','본 논문','제안','results show','실험 결과','demonstrate','보인다','achieved','달성','contribut','기여','novel','새로운','outperform','우수'];
@@ -2953,6 +2998,7 @@ function scoreSentence(s){
   if(s.length>30&&s.length<200)score+=1; // good length
   return score;
 }
+/** 섹션에서 가장 대표적인 문장 N개 추출 */
 function getBestSentence(text,n=2){
   const sents=splitSentences(text);if(!sents.length)return'';
   const scored=sents.map(s=>({s,score:scoreSentence(s)})).sort((a,b)=>b.score-a.score);
@@ -2986,6 +3032,7 @@ function genAbstract(){
   document.getElementById('abs-con').value=slots.con;
   document.getElementById('absModal').classList.add('show');
 }
+/** 생성된 초록을 :::abstract 블록으로 본문에 삽입 */
 function insertAbstract(){
   const absText=getAbstractText();
   if(!absText)return;
@@ -3010,9 +3057,11 @@ function insertAbstract(){
   // Also update metadata abstract field
   document.getElementById('ab').value=absText.substring(0,200);
 }
+/** 모달 오버레이 닫기 (ID 기반) */
 function closeModal(id){document.getElementById(id).classList.remove('show');}
 
 // === ABSTRACT PREVIEW / COPY / PRINT ===
+/** 초록 생성 모달 내 실시간 미리보기 업데이트 */
 function updateAbsPreview(){
   const parts=[
     document.getElementById('abs-bg').value.trim(),
@@ -3046,6 +3095,7 @@ function updateAbsPreview(){
   const wcDiv=document.createElement('div');wcDiv.style.cssText='text-align:right;font-size:.55rem;color:#999;margin-top:6px';wcDiv.textContent=wc+' 단어';preview.appendChild(wcDiv);
 }
 
+/** 초록 생성 결과 텍스트 가져오기 */
 function getAbstractText(){
   const parts=[
     document.getElementById('abs-bg').value.trim(),
@@ -3057,6 +3107,7 @@ function getAbstractText(){
   return parts.join(' ');
 }
 
+/** 생성된 초록을 클립보드에 복사 */
 function copyAbstract(){
   const text=getAbstractText();
   if(!text)return;
@@ -3065,6 +3116,7 @@ function copyAbstract(){
   }).catch(()=>{document.getElementById('as').textContent='[!] 클립보드 접근 실패';});
 }
 
+/** 생성된 초록 인쇄 다이얼로그 열기 */
 function printAbstract(){
   const text=getAbstractText();if(!text)return;
   const title=document.getElementById('ti').value||'';
@@ -3219,20 +3271,25 @@ document.addEventListener('mouseup',()=>rs=false);
 let collabList=[],selectedCoauthors=[],selectedCorr=[];
 let nameMap={}; // {login: {name:'홍길동', affiliation:'AICRA', orcid:''}}
 
+/** 저자 이름 매핑(GitHub ID->실명) 로컬 스토리지에서 로드 */
 function loadNameMap(){
   try{const d=localStorage.getItem('aicra.author.map');if(d)nameMap=JSON.parse(d);}catch(e){}
 }
+/** 저자 이름 매핑 로컬 스토리지에 저장 */
 function saveNameMap(){
   localStorage.setItem('aicra.author.map',JSON.stringify(nameMap));
 }
+/** GitHub 로그인 ID를 실명으로 변환 (매핑 존재 시) */
 function getDisplayName(login){
   const m=nameMap[login];
   return m&&m.name?m.name+' ('+login+')':login;
 }
+/** 특정 GitHub ID에 실명/소속/이메일 매핑 설정 */
 function setNameMapping(login,name,affiliation,email){
   nameMap[login]={name:name||'',affiliation:affiliation||'',email:email||''};
   saveNameMap();
 }
+/** 저자 정보 매핑 모달 표시 (GitHub ID별 실명/소속 편집) */
 function showNameMapModal(){
   const wrap=document.createElement('div');
   wrap.style.cssText='font-size:.75rem;line-height:1.6';
@@ -3259,6 +3316,7 @@ function showNameMapModal(){
   const btnSave=document.createElement('button');btnSave.className='bt p';btnSave.textContent='저장';btnSave.addEventListener('click',applyNameMap);foot.appendChild(btnSave);
   modal.classList.add('show');
 }
+/** 저자 매핑 적용 - 공동저자/교신저자 드롭다운에 실명 반영 */
 function applyNameMap(){
   for(const c of collabList){
     const name=(document.getElementById('nm-'+c.login)||{}).value||'';
@@ -3271,7 +3329,8 @@ function applyNameMap(){
   document.getElementById('as').textContent='저자 정보 저장됨';
 }
 
-async function fetchCollaborators(){
+async /** GitHub API로 리포지토리 Collaborator 목록 가져오기 */
+function fetchCollaborators(){
   loadNameMap();
   const cached=sessionStorage.getItem('aicra.collabs');
   if(cached){try{const d=JSON.parse(cached);if(Date.now()-d.at<600000){collabList=d.list;populateAuthorUI();return;}}catch(e){}}
@@ -3286,6 +3345,7 @@ async function fetchCollaborators(){
   }catch(e){}
 }
 
+/** 저자 드롭다운 UI에 Collaborator 목록 채우기 */
 function populateAuthorUI(){
   const sel=document.getElementById('au');
   sel.innerHTML='';
@@ -3294,6 +3354,7 @@ function populateAuthorUI(){
   docManager.getUser().then(u=>{if(u)sel.value=u.login;updateAuthorDropdowns();updateReviewerDD();}).catch(()=>{});
 }
 
+/** 1저자/공동저자/교신저자 드롭다운 옵션 동기화 */
 function updateAuthorDropdowns(){
   const author=document.getElementById('au').value;
   const coSel=document.getElementById('coau-add');
@@ -3313,6 +3374,7 @@ function updateAuthorDropdowns(){
   }
 }
 
+/** 공동저자 추가 (드롭다운 선택 -> 칩 UI) */
 function addCoauthor(login){
   if(!login||selectedCoauthors.includes(login))return;
   selectedCoauthors.push(login);
@@ -3321,6 +3383,7 @@ function addCoauthor(login){
   updateAuthorDropdowns();
 }
 
+/** 공동저자 제거 (칩 UI에서 삭제) */
 function removeCoauthor(login){
   selectedCoauthors=selectedCoauthors.filter(l=>l!==login);
   selectedCorr=selectedCorr.filter(l=>l!==login);
@@ -3331,6 +3394,7 @@ function removeCoauthor(login){
   updateAuthorDropdowns();
 }
 
+/** 교신저자 추가 */
 function addCorrespondingAuthor(login){
   if(!login||selectedCorr.includes(login))return;
   selectedCorr.push(login);
@@ -3339,6 +3403,7 @@ function addCorrespondingAuthor(login){
   updateAuthorDropdowns();
 }
 
+/** 교신저자 제거 */
 function removeCorrespondingAuthor(login){
   selectedCorr=selectedCorr.filter(l=>l!==login);
   renderChips('corr-chips',selectedCorr,'removeCorr');
@@ -3346,6 +3411,7 @@ function removeCorrespondingAuthor(login){
   updateAuthorDropdowns();
 }
 
+/** 선택된 저자 목록을 칩(태그) UI로 렌더링 */
 function renderChips(areaId,list,removeFn){
   const area=document.getElementById(areaId);
   area.innerHTML='';
@@ -3378,6 +3444,7 @@ function addExternalAuthor(){
 // === REVIEWER SYSTEM ===
 let selectedReviewers=[];
 
+/** 검토자 추가 (Collaborator 목록에서 선택) */
 function addReviewer(login){
   if(!login||selectedReviewers.includes(login))return;
   selectedReviewers.push(login);
@@ -3385,12 +3452,14 @@ function addReviewer(login){
   document.getElementById('reviewers').value=selectedReviewers.join(', ');
   updateReviewerDD();
 }
+/** 검토자 제거 */
 function removeReviewer(login){
   selectedReviewers=selectedReviewers.filter(l=>l!==login);
   renderChips('rev-chips',selectedReviewers,'removeReviewer');
   document.getElementById('reviewers').value=selectedReviewers.join(', ');
   updateReviewerDD();
 }
+/** 검토자 드롭다운 옵션 동기화 (이미 선택된 항목 제외) */
 function updateReviewerDD(){
   const sel=document.getElementById('rev-add');
   const author=document.getElementById('au').value;
@@ -3422,7 +3491,8 @@ async function requestReview(){
   }
 }
 
-async function showReviewPanel(){
+async /** 리뷰 결과 확인 모달 - GitHub Issues에서 주석/첨삭 로드 */
+function showReviewPanel(){
   const path=docManager.getCurrentFile();
   if(!path){alert('먼저 문서를 저장하거나 불러와 주세요.');return;}
   document.getElementById('reviewModal').classList.add('show');
@@ -3473,7 +3543,8 @@ async function showReviewPanel(){
 
 // findBestRange -> provided by paper-engine.js
 
-async function resolveAnnotation(reviewer,annotationId,status){
+async /** 주석 해결 처리 (accepted/rejected/deferred) */
+function resolveAnnotation(reviewer,annotationId,status){
   const path=docManager.getCurrentFile();
   if(!path)return;
   try{
@@ -3499,6 +3570,7 @@ async function resolveAnnotation(reviewer,annotationId,status){
 
 // Annotation input (for reviewers)
 let _annotParagraph='';
+/** 특정 문단에 대한 주석 입력 모달 열기 */
 function openAnnotInput(paragraph){
   _annotParagraph=paragraph;
   document.getElementById('annot-context').textContent='대상: '+paragraph.substring(0,100)+'...';
@@ -3509,7 +3581,8 @@ function openAnnotInput(paragraph){
 document.getElementById('annot-type').addEventListener('change',function(){
   document.getElementById('annot-suggest-area').style.display=this.value==='suggest'?'block':'none';
 });
-async function submitAnnotation(){
+async /** 작성한 주석을 GitHub Issue 코멘트로 저장 */
+function submitAnnotation(){
   const path=docManager.getCurrentFile();
   if(!path){alert('문서가 로드되지 않았습니다.');return;}
   let user;try{user=await docManager.getUser();}catch(e){document.getElementById('as').textContent='[!] 인증 오류';return;}
@@ -3591,6 +3664,7 @@ function showReviewChecklist(){
   const cr=document.getElementById('checkResult');
   cr.innerHTML=html;_addCrClose(cr);cr.style.display='block';
 }
+/** 리뷰 체크리스트 항목 값 업데이트 */
 function updateChecklistItem(id,value){
   const stored=JSON.parse(localStorage.getItem('aicra.review.checklist')||'{}');
   stored[id]=value;
@@ -3700,6 +3774,7 @@ function lintVenue(){
 }
 
 // === SIMPLE MODE (beginner) ===
+/** 초보자 모드 전환 - 고급 버튼 숨기고 핵심만 표시 */
 function toggleSimpleMode(){
   document.body.classList.toggle('simple-mode');
   const isSimple=document.body.classList.contains('simple-mode');
@@ -3707,6 +3782,7 @@ function toggleSimpleMode(){
 }
 
 // === SHORTCUT HELP MODAL ===
+/** 단축키 가이드 팝업 표시 */
 function showShortcuts(){
   const shortcuts=[
     ['Ctrl+S','저장 (로컬+GitHub)'],['Ctrl+B','굵게'],['Ctrl+I','기울임'],['Ctrl+K','링크'],['Ctrl+M','인라인 수식'],
@@ -3744,6 +3820,7 @@ function reorderCitations(){
 
 // === PREVIEW ZOOM ===
 let _pvZoom=100;
+/** 미리보기 확대/축소 (Ctrl+/Ctrl-) */
 function zoomPreview(delta){
   _pvZoom=Math.max(50,Math.min(200,_pvZoom+delta));
   pv.style.fontSize=(_pvZoom/100*0.9)+'rem';
@@ -3859,6 +3936,7 @@ async function searchScholar(append){
     }catch(e2){results.innerHTML='<p style="padding:6px;color:#b42318">검색 실패</p>';}
   }
 }
+/** Semantic Scholar 검색 결과를 참고문헌에 추가 */
 function addScholarRef(el){
   const ref=el.dataset.ref;if(!ref)return;
   refs.push(ref);renderRefs();render();
@@ -3866,6 +3944,7 @@ function addScholarRef(el){
   if(_pendingCite){_completeCiteInsert();}
   else{document.getElementById('as').textContent='참고문헌 추가됨 ['+refs.length+']';}
 }
+/** Google Scholar 검색 페이지를 새 탭에서 열기 */
 function openGScholar(){
   const q=document.getElementById('schQuery').value.trim();
   if(q)window.open('https://scholar.google.com/scholar?q='+encodeURIComponent(q),'_blank');
@@ -4086,6 +4165,7 @@ function exportSplit(){
 }
 
 // === INSERT TEMPLATES (toolbar buttons) ===
+/** 데이터셋 분석 템플릿 삽입 (factsheet/비교표 등) */
 function _insTemplate(key){
   const tpls={
     dstbl:'\n\n*Table N. Dataset comparison.*\n| Dataset | Task | Size | Modality | Labels | License | Popularity |\n|---------|------|------|----------|--------|---------|------------|\n| [데이터셋1] | | | | | | |\n| [데이터셋2] | | | | | | |\n| [데이터셋3] | | | | | | |\n\n',
@@ -4126,6 +4206,7 @@ function formatRef(){
   if(el)el.addEventListener('input',()=>{document.getElementById('rf-preview').textContent=formatRef();});
   if(el&&el.tagName==='SELECT')el.addEventListener('change',()=>{document.getElementById('rf-preview').textContent=formatRef();});
 });
+/** 포맷된 참고문헌을 refs 배열에 추가 */
 function addFormattedRef(){
   const formatted=formatRef();
   if(!formatted){alert('저자와 제목을 입력해 주세요.');return;}
@@ -4136,6 +4217,7 @@ function addFormattedRef(){
   else{document.getElementById('as').textContent='참고문헌 ['+refs.length+'] 추가됨';}
 }
 
+/** 참고문헌 작성 가이드 팝업 표시 */
 function showRefGuide(){
   const guide='[참고문헌 작성 가이드]\n\n'+
     '== IEEE ==\n저자, "제목," 학회/저널명, 권, pp.페이지, 연도.\n예: J. Kim and S. Lee, "AI Security Framework," in Proc. IEEE S&P, pp. 1-15, 2025.\n\n'+
@@ -4148,12 +4230,14 @@ function showRefGuide(){
 }
 
 // === PAPER TYPE + SUBMISSION OPTIONS ===
+/** 논문 유형 변경 시 관련 옵션 자동 설정 */
 function applyPaperType(type){
   if(!type)return;
   const hints={short:'소논문: 4-6페이지, 간결한 구조 (서론-방법-결과-결론)',journal:'학술지: 전체 구조, 상세한 실험/분석, 참고문헌 충실',conf:'학회: 발표용, 명확한 기여, 제한된 페이지',symp:'학술대회: 포스터/구두 발표, 핵심 아이디어 중심'};
   document.getElementById('as').textContent=hints[type]||'';
 }
 
+/** 고급 옵션 토글 (줄번호/자동완성/동기 스크롤 등) */
 function toggleOption(opt,checked){
   const t=inp.value;
   const templates={
@@ -4264,6 +4348,7 @@ function buildExportContent(title,body){
 
 // === DOCX EXPORT ===
 // === DOCX MATH: KaTeX -> Word OMML via MathML ===
+/** MathML 노드를 Office Math Markup Language(OMML)로 변환 */
 function _mathmlToOmml(node){
   if(node.nodeType===3){const t=node.textContent.trim();return t?'<m:r><w:rPr><w:rFonts w:ascii="Cambria Math" w:hAnsi="Cambria Math"/></w:rPr><m:t>'+escAttr(t)+'</m:t></m:r>':'';}
   if(node.nodeType!==1)return '';
@@ -4287,6 +4372,7 @@ function _mathmlToOmml(node){
     default:return ch();
   }
 }
+/** LaTeX 수식을 DOCX 네이티브 수식 객체로 변환 */
 function _latexToDocxMath(latex,D,display){
   try{
     const html=katex.renderToString(latex,{throwOnError:false,output:'mathml',displayMode:!!display});
@@ -4302,6 +4388,7 @@ function _latexToDocxMath(latex,D,display){
 }
 
 // === MERMAID -> TikZ CONVERTER ===
+/** Mermaid 다이어그램 코드를 LaTeX TikZ 코드로 변환 */
 function _mermaidToTikz(src){
   const lines=src.split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
   const first=lines.shift()||'';
@@ -4309,7 +4396,8 @@ function _mermaidToTikz(src){
   if(!dirMatch)return null;
   const dir=dirMatch[1].toUpperCase();
   const nodes={};const edges=[];const order=[];const subs={};const stack=[];
-  function parseNode(tok){
+  /** MathML DOM 노드를 재귀적으로 OMML 요소로 변환 */
+function parseNode(tok){
     tok=tok.trim();
     const m=tok.match(/^([A-Za-z0-9_]+)(?:\[(.+)\]|\(\[(.+)\]\)|\{(.+)\}|\[\((.+)\)\])?$/);
     if(!m)return tok;
@@ -4523,7 +4611,8 @@ async function loadFromGitHub(){
   }
 }
 
-async function loadDoc(path){
+async /** GitHub에서 특정 문서 파일 로드 + 에디터에 적용 */
+function loadDoc(path){
   try{
     const data=await docManager.loadFile(path);
     // Check ACL
@@ -4591,7 +4680,8 @@ async function deleteDocument(path,sha){
   }catch(e){alert('삭제 실패: '+e.message);}
 }
 
-async function toggleDocLock(){
+async /** 문서 잠금/해제 토글 (동시 편집 방지) */
+function toggleDocLock(){
   const path=docManager.getCurrentFile();
   if(!path){alert('먼저 문서를 저장하거나 불러와 주세요.');return;}
   try{
@@ -4603,6 +4693,7 @@ async function toggleDocLock(){
   }catch(e){alert(e.message);}
 }
 
+/** 잠금 상태에 따른 UI 업데이트 (버튼 텍스트/아이콘) */
 function updateLockUI(locked){
   const btn=document.getElementById('lockBtn');
   if(locked){btn.textContent='잠금 해제';btn.style.color='#b42318';}
@@ -4635,6 +4726,7 @@ async function conflictResolve(action){
 }
 
 // Start auto-save after auth
+/** 30초 간격 자동 저장 시작 (인증 완료 후) */
 function initAutoSave(){
   docManager.startAutoSave(
     function(){return inp.value;},
