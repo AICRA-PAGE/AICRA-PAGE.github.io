@@ -261,7 +261,7 @@ body {
      기존 paper-editor.html의 인증 흐름과 동일.
      auth-guard.js의 aicraAuth.checkAccess()를 사용.
      ════════════════════════════════════════════ -->
-<div id="auth-gate">
+<div id="auth-gate" style="display:none">
   <div style="text-align:center;max-width:400px;padding:40px">
     <img src="/assets/img/logo.svg" alt="AICRA" style="width:48px;margin-bottom:16px">
     <h2 style="font-size:1.1rem;color:var(--brand);margin-bottom:8px" id="gate-title">접근 권한 확인 중...</h2>
@@ -276,7 +276,7 @@ body {
 <!-- ════════════════════════════════════════════
      Main Application Shell -- 인증 후 표시
      ════════════════════════════════════════════ -->
-<div id="app-shell" style="display:none;height:100vh;flex-direction:column">
+<div id="app-shell" style="display:flex;height:100vh;flex-direction:column">
 
   <!-- 상단 툴바 -->
   <div class="tb">
