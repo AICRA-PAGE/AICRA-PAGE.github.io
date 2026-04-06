@@ -1,0 +1,838 @@
+/**
+ * state.js -- Paper Workbench 통합 상태 관리자
+ *
+ * 설계 의도:
+ * - 모든 Phase가 이 모듈의 Paper Object를 읽고 쓴다 (Single Source of Truth)
+ * - 각 Phase는 자기 영역만 쓰고, 다른 Phase의 영역은 읽기만 한다
+ * - set()을 통한 변경만 이벤트를 발행하므로, 다른 모듈이 반응할 수 있다
+ * - 기존 paper-editor v4 데이터 구조에서의 완전한 마이그레이션 경로를 제공한다
+ *
+ * 기존 paper-editor.html의 저장 필드 (aicra.paper.v4):
+ *   { ti, au, coau, ab, kw, dm, status, collab, body, refs, at }
+ *
+ * 기존 editor의 getEditorMeta() 필드:
+ *   { title, author, coauthors, corresponding, abstract, keywords,
+ *     domain, status, collaborative, reviewers }
+ *
+ * 이 모든 필드가 새 Paper Object에 1:1 매핑되어야 한다.
+ */
+
+import { bus, EVT } from './event-bus.js';
+
+
+/* ═══════════════════════════════════════════
+ * Paper Object 스키마 정의
+ *
+ * 기존 에디터 필드와의 매핑을 주석으로 명시한다.
+ * 매핑 표기: [legacy: 필드명] = 기존 에디터에서의 필드
+ * ═══════════════════════════════════════════ */
+
+/**
+ * 빈 Paper Object 생성
+ * @returns {Object} 초기 상태의 Paper Object
+ */
+export function createEmptyPaper() {
+  return {
+    /* ── 프로젝트 메타 ── */
+    _version: 2,                          // 데이터 스키마 버전 (마이그레이션용)
+    _id: _uuid(),                         // 프로젝트 고유 ID
+    _createdAt: new Date().toISOString(), // 생성 시각
+    _updatedAt: new Date().toISOString(), // 최종 수정 시각
+
+    /* ── 논문 메타데이터 ──
+     * [legacy: ti]      -> meta.title
+     * [legacy: au]      -> meta.authors[0] (1저자)
+     * [legacy: coau]    -> meta.coauthors (쉼표 구분 문자열)
+     * [legacy: ab]      -> meta.abstract
+     * [legacy: kw]      -> meta.keywords (쉼표 구분 문자열)
+     * [legacy: dm]      -> meta.domain
+     * [legacy: status]  -> meta.status
+     * [legacy: collab]  -> meta.collaborative
+     *
+     * getEditorMeta() 추가 필드:
+     * corresponding     -> meta.corresponding
+     * reviewers         -> meta.reviewers
+     */
+    meta: {
+      title: '',                          // 논문 제목 [legacy: ti]
+      titleEn: '',                        // 영문 제목 (KCI 등에서 요구)
+      authors: [],                        // 저자 목록 [{login,name,affiliation,email,orcid,role}]
+      firstAuthor: '',                    // 1저자 login [legacy: au]
+      coauthors: '',                      // 공동저자 (쉼표구분 문자열) [legacy: coau]
+      corresponding: '',                  // 교신저자 login [legacy: getEditorMeta().corresponding]
+      abstract: '',                       // 초록 [legacy: ab]
+      abstractEn: '',                     // 영문 초록
+      keywords: '',                       // 키워드 (쉼표구분 문자열) [legacy: kw]
+      keywordsEn: '',                     // 영문 키워드
+      domain: '',                         // 연구 분야 [legacy: dm]
+      venue: '',                          // 투고 대상 학회/저널
+      venueTemplate: '',                  // 선택된 양식 코드 (neurips, sp, kci_kr 등)
+      deadline: '',                       // 투고 마감일 (ISO 8601)
+      status: 'draft',                    // 논문 상태 [legacy: status]
+      paperType: '',                      // 논문 유형: journal|conf|short|symp
+      language: 'ko',                     // 주 언어
+      collaborative: false,               // 공동 편집 모드 [legacy: collab]
+      reviewers: '',                      // 검토자 목록 (쉼표구분) [legacy: getEditorMeta().reviewers]
+      affiliation: '',                    // 소속 기관
+    },
+
+    /* ── Phase 1: Research (문헌 조사) ── */
+    research: {
+      queries: [],                        // 검색 쿼리 이력 [{query, source, timestamp, resultCount}]
+      papers: [],                         // 수집된 논문 [{id, title, authors, year, venue, abstract, doi, url, tags, notes}]
+      litMatrix: {                        // 문헌 비교 매트릭스
+        axes: [],                         //   비교 축 (method, dataset, metric 등)
+        entries: [],                      //   [{paperId, values: {축: 값}}]
+      },
+      gaps: [],                           // 발견된 연구 갭 [{description, evidence, severity}]
+      researchQuestions: [],              // 연구 질문 [{id, text, type, linkedGap}]
+      notes: '',                          // 자유 메모 (Markdown)
+    },
+
+    /* ── Phase 2: Plan (논증 설계) ── */
+    plan: {
+      outline: [],                        // 아웃라인 트리 [{id, title, level, children, targetWords, status, notes}]
+      argumentMap: [],                    // 논증 구조 [{claim, evidence, warrant, rebuttal, linkedRQ}]
+      experimentDesign: {                 // 실험 설계
+        variables: [],                    //   독립/종속/통제 변수
+        conditions: [],                   //   실험 조건
+        metrics: [],                      //   평가 지표
+        datasets: [],                     //   사용 데이터셋
+        baselines: [],                    //   비교 대상 (baseline methods)
+      },
+      milestones: [],                     // 일정 [{phase, deadline, status}]
+      estimatedPages: 0,                  // 예상 페이지 수
+    },
+
+    /* ── Phase 3: Draft (집필) ──
+     *
+     * 기존 에디터의 핵심 데이터를 모두 포함한다.
+     * [legacy: body]     -> draft.body
+     * [legacy: refs]     -> references[] (공유 자원으로 분리)
+     *
+     * 기존 에디터의 런타임 상태 (UI-only, 저장하지 않는 것):
+     *   renderToken, eqCounter, envPH[], focusMode, _pendingCite,
+     *   _citeSelStart, _citeSelEnd, _dirty
+     * -> 이들은 draft.js 모듈의 로컬 변수로 유지 (Paper Object에 저장 불필요)
+     *
+     * 기존 에디터의 IndexedDB 스냅샷:
+     *   snapshots[] (IDB 'paper-snapshots' store)
+     * -> snapshots[] 로 마이그레이션
+     */
+    draft: {
+      body: '',                           // 본문 Markdown [legacy: body]
+      sections: [],                       // 섹션 메타 [{id, title, wordCount, status, lastEdited}]
+
+      /* ── 편집기 설정 (UI 복원용) ── */
+      editorSettings: {
+        columnLayout: 1,                  // 프리뷰 단 수 (1 또는 2)
+        focusMode: false,                 // 집중 모드 on/off
+        simpleMode: false,                // 초보자 모드 on/off
+        previewZoom: 100,                 // 프리뷰 확대/축소 (%)
+        darkMode: false,                  // 다크 모드 on/off
+        wordTarget: 0,                    // 목표 단어수
+        citeStyle: 'numeric',            // 인용 스타일: numeric|author-year|superscript
+        printLayout: '1',                 // 인쇄 레이아웃: '1'|'2'
+      },
+
+      /* ── 투고 옵션 (기존 에디터의 옵션바에서 가져옴) ── */
+      submissionOptions: {
+        coverPage: false,                 // 표지 포함 [legacy: opt-cover]
+        coverLetter: false,               // 커버레터 포함 [legacy: opt-coverletter]
+        englishAbstract: false,           // 영문 초록 포함 [legacy: opt-enabs]
+        blindMode: false,                 // 블라인드 심사 모드 [legacy: opt-blind]
+      },
+    },
+
+    /* ── Phase 4: Refine (품질 검증) ──
+     *
+     * 기존 에디터 검증 함수 매핑:
+     * validatePaper()  -> refine.validationResults
+     * diagnosePaper()  -> refine.diagnosticResults
+     * analyzeStyle()   -> refine.styleResults
+     * lintVenue()      -> refine.venueComplianceResults
+     * runAnonymizationLint() -> refine.anonymizationResults
+     * submissionPreflight()  -> submit.preflightResults (Phase 6로 이동)
+     */
+    refine: {
+      validationResults: [],              // validatePaper() 결과 [{category, items:[{check, passed, detail}]}]
+      diagnosticResults: [],              // diagnosePaper() 결과 [{section, issues:[{type, severity, msg}]}]
+      styleResults: [],                   // analyzeStyle() 결과 [{type, location, original, suggested}]
+      venueComplianceResults: [],         // lintVenue() 결과 [{rule, passed, detail}]
+      anonymizationResults: [],           // runAnonymizationLint() 결과 [{type, location, text}]
+      claimChecks: [],                    // 주장-근거 심층 검증 [{claim, source, verified, severity}]
+      logicIssues: [],                    // 논리 흐름 분석 [{location, type, description, suggestion}]
+      statisticsAudit: [],                // 통계 검증 [{value, context, recalculated, match}]
+      readabilityScore: null,             // 가독성 점수 {flesch, grade, sentenceAvg, passiveRate}
+      reproducibility: {                  // 재현성 체크
+        codeAvailable: false,
+        dataAvailable: false,
+        envDescribed: false,
+        checklist: [],
+      },
+    },
+
+    /* ── Phase 5: Review (심사 대응) ──
+     *
+     * 기존 에디터 리뷰 함수 매핑:
+     * requestReview()     -> review.reviewRequests
+     * showReviewPanel()   -> review.externalAnnotations
+     * resolveAnnotation() -> review.externalAnnotations[].status
+     * openAnnotInput()    -> (UI 전용, 저장 불필요)
+     * submitAnnotation()  -> review.externalAnnotations
+     * enableReviewMode()  -> review.reviewModeEnabled
+     * showReviewChecklist() -> review.checklistResults
+     * updateChecklistItem() -> review.checklistResults
+     * setReviewVerdict()    -> review.verdict
+     * exportReview()        -> (내보내기 전용, 저장 불필요)
+     */
+    review: {
+      reviewModeEnabled: false,           // 리뷰 모드 활성화 여부
+      reviewRequests: [],                 // 리뷰 요청 이력 [{reviewer, date, status}]
+      externalAnnotations: [],            // 외부 리뷰어 주석 [{reviewer, paragraph, category, text, status, annotationId}]
+      checklistResults: [],               // 심사 체크리스트 [{id, label, value}]
+      verdict: '',                        // 심사 판정 (accept/minor/major/reject)
+      versions: [],                       // 버전 이력 [{versionId, body, timestamp, label}]
+      simulations: [],                    // 모의 심사 결과 [{venue, score, strengths, weaknesses}]
+      rebuttal: [],                       // 반박문 [{commentId, response, evidence, status}]
+      revisionLog: [],                    // 수정 이력 [{change, reason, section, beforeAfter}]
+    },
+
+    /* ── Phase 6: Submit (투고) ──
+     *
+     * 기존 에디터 투고 함수 매핑:
+     * submissionPreflight() -> submit.preflightResults
+     * showCreditModal()     -> submit.creditRoles
+     * exportSplit()         -> (내보내기 전용)
+     * saveToGitHub()        -> (storage.js로 이동)
+     * executeSave()         -> (storage.js로 이동)
+     * loadFromGitHub()      -> (storage.js로 이동)
+     * deleteDocument()      -> (storage.js로 이동)
+     * toggleDocLock()       -> submit.documentLocked
+     * conflictResolve()     -> (storage.js로 이동)
+     */
+    submit: {
+      preflightResults: [],               // 투고 전 점검 결과 [{check, passed, detail}]
+      coverLetter: '',                    // 커버레터 본문
+      venueRecommendations: [],           // 추천 학회/저널 [{venue, matchScore, reason}]
+      ethicsChecklist: [],                // 윤리 체크리스트 [{item, checked, notes}]
+      creditRoles: [],                    // CRediT 기여도 [{author, roles:[]}]
+      documentLocked: false,              // 문서 잠금 상태 [legacy: toggleDocLock]
+      submissionPackage: {                // 제출 패키지
+        mainFile: '',
+        supplementary: [],
+        coverLetterFile: '',
+      },
+      submissionHistory: [],              // 제출 이력 [{venue, date, status, trackingId}]
+    },
+
+    /* ── Phase 7: Post-publication (출판 후) ── */
+    postpub: {
+      doi: '',                            // 발행된 DOI
+      publishedUrl: '',                   // 게재 URL
+      citationCount: 0,                   // 피인용 횟수
+      citationHistory: [],                // 피인용 추이 [{date, count}]
+      presentations: [],                  // 발표 자료 [{type, filePath, venue, date}]
+      followUpIdeas: [],                  // 후속 연구 아이디어
+      mediaLinks: [],                     // 블로그/SNS 홍보 링크
+    },
+
+    /* ── 공유 자원 ──
+     *
+     * 기존 에디터 참고문헌 매핑:
+     * refs[]               -> references[].raw  (원본 문자열)
+     * importBibTeX()       -> references[].bibtex
+     * searchScholar()      -> references[].source = 'scholar'
+     * addScholarRef()      -> references[]
+     * addRef()             -> references[]
+     * removeRef()          -> references[]
+     * renderRefs()         -> (UI 전용)
+     * insertExistingCite() -> (UI 전용)
+     * handleCiteInsert()   -> (UI 전용)
+     * reorderCitations()   -> references 순서
+     * checkRefDuplicates() -> (refine으로 이동)
+     * formatRef()          -> references[].formatted
+     * addFormattedRef()    -> references[]
+     * showRefGuide()       -> (UI 전용)
+     *
+     * 기존 에디터 그림/표:
+     * buildFigureTableList() -> figures[], tables[] 자동 파싱
+     */
+    references: [],                       // 참고문헌 [{id, raw, bibtex, parsed, source, tags, formatted}]
+    figures: [],                          // 그림 목록 [{id, path, caption, section, width}]
+    tables: [],                           // 표 목록 [{id, caption, section}]
+    equations: [],                        // 수식 목록 [{id, latex, label, section}]
+    glossary: [],                         // 용어집 [{term, termEn, definition}]
+
+    /* ── 스냅샷 ──
+     *
+     * 기존 에디터 스냅샷 매핑:
+     * IndexedDB 'paper-snapshots' store -> snapshots[]
+     * saveSnapshot()      -> snapshots에 추가
+     * showSnapshots()     -> (UI 전용)
+     * restoreSnapshot()   -> 스냅샷에서 body/refs 복원
+     */
+    snapshots: [],                        // 전체 스냅샷 [{date, label, body, refs, meta}]
+
+    /* ── 저자 이름 매핑 ──
+     *
+     * 기존 에디터:
+     * loadNameMap()        -> nameMap
+     * saveNameMap()        -> nameMap
+     * getDisplayName()     -> nameMap[login]
+     * setNameMapping()     -> nameMap[login] = {name, affiliation, email}
+     * showNameMapModal()   -> (UI 전용)
+     * applyNameMap()       -> (UI 전용)
+     */
+    nameMap: {},                          // GitHub login -> 실명 매핑 {login: {name, affiliation, email}}
+
+    /* ── 샘플 데이터 ──
+     * loadSamplePaper()    -> (앱 초기화 시 별도 처리)
+     */
+  };
+}
+
+
+/* ═══════════════════════════════════════════
+ * StateManager 클래스
+ * ═══════════════════════════════════════════ */
+
+export class StateManager {
+  /**
+   * @param {Object} [initialData] - 초기 Paper Object (생략 시 빈 객체 생성)
+   */
+  constructor(initialData) {
+    /** @type {Object} 내부 상태 -- Paper Object 전체 */
+    this._data = initialData || createEmptyPaper();
+
+    /** @type {number|null} 디바운스 저장 타이머 */
+    this._saveTimer = null;
+
+    /** @type {boolean} 변경 추적 (dirty flag) */
+    this._dirty = false;
+  }
+
+  /**
+   * get -- 점 표기법(dot notation)으로 중첩 값 읽기
+   *
+   * 사용 예:
+   *   state.get('meta.title')        -> '논문 제목'
+   *   state.get('research.papers')   -> [{...}, {...}]
+   *   state.get('draft.body')        -> 'Markdown 본문...'
+   *
+   * @param {string} path  점으로 구분된 경로
+   * @returns {*} 해당 경로의 값 (없으면 undefined)
+   */
+  get(path) {
+    return path.split('.').reduce((obj, key) => obj?.[key], this._data);
+  }
+
+  /**
+   * getAll -- Paper Object 전체 반환
+   * 주의: 참조를 반환하므로 직접 수정하지 말 것. 반드시 set()을 사용.
+   * @returns {Object} Paper Object 전체
+   */
+  getAll() {
+    return this._data;
+  }
+
+  /**
+   * set -- 값 변경 + 자동 저장 예약 + 이벤트 발행
+   *
+   * 사용 예:
+   *   state.set('meta.title', '새 제목')
+   *   state.set('draft.body', markdownText)
+   *   state.set('research.papers', [...papers, newPaper])
+   *
+   * @param {string} path   변경할 경로
+   * @param {*} value        새 값
+   */
+  set(path, value) {
+    const keys = path.split('.');
+    let target = this._data;
+
+    /* 중첩 경로 탐색 -- 마지막 키 직전까지 */
+    for (let i = 0; i < keys.length - 1; i++) {
+      if (target[keys[i]] === undefined || target[keys[i]] === null) {
+        target[keys[i]] = {};
+      }
+      target = target[keys[i]];
+    }
+
+    /* 값 설정 */
+    const lastKey = keys[keys.length - 1];
+    const oldValue = target[lastKey];
+    target[lastKey] = value;
+
+    /* 수정 시각 갱신 */
+    this._data._updatedAt = new Date().toISOString();
+    this._dirty = true;
+
+    /* 디바운스 자동 저장 -- 빠른 연속 수정 시 마지막 것만 저장 */
+    clearTimeout(this._saveTimer);
+    this._saveTimer = setTimeout(() => this._autoSave(), 500);
+
+    /* 변경 이벤트 발행 */
+    bus.emit('state:changed', { path, value, oldValue });
+  }
+
+  /**
+   * update -- 특정 경로의 객체를 부분 병합 (shallow merge)
+   *
+   * 사용 예:
+   *   state.update('meta', { title: '새 제목', status: 'review' })
+   *
+   * @param {string} path   병합 대상 경로
+   * @param {Object} partial 병합할 key-value 쌍
+   */
+  update(path, partial) {
+    const current = this.get(path);
+    if (current && typeof current === 'object' && !Array.isArray(current)) {
+      this.set(path, { ...current, ...partial });
+    } else {
+      this.set(path, partial);
+    }
+  }
+
+  /**
+   * push -- 배열 끝에 항목 추가
+   *
+   * 사용 예:
+   *   state.push('references', { id: 1, raw: '...' })
+   *   state.push('research.papers', paperObj)
+   *
+   * @param {string} path   배열 경로
+   * @param {*} item         추가할 항목
+   */
+  push(path, item) {
+    const arr = this.get(path);
+    if (Array.isArray(arr)) {
+      arr.push(item);
+      this.set(path, arr); // 이벤트 발행을 위해 set() 호출
+    }
+  }
+
+  /**
+   * removeAt -- 배열에서 특정 인덱스의 항목 제거
+   * @param {string} path  배열 경로
+   * @param {number} index 제거할 인덱스
+   */
+  removeAt(path, index) {
+    const arr = this.get(path);
+    if (Array.isArray(arr) && index >= 0 && index < arr.length) {
+      arr.splice(index, 1);
+      this.set(path, arr);
+    }
+  }
+
+  /**
+   * isDirty -- 미저장 변경이 있는지 확인
+   * @returns {boolean}
+   */
+  isDirty() {
+    return this._dirty;
+  }
+
+  /**
+   * markClean -- dirty 플래그 초기화 (저장 완료 후 호출)
+   */
+  markClean() {
+    this._dirty = false;
+  }
+
+  /**
+   * replace -- Paper Object 전체를 교체 (불러오기 시 사용)
+   * @param {Object} newData  새 Paper Object
+   */
+  replace(newData) {
+    this._data = newData;
+    this._dirty = false;
+    bus.emit(EVT.PROJECT_LOADED, { data: newData });
+  }
+
+  /**
+   * serialize -- JSON 문자열로 직렬화 (저장용)
+   * @returns {string}
+   */
+  serialize() {
+    this._data._updatedAt = new Date().toISOString();
+    return JSON.stringify(this._data);
+  }
+
+  /**
+   * _autoSave -- 디바운스된 localStorage 자동 저장
+   * @private
+   */
+  _autoSave() {
+    try {
+      localStorage.setItem('aicra.paper-workbench.v2', this.serialize());
+    } catch (e) {
+      console.warn('[State] localStorage 저장 실패:', e.message);
+    }
+  }
+}
+
+
+/* ═══════════════════════════════════════════
+ * Legacy Migration (기존 paper-editor v4 -> Paper Workbench v2)
+ *
+ * 기존 에디터의 저장 키: 'aicra.paper.v4'
+ * 기존 에디터의 저장 구조:
+ *   { ti, au, coau, ab, kw, dm, status, collab, body, refs, at }
+ *
+ * 이 마이그레이션은 모든 필드를 누락 없이 새 구조에 매핑한다.
+ * ═══════════════════════════════════════════ */
+
+/**
+ * migrateLegacyV4 -- 기존 paper-editor v4 데이터를 Workbench v2로 변환
+ *
+ * 필드 매핑표:
+ * ┌──────────────┬──────────────────────────┬────────────────────┐
+ * │ Legacy (v4)  │ Workbench (v2)           │ 비고               │
+ * ├──────────────┼──────────────────────────┼────────────────────┤
+ * │ ti           │ meta.title               │                    │
+ * │ au           │ meta.firstAuthor         │                    │
+ * │ coau         │ meta.coauthors           │ 쉼표 구분 문자열   │
+ * │ ab           │ meta.abstract            │                    │
+ * │ kw           │ meta.keywords            │ 쉼표 구분 문자열   │
+ * │ dm           │ meta.domain              │                    │
+ * │ status       │ meta.status              │                    │
+ * │ collab       │ meta.collaborative       │ boolean            │
+ * │ body         │ draft.body               │                    │
+ * │ refs         │ references[]             │ 문자열 -> {id,raw} │
+ * │ at           │ _updatedAt               │ timestamp -> ISO   │
+ * └──────────────┴──────────────────────────┴────────────────────┘
+ *
+ * @param {Object} v4 - 기존 'aicra.paper.v4' 파싱된 객체
+ * @returns {Object} 새 Paper Object
+ */
+export function migrateLegacyV4(v4) {
+  const paper = createEmptyPaper();
+
+  /* ── 메타데이터 매핑 ── */
+  paper.meta.title        = v4.ti || '';
+  paper.meta.firstAuthor  = v4.au || '';
+  paper.meta.coauthors    = v4.coau || '';
+  paper.meta.abstract     = v4.ab || '';
+  paper.meta.keywords     = v4.kw || '';
+  paper.meta.domain       = v4.dm || '';
+  paper.meta.status       = v4.status || 'draft';
+  paper.meta.collaborative = v4.collab || false;
+
+  /* ── 본문 매핑 ── */
+  paper.draft.body = v4.body || '';
+
+  /* ── 참고문헌 매핑 (문자열 배열 -> 구조화된 객체 배열) ── */
+  if (Array.isArray(v4.refs)) {
+    paper.references = v4.refs.map((raw, i) => ({
+      id: i + 1,                          // 1-based 인용 번호
+      raw: raw,                           // 원본 참고문헌 문자열
+      bibtex: '',                         // BibTeX (추후 파싱)
+      parsed: null,                       // 파싱된 구조 (추후)
+      source: 'legacy',                   // 출처: 기존 에디터에서 마이그레이션됨
+      tags: [],
+      formatted: '',
+    }));
+  }
+
+  /* ── 시각 정보 매핑 ── */
+  if (v4.at) {
+    paper._updatedAt = new Date(v4.at).toISOString();
+    paper._createdAt = paper._updatedAt; // 생성일은 알 수 없으므로 수정일로 대체
+  }
+
+  /* ── 마이그레이션 완료 시 현재 Phase를 draft로 설정 ── */
+  /* 기존 사용자는 이미 집필 중이었으므로 Draft phase에서 시작 */
+
+  return paper;
+}
+
+
+/**
+ * migrateEditorMeta -- getEditorMeta() 구조에서 추가 필드 병합
+ *
+ * getEditorMeta()가 반환하는 필드 중 v4에 없는 것:
+ *   corresponding, reviewers
+ *
+ * @param {Object} paper - Paper Object (migrateLegacyV4로 생성된 것)
+ * @param {Object} editorMeta - getEditorMeta() 반환값
+ * @returns {Object} 갱신된 Paper Object
+ */
+export function migrateEditorMeta(paper, editorMeta) {
+  if (editorMeta.corresponding) paper.meta.corresponding = editorMeta.corresponding;
+  if (editorMeta.reviewers) paper.meta.reviewers = editorMeta.reviewers;
+  return paper;
+}
+
+
+/**
+ * migrateNameMap -- 기존 저자 이름 매핑 복원
+ *
+ * 기존 키: 'aicra.paper.nameMap'
+ * 구조: { login: { name, affiliation, email } }
+ *
+ * @param {Object} paper - Paper Object
+ * @returns {Object} 갱신된 Paper Object
+ */
+export function migrateNameMap(paper) {
+  try {
+    const raw = localStorage.getItem('aicra.paper.nameMap');
+    if (raw) {
+      paper.nameMap = JSON.parse(raw);
+    }
+  } catch { /* 파싱 실패 시 무시 */ }
+  return paper;
+}
+
+
+/**
+ * migrateSnapshots -- IndexedDB 스냅샷을 Paper Object로 이동
+ *
+ * 기존: IndexedDB 'PaperDB' -> 'snapshots' store
+ * 새로: paper.snapshots[]
+ *
+ * @param {Object} paper - Paper Object
+ * @returns {Promise<Object>} 갱신된 Paper Object
+ */
+export async function migrateSnapshots(paper) {
+  try {
+    const dbReq = indexedDB.open('PaperDB', 1);
+    const db = await new Promise((ok, fail) => {
+      dbReq.onsuccess = () => ok(dbReq.result);
+      dbReq.onerror = () => fail(dbReq.error);
+      /* DB가 없으면 생성하지 않고 무시 */
+      dbReq.onupgradeneeded = () => { dbReq.result.close(); fail(new Error('no db')); };
+    });
+
+    const tx = db.transaction('snapshots', 'readonly');
+    const store = tx.objectStore('snapshots');
+    const all = await new Promise((ok, fail) => {
+      const req = store.getAll();
+      req.onsuccess = () => ok(req.result);
+      req.onerror = () => fail(req.error);
+    });
+    db.close();
+
+    if (all && all.length > 0) {
+      paper.snapshots = all.map(s => ({
+        date: s.ts ? new Date(s.ts).toISOString() : new Date().toISOString(),
+        label: s.label || 'auto',
+        body: s.body || '',
+        refs: s.refs || [],
+        meta: {
+          title: s.ti || '',
+          author: s.au || '',
+        },
+      }));
+    }
+  } catch {
+    /* IndexedDB 접근 실패 시 무시 -- 스냅샷은 선택적 데이터 */
+  }
+  return paper;
+}
+
+
+/* ═══════════════════════════════════════════
+ * 기존 에디터 기능 -> Phase 모듈 매핑 레지스트리
+ *
+ * 이 매핑은 구현 누락을 방지하기 위한 참조 문서이다.
+ * 각 Phase 모듈이 구현해야 할 기존 함수 목록을 명시한다.
+ *
+ * 표기: 함수명(라인) -> 대상모듈 [상태]
+ * 상태: MAPPED=구현됨, PENDING=미구현, UI_ONLY=저장불필요
+ * ═══════════════════════════════════════════ */
+export const LEGACY_FUNCTION_MAP = {
+  /* ── shared/ (공유 유틸) ── */
+  'escHtml(1531)':            { target: 'shared/ui.js',       status: 'PENDING' },
+  'escAttr(1533)':            { target: 'shared/ui.js',       status: 'PENDING' },
+  'sanitizeHtml(1634)':       { target: 'shared/ui.js',       status: 'PENDING' },
+  'debounce(1614)':           { target: 'shared/ui.js',       status: 'PENDING' },
+  'closeModal(3065)':         { target: 'shared/ui.js',       status: 'PENDING' },
+  '_addCrClose(1549)':        { target: 'shared/ui.js',       status: 'PENDING' },
+
+  /* ── shared/render.js (Markdown/KaTeX/Mermaid 렌더링) ── */
+  'render(1736)':             { target: 'shared/render.js',   status: 'PENDING' },
+  'hydrateMermaid(1636)':     { target: 'shared/render.js',   status: 'PENDING' },
+  'processEnvs(1875)':        { target: 'shared/render.js',   status: 'PENDING' },
+  'restoreEnvs(1892)':        { target: 'shared/render.js',   status: 'PENDING' },
+  'processNumberedEq(1894)':  { target: 'shared/render.js',   status: 'PENDING' },
+  'processCitations(1896)':   { target: 'shared/render.js',   status: 'PENDING' },
+  'processFootnotes(1915)':   { target: 'shared/render.js',   status: 'PENDING' },
+  'processSubfigures(1938)':  { target: 'shared/render.js',   status: 'PENDING' },
+  'preprocessRefsAndCaptions(1968)': { target: 'shared/render.js', status: 'PENDING' },
+  'processAppendix(1994)':    { target: 'shared/render.js',   status: 'PENDING' },
+  'processImageSize(2010)':   { target: 'shared/render.js',   status: 'PENDING' },
+  'autoFitVisuals(1797)':     { target: 'shared/render.js',   status: 'PENDING' },
+  'buildPreviewHeader(1649)': { target: 'shared/render.js',   status: 'PENDING' },
+  'buildTOC(1706)':           { target: 'shared/render.js',   status: 'PENDING' },
+
+  /* ── shared/citation.js (인용 관리) ── */
+  'addRef(2375)':             { target: 'shared/citation.js', status: 'PENDING' },
+  'removeRef(2377)':          { target: 'shared/citation.js', status: 'PENDING' },
+  'renderRefs(2379)':         { target: 'shared/citation.js', status: 'PENDING' },
+  'insertExistingCite(2392)': { target: 'shared/citation.js', status: 'PENDING' },
+  'handleCiteInsert(2182)':   { target: 'shared/citation.js', status: 'PENDING' },
+  '_completeCiteInsert(2198)':{ target: 'shared/citation.js', status: 'PENDING' },
+  '_cancelPendingCite(2211)': { target: 'shared/citation.js', status: 'PENDING' },
+  'importBibTeX(2411)':       { target: 'shared/citation.js', status: 'PENDING' },
+  'reorderCitations(3810)':   { target: 'shared/citation.js', status: 'PENDING' },
+  'checkRefDuplicates(3868)': { target: 'shared/citation.js', status: 'PENDING' },
+  'searchScholar(3885)':      { target: 'shared/citation.js', status: 'PENDING' },
+  'addScholarRef(3948)':      { target: 'shared/citation.js', status: 'PENDING' },
+  'openGScholar(3956)':       { target: 'shared/citation.js', status: 'PENDING' },
+  'openAcademicDB(3961)':     { target: 'shared/citation.js', status: 'PENDING' },
+  'formatRef(4189)':          { target: 'shared/citation.js', status: 'PENDING' },
+  'addFormattedRef(4218)':    { target: 'shared/citation.js', status: 'PENDING' },
+  'showRefGuide(4229)':       { target: 'shared/citation.js', status: 'PENDING' },
+
+  /* ── shared/export.js (내보내기 엔진) ── */
+  'exportMD(2749)':           { target: 'shared/export.js',   status: 'PENDING' },
+  'exportTeX(2759)':          { target: 'shared/export.js',   status: 'PENDING' },
+  'exportDOCX(4449)':         { target: 'shared/export.js',   status: 'PENDING' },
+  'exportSplit(4147)':        { target: 'shared/export.js',   status: 'PENDING' },
+  'downloadMarkdown(2721)':   { target: 'shared/export.js',   status: 'PENDING' },
+  'buildExportContent(4346)': { target: 'shared/export.js',   status: 'PENDING' },
+  'escapeLatex(2917)':        { target: 'shared/export.js',   status: 'PENDING' },
+  '_mathmlToOmml(4360)':      { target: 'shared/export.js',   status: 'PENDING' },
+  '_latexToDocxMath(4384)':   { target: 'shared/export.js',   status: 'PENDING' },
+  '_mermaidToTikz(4400)':     { target: 'shared/export.js',   status: 'PENDING' },
+  'parseNode(4408)':          { target: 'shared/export.js',   status: 'PENDING' },
+  'askFileName(2741)':        { target: 'shared/export.js',   status: 'PENDING' },
+
+  /* ── shared/venue.js (학회/저널 프로필) ── */
+  'applyVenueTemplate(2090)': { target: 'shared/venue.js',    status: 'PENDING' },
+  'applyPaperType(4242)':     { target: 'shared/venue.js',    status: 'PENDING' },
+  '_insTemplate(4177)':       { target: 'shared/venue.js',    status: 'PENDING' },
+
+  /* ── phases/3-draft/draft.js (집필 Phase) ── */
+  'insertBlock(2113)':        { target: 'phases/3-draft/draft.js', status: 'PENDING' },
+  'typeText(2022)':           { target: 'phases/3-draft/draft.js', status: 'PENDING' },
+  'replaceAll(2024)':         { target: 'phases/3-draft/draft.js', status: 'PENDING' },
+  'wrapSelection(2063)':      { target: 'phases/3-draft/draft.js', status: 'PENDING' },
+  'insertFootnote(2067)':     { target: 'phases/3-draft/draft.js', status: 'PENDING' },
+  'toggleFindPanel(2223)':    { target: 'phases/3-draft/draft.js', status: 'PENDING' },
+  'closeFindPanel(2225)':     { target: 'phases/3-draft/draft.js', status: 'PENDING' },
+  '_buildFindRegex(2227)':    { target: 'phases/3-draft/draft.js', status: 'PENDING' },
+  'findNext(2234)':           { target: 'phases/3-draft/draft.js', status: 'PENDING' },
+  'replaceOne(2249)':         { target: 'phases/3-draft/draft.js', status: 'PENDING' },
+  'replaceAllFind(2257)':     { target: 'phases/3-draft/draft.js', status: 'PENDING' },
+  'updateStats(2704)':        { target: 'phases/3-draft/draft.js', status: 'PENDING' },
+  '_estimatePages(1535)':     { target: 'phases/3-draft/draft.js', status: 'PENDING' },
+  'getDebounceMs(1608)':      { target: 'phases/3-draft/draft.js', status: 'PENDING' },
+  'updateWordTarget(2432)':   { target: 'phases/3-draft/draft.js', status: 'PENDING' },
+  'toggleColumnLayout(2920)': { target: 'phases/3-draft/draft.js', status: 'PENDING' },
+  'zoomPreview(3832)':        { target: 'phases/3-draft/draft.js', status: 'PENDING' },
+  'buildFigureTableList(3840)':{ target: 'phases/3-draft/draft.js', status: 'PENDING' },
+  'parseSections(2971)':      { target: 'phases/3-draft/draft.js', status: 'PENDING' },
+
+  /* ── phases/3-draft/draft.js (초록 생성) ── */
+  'genAbstract(3012)':        { target: 'phases/3-draft/draft.js', status: 'PENDING' },
+  'insertAbstract(3040)':     { target: 'phases/3-draft/draft.js', status: 'PENDING' },
+  'updateAbsPreview(3069)':   { target: 'phases/3-draft/draft.js', status: 'PENDING' },
+  'getAbstractText(3103)':    { target: 'phases/3-draft/draft.js', status: 'PENDING' },
+  'copyAbstract(3115)':       { target: 'phases/3-draft/draft.js', status: 'PENDING' },
+  'printAbstract(3124)':      { target: 'phases/3-draft/draft.js', status: 'PENDING' },
+  'splitSentences(2980)':     { target: 'phases/3-draft/draft.js', status: 'PENDING' },
+  'matchSection(2989)':       { target: 'phases/3-draft/draft.js', status: 'PENDING' },
+  'scoreSentence(2997)':      { target: 'phases/3-draft/draft.js', status: 'PENDING' },
+  'getBestSentence(3006)':    { target: 'phases/3-draft/draft.js', status: 'PENDING' },
+
+  /* ── phases/4-refine/refine.js (검증 Phase) ── */
+  'validatePaper(2481)':      { target: 'phases/4-refine/refine.js', status: 'PENDING' },
+  'diagnosePaper(2530)':      { target: 'phases/4-refine/refine.js', status: 'PENDING' },
+  'analyzeStyle(2637)':       { target: 'phases/4-refine/refine.js', status: 'PENDING' },
+  'lintVenue(3760)':          { target: 'phases/4-refine/refine.js', status: 'PENDING' },
+  'runAnonymizationLint(3989)':{ target: 'phases/4-refine/refine.js', status: 'PENDING' },
+
+  /* ── phases/5-review/review.js (심사 Phase) ── */
+  'requestReview(3480)':      { target: 'phases/5-review/review.js', status: 'PENDING' },
+  'showReviewPanel(3501)':    { target: 'phases/5-review/review.js', status: 'PENDING' },
+  'resolveAnnotation(3554)':  { target: 'phases/5-review/review.js', status: 'PENDING' },
+  'openAnnotInput(3581)':     { target: 'phases/5-review/review.js', status: 'PENDING' },
+  'submitAnnotation(3593)':   { target: 'phases/5-review/review.js', status: 'PENDING' },
+  'enableReviewMode(3618)':   { target: 'phases/5-review/review.js', status: 'PENDING' },
+  'showReviewChecklist(3640)':{ target: 'phases/5-review/review.js', status: 'PENDING' },
+  'updateChecklistItem(3676)':{ target: 'phases/5-review/review.js', status: 'PENDING' },
+  'setReviewVerdict(3682)':   { target: 'phases/5-review/review.js', status: 'PENDING' },
+  'exportReview(3689)':       { target: 'phases/5-review/review.js', status: 'PENDING' },
+
+  /* ── phases/6-submit/submit.js (투고 Phase) ── */
+  'submissionPreflight(4041)':{ target: 'phases/6-submit/submit.js', status: 'PENDING' },
+  'showCreditModal(4096)':    { target: 'phases/6-submit/submit.js', status: 'PENDING' },
+  'toggleBlindMode(3981)':    { target: 'phases/6-submit/submit.js', status: 'PENDING' },
+
+  /* ── core/storage.js (저장/불러오기) ── */
+  'save(2922)':               { target: 'core/storage.js',    status: 'PENDING' },
+  'restore(2924)':            { target: 'core/storage.js',    status: 'PENDING' },
+  'saveToGitHub(4293)':       { target: 'core/storage.js',    status: 'PENDING' },
+  'executeSave(4313)':        { target: 'core/storage.js',    status: 'PENDING' },
+  'loadFromGitHub(4594)':     { target: 'core/storage.js',    status: 'PENDING' },
+  'loadDoc(4624)':            { target: 'core/storage.js',    status: 'PENDING' },
+  'deleteDocument(4673)':     { target: 'core/storage.js',    status: 'PENDING' },
+  'toggleDocLock(4694)':      { target: 'core/storage.js',    status: 'PENDING' },
+  'updateLockUI(4707)':       { target: 'core/storage.js',    status: 'PENDING' },
+  'conflictResolve(4714)':    { target: 'core/storage.js',    status: 'PENDING' },
+  'initAutoSave(4740)':       { target: 'core/storage.js',    status: 'PENDING' },
+  'saveSnapshot(1588)':       { target: 'core/storage.js',    status: 'PENDING' },
+  'showSnapshots(2446)':      { target: 'core/storage.js',    status: 'PENDING' },
+  'restoreSnapshot(2466)':    { target: 'core/storage.js',    status: 'PENDING' },
+  'getEditorMeta(4276)':      { target: 'core/storage.js',    status: 'PENDING' },
+
+  /* ── 저자 관리 (shared/author.js 또는 index.html) ── */
+  'loadNameMap(3279)':        { target: 'shared/author.js',   status: 'PENDING' },
+  'saveNameMap(3283)':        { target: 'shared/author.js',   status: 'PENDING' },
+  'getDisplayName(3287)':     { target: 'shared/author.js',   status: 'PENDING' },
+  'setNameMapping(3292)':     { target: 'shared/author.js',   status: 'PENDING' },
+  'showNameMapModal(3297)':   { target: 'shared/author.js',   status: 'PENDING' },
+  'applyNameMap(3324)':       { target: 'shared/author.js',   status: 'PENDING' },
+  'fetchCollaborators(3338)': { target: 'shared/author.js',   status: 'PENDING' },
+  'populateAuthorUI(3354)':   { target: 'shared/author.js',   status: 'PENDING' },
+  'updateAuthorDropdowns(3363)':{ target: 'shared/author.js', status: 'PENDING' },
+  'addCoauthor(3383)':        { target: 'shared/author.js',   status: 'PENDING' },
+  'removeCoauthor(3392)':     { target: 'shared/author.js',   status: 'PENDING' },
+  'addCorrespondingAuthor(3403)':{ target: 'shared/author.js',status: 'PENDING' },
+  'removeCorrespondingAuthor(3412)':{ target: 'shared/author.js', status: 'PENDING' },
+  'renderChips(3420)':        { target: 'shared/author.js',   status: 'PENDING' },
+  'addExternalAuthor(3439)':  { target: 'shared/author.js',   status: 'PENDING' },
+  'addReviewer(3453)':        { target: 'shared/author.js',   status: 'PENDING' },
+  'removeReviewer(3461)':     { target: 'shared/author.js',   status: 'PENDING' },
+  'updateReviewerDD(3468)':   { target: 'shared/author.js',   status: 'PENDING' },
+
+  /* ── UI 전용 (상태 저장 불필요) ── */
+  'toggleDark(2965)':         { target: 'index.html',         status: 'PENDING' },
+  'toggleFocus(2968)':        { target: 'index.html',         status: 'PENDING' },
+  'toggleSimpleMode(3786)':   { target: 'index.html',         status: 'PENDING' },
+  'showShortcuts(3794)':      { target: 'index.html',         status: 'PENDING' },
+  'toggleHelp(2401)':         { target: 'index.html',         status: 'PENDING' },
+  'switchHelpTab(2403)':      { target: 'index.html',         status: 'PENDING' },
+  'switchMobileTab(2271)':    { target: 'index.html',         status: 'PENDING' },
+  '_applyResponsiveMode(2295)':{ target: 'index.html',        status: 'PENDING' },
+  'toggleRef(2394)':          { target: 'index.html',         status: 'PENDING' },
+  'toggleOption(4249)':       { target: 'index.html',         status: 'PENDING' },
+  'markDocumentClean(3749)':  { target: 'index.html',         status: 'PENDING' },
+  'loadSamplePaper(2929)':    { target: 'index.html',         status: 'PENDING' },
+
+  /* ── PPT 관련 (별도 모듈) ── */
+  'showPptPreview':           { target: 'shared/export.js',   status: 'PENDING' },
+  'exportPPT':                { target: 'shared/export.js',   status: 'PENDING' },
+
+  /* ── 에러 핸들링 ── */
+  'window.onerror(3732)':     { target: 'index.html',         status: 'PENDING' },
+};
+
+
+/* ═══════════════════════════════════════════
+ * 유틸리티
+ * ═══════════════════════════════════════════ */
+
+/** UUID v4 생성 (crypto API 사용, fallback 포함) */
+function _uuid() {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+  /* fallback: 간단한 UUID v4 */
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = Math.random() * 16 | 0;
+    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+  });
+}

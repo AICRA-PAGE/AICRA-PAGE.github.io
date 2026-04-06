@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https://cdn.jsdelivr.net https://api.github.com https://api.semanticscholar.org https://api.crossref.org https://fonts.googleapis.com https://fonts.gstatic.com https://huggingface.co; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; img-src 'self' https: data: blob:; connect-src 'self' https://api.github.com https://api.semanticscholar.org https://api.crossref.org https://huggingface.co https://cdn.jsdelivr.net">
+<title>AICRA Paper Workbench</title>
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+
+<style>
+/* ════════════════════════════════════════════
+ * Paper Workbench -- 메인 셸 스타일
+ *
+ * 기존 paper-editor.html의 CSS 변수와 디자인 언어를 그대로 계승.
+ * :root 변수 이름은 동일하게 유지하여 phase 모듈에서도 일관된 스타일 적용.
+ * ════════════════════════════════════════════ */
+
+/* ── 색상 변수 (기존 에디터와 동일) ── */
+:root {
+  --bg: #f9f8f5;
+  --panel: #fff;
+  --text: #2a2a2a;
+  --muted: #7a756c;
+  --brand: #2f5d50;
+  --brand2: #245045;
+  --line: #e8e5de;
+  --surface: #f3f1ec;
+  --code-bg: #0f172a;
+  --radius: 6px;
+  --accent: #b7791f;
+}
+[data-theme=dark] {
+  --bg: #1a1d23;
+  --panel: #22262e;
+  --text: #d4d0c8;
+  --muted: #8a8578;
+  --brand: #4da89a;
+  --brand2: #3d8a7e;
+  --line: #333840;
+  --surface: #2a2e36;
+  --code-bg: #0d1117;
+}
+
+/* ── 기본 리셋 ── */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Pretendard', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ════════════════════════════════════════════
+ * 상단 툴바 -- 프로젝트 제목 + 공통 액션
+ *
+ * 기존 에디터의 .tb 클래스를 그대로 사용.
+ * ════════════════════════════════════════════ */
+.tb {
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+  gap: 5px;
+  flex-shrink: 0;
+}
+.tb img { width: 20px; height: 20px; }
+.tb h1 { font-size: .8rem; color: var(--brand); font-weight: 700; }
+.tb .sep { width: 1px; height: 18px; background: var(--line); margin: 0 3px; }
+/* 버튼 -- 기존 에디터의 .bt 동일 */
+.bt {
+  padding: 3px 9px;
+  border: none;
+  border-radius: 5px;
+  font-size: .67rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--line);
+  transition: .15s;
+  position: relative;
+}
+.bt:hover { background: var(--line); }
+.bt.p { background: var(--brand); color: #fff; border-color: var(--brand); }
+.bt.p:hover { background: var(--brand2); }
+.spacer { flex: 1; }
+
+/* ════════════════════════════════════════════
+ * Phase Navigation -- 7단계 탭 바
+ *
+ * 가로 스크롤 가능한 단계 탭. 현재 phase에 하이라이트.
+ * 각 탭에 준비도 점(초록/노란색) 표시.
+ * ════════════════════════════════════════════ */
+.phase-nav {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0 12px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.phase-tab {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 7px 12px;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-size: .65rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: .15s;
+  position: relative;
+}
+.phase-tab:hover {
+  color: var(--text);
+  background: rgba(47, 93, 80, .05);
+}
+/* 활성 phase 탭 */
+.phase-tab.active {
+  color: var(--brand);
+  border-bottom-color: var(--brand);
+}
+/* phase 번호 */
+.phase-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  font-size: .52rem;
+  font-weight: 700;
+  background: var(--line);
+  color: var(--muted);
+}
+.phase-tab.active .phase-num {
+  background: var(--brand);
+  color: #fff;
+}
+/* 준비도 점 */
+.ready-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.ready-dot.ready { background: #2E7D32; }
+.ready-dot.pending { background: #E6A817; }
+
+/* ════════════════════════════════════════════
+ * Phase 컨텐츠 영역
+ *
+ * 각 phase 모듈이 이 영역에 자신의 UI를 렌더링한다.
+ * 전체 남은 높이를 차지한다.
+ * ════════════════════════════════════════════ */
+#phase-content {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+}
+
+/* ════════════════════════════════════════════
+ * 하단 상태바 -- 프로젝트 요약 정보
+ * ════════════════════════════════════════════ */
+.status-bar {
+  display: flex;
+  gap: 10px;
+  padding: 3px 12px;
+  font-size: .58rem;
+  color: var(--muted);
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  flex-shrink: 0;
+  align-items: center;
+}
+.status-bar b { color: var(--text); }
+.status-bar .score {
+  padding: 1px 6px;
+  border-radius: 8px;
+  color: #fff;
+  font-size: .55rem;
+}
+.score-high { background: var(--brand); }
+.score-mid { background: var(--accent); }
+.score-low { background: #b42318; }
+
+/* ════════════════════════════════════════════
+ * Auth Gate -- 인증 화면 (기존 에디터 동일)
+ * ════════════════════════════════════════════ */
+#auth-gate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: var(--bg);
+}
+
+/* ════════════════════════════════════════════
+ * 토스트 메시지
+ * ════════════════════════════════════════════ */
+.toast-container {
+  position: fixed;
+  bottom: 40px;
+  right: 16px;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.toast {
+  padding: 6px 14px;
+  border-radius: 5px;
+  font-size: .68rem;
+  font-weight: 500;
+  color: #fff;
+  background: var(--brand);
+  box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  animation: toast-in .2s ease-out;
+}
+.toast.warn { background: var(--accent); }
+.toast.error { background: #b42318; }
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ════════════════════════════════════════════
+ * 반응형 -- 태블릿/모바일
+ * ════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .tb { padding: 4px 8px; gap: 3px; flex-wrap: wrap; }
+  .tb h1 { font-size: .7rem; }
+  .tb .sep { display: none; }
+  .phase-nav { padding: 0 6px; }
+  .phase-tab { padding: 6px 8px; font-size: .6rem; }
+  .phase-label { display: none; } /* 모바일에서 번호만 표시 */
+}
+@media (max-width: 480px) {
+  .phase-tab { padding: 6px 6px; }
+  .phase-num { width: 20px; height: 20px; font-size: .58rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════
+     Auth Gate -- 인증 필요 시 표시
+     기존 paper-editor.html의 인증 흐름과 동일.
+     auth-guard.js의 aicraAuth.checkAccess()를 사용.
+     ════════════════════════════════════════════ -->
+<div id="auth-gate">
+  <div style="text-align:center;max-width:400px;padding:40px">
+    <img src="/assets/img/logo.svg" alt="AICRA" style="width:48px;margin-bottom:16px">
+    <h2 style="font-size:1.1rem;color:var(--brand);margin-bottom:8px" id="gate-title">접근 권한 확인 중...</h2>
+    <p style="font-size:.82rem;color:var(--muted);line-height:1.6" id="gate-msg">GitHub 인증 정보를 확인하고 있습니다.</p>
+    <div id="gate-actions" style="margin-top:16px;display:none">
+      <a href="/admin/" class="bt p" style="text-decoration:none;display:inline-block;padding:8px 20px;margin:4px">CMS 로그인</a>
+      <button class="bt" onclick="location.reload()" style="padding:8px 20px;margin:4px">다시 확인</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     Main Application Shell -- 인증 후 표시
+     ════════════════════════════════════════════ -->
+<div id="app-shell" style="display:none;height:100vh;flex-direction:column">
+
+  <!-- 상단 툴바 -->
+  <div class="tb">
+    <img src="/assets/img/logo.svg" alt="">
+    <h1>Paper Workbench</h1>
+    <div class="sep"></div>
+    <!-- 프로젝트 제목 (인라인 편집) -->
+    <input id="project-title" type="text" placeholder="논문 제목을 입력하세요"
+      style="flex:1;max-width:300px;padding:3px 8px;border:1px solid var(--line);border-radius:4px;font-size:.72rem;background:var(--panel);color:var(--text);font-weight:600">
+    <div class="sep"></div>
+    <!-- 공통 액션 버튼 -->
+    <button class="bt" onclick="app.save()" title="저장 (Ctrl+S)">저장</button>
+    <button class="bt" onclick="app.saveAs()" title="새 이름으로 저장">다른이름저장</button>
+    <button class="bt" onclick="app.load()" title="저장된 논문 불러오기">불러오기</button>
+    <div class="sep"></div>
+    <button class="bt" onclick="app.toggleDark()" title="다크 모드">&#9684;</button>
+    <a class="bt" href="/admin/paper-editor.html" style="text-decoration:none" title="기존 에디터로 이동">Classic</a>
+    <a class="bt" href="/admin/" style="text-decoration:none">CMS</a>
+  </div>
+
+  <!-- Phase Navigation 탭 바 -->
+  <nav class="phase-nav" id="phase-nav">
+    <!-- router.js가 여기에 phase 탭을 렌더링한다 -->
+  </nav>
+
+  <!-- Phase 컨텐츠 영역 -- 각 phase 모듈이 여기에 UI를 렌더링 -->
+  <main id="phase-content">
+    <div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--muted);font-size:.8rem">
+      Phase 모듈 로딩 중...
+    </div>
+  </main>
+
+  <!-- 하단 상태바 -->
+  <div class="status-bar" id="status-bar">
+    <span>Phase: <b id="st-phase">-</b></span>
+    <span>상태: <b id="st-status">draft</b></span>
+    <span>단어: <b id="st-words">0</b></span>
+    <span>참고문헌: <b id="st-refs">0</b></span>
+    <span style="margin-left:auto" id="st-msg"></span>
+  </div>
+</div>
+
+<!-- 토스트 메시지 컨테이너 -->
+<div class="toast-container" id="toast-container"></div>
+
+
+<!-- ════════════════════════════════════════════
+     외부 스크립트 (기존 에디터와 공유)
+     ════════════════════════════════════════════ -->
+<script src="/assets/js/auth-guard.js"></script>
+
+<!-- ════════════════════════════════════════════
+     메인 애플리케이션 초기화
+     ════════════════════════════════════════════ -->
+<script type="module">
+import { bus, EVT } from './core/event-bus.js';
+import { StateManager, createEmptyPaper, migrateLegacyV4, migrateNameMap } from './core/state.js';
+import { PaperRouter } from './core/router.js';
+import { saveLocal, loadLocal, saveToGitHub, loadFromGitHub, loadDocument, startAutoSave, slugify } from './core/storage.js';
+
+
+/* ═══════════════════════════════════════════
+ * 앱 초기화 절차
+ *
+ * 1. localStorage에서 기존 데이터 로딩 (레거시 마이그레이션 포함)
+ * 2. StateManager 생성
+ * 3. PaperRouter 생성 + 초기화
+ * 4. 이벤트 구독 (토스트, 상태바 등)
+ * 5. 자동 저장 시작
+ * ═══════════════════════════════════════════ */
+
+async function initApp(userLogin) {
+  /* 1. 데이터 로딩 */
+  let paperData = loadLocal();
+
+  /* 레거시 마이그레이션 감지 */
+  if (paperData && paperData._migrationSource === 'v4') {
+    console.info('[App] 기존 paper-editor v4 -> Workbench v2 마이그레이션');
+    paperData = migrateLegacyV4(paperData._legacyData);
+    paperData = migrateNameMap(paperData);
+    /* 마이그레이션 결과를 새 형식으로 즉시 저장 */
+    saveLocal(paperData);
+  }
+
+  /* 데이터가 없으면 빈 Paper Object 생성 */
+  if (!paperData || !paperData._version) {
+    paperData = createEmptyPaper();
+  }
+
+  /* 2. StateManager 생성 */
+  const state = new StateManager(paperData);
+
+  /* 3. PaperRouter 생성 + 초기화 */
+  const router = new PaperRouter(state);
+  await router.init();
+
+  /* 4. 이벤트 구독 */
+
+  /** 토스트 메시지 표시 */
+  bus.on(EVT.TOAST, (data) => {
+    showToast(data.message, data.type || 'info');
+  });
+
+  /** Phase 진입 힌트 표시 */
+  bus.on(EVT.HINT, (data) => {
+    showToast(data.message, 'warn');
+  });
+
+  /** 상태바 갱신 -- phase 전환 시 */
+  bus.on(EVT.PHASE_CHANGED, (data) => {
+    document.getElementById('st-phase').textContent = data.label || data.phase;
+  });
+
+  /** 상태바 갱신 -- 데이터 변경 시 */
+  bus.on('state:changed', (data) => {
+    updateStatusBar(state);
+    /* 프로젝트 제목 동기화 */
+    if (data.path === 'meta.title') {
+      document.getElementById('project-title').value = data.value;
+    }
+  });
+
+  /* 5. 프로젝트 제목 양방향 바인딩 */
+  const titleInput = document.getElementById('project-title');
+  titleInput.value = state.get('meta.title') || '';
+  titleInput.addEventListener('input', () => {
+    state.set('meta.title', titleInput.value);
+  });
+
+  /* 6. 자동 저장 시작 */
+  startAutoSave(() => state.getAll());
+
+  /* 7. 키보드 단축키 */
+  document.addEventListener('keydown', (e) => {
+    /* Ctrl+S: 저장 */
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+      e.preventDefault();
+      saveLocal(state.getAll());
+      showToast('저장됨', 'info');
+    }
+  });
+
+  /* 8. 초기 상태바 렌더링 */
+  updateStatusBar(state);
+
+  /* 9. 전역 앱 객체 (toolbar 버튼 onclick에서 사용) */
+  window.app = {
+    state,
+    router,
+
+    /** 저장 (Ctrl+S / 저장 버튼) */
+    save() {
+      saveLocal(state.getAll());
+      showToast('저장됨', 'info');
+    },
+
+    /** 다른 이름으로 저장 */
+    async saveAs() {
+      const title = state.get('meta.title');
+      const fileName = prompt('파일명을 입력하세요:', slugify(title || 'untitled'));
+      if (!fileName) return;
+      try {
+        await saveToGitHub(state.getAll(), fileName, { forceSaveAs: true });
+        showToast('GitHub에 저장됨: ' + fileName, 'info');
+      } catch (err) {
+        showToast('저장 실패: ' + err.message, 'error');
+      }
+    },
+
+    /** 불러오기 */
+    async load() {
+      try {
+        const files = await loadFromGitHub();
+        if (files.length === 0) {
+          showToast('저장된 논문이 없습니다.', 'warn');
+          return;
+        }
+        /* 간단한 선택 UI (추후 모달로 개선) */
+        const names = files.map((f, i) => `${i + 1}. ${f.name}`).join('\n');
+        const choice = prompt('불러올 논문 번호를 선택하세요:\n' + names);
+        const idx = parseInt(choice) - 1;
+        if (idx >= 0 && idx < files.length) {
+          const paper = await loadDocument(files[idx].path);
+          state.replace(paper);
+          titleInput.value = paper.meta?.title || '';
+          router.navigateTo(paper.meta?.currentPhase || 'draft');
+          showToast('불러옴: ' + files[idx].name, 'info');
+        }
+      } catch (err) {
+        showToast('불러오기 실패: ' + err.message, 'error');
+      }
+    },
+
+    /** 다크 모드 전환 */
+    toggleDark() {
+      const theme = document.documentElement.dataset.theme === 'dark' ? '' : 'dark';
+      document.documentElement.dataset.theme = theme;
+      localStorage.setItem('aicra.dark', theme);
+    },
+  };
+}
+
+
+/* ═══════════════════════════════════════════
+ * 상태바 갱신
+ * ═══════════════════════════════════════════ */
+function updateStatusBar(state) {
+  const paper = state.getAll();
+  const body = paper.draft?.body || '';
+  const words = body.trim() ? body.trim().split(/\s+/).length : 0;
+  const refs = (paper.references || []).length;
+
+  document.getElementById('st-status').textContent = paper.meta?.status || 'draft';
+  document.getElementById('st-words').textContent = words.toLocaleString();
+  document.getElementById('st-refs').textContent = refs;
+}
+
+
+/* ═══════════════════════════════════════════
+ * 토스트 표시
+ * ═══════════════════════════════════════════ */
+function showToast(message, type = 'info') {
+  const container = document.getElementById('toast-container');
+  const el = document.createElement('div');
+  el.className = 'toast ' + (type === 'warn' ? 'warn' : type === 'error' ? 'error' : '');
+  el.textContent = message;
+  container.appendChild(el);
+  setTimeout(() => { el.remove(); }, 3000);
+}
+
+
+/* ═══════════════════════════════════════════
+ * Auth 체크 + 앱 시작
+ *
+ * 기존 paper-editor.html (line 4749)과 동일한 흐름:
+ * aicraAuth.checkAccess(onSuccess, onDenied, onNoLogin)
+ * ═══════════════════════════════════════════ */
+
+/* 다크 모드 복원 */
+if (localStorage.getItem('aicra.dark') === 'dark') {
+  document.documentElement.dataset.theme = 'dark';
+}
+
+aicraAuth.checkAccess(
+  /* 인증 성공 */
+  function(login) {
+    document.getElementById('auth-gate').style.display = 'none';
+    document.getElementById('app-shell').style.display = 'flex';
+    initApp(login);
+  },
+  /* 접근 거부 */
+  function(login) {
+    document.getElementById('gate-title').textContent = '접근이 거부되었습니다';
+    document.getElementById('gate-msg').textContent =
+      '이 도구는 AICRA 저장소 Collaborator만 사용할 수 있습니다.' +
+      (login ? ' (현재: ' + login + ')' : '');
+    document.getElementById('gate-actions').style.display = 'block';
+  },
+  /* 로그인 필요 */
+  function() {
+    document.getElementById('gate-title').textContent = '로그인이 필요합니다';
+    document.getElementById('gate-msg').textContent = '이 도구를 사용하려면 GitHub Collaborator 로그인이 필요합니다.';
+    document.getElementById('gate-actions').style.display = 'block';
+  }
+);
+</script>
+</body>
+</html>
