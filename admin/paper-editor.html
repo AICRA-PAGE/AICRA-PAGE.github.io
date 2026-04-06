@@ -4746,27 +4746,15 @@ function initAutoSave(){
   );
 }
 
-aicraAuth.checkAccess(
-  function(login){
-    document.getElementById('auth-gate').style.display='none';
-    document.getElementById('editor-content').style.display='flex';
-    fetchCollaborators();
-    initAutoSave();
-    enableReviewMode();
-    // First-visit tutorial
-    if(window._tutorialFirstVisit)window._tutorialFirstVisit();
-  },
-  function(login){
-    document.getElementById('gate-title').textContent='접근이 거부되었습니다';
-    document.getElementById('gate-msg').textContent='이 편집기는 AICRA 저장소 Collaborator만 사용할 수 있습니다.'+(login?' (현재: '+login+')':'');
-    document.getElementById('gate-actions').style.display='block';
-  },
-  function(){
-    document.getElementById('gate-title').textContent='로그인이 필요합니다';
-    document.getElementById('gate-msg').textContent='이 편집기를 사용하려면 GitHub Collaborator 로그인이 필요합니다.';
-    document.getElementById('gate-actions').style.display='block';
-  }
-);
+// Auth gate removed: editor is freely accessible, auth checked on save only
+(function(){
+  document.getElementById('auth-gate').style.display='none';
+  document.getElementById('editor-content').style.display='flex';
+  try{fetchCollaborators();}catch(e){}
+  initAutoSave();
+  try{enableReviewMode();}catch(e){}
+  if(window._tutorialFirstVisit)window._tutorialFirstVisit();
+})();
 </script>
 </body>
 </html>

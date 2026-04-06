@@ -50,17 +50,6 @@
 
     <div>
       <button class="btn" onclick="startCMS()">CMS 시작하기</button>
-      <button class="btn sec" onclick="showToken()">Token 로그인</button>
-    </div>
-
-    <div class="token-box" id="token-box">
-      <p>GitHub Personal Access Token (repo scope)으로 로그인:</p>
-      <input id="pat-input" type="password" placeholder="ghp_xxxxxxxxxxxx">
-      <button onclick="tokenLogin()">로그인</button>
-      <p class="err" id="pat-err"></p>
-      <p class="hint">
-        <a href="https://github.com/settings/tokens/new?scopes=repo&description=AICRA+CMS" target="_blank">토큰 생성하기</a> (repo scope 필요)
-      </p>
     </div>
 
     <p class="note">
@@ -79,26 +68,6 @@
       document.body.appendChild(s);
     }
 
-    function showToken() {
-      document.getElementById('token-box').style.display = 'block';
-    }
-
-    function tokenLogin() {
-      var token = document.getElementById('pat-input').value.trim();
-      var err = document.getElementById('pat-err');
-      if (!token || token.length < 10) {
-        err.textContent = '유효한 토큰을 입력하세요.';
-        err.style.display = 'block';
-        return;
-      }
-      err.style.display = 'none';
-      // Store token for auth-guard.js and CMS
-      localStorage.setItem('aicra.token', token);
-      localStorage.setItem('sveltia-cms.user', JSON.stringify({token: token}));
-      // Redirect to paper editor (works without CMS)
-      alert('로그인 성공! Paper Editor로 이동합니다.');
-      location.href = '/admin/paper-editor.html';
-    }
   </script>
 </body>
 </html>

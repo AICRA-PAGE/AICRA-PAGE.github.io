@@ -588,28 +588,12 @@ if (localStorage.getItem('aicra.dark') === 'dark') {
   document.documentElement.dataset.theme = 'dark';
 }
 
-aicraAuth.checkAccess(
-  /* 인증 성공 */
-  function(login) {
-    document.getElementById('auth-gate').style.display = 'none';
-    document.getElementById('app-shell').style.display = 'flex';
-    initApp(login);
-  },
-  /* 접근 거부 */
-  function(login) {
-    document.getElementById('gate-title').textContent = '접근이 거부되었습니다';
-    document.getElementById('gate-msg').textContent =
-      '이 도구는 AICRA 저장소 Collaborator만 사용할 수 있습니다.' +
-      (login ? ' (현재: ' + login + ')' : '');
-    document.getElementById('gate-actions').style.display = 'block';
-  },
-  /* 로그인 필요 */
-  function() {
-    document.getElementById('gate-title').textContent = '로그인이 필요합니다';
-    document.getElementById('gate-msg').textContent = '이 도구를 사용하려면 GitHub Collaborator 로그인이 필요합니다.';
-    document.getElementById('gate-actions').style.display = 'block';
-  }
-);
+// Auth gate removed: tool is freely accessible, auth checked on save only
+(function(){
+  document.getElementById('auth-gate').style.display = 'none';
+  document.getElementById('app-shell').style.display = 'flex';
+  initApp(null);
+})();
 </script>
 </body>
 </html>
