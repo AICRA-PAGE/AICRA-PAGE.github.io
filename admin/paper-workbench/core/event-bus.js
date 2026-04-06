@@ -149,6 +149,49 @@ export const EVT = {
   /* ── UI 알림 ── */
   TOAST:              'ui:toast',                    // 토스트 메시지 표시 요청
   HINT:               'ui:hint',                     // Phase 진입 힌트 표시
+
+  /* ── Command Palette (v2) ── */
+  CMD_EXECUTED:       'cmd:executed',                // 명령 팔레트에서 명령 실행됨
+  CMD_PALETTE_OPEN:   'cmd:palette-open',            // 팔레트 열림
+  CMD_PALETTE_CLOSE:  'cmd:palette-close',           // 팔레트 닫힘
+
+  /* ── Evidence Cards (v2) ── */
+  EVIDENCE_CREATED:   'evidence:created',            // 증거 카드 생성됨
+  EVIDENCE_UPDATED:   'evidence:updated',            // 증거 카드 갱신됨
+  EVIDENCE_LINKED:    'evidence:linked',             // 증거 카드가 섹션에 연결됨
+  EVIDENCE_REMOVED:   'evidence:removed',            // 증거 카드 제거됨
+
+  /* ── Paper Reader (v2) ── */
+  READER_OPENED:      'reader:opened',               // 리더 패널 열림
+  READER_CLOSED:      'reader:closed',               // 리더 패널 닫힘
+  READER_HIGHLIGHT:   'reader:highlight',             // 리더에서 텍스트 선택됨
+  DIGEST_GENERATED:   'reader:digest-generated',      // AI Digest 생성됨
+
+  /* ── Paper DNA (v2) ── */
+  DNA_ANALYZED:       'dna:analyzed',                // 논문 상태 분석 완료
+  DNA_ACTION_SUGGEST: 'dna:action-suggested',        // 추천 액션 갱신됨
+
+  /* ── Templates (v2) ── */
+  TEMPLATE_APPLIED:   'template:applied',            // 템플릿 적용됨
+
+  /* ── Phase 3 확장 (v2) ── */
+  RELATION_ADDED:     'graph:relation-added',        // Insight Graph 관계 추가
+  RELATION_REMOVED:   'graph:relation-removed',      // Insight Graph 관계 제거
+  NOTE_ADDED:         'shared:note-added',           // 메모 추가됨
+  STATE_CHANGED:      'state:changed',               // 상태 변경 (범용)
+
+  /* ── 모듈 간 요청 이벤트 (v2) ── */
+  EDITOR_FOCUS:       'editor:focus',                // 에디터 포커스 요청
+  READER_FOCUS:       'reader:focus',                // 리더 포커스 요청
+  EVIDENCE_ADDED:     'evidence:added',              // 증거 카드 추가됨 (alias)
+  EVIDENCE_CREATE_DIALOG: 'evidence:create-dialog',  // 증거 카드 생성 다이얼로그 요청
+  EVIDENCE_EDIT_DIALOG:   'evidence:edit-dialog',    // 증거 카드 편집 다이얼로그 요청
+
+  /* ── Dock 렌더링 요청 (v2) ── */
+  REQUEST_RENDER_EVIDENCE_CARDS: 'dock:render-evidence',     // 증거 카드 패널 렌더 요청
+  REQUEST_RENDER_COMPARATIVE:    'dock:render-comparative',  // 비교 보드 렌더 요청
+  REQUEST_RENDER_INSIGHT_GRAPH:  'dock:render-graph',        // 인사이트 그래프 렌더 요청
+  REQUEST_ANALYZE_DNA:           'dock:render-dna',          // Paper DNA 분석 요청
 };
 
 

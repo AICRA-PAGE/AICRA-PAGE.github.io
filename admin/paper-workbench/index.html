@@ -292,6 +292,7 @@ body {
     <button class="bt" onclick="app.saveAs()" title="새 이름으로 저장">다른이름저장</button>
     <button class="bt" onclick="app.load()" title="저장된 논문 불러오기">불러오기</button>
     <div class="sep"></div>
+    <button class="bt p" onclick="showPalette()" title="명령 팔레트 (Ctrl+K)" style="font-size:.6rem">Ctrl+K</button>
     <button class="bt" onclick="app.toggleDark()" title="다크 모드">&#9684;</button>
     <a class="bt" href="/admin/paper-editor.html" style="text-decoration:none" title="기존 에디터로 이동">Classic</a>
     <a class="bt" href="/admin/" style="text-decoration:none">CMS</a>
@@ -336,6 +337,15 @@ import { bus, EVT } from './core/event-bus.js';
 import { StateManager, createEmptyPaper, migrateLegacyV4, migrateNameMap } from './core/state.js';
 import { PaperRouter } from './core/router.js';
 import { saveLocal, loadLocal, saveToGitHub, loadFromGitHub, loadDocument, startAutoSave, slugify } from './core/storage.js';
+import { initCommandPalette, showPalette } from './core/command-palette.js';
+import { initTemplates, showTemplateChooser } from './core/templates.js';
+import { initPaperDNA, analyzeDNA, getRecommendedActions } from './core/paper-dna.js';
+import { initEvidence } from './shared/evidence.js';
+import { initReader, toggleReader } from './shared/reader.js';
+import { initContextMenu } from './shared/context-menu.js';
+import { initComparativeBoard } from './shared/comparative-board.js';
+import { initInsightGraph } from './shared/insight-graph.js';
+import { initDock, toggleDock, addDockTab } from './core/dock.js';
 
 
 /* ═══════════════════════════════════════════
@@ -409,7 +419,21 @@ async function initApp(userLogin) {
   /* 6. 자동 저장 시작 */
   startAutoSave(() => state.getAll());
 
-  /* 7. 키보드 단축키 */
+  /* 7. Command Palette 초기화 (Ctrl+K) */
+  initCommandPalette(state, bus, router);
+
+  /* 7b. Phase 2 모듈 초기화 */
+  initPaperDNA(state, bus);
+  initEvidence(state, bus);
+  initReader(state, bus);
+  initContextMenu(state, bus);
+
+  /* 7c. Phase 3 모듈 초기화 */
+  initComparativeBoard(state, bus);
+  initInsightGraph(state, bus);
+  initDock(state, bus);
+
+  /* 8. 키보드 단축키 */
   document.addEventListener('keydown', (e) => {
     /* Ctrl+S: 저장 */
     if ((e.ctrlKey || e.metaKey) && e.key === 's') {
@@ -417,10 +441,32 @@ async function initApp(userLogin) {
       saveLocal(state.getAll());
       showToast('저장됨', 'info');
     }
+    /* Ctrl+K: Command Palette */
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      e.preventDefault();
+      showPalette();
+    }
+    /* Ctrl+Shift+R: Paper Reader 토글 */
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'R') {
+      e.preventDefault();
+      toggleReader();
+    }
   });
 
-  /* 8. 초기 상태바 렌더링 */
+  /* 9. 초기 상태바 렌더링 */
   updateStatusBar(state);
+
+  /* 10. Templates 초기화 -- 빈 논문이면 템플릿 선택 모달 표시 */
+  initTemplates(state, bus, router);
+  const body = state.get('draft.body') || '';
+  const title = state.get('meta.title') || '';
+  if (!body && !title) {
+    setTimeout(() => showTemplateChooser(), 300);
+  }
+
+  /* Command Palette을 전역에서 호출 가능하게 (toolbar onclick) */
+  window.showPalette = showPalette;
+  window.showTemplateChooser = showTemplateChooser;
 
   /* 9. 전역 앱 객체 (toolbar 버튼 onclick에서 사용) */
   window.app = {
