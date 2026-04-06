@@ -30,7 +30,8 @@ import { bus, EVT } from './event-bus.js';
 export const PHASES = [
   {
     id: 'research',
-    label: '문헌 조사',
+    label: '논문 찾기',
+    labelFull: '관련 논문 찾기 (문헌 조사)',
     labelEn: 'Research',
     order: 1,
     module: '../phases/1-research/research.js',
@@ -39,7 +40,8 @@ export const PHASES = [
   },
   {
     id: 'plan',
-    label: '논증 설계',
+    label: '구조 잡기',
+    labelFull: '주장과 구조 만들기 (논증 설계)',
     labelEn: 'Plan',
     order: 2,
     module: '../phases/2-plan/plan.js',
@@ -55,7 +57,8 @@ export const PHASES = [
   },
   {
     id: 'draft',
-    label: '집필',
+    label: '글쓰기',
+    labelFull: '논문 쓰기 (집필)',
     labelEn: 'Draft',
     order: 3,
     module: '../phases/3-draft/draft.js',
@@ -64,7 +67,8 @@ export const PHASES = [
   },
   {
     id: 'refine',
-    label: '품질 검증',
+    label: '품질 높이기',
+    labelFull: '논문 품질 점검 (품질 검증)',
     labelEn: 'Refine',
     order: 4,
     module: '../phases/4-refine/refine.js',
@@ -79,7 +83,8 @@ export const PHASES = [
   },
   {
     id: 'review',
-    label: '심사 대응',
+    label: '심사 준비',
+    labelFull: '심사 준비와 대응 (심사 대응)',
     labelEn: 'Review',
     order: 5,
     module: '../phases/5-review/review.js',
@@ -94,7 +99,8 @@ export const PHASES = [
   },
   {
     id: 'submit',
-    label: '투고',
+    label: '제출하기',
+    labelFull: '저널/학회에 투고하기 (투고)',
     labelEn: 'Submit',
     order: 6,
     module: '../phases/6-submit/submit.js',
@@ -109,7 +115,8 @@ export const PHASES = [
   },
   {
     id: 'postpub',
-    label: '출판 후',
+    label: '게재 후',
+    labelFull: '게재 후 관리 (출판 후)',
     labelEn: 'Post-pub',
     order: 7,
     module: '../phases/7-postpub/postpub.js',
@@ -324,6 +331,9 @@ export class PaperRouter {
       >
         <span class="phase-num">${phase.order}</span>
         <span class="phase-label">${phase.label}</span>
+        <span class="phase-progress" style="width:24px;height:3px;border-radius:2px;background:var(--line);overflow:hidden;flex-shrink:0">
+          <span class="phase-progress-bar" style="display:block;height:100%;width:0%;background:var(--brand);border-radius:2px;transition:width .3s"></span>
+        </span>
         <span class="ready-dot pending"></span>
       </button>
     `).join('');
@@ -358,6 +368,18 @@ export class PaperRouter {
       if (dot) {
         dot.className = 'ready-dot ' + (check.ready ? 'ready' : 'pending');
         dot.title = check.hint || (check.ready ? '준비 완료' : '');
+      }
+
+      /* Progress bar 갱신 -- getStatus()가 있으면 진행률 표시 */
+      const progressBar = tab.querySelector('.phase-progress-bar');
+      if (progressBar) {
+        const mod = this._loadedModules[phase.id];
+        let pct = 0;
+        if (mod && typeof mod.getStatus === 'function') {
+          pct = mod.getStatus().progress || 0;
+        }
+        progressBar.style.width = Math.min(100, pct) + '%';
+        progressBar.style.background = pct >= 80 ? '#2E7D32' : pct >= 30 ? 'var(--accent)' : 'var(--brand)';
       }
     });
   }
