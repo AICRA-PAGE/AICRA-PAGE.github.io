@@ -5,58 +5,99 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AICRA Content Management</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      min-height: 100vh; font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', sans-serif;
-      color: #1c1917; background: #f5f3ed;
-      display: grid; place-items: center; padding: 24px;
-    }
-    .wrap { max-width: 400px; text-align: center; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', sans-serif; background: #F5F3ED; color: #1C1917; }
+    .landing { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem; text-align: center; }
+    .landing.hidden { display: none; }
     .logo { width: 64px; height: 64px; margin-bottom: 12px; }
-    h1 { font-size: 1.2rem; color: #2f5d50; margin-bottom: 4px; }
-    .sub { color: #6b665c; font-size: 0.85rem; margin-bottom: 24px; }
-    .info { font-size: 0.8rem; color: #6b665c; line-height: 1.6; margin-bottom: 20px; }
-    .info a { color: #2f5d50; font-weight: 600; }
+    h1 { font-size: 1.2rem; color: #2F5D50; margin-bottom: 4px; }
+    .sub { color: #6B665C; font-size: 0.85rem; margin-bottom: 24px; }
+    .card { background: #fff; border-radius: 10px; padding: 20px 24px; max-width: 420px; width: 100%; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 16px; }
+    .card h3 { font-size: 0.9rem; color: #2F5D50; margin-bottom: 10px; }
+    .card ul { text-align: left; list-style: none; padding: 0; }
+    .card li { padding: 6px 0; border-bottom: 1px solid #f0ede6; font-size: 0.8rem; color: #44403C; }
+    .card li:last-child { border-bottom: none; }
+    .card li strong { color: #2F5D50; }
+    .btn { display: inline-block; padding: 10px 28px; background: #2F5D50; color: #fff; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: background 0.2s; margin: 4px; text-decoration: none; }
+    .btn:hover { background: #245045; }
+    .btn.sec { background: #fff; color: #2F5D50; border: 1px solid #2F5D50; }
+    .btn.sec:hover { background: #f0ede6; }
+    .note { font-size: 0.75rem; color: #8B8580; max-width: 420px; line-height: 1.5; margin-top: 12px; }
+    .note a { color: #2F5D50; }
+    .token-box { margin-top: 16px; padding: 16px; background: #fff; border-radius: 8px; border: 1px solid #e8e5de; max-width: 420px; width: 100%; display: none; }
+    .token-box p { font-size: 0.75rem; color: #6b665c; margin-bottom: 8px; }
+    .token-box input { padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; width: 220px; font-size: 0.8rem; }
+    .token-box button { padding: 8px 16px; background: #2F5D50; color: #fff; border: none; border-radius: 6px; font-size: 0.8rem; cursor: pointer; margin-left: 4px; }
+    .token-box .err { font-size: 0.7rem; color: #c53030; margin-top: 6px; display: none; }
+    .token-box .hint { font-size: 0.65rem; color: #999; margin-top: 8px; }
+    .token-box .hint a { color: #2F5D50; }
   </style>
 </head>
 <body>
-  <main class="wrap">
+  <div class="landing" id="landing">
     <img src="/assets/img/logo.svg" alt="AICRA" class="logo">
     <h1>AICRA CMS</h1>
-    <p class="sub">잠시 후 편집기가 로드됩니다...</p>
-    <p class="info">
-      GitHub 로그인이 필요합니다. 권한이 없다면
-      <a href="https://github.com/AICRA-PAGE/AICRA-PAGE.github.io/issues/new?template=access-request.md" target="_blank">접근 권한 요청</a>을 해주세요.<br><br>
-      <a href="https://aicra-page.github.io">블로그로 돌아가기</a> |
-      <a href="/admin/paper-editor.html">Paper Editor</a> |
-      <a href="/admin/paper-workbench/">Paper Workbench</a>
-    </p>
-    <div id="manual-login" style="display:none;margin-top:16px;padding:16px;background:#fff;border-radius:8px;border:1px solid #e8e5de;">
-      <p style="font-size:.75rem;color:#6b665c;margin-bottom:8px;">CMS가 로드되지 않으면 토큰으로 직접 로그인:</p>
-      <input id="pat-input" type="password" placeholder="ghp_xxxxxxxxxxxx" style="padding:8px 12px;border:1px solid #ddd;border-radius:6px;width:240px;font-size:.8rem;">
-      <button onclick="manualLogin()" style="padding:8px 16px;background:#2f5d50;color:#fff;border:none;border-radius:6px;font-size:.8rem;cursor:pointer;margin-left:4px;">로그인</button>
-      <p id="pat-err" style="font-size:.7rem;color:#c53030;margin-top:6px;display:none;"></p>
-      <p style="font-size:.65rem;color:#999;margin-top:8px;">
-        <a href="https://github.com/settings/tokens/new?scopes=repo&description=AICRA+CMS" target="_blank" style="color:#2f5d50;">토큰 생성하기</a> (repo scope)
+    <p class="sub">AI Security Research Association</p>
+
+    <div class="card">
+      <h3>Tools</h3>
+      <ul>
+        <li><strong>CMS</strong> - Blog/Pages/Media 관리 (Sveltia CMS)</li>
+        <li><strong><a href="/admin/paper-editor.html" style="color:#2F5D50;">Paper Editor</a></strong> - 학술 논문 편집기</li>
+        <li><strong><a href="/admin/paper-workbench/" style="color:#2F5D50;">Paper Workbench</a></strong> - 7-Phase 논문 라이프사이클</li>
+      </ul>
+    </div>
+
+    <div>
+      <button class="btn" onclick="startCMS()">CMS 시작하기</button>
+      <button class="btn sec" onclick="showToken()">Token 로그인</button>
+    </div>
+
+    <div class="token-box" id="token-box">
+      <p>GitHub Personal Access Token (repo scope)으로 로그인:</p>
+      <input id="pat-input" type="password" placeholder="ghp_xxxxxxxxxxxx">
+      <button onclick="tokenLogin()">로그인</button>
+      <p class="err" id="pat-err"></p>
+      <p class="hint">
+        <a href="https://github.com/settings/tokens/new?scopes=repo&description=AICRA+CMS" target="_blank">토큰 생성하기</a> (repo scope 필요)
       </p>
     </div>
-  </main>
-  <script src="https://unpkg.com/@sveltia/cms@0.149.0/dist/sveltia-cms.js"></script>
+
+    <p class="note">
+      GitHub Collaborator 권한이 필요합니다.
+      <a href="https://github.com/AICRA-PAGE/AICRA-PAGE.github.io/issues/new?template=access-request.md" target="_blank">접근 권한 요청</a><br>
+      <a href="https://aicra-page.github.io">블로그로 돌아가기</a>
+    </p>
+  </div>
+
   <script>
-    // Show manual login fallback after 5 seconds if CMS doesn't render
-    setTimeout(function(){
-      var cms=document.querySelector('[class*="sveltia"]')||document.querySelector('main > div:not(.wrap)');
-      if(!cms){document.getElementById('manual-login').style.display='block';}
-    },5000);
-    function manualLogin(){
-      var token=document.getElementById('pat-input').value.trim();
-      var err=document.getElementById('pat-err');
-      if(!token||token.length<10){err.textContent='유효한 토큰을 입력하세요.';err.style.display='block';return;}
-      localStorage.setItem('aicra.token',token);
-      // Also store in sveltia format so CMS picks it up
-      localStorage.setItem('sveltia-cms.user',JSON.stringify({token:token}));
-      err.style.display='none';
-      location.reload();
+    // Lazy-load CMS only on button click (Sveltia CMS overwrites entire DOM)
+    function startCMS() {
+      document.getElementById('landing').classList.add('hidden');
+      var s = document.createElement('script');
+      s.src = 'https://unpkg.com/@sveltia/cms@0.149.0/dist/sveltia-cms.js';
+      document.body.appendChild(s);
+    }
+
+    function showToken() {
+      document.getElementById('token-box').style.display = 'block';
+    }
+
+    function tokenLogin() {
+      var token = document.getElementById('pat-input').value.trim();
+      var err = document.getElementById('pat-err');
+      if (!token || token.length < 10) {
+        err.textContent = '유효한 토큰을 입력하세요.';
+        err.style.display = 'block';
+        return;
+      }
+      err.style.display = 'none';
+      // Store token for auth-guard.js and CMS
+      localStorage.setItem('aicra.token', token);
+      localStorage.setItem('sveltia-cms.user', JSON.stringify({token: token}));
+      // Redirect to paper editor (works without CMS)
+      alert('로그인 성공! Paper Editor로 이동합니다.');
+      location.href = '/admin/paper-editor.html';
     }
   </script>
 </body>
