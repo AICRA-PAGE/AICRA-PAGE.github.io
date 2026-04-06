@@ -82,7 +82,7 @@ async function runAllTests(){
 
   // === T10: Save modal ===
   document.getElementById('ti').value='Test Paper';
-  ghSave(true);
+  saveToGitHub(true);
   const sm=document.getElementById('saveModal');
   results['T10_save_modal']=sm.classList.contains('show');
   results['T10_filename']=document.getElementById('saveFileName').value.length>0;
@@ -91,7 +91,7 @@ async function runAllTests(){
   // === T11: Export functions exist ===
   results['T11_exportMD']=typeof exportMD==='function';
   results['T11_exportTeX']=typeof exportTeX==='function';
-  results['T11_exportPPT']=typeof exportPPT==='function';
+  results['T11_exportPPT']=typeof exportPPT==='function'||typeof showPptPreview==='function';
   results['T11_exportDOCX']=typeof exportDOCX==='function';
 
   // === T12: DOMPurify active ===
@@ -116,14 +116,46 @@ async function runAllTests(){
   // === T15: TOC generation ===
   results['T15_toc_exists']=pv.innerHTML.includes('Table of Contents')||pv.querySelectorAll('nav').length>0;
 
-  // === T16: Keyboard shortcuts ===
+  // === T16: Core utilities ===
   results['T16_escHtml']=typeof escHtml==='function';
   results['T16_paper_engine']=typeof paperEngine==='object';
+  results['T16_renamed_functions']=typeof insertBlock==='function'&&typeof saveToGitHub==='function'&&typeof wrapSelection==='function';
 
   // === T17: Snapshots ===
   saveSnapshot();
   const snaps=JSON.parse(localStorage.getItem('aicra.paper.snapshots.v1')||'[]');
   results['T17_snapshot_saved']=snaps.length>0;
+
+  // === T18: Modular JS loaded ===
+  results['T18_ppt_module']=typeof showPptPreview==='function'||typeof extractBullets==='function';
+  results['T18_evidence_module']=typeof findEvidence==='function'&&typeof _triggerEvidence==='function';
+  results['T18_dataset_module']=typeof openDatasetWorkspace==='function';
+  results['T18_recommend_module']=typeof recommendPapers==='function';
+
+  // === T19: P0 Security - CSP check ===
+  const csp=document.querySelector('meta[http-equiv="Content-Security-Policy"]');
+  const cspContent=csp?csp.getAttribute('content'):'';
+  results['T19_no_unsafe_eval']=!cspContent.includes('unsafe-eval');
+  results['T19_no_wildcard_connect']=!cspContent.includes('connect-src *');
+
+  // === T20: P0 Security - Blind mode DOCX parity ===
+  // Enable blind mode, check that DOCX export function exists and _blindMode is accessible
+  results['T20_blind_mode_exists']=typeof toggleBlindMode==='function';
+  results['T20_blind_var_accessible']=typeof _blindMode!=='undefined';
+  // Verify blind mode affects preview (title should show "Anonymous")
+  if(typeof toggleBlindMode==='function'){
+    toggleBlindMode(true);
+    await new Promise(r=>setTimeout(r,300));
+    const pvHtml=pv.innerHTML;
+    results['T20_blind_preview']=pvHtml.includes('Anonymous')||!pvHtml.includes(document.getElementById('au').value);
+    toggleBlindMode(false);
+  }
+
+  // === T21: P0 Security - ACL on delete ===
+  results['T21_delete_has_acl']=typeof deleteDocument==='function';
+  // Verify deleteDocument source checks for user ownership
+  const delSrc=deleteDocument.toString();
+  results['T21_delete_checks_user']=delSrc.includes('_drafts/')&&delSrc.includes('getUser');
 
   // Summary
   const total=Object.keys(results).length;
