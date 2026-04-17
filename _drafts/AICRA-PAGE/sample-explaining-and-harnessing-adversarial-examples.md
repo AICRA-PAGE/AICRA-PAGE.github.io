@@ -2,7 +2,7 @@
 layout: paper
 title: "[SAMPLE] Explaining and Harnessing Adversarial Examples"
 author: AICRA-PAGE
-date: 2026-04-16
+date: 2026-04-17
 status: published
 domain: "Adversarial ML"
 keywords: ["adversarial examples", "FGSM", "robustness", "deep learning", "adversarial training"]
