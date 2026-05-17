@@ -10,54 +10,129 @@ abstract: "We propose a taxonomy of indirect prompt injection attacks targeting 
 lang: ko
 ---
 
-# [Paper Title]
+# [박사학위논문]
 
-[Author 1], [Author 2]
-[Affiliations]
+# [국문 제목]
+
+# [English Title]
+
+---
+
+**[대학교 대학원]**
+**[학과/전공]**
+
+**[저자명]**
+
+**지도교수: [교수명]**
+
+---
 
 :::abstract
-[150 words max]
+[국문초록: 연구의 배경, 목적, 방법, 주요 결과 및 의의를 포함하여 작성. 1-2페이지 분량.]
 :::
 
----
-
-## Introduction
+**주요어:**
 
 ---
 
-## Related Work
+:::abstract
+[English Abstract]
+:::
+
+**Keywords:**
 
 ---
 
-## Problem Formulation
+## 목차
 
 ---
 
-## Approach
+## 표 목차
 
 ---
 
-## Experiments
+## 그림 목차
 
 ---
 
-## Results and Analysis
+## 약어 목록
+
+| 약어 | 설명 |
+|------|------|
+| | |
 
 ---
 
-## Conclusion
+## 제1장 서론
+
+### 1.1 연구 배경 및 동기
+### 1.2 연구 목적
+### 1.3 연구 범위 및 방법
+### 1.4 논문 구성
 
 ---
 
-## Acknowledgments
+## 제2장 이론적 배경 및 선행 연구
+
+### 2.1 [이론적 기초]
+### 2.2 [관련 기술]
+### 2.3 [선행 연구 분석]
+### 2.4 [기존 연구의 한계점]
 
 ---
 
-## References
+## 제3장 문제 정의 및 위협 모델
+
+### 3.1 문제 정의
+### 3.2 위협 모델
+### 3.3 보안 목표
 
 ---
 
-## Reproducibility Checklist
+## 제4장 제안 기법
 
-<!-- AAAI: 7 pages technical content + references. Checklist after references. Double-blind. -->
+### 4.1 설계 원칙
+### 4.2 시스템 아키텍처
+### 4.3 세부 알고리즘
+### 4.4 정형적 분석
+
+---
+
+## 제5장 구현
+
+### 5.1 구현 환경
+### 5.2 프로토타입
+
+---
+
+## 제6장 실험 및 평가
+
+### 6.1 실험 설계
+### 6.2 데이터셋
+### 6.3 평가 지표
+### 6.4 비교 대상
+### 6.5 실험 결과
+### 6.6 논의
+
+---
+
+## 제7장 결론 및 향후 연구
+
+### 7.1 연구 요약
+### 7.2 학술적 기여
+### 7.3 실무적 기여
+### 7.4 연구의 한계
+### 7.5 향후 연구 방향
+
+---
+
+## 참고문헌
+
+---
+
+## 부록 A
+
+---
+
+## 부록 B
 `,
