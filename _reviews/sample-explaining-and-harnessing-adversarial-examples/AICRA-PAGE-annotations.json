@@ -11,5 +11,18 @@
     "reviewer": "AICRA-PAGE",
     "timestamp": "2026-05-17T06:39:46.711Z",
     "status": "pending"
+  },
+  {
+    "paragraph": "The perturbation's effect w⊤ηw^\\top \\etaw⊤η can be maximized by setting η=ϵ⋅sign(w)\\eta = \\epsilon \\cdot \\text{sign}(w)η=ϵ⋅sign(w). In nnn dimensions with average weight magnitude mmm, the activation change is ϵmn\\epsilon m nϵmn, which grows linearly with dimensionality.",
+    "originalText": "The perturbation's effect w⊤ηw^\\top \\etaw⊤η can be maximized by setting η=ϵ⋅sign(w)\\eta = \\epsilon \\cdot \\text{sign}(w)η=ϵ⋅sign(w). In nnn dimensions with average weight magnitude mmm, the activation change is ϵmn\\epsilon m nϵmn, which grows linearly with dimensionality.",
+    "type": "comment",
+    "severity": "minor",
+    "section": "",
+    "text": "수식에 대한 설명이 부족합니다.",
+    "reference": "",
+    "id": "mp9enrrs",
+    "reviewer": "AICRA-PAGE",
+    "timestamp": "2026-05-17T06:39:47.800Z",
+    "status": "pending"
   }
 ]
