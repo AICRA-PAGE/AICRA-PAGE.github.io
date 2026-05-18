@@ -4,7 +4,7 @@ title: "[SAMPLE] Indirect Prompt Injection: Compromising LLM-Integrated Applicat
 author: dlgusrb
 authors: ["torun-dk"]
 corresponding_author: "dlgusrb"
-date: 2026-05-17
+date: 2026-05-18
 status: published
 domain: "Prompt Injection"
 keywords: ["prompt injection", "LLM security", "retrieval-augmented generation", "adversarial attacks"]
