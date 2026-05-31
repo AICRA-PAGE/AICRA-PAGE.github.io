@@ -58,6 +58,64 @@
     "last_checked": "2026-03-26T22:12:58.231Z"
   },
   {
+    "id": "ayi-nedjimi-ransomware-playbooks-en",
+    "name": "ransomware-playbooks-en",
+    "description": "HuggingFace dataset: AYI-NEDJIMI/ransomware-playbooks-en",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/AYI-NEDJIMI/ransomware-playbooks-en",
+    "size": "",
+    "license": "apache-2.0",
+    "year": 2026,
+    "tags": [
+      "task_categories:question-answering",
+      "task_categories:text-classification",
+      "source_datasets:original",
+      "language:en",
+      "region:us",
+      "cybersecurity",
+      "ayinedjimi-consultants",
+      "en"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 60,
+    "last_checked": "2026-05-31T21:51:06.234Z"
+  },
+  {
+    "id": "ayi-nedjimi-ransomware-playbooks-fr",
+    "name": "ransomware-playbooks-fr",
+    "description": "HuggingFace dataset: AYI-NEDJIMI/ransomware-playbooks-fr",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/AYI-NEDJIMI/ransomware-playbooks-fr",
+    "size": "",
+    "license": "apache-2.0",
+    "year": 2026,
+    "tags": [
+      "task_categories:question-answering",
+      "task_categories:text-classification",
+      "source_datasets:original",
+      "language:fr",
+      "region:us",
+      "cybersecurity",
+      "ayinedjimi-consultants",
+      "fr"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 60,
+    "last_checked": "2026-05-31T21:51:06.234Z"
+  },
+  {
     "id": "dattaraj-security-attacks-mitre",
     "name": "security-attacks-MITRE",
     "description": "HuggingFace dataset: dattaraj/security-attacks-MITRE",
@@ -172,6 +230,296 @@
     ],
     "relevance_score": 45,
     "last_checked": "2026-03-26T22:13:03.142Z"
+  },
+  {
+    "id": "s0u9ata-security-kg",
+    "name": "security-kg",
+    "description": "HuggingFace dataset: s0u9ata/security-kg",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/s0u9ata/security-kg",
+    "size": "",
+    "license": "apache-2.0",
+    "year": 2026,
+    "tags": [
+      "task_categories:graph-ml",
+      "language:en",
+      "format:parquet",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:polars",
+      "library:mlcroissant"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 45,
+    "last_checked": "2026-05-31T21:50:46.728Z"
+  },
+  {
+    "id": "neuralchemy-prompt-injection-threat-matrix",
+    "name": "prompt-injection-Threat-Matrix",
+    "description": "HuggingFace dataset: neuralchemy/prompt-injection-Threat-Matrix",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/neuralchemy/prompt-injection-Threat-Matrix",
+    "size": "",
+    "license": "cc-by-nc-4.0",
+    "year": 2026,
+    "tags": [
+      "task_categories:text-classification",
+      "language:en",
+      "format:parquet",
+      "format:optimized-parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:pandas"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 45,
+    "last_checked": "2026-05-31T21:50:48.789Z"
+  },
+  {
+    "id": "jescy525-cypher-malware-research-cc-by-nc",
+    "name": "cypher-malware-research-cc-by-nc",
+    "description": "HuggingFace dataset: jescy525/cypher-malware-research-cc-by-nc",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/jescy525/cypher-malware-research-cc-by-nc",
+    "size": "",
+    "license": "cc-by-nc-sa-4.0",
+    "year": 2026,
+    "tags": [
+      "region:us",
+      "malware",
+      "security-research",
+      "cape-sandbox",
+      "trojan",
+      "ransomware",
+      "defensive-security",
+      "non-commercial"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 45,
+    "last_checked": "2026-05-31T21:50:57.026Z"
+  },
+  {
+    "id": "jordan123234-malware-families-catalog",
+    "name": "malware-families-catalog",
+    "description": "HuggingFace dataset: Jordan123234/malware-families-catalog",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/Jordan123234/malware-families-catalog",
+    "size": "",
+    "license": "apache-2.0",
+    "year": 2026,
+    "tags": [
+      "task_categories:text-classification",
+      "task_categories:tabular-classification",
+      "source_datasets:original",
+      "language:en",
+      "arxiv:1804.04637",
+      "region:us",
+      "malware",
+      "cybersecurity"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 45,
+    "last_checked": "2026-05-31T21:50:57.026Z"
+  },
+  {
+    "id": "whitzardagent-cybersecurity-1m",
+    "name": "CyberSecurity-1M",
+    "description": "HuggingFace dataset: WhitzardAgent/CyberSecurity-1M",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/WhitzardAgent/CyberSecurity-1M",
+    "size": "",
+    "license": "apache-2.0",
+    "year": 2026,
+    "tags": [
+      "task_categories:text-generation",
+      "task_categories:summarization",
+      "task_categories:question-answering",
+      "task_categories:text-classification",
+      "task_ids:language-modeling",
+      "task_ids:news-articles-summarization",
+      "task_ids:open-domain-qa",
+      "task_ids:topic-classification"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 45,
+    "last_checked": "2026-05-31T21:51:00.090Z"
+  },
+  {
+    "id": "olaroti-phishing-dataset",
+    "name": "phishing-dataset",
+    "description": "HuggingFace dataset: Olaroti/phishing-dataset",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/Olaroti/phishing-dataset",
+    "size": "",
+    "license": "mit",
+    "year": 2026,
+    "tags": [
+      "task_categories:text-classification",
+      "task_categories:tabular-classification",
+      "language:en",
+      "format:parquet",
+      "format:optimized-parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 45,
+    "last_checked": "2026-05-31T21:51:01.114Z"
+  },
+  {
+    "id": "lifelonglab-continual-unsw-anomaly-detection",
+    "name": "continual-unsw-anomaly-detection",
+    "description": "HuggingFace dataset: lifelonglab/continual-unsw-anomaly-detection",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/lifelonglab/continual-unsw-anomaly-detection",
+    "size": "",
+    "license": "mit",
+    "year": 2026,
+    "tags": [
+      "format:csv",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:mlcroissant",
+      "library:polars",
+      "region:us"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 45,
+    "last_checked": "2026-05-31T21:51:04.186Z"
+  },
+  {
+    "id": "cycloevan-ransomware_pe_header_feature_dataset",
+    "name": "Ransomware_PE_Header_Feature_Dataset",
+    "description": "HuggingFace dataset: cycloevan/Ransomware_PE_Header_Feature_Dataset",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/cycloevan/Ransomware_PE_Header_Feature_Dataset",
+    "size": "",
+    "license": "cc-by-4.0",
+    "year": 2026,
+    "tags": [
+      "task_categories:image-classification",
+      "task_categories:tabular-classification",
+      "language:en",
+      "format:csv",
+      "modality:document",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 45,
+    "last_checked": "2026-05-31T21:51:06.234Z"
+  },
+  {
+    "id": "electricsheepafrica-africa-mobile-ransomware",
+    "name": "africa-mobile-ransomware",
+    "description": "HuggingFace dataset: electricsheepafrica/africa-mobile-ransomware",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/electricsheepafrica/africa-mobile-ransomware",
+    "size": "",
+    "license": "mit",
+    "year": 2026,
+    "tags": [
+      "task_categories:tabular-classification",
+      "language:en",
+      "format:parquet",
+      "format:optimized-parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:pandas"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 45,
+    "last_checked": "2026-05-31T21:51:06.234Z"
+  },
+  {
+    "id": "electricsheepafrica-africa-ransomware-as-a-service",
+    "name": "africa-ransomware-as-a-service",
+    "description": "HuggingFace dataset: electricsheepafrica/africa-ransomware-as-a-service",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/electricsheepafrica/africa-ransomware-as-a-service",
+    "size": "",
+    "license": "mit",
+    "year": 2026,
+    "tags": [
+      "task_categories:tabular-classification",
+      "language:en",
+      "format:parquet",
+      "format:optimized-parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:pandas"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 45,
+    "last_checked": "2026-05-31T21:51:06.234Z"
   },
   {
     "id": "rogue-security-prompt-injections-benchmark",
@@ -745,6 +1093,603 @@
     ],
     "relevance_score": 30,
     "last_checked": "2026-03-26T22:13:06.810Z"
+  },
+  {
+    "id": "reshabhs-spml_chatbot_prompt_injection",
+    "name": "SPML_Chatbot_Prompt_Injection",
+    "description": "HuggingFace dataset: reshabhs/SPML_Chatbot_Prompt_Injection",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/reshabhs/SPML_Chatbot_Prompt_Injection",
+    "size": "",
+    "license": "mit",
+    "year": 2026,
+    "tags": [
+      "task_categories:text-classification",
+      "language:en",
+      "format:csv",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:mlcroissant"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-05-31T21:50:48.789Z"
+  },
+  {
+    "id": "issdandavis-prompt-injection-bit-signatures",
+    "name": "prompt-injection-bit-signatures",
+    "description": "HuggingFace dataset: issdandavis/prompt-injection-bit-signatures",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/issdandavis/prompt-injection-bit-signatures",
+    "size": "",
+    "license": "apache-2.0",
+    "year": 2026,
+    "tags": [
+      "task_categories:text-classification",
+      "language:en",
+      "format:json",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:polars",
+      "library:mlcroissant"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-05-31T21:50:48.789Z"
+  },
+  {
+    "id": "abdennebi-shieldlm-prompt-injection",
+    "name": "shieldlm-prompt-injection",
+    "description": "HuggingFace dataset: Abdennebi/shieldlm-prompt-injection",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/Abdennebi/shieldlm-prompt-injection",
+    "size": "",
+    "license": "mit",
+    "year": 2026,
+    "tags": [
+      "task_categories:text-classification",
+      "language:en",
+      "language:fr",
+      "language:de",
+      "language:es",
+      "language:it",
+      "language:pt",
+      "language:ro"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-05-31T21:50:48.789Z"
+  },
+  {
+    "id": "luckychao-chat-models-backdoor-attacking",
+    "name": "Chat-Models-Backdoor-Attacking",
+    "description": "HuggingFace dataset: luckychao/Chat-Models-Backdoor-Attacking",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/luckychao/Chat-Models-Backdoor-Attacking",
+    "size": "",
+    "license": "",
+    "year": 2026,
+    "tags": [
+      "task_categories:question-answering",
+      "language:en",
+      "region:us"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-05-31T21:50:50.842Z"
+  },
+  {
+    "id": "abbasfar-backdoor_attack_evaluation_dataset",
+    "name": "backdoor_attack_evaluation_dataset",
+    "description": "HuggingFace dataset: abbasfar/backdoor_attack_evaluation_dataset",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/abbasfar/backdoor_attack_evaluation_dataset",
+    "size": "",
+    "license": "",
+    "year": 2026,
+    "tags": [
+      "format:imagefolder",
+      "modality:image",
+      "library:datasets",
+      "library:mlcroissant",
+      "region:us"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-05-31T21:50:50.842Z"
+  },
+  {
+    "id": "scale-safety-research-synth_docs_honly_and_claude_situational_adversarial_robustness",
+    "name": "synth_docs_honly_and_claude_situational_adversarial_robustness",
+    "description": "HuggingFace dataset: scale-safety-research/synth_docs_honly_and_claude_situational_adversarial_robustness",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/scale-safety-research/synth_docs_honly_and_claude_situational_adversarial_robustness",
+    "size": "",
+    "license": "",
+    "year": 2026,
+    "tags": [
+      "format:parquet",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:mlcroissant",
+      "library:polars",
+      "region:us"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-05-31T21:50:53.930Z"
+  },
+  {
+    "id": "mathaiml5-adversarial-vision-transformers-robustness",
+    "name": "adversarial-vision-transformers-robustness",
+    "description": "HuggingFace dataset: mathaiml5/adversarial-vision-transformers-robustness",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/mathaiml5/adversarial-vision-transformers-robustness",
+    "size": "",
+    "license": "",
+    "year": 2026,
+    "tags": [
+      "format:parquet",
+      "modality:image",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:mlcroissant",
+      "library:polars"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-05-31T21:50:53.930Z"
+  },
+  {
+    "id": "galtea-ai-galtea-red-teaming-clustered-data",
+    "name": "galtea-red-teaming-clustered-data",
+    "description": "HuggingFace dataset: Galtea-AI/galtea-red-teaming-clustered-data",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/Galtea-AI/galtea-red-teaming-clustered-data",
+    "size": "",
+    "license": "cc-by-nc-4.0",
+    "year": 2026,
+    "tags": [
+      "task_categories:text-generation",
+      "language:en",
+      "format:csv",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:mlcroissant",
+      "library:polars"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-05-31T21:50:56.004Z"
+  },
+  {
+    "id": "electricsheepafrica-africa-malware-dataset",
+    "name": "africa-malware-dataset",
+    "description": "HuggingFace dataset: electricsheepafrica/africa-malware-dataset",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/electricsheepafrica/africa-malware-dataset",
+    "size": "",
+    "license": "mit",
+    "year": 2026,
+    "tags": [
+      "task_categories:tabular-classification",
+      "language:en",
+      "format:parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:polars"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-05-31T21:50:57.026Z"
+  },
+  {
+    "id": "chamaravishwajithrajapaksha-code-vulnerability-finetune",
+    "name": "Code-Vulnerability-FineTune",
+    "description": "HuggingFace dataset: ChamaraVishwajithRajapaksha/Code-Vulnerability-FineTune",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/ChamaraVishwajithRajapaksha/Code-Vulnerability-FineTune",
+    "size": "",
+    "license": "mit",
+    "year": 2026,
+    "tags": [
+      "task_categories:text-generation",
+      "task_categories:question-answering",
+      "language:en",
+      "format:parquet",
+      "modality:text",
+      "library:datasets",
+      "library:dask",
+      "library:polars"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-05-31T21:50:58.048Z"
+  },
+  {
+    "id": "witfoo-precinct6-cybersecurity",
+    "name": "precinct6-cybersecurity",
+    "description": "HuggingFace dataset: witfoo/precinct6-cybersecurity",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/witfoo/precinct6-cybersecurity",
+    "size": "",
+    "license": "apache-2.0",
+    "year": 2026,
+    "tags": [
+      "task_categories:text-classification",
+      "task_categories:graph-ml",
+      "language:en",
+      "modality:tabular",
+      "modality:text",
+      "region:us",
+      "cybersecurity",
+      "intrusion-detection"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-05-31T21:51:00.090Z"
+  },
+  {
+    "id": "witfoo-precinct6-cybersecurity-100m",
+    "name": "precinct6-cybersecurity-100m",
+    "description": "HuggingFace dataset: witfoo/precinct6-cybersecurity-100m",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/witfoo/precinct6-cybersecurity-100m",
+    "size": "",
+    "license": "apache-2.0",
+    "year": 2026,
+    "tags": [
+      "task_categories:text-classification",
+      "task_categories:graph-ml",
+      "language:en",
+      "modality:tabular",
+      "modality:text",
+      "region:us",
+      "cybersecurity",
+      "intrusion-detection"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-05-31T21:51:00.090Z"
+  },
+  {
+    "id": "electricsheepafrica-africa-smishing-sms-phishing",
+    "name": "africa-smishing-sms-phishing",
+    "description": "HuggingFace dataset: electricsheepafrica/africa-smishing-sms-phishing",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/electricsheepafrica/africa-smishing-sms-phishing",
+    "size": "",
+    "license": "mit",
+    "year": 2026,
+    "tags": [
+      "task_categories:tabular-classification",
+      "language:en",
+      "format:parquet",
+      "format:optimized-parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:pandas"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-05-31T21:51:01.114Z"
+  },
+  {
+    "id": "electricsheepafrica-africa-phishing-dataset",
+    "name": "africa-phishing-dataset",
+    "description": "HuggingFace dataset: electricsheepafrica/africa-phishing-dataset",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/electricsheepafrica/africa-phishing-dataset",
+    "size": "",
+    "license": "mit",
+    "year": 2026,
+    "tags": [
+      "task_categories:tabular-classification",
+      "language:en",
+      "format:parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:polars"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-05-31T21:51:01.114Z"
+  },
+  {
+    "id": "luongnv89-phishing-email",
+    "name": "phishing-email",
+    "description": "HuggingFace dataset: luongnv89/phishing-email",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/luongnv89/phishing-email",
+    "size": "",
+    "license": "mit",
+    "year": 2026,
+    "tags": [
+      "task_categories:text-classification",
+      "language:en",
+      "format:json",
+      "modality:text",
+      "library:datasets",
+      "library:dask",
+      "library:mlcroissant",
+      "region:us"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-05-31T21:51:01.114Z"
+  },
+  {
+    "id": "hleatkeeper-threat_detection_cli_validation_set",
+    "name": "threat_detection_cli_validation_set",
+    "description": "HuggingFace dataset: hleAtKeeper/threat_detection_cli_validation_set",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/hleAtKeeper/threat_detection_cli_validation_set",
+    "size": "",
+    "license": "mit",
+    "year": 2026,
+    "tags": [
+      "task_categories:text-classification",
+      "language:en",
+      "format:parquet",
+      "format:optimized-parquet",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:polars"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-05-31T21:51:03.161Z"
+  },
+  {
+    "id": "bayrameker-threat-detection",
+    "name": "threat-detection",
+    "description": "HuggingFace dataset: bayrameker/threat-detection",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/bayrameker/threat-detection",
+    "size": "",
+    "license": "mit",
+    "year": 2026,
+    "tags": [
+      "language:tr",
+      "language:en",
+      "format:json",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:mlcroissant",
+      "library:polars"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-05-31T21:51:03.161Z"
+  },
+  {
+    "id": "mechanistic-anomaly-detection-satml-backdoor-trojan1",
+    "name": "satml-backdoor-trojan1",
+    "description": "HuggingFace dataset: Mechanistic-Anomaly-Detection/satml-backdoor-trojan1",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/Mechanistic-Anomaly-Detection/satml-backdoor-trojan1",
+    "size": "",
+    "license": "",
+    "year": 2026,
+    "tags": [
+      "format:parquet",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:mlcroissant",
+      "library:polars",
+      "region:us"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-05-31T21:51:04.186Z"
+  },
+  {
+    "id": "electricsheepafrica-africa-ransomware-dataset",
+    "name": "africa-ransomware-dataset",
+    "description": "HuggingFace dataset: electricsheepafrica/africa-ransomware-dataset",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/electricsheepafrica/africa-ransomware-dataset",
+    "size": "",
+    "license": "mit",
+    "year": 2026,
+    "tags": [
+      "task_categories:tabular-classification",
+      "language:en",
+      "format:parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:polars"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-05-31T21:51:06.234Z"
+  },
+  {
+    "id": "jlb-jlb-android-ransomware-fcg-baseline",
+    "name": "android-ransomware-fcg-baseline",
+    "description": "HuggingFace dataset: JLB-JLB/android-ransomware-fcg-baseline",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/JLB-JLB/android-ransomware-fcg-baseline",
+    "size": "",
+    "license": "mit",
+    "year": 2026,
+    "tags": [
+      "region:us",
+      "android-ransomware",
+      "function-call-graph",
+      "pytorch-geometric",
+      "graph-neural-network",
+      "cybersecurity"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-05-31T21:51:06.234Z"
+  },
+  {
+    "id": "electricsheepafrica-africa-healthcare-ransomware",
+    "name": "africa-healthcare-ransomware",
+    "description": "HuggingFace dataset: electricsheepafrica/africa-healthcare-ransomware",
+    "domain": [],
+    "source": "HuggingFace",
+    "url": "https://huggingface.co/datasets/electricsheepafrica/africa-healthcare-ransomware",
+    "size": "",
+    "license": "cc-by-4.0",
+    "year": 2026,
+    "tags": [
+      "task_categories:tabular-classification",
+      "task_categories:other",
+      "task_ids:tabular-multi-class-classification",
+      "annotations_creators:machine-generated",
+      "language_creators:machine-generated",
+      "multilinguality:monolingual",
+      "source_datasets:original",
+      "language:en"
+    ],
+    "format": "Parquet",
+    "papers_count": 0,
+    "threat_type": "",
+    "discovered_from": [
+      "huggingface"
+    ],
+    "relevance_score": 30,
+    "last_checked": "2026-05-31T21:51:06.234Z"
   },
   {
     "id": "nsl-kdd",
