@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">AI guardrails defense in depth</title>
+  <desc id="desc">A layered AI guardrail architecture with identity, content, retrieval, planning, policy, execution, output and audit controls.</desc>
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#18181B"/>
+      <stop offset="1" stop-color="#292524"/>
+    </linearGradient>
+    <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 10 5 0 10z" fill="#D6D3D1"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg2)"/>
+  <text x="70" y="70" fill="#FAFAF9" font-family="Arial, sans-serif" font-size="34" font-weight="700">AI Guardrails: Policy Enforcement, Not a Filter</text>
+  <text x="70" y="108" fill="#FCA5A5" font-family="Arial, sans-serif" font-size="18">Probabilistic detection + deterministic authorization + bounded execution</text>
+
+  <g font-family="Arial, sans-serif">
+    <rect x="65" y="175" width="145" height="76" rx="12" fill="#1E40AF" stroke="#60A5FA" stroke-width="2"/>
+    <text x="137" y="207" text-anchor="middle" fill="#FFF" font-size="15" font-weight="700">Identity</text>
+    <text x="137" y="230" text-anchor="middle" fill="#DBEAFE" font-size="12">user · agent · tenant</text>
+
+    <rect x="235" y="175" width="145" height="76" rx="12" fill="#9F1239" stroke="#FDA4AF" stroke-width="2"/>
+    <text x="307" y="207" text-anchor="middle" fill="#FFF" font-size="15" font-weight="700">Input</text>
+    <text x="307" y="230" text-anchor="middle" fill="#FFE4E6" font-size="12">injection · PII · URL</text>
+
+    <rect x="405" y="175" width="145" height="76" rx="12" fill="#0F766E" stroke="#5EEAD4" stroke-width="2"/>
+    <text x="477" y="207" text-anchor="middle" fill="#FFF" font-size="15" font-weight="700">RAG &amp; Memory</text>
+    <text x="477" y="230" text-anchor="middle" fill="#CCFBF1" font-size="12">ACL · provenance · TTL</text>
+
+    <rect x="575" y="175" width="145" height="76" rx="12" fill="#7C3AED" stroke="#C4B5FD" stroke-width="2"/>
+    <text x="647" y="207" text-anchor="middle" fill="#FFF" font-size="15" font-weight="700">Intent &amp; Plan</text>
+    <text x="647" y="230" text-anchor="middle" fill="#EDE9FE" font-size="12">task alignment</text>
+
+    <rect x="745" y="155" width="180" height="116" rx="12" fill="#B45309" stroke="#FCD34D" stroke-width="3"/>
+    <text x="835" y="194" text-anchor="middle" fill="#FFF" font-size="16" font-weight="700">Policy Decision</text>
+    <text x="835" y="219" text-anchor="middle" fill="#FEF3C7" font-size="12">PAP · PDP · PIP · PEP</text>
+    <text x="835" y="244" text-anchor="middle" fill="#FDE68A" font-size="12">permit · deny · approve</text>
+
+    <rect x="950" y="175" width="145" height="76" rx="12" fill="#166534" stroke="#86EFAC" stroke-width="2"/>
+    <text x="1022" y="207" text-anchor="middle" fill="#FFF" font-size="15" font-weight="700">Execution</text>
+    <text x="1022" y="230" text-anchor="middle" fill="#DCFCE7" font-size="12">dry-run · sandbox · rollback</text>
+  </g>
+
+  <g stroke="#D6D3D1" stroke-width="2.5" marker-end="url(#arrow2)">
+    <line x1="210" y1="213" x2="227" y2="213"/>
+    <line x1="380" y1="213" x2="397" y2="213"/>
+    <line x1="550" y1="213" x2="567" y2="213"/>
+    <line x1="720" y1="213" x2="737" y2="213"/>
+    <line x1="925" y1="213" x2="942" y2="213"/>
+  </g>
+
+  <rect x="65" y="335" width="1030" height="150" rx="16" fill="#1C1917" stroke="#57534E" stroke-width="2"/>
+  <text x="95" y="375" fill="#FAFAF9" font-family="Arial, sans-serif" font-size="17" font-weight="700">Continuous Assurance Plane</text>
+  <g font-family="Arial, sans-serif" font-size="14">
+    <rect x="95" y="400" width="175" height="54" rx="9" fill="#292524" stroke="#78716C"/>
+    <text x="182" y="432" text-anchor="middle" fill="#E7E5E4">Output &amp; Streaming</text>
+    <rect x="295" y="400" width="175" height="54" rx="9" fill="#292524" stroke="#78716C"/>
+    <text x="382" y="432" text-anchor="middle" fill="#E7E5E4">Human Approval</text>
+    <rect x="495" y="400" width="175" height="54" rx="9" fill="#292524" stroke="#78716C"/>
+    <text x="582" y="432" text-anchor="middle" fill="#E7E5E4">Audit &amp; OTel</text>
+    <rect x="695" y="400" width="175" height="54" rx="9" fill="#292524" stroke="#78716C"/>
+    <text x="782" y="432" text-anchor="middle" fill="#E7E5E4">Red Team &amp; Replay</text>
+    <rect x="895" y="400" width="170" height="54" rx="9" fill="#292524" stroke="#78716C"/>
+    <text x="980" y="432" text-anchor="middle" fill="#E7E5E4">Kill Switch</text>
+  </g>
+
+  <text x="70" y="545" fill="#FCA5A5" font-family="Arial, sans-serif" font-size="17" font-weight="700">Security invariant:</text>
+  <text x="235" y="545" fill="#E7E5E4" font-family="Arial, sans-serif" font-size="17">Untrusted content may inform an answer, but it cannot authorize an action.</text>
+  <text x="70" y="590" fill="#78716C" font-family="Arial, sans-serif" font-size="14">AICRA · AI security researcher perspective · defense-in-depth reference architecture</text>
+</svg>
