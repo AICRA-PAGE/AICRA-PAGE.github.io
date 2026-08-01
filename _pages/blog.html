@@ -15,6 +15,9 @@ description: AI Security Research and Analysis
       게시물 작성하기
     </a>
     <p id="write-blog-hint" style="font-size:0.75rem;color:#8b8580;margin-top:10px;display:none">Collaborator 로그인 후 작성 버튼이 표시됩니다.</p>
+    <p id="pending-edit-policy" class="pending-edit-policy" hidden aria-live="polite">
+      승인 대기 중인 글도 수정할 수 있습니다. 저장하면 새 글을 만들지 않고 기존 글을 갱신하며, 승인 대기 상태는 그대로 유지됩니다.
+    </p>
   </header>
 
   <nav class="category-filter">
@@ -71,3 +74,4 @@ aicraAuth.checkAccess(
   function(){document.getElementById('write-blog-hint').style.display='block';}
 );
 </script>
+<script src="{{ '/assets/js/pending-post-editor.js' | relative_url }}"></script>

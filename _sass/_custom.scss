@@ -2344,6 +2344,39 @@ h1, h2, h3, h4, h5, h6 {
 .paper-anchor { position: relative; top: -90px; visibility: hidden; }
 .paper-ref { font-family: var(--font-mono); font-size: .78em; }
 
+// ============================================
+// Pending member post editing
+// ============================================
+.pending-edit-policy,
+.pending-edit-notice {
+  margin: var(--space-4) 0 0;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent-secondary);
+  border-radius: 6px;
+  color: var(--text);
+  background: var(--surface-alt);
+  font-size: 0.82rem;
+  line-height: 1.65;
+}
+
+.pending-edit-policy[hidden] { display: none; }
+
+.blog-compose-form--pending-edit {
+  #blog-compose-submit {
+    min-width: 9rem;
+  }
+}
+
+.pending-edit-notice {
+  margin: 0 0 var(--space-4);
+}
+
+.member-post-card--pending .bb-edit,
+.pb-card:has(.pb-status--pending) .pb-edit {
+  font-weight: 700;
+}
+
 @media (max-width: 760px) {
   .project-grid,
   .newsletter-list,

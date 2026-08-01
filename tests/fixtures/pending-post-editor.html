@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>승인 대기 글 수정 테스트</title>
+  <style>
+    body { max-width: 760px; margin: 40px auto; padding: 0 20px; font-family: sans-serif; color: #17211f; }
+    article, .blog-compose-inner { margin: 20px 0; padding: 20px; border: 1px solid #ccd6d2; border-radius: 10px; }
+    button { padding: 8px 14px; }
+    #editor[hidden], [hidden] { display: none; }
+    .pending-edit-policy, .pending-edit-notice { padding: 12px; border-left: 4px solid #2f7d69; background: #eef7f4; }
+  </style>
+</head>
+<body>
+  <h1>회원 블로그</h1>
+  <p id="pending-edit-policy" class="pending-edit-policy" hidden></p>
+  <article class="member-post-card--pending" data-id="17">
+    <span>승인 대기</span>
+    <h3>Agent Data Injection</h3>
+    <button type="button" class="bb-edit" data-id="17">수정</button>
+  </article>
+  <div id="editor" class="blog-compose-inner" hidden>
+    <h3 class="blog-compose-title">블로그 글 수정</h3>
+    <p class="blog-compose-hint">기본 도움말</p>
+    <form id="blog-compose-form">
+      <input name="title" value="Agent Data Injection">
+      <button type="submit" id="blog-compose-submit">승인 요청</button>
+    </form>
+  </div>
+  <script>
+    document.querySelector('.bb-edit').addEventListener('click', function () {
+      document.querySelector('#editor').hidden = false;
+      document.querySelector('#blog-compose-form').dataset.editId = '17';
+    });
+  </script>
+  <script src="/assets/js/pending-post-editor.js"></script>
+</body>
+</html>
