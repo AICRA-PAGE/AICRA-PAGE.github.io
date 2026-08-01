@@ -1,0 +1,75 @@
+---
+layout: default
+title: Research Projects
+permalink: /projects/
+description: "AICRA의 공개 AI 보안 연구 프로젝트와 참여 기회"
+---
+
+<section class="projects-page">
+  <header class="section-intro">
+    <p class="eyebrow">Open Research</p>
+    <h1>Research Projects</h1>
+    <p>논문을 읽는 데서 멈추지 않고, 재현 가능한 실험·체크리스트·데이터셋으로 연결합니다.</p>
+  </header>
+
+  <div class="project-filters" role="group" aria-label="프로젝트 상태 필터">
+    <button class="project-filter active" type="button" data-status="all">전체</button>
+    <button class="project-filter" type="button" data-status="active">진행 중</button>
+    <button class="project-filter" type="button" data-status="proposal">제안</button>
+    <button class="project-filter" type="button" data-status="completed">완료</button>
+  </div>
+
+  {% assign projects = site.projects | sort: 'last_modified_at' | reverse %}
+  <div class="project-grid" id="project-grid">
+    {% for project in projects %}
+    <article class="project-card" data-status="{{ project.status }}">
+      <div class="project-card__topline">
+        <span class="project-status project-status--{{ project.status }}">{{ project.status_label | default: project.status }}</span>
+        {% if project.open_call %}<span class="project-open-call">참여 모집</span>{% endif %}
+      </div>
+      <h2><a href="{{ project.url | relative_url }}">{{ project.title }}</a></h2>
+      <p>{{ project.summary }}</p>
+      <div class="project-card__domains">{{ project.domain | join: ' · ' }}</div>
+      {% if project.progress %}
+      <div class="project-progress project-progress--compact" aria-label="진척도 {{ project.progress }} 퍼센트">
+        <div class="project-progress__track"><span style="width:{{ project.progress }}%"></span></div>
+        <strong>{{ project.progress }}%</strong>
+      </div>
+      {% endif %}
+      <a class="project-card__link" href="{{ project.url | relative_url }}">프로젝트 보기 →</a>
+    </article>
+    {% endfor %}
+  </div>
+
+  <div class="projects-empty" id="projects-empty" hidden>해당 상태의 프로젝트가 없습니다.</div>
+
+  <aside class="project-proposal">
+    <div>
+      <p class="eyebrow">Propose a Project</p>
+      <h2>함께 검증할 AI 보안 문제가 있나요?</h2>
+      <p>연구 질문, 공개 가능한 데이터, 기대 산출물과 참여 방식을 알려주세요.</p>
+    </div>
+    <a class="button button--secondary" href="https://github.com/AICRA-PAGE/AICRA-PAGE.github.io/issues/new?labels=research-project&amp;title=%5BProject%20Proposal%5D" target="_blank" rel="noopener">프로젝트 제안</a>
+  </aside>
+</section>
+
+<script>
+(function(){
+  var buttons=document.querySelectorAll('.project-filter');
+  var cards=document.querySelectorAll('.project-card');
+  var empty=document.getElementById('projects-empty');
+  buttons.forEach(function(button){
+    button.addEventListener('click',function(){
+      var status=button.dataset.status;
+      var visible=0;
+      buttons.forEach(function(item){item.classList.toggle('active',item===button);});
+      cards.forEach(function(card){
+        var show=status==='all'||card.dataset.status===status;
+        card.hidden=!show;
+        if(show)visible+=1;
+      });
+      empty.hidden=visible!==0;
+    });
+  });
+})();
+</script>

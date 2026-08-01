@@ -47,6 +47,10 @@ nav_links:
     url: /papers/
   - name: Research
     url: /research/
+  - name: Projects
+    url: /projects/
+  - name: Newsletter
+    url: /newsletter/
   - name: Publications
     url: /publications/
   - name: Team
@@ -82,7 +86,8 @@ serve_schema_org: true
 # -----------------------------------------------------------------------------
 
 github_username: AICRA-PAGE
-github_repo: AICRA-analyze
+github_repo: AICRA-PAGE.github.io
+newsletter_subscribe_url: https://aicra.substack.com/subscribe
 
 # -----------------------------------------------------------------------------
 # Blog
@@ -123,6 +128,12 @@ collections:
   research:
     output: true
     permalink: /research/:path/
+  projects:
+    output: true
+    permalink: /projects/:path/
+  newsletters:
+    output: true
+    permalink: /newsletter/:path/
 
 announcements:
   enabled: true

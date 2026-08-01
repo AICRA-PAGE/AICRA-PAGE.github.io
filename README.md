@@ -28,7 +28,7 @@ Building a safer AI ecosystem through security research.
 
 ## Website
 
-Visit: [https://aicra-page.github.io/AICRA-analyze](https://aicra-page.github.io/AICRA-analyze)
+Visit: [https://aicra-page.github.io](https://aicra-page.github.io)
 
 ## License
 

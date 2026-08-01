@@ -129,6 +129,70 @@ collections:
       - { label: "Last Updated", name: last_updated, widget: string, required: false }
       - { label: "Body", name: body, widget: markdown }
 
+  - name: projects
+    label: "Research Projects"
+    label_singular: "Project"
+    folder: _projects
+    create: true
+    slug: "{{slug}}"
+    summary: "{{title}} | {{status}} | {{last_modified_at}}"
+    fields:
+      - { label: "Layout", name: layout, widget: hidden, default: project }
+      - { label: "Title", name: title, widget: string }
+      - { label: "Summary", name: summary, widget: text }
+      - { label: "Status", name: status, widget: select, options: ["proposal", "active", "completed"], default: "proposal" }
+      - { label: "Status Label", name: status_label, widget: string, default: "제안" }
+      - { label: "Progress (%)", name: progress, widget: number, value_type: int, min: 0, max: 100, default: 0 }
+      - { label: "Open Call", name: open_call, widget: boolean, default: true }
+      - { label: "Lead", name: lead, widget: string, default: "AICRA" }
+      - { label: "Period", name: period, widget: string, required: false }
+      - { label: "Date", name: date, widget: datetime }
+      - { label: "Last Modified", name: last_modified_at, widget: datetime }
+      - label: "Domains"
+        name: domain
+        widget: list
+        field: { label: "Domain", name: domain, widget: string }
+      - label: "Research Questions"
+        name: research_questions
+        widget: list
+        required: false
+        field: { label: "Question", name: question, widget: string }
+      - label: "Milestones"
+        name: milestones
+        widget: list
+        required: false
+        fields:
+          - { label: "Date or Phase", name: date, widget: string }
+          - { label: "Title", name: title, widget: string }
+          - { label: "Description", name: description, widget: text }
+      - label: "Deliverables"
+        name: deliverables
+        widget: list
+        required: false
+        field: { label: "Deliverable", name: deliverable, widget: string }
+      - { label: "Body", name: body, widget: markdown }
+
+  - name: newsletters
+    label: "Newsletters"
+    label_singular: "Newsletter Issue"
+    folder: _newsletters
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    summary: "No. {{issue}} | {{title}} | {{date}}"
+    fields:
+      - { label: "Layout", name: layout, widget: hidden, default: newsletter }
+      - { label: "Title", name: title, widget: string }
+      - { label: "Description", name: description, widget: text }
+      - { label: "Date", name: date, widget: datetime }
+      - { label: "Issue Number", name: issue, widget: number, value_type: int }
+      - { label: "Reading Time", name: reading_time, widget: string, default: "5분" }
+      - label: "Tags"
+        name: tags
+        widget: list
+        required: false
+        field: { label: "Tag", name: tag, widget: string }
+      - { label: "Body", name: body, widget: markdown }
+
   - name: pages
     label: "Site Pages"
     files:

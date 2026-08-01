@@ -1,0 +1,52 @@
+---
+layout: default
+title: Newsletter
+permalink: /newsletter/
+description: "AICRA 위클리 AI 보안 뉴스레터와 지난 호 아카이브"
+---
+
+<section class="newsletter-page">
+  <header class="newsletter-hero">
+    <div>
+      <p class="eyebrow">AICRA Security Briefing</p>
+      <h1>읽을 것은 줄이고,<br>판단할 근거는 늘립니다.</h1>
+      <p>AI 보안 사건, 최신 논문, 표준 변화와 실무 대응을 한 번에 읽을 수 있는 주간 브리핑입니다.</p>
+      <div class="button-row">
+        <a class="button button--primary" href="{{ site.newsletter_subscribe_url }}" target="_blank" rel="noopener">무료 구독하기</a>
+        <a class="button button--secondary" href="{{ '/feed.xml' | relative_url }}">RSS로 구독</a>
+      </div>
+      <p class="newsletter-note">이메일은 Substack에서 관리하며 AICRA 사이트에는 구독자 개인정보를 저장하지 않습니다.</p>
+    </div>
+    <div class="newsletter-preview" aria-label="뉴스레터 구성 미리보기">
+      <span>매주 한 번</span>
+      <h2>이번 주에 무엇이 달라졌는가?</h2>
+      <ul>
+        <li>핵심 사건 1개를 공격 경로로 해부</li>
+        <li>주목할 논문 2편과 재현 포인트</li>
+        <li>운영자를 위한 5분 체크리스트</li>
+        <li>AICRA 프로젝트 진행 상황</li>
+      </ul>
+    </div>
+  </header>
+
+  <section class="newsletter-archive">
+    <div class="section-heading">
+      <div><p class="eyebrow">Archive</p><h2>지난 브리핑</h2></div>
+      <a href="https://aicra.substack.com/archive" target="_blank" rel="noopener">Substack 아카이브 →</a>
+    </div>
+
+    {% assign issues = site.newsletters | sort: 'date' | reverse %}
+    <div class="newsletter-list">
+      {% for issue in issues %}
+      <article class="newsletter-card">
+        <p class="newsletter-card__meta">No. {{ issue.issue }} · {{ issue.date | date: '%Y-%m-%d' }}</p>
+        <h3><a href="{{ issue.url | relative_url }}">{{ issue.title }}</a></h3>
+        <p>{{ issue.description }}</p>
+        <div class="newsletter-card__tags">{{ issue.tags | join: ' · ' }}</div>
+      </article>
+      {% else %}
+      <p>첫 뉴스레터를 준비하고 있습니다.</p>
+      {% endfor %}
+    </div>
+  </section>
+</section>
