@@ -188,6 +188,7 @@ def detect_injection(prompt: str) -> bool:
 
 ## 체크리스트 (PR 전)
 
+- [ ] `AICRA 공개 연구 제안` 또는 `공개 연구 제안` 절을 넣지 않았는가?
 - [ ] 제목이 명확한가?
 - [ ] description이 작성되었는가?
 - [ ] 카테고리와 태그가 적절한가?

@@ -15,6 +15,13 @@ const POSTS_DIR = path.join(__dirname, '..', '_posts');
 const REQUIRED_FIELDS = ['title', 'description', 'date', 'categories', 'tags', 'author'];
 const VALID_CATEGORIES = ['Research', 'Analysis', 'Tutorial', 'News'];
 const VALID_SEVERITIES = ['critical', 'high', 'medium', 'low', 'info'];
+const FORBIDDEN_SECTION_PATTERNS = [
+  /^#{1,6}\s+(?:AICRA\s+)?공개\s*연구\s*제안(?:\s*[:：-].*)?\s*$/im,
+];
+
+function containsForbiddenSection(content) {
+  return FORBIDDEN_SECTION_PATTERNS.some(pattern => pattern.test(content));
+}
 
 function parseFrontmatter(content) {
   const match = content.replace(/\r\n/g, '\n').match(/^---\n([\s\S]*?)\n---/);
@@ -85,29 +92,41 @@ function validatePost(filePath) {
     errors.push(`${filename}: Post too short (${wordCount} words, minimum 500)`);
   }
 
+  // AICRA editorial policy: public research proposal sections are not published.
+  if (containsForbiddenSection(bodyContent)) {
+    errors.push(`${filename}: Forbidden section heading '공개 연구 제안'`);
+  }
+
   return errors;
 }
 
-// Main
-const files = fs.readdirSync(POSTS_DIR).filter(f => f.endsWith('.md'));
-let allErrors = [];
+function main() {
+  const files = fs.readdirSync(POSTS_DIR).filter(f => f.endsWith('.md'));
+  let allErrors = [];
 
-console.log(`[*] Validating ${files.length} posts...`);
+  console.log(`[*] Validating ${files.length} posts...`);
 
-for (const file of files) {
-  const errors = validatePost(path.join(POSTS_DIR, file));
-  if (errors.length > 0) {
-    allErrors = allErrors.concat(errors);
+  for (const file of files) {
+    const errors = validatePost(path.join(POSTS_DIR, file));
+    if (errors.length > 0) {
+      allErrors = allErrors.concat(errors);
+    } else {
+      console.log(`  [+] ${file}: OK`);
+    }
+  }
+
+  if (allErrors.length > 0) {
+    console.log('\n[-] Validation errors:');
+    allErrors.forEach(e => console.log(`  [-] ${e}`));
+    process.exit(1);
   } else {
-    console.log(`  [+] ${file}: OK`);
+    console.log(`\n[+] All ${files.length} posts valid.`);
+    process.exit(0);
   }
 }
 
-if (allErrors.length > 0) {
-  console.log('\n[-] Validation errors:');
-  allErrors.forEach(e => console.log(`  [-] ${e}`));
-  process.exit(1);
-} else {
-  console.log(`\n[+] All ${files.length} posts valid.`);
-  process.exit(0);
+if (require.main === module) {
+  main();
 }
+
+module.exports = { containsForbiddenSection, parseFrontmatter, validatePost };
