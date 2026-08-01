@@ -50,6 +50,7 @@ jobs:
         run: |
           node << 'EOF'
           const fs = require('fs');
+          const path = require('path');
           const matter = require('gray-matter');
           const { marked } = require('marked');
 
@@ -70,13 +71,19 @@ jobs:
           const htmlContent = marked(body);
 
           // Medium API payload
+          const postName = path.basename(postFile);
+          const permalinkMatch = postName.match(/^(\d{4})-\d{2}-\d{2}-(.+)\.md$/);
+          const canonicalUrl = permalinkMatch
+            ? `https://aicra-page.github.io/blog/${permalinkMatch[1]}/${permalinkMatch[2]}/`
+            : 'https://aicra-page.github.io/blog/';
+
           const payload = {
             title: title,
             contentFormat: 'html',
             content: htmlContent,
             tags: data.tags || ['ai-security', 'llm', 'owasp'],
             publishStatus: 'draft', // Start as draft for review
-            canonicalUrl: `https://aicra-page.github.io/AICRA-analyze${postFile.replace('_posts/', '/').replace('.md', '/')}`
+            canonicalUrl: canonicalUrl
           };
 
           console.log('Prepared Medium post:', title);
@@ -143,7 +150,7 @@ hashtags: ["인공지능보안", "AI보안", "LLM보안", "OWASP", "사이버보
 
 ## 네이버 블로그용 요약본
 
-[원문 링크](https://aicra-page.github.io/AICRA-analyze/${POST%.md}/)
+[원문 링크](https://aicra-page.github.io/blog/)
 
 ---
 (아래 내용을 네이버 블로그에 복사하세요)

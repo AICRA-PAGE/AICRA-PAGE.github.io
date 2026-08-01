@@ -21,6 +21,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Validate post content policy
+        run: node scripts/validate-frontmatter.js
+
+      - name: Run reproducible security labs
+        run: python3 -m unittest discover -s tests -p 'test_agent_security_lab.py'
+
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:

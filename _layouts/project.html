@@ -1,0 +1,78 @@
+---
+layout: default
+---
+
+<article class="project-detail">
+  <header class="project-detail__header">
+    <p class="eyebrow">AICRA Research Project</p>
+    <div class="project-detail__status-row">
+      <span class="project-status project-status--{{ page.status | default: 'proposal' }}">{{ page.status_label | default: page.status }}</span>
+      {% if page.open_call %}<span class="project-open-call">참여자 모집 중</span>{% endif %}
+    </div>
+    <h1>{{ page.title }}</h1>
+    <p class="project-detail__summary">{{ page.summary }}</p>
+
+    <dl class="project-meta">
+      <div><dt>연구 분야</dt><dd>{{ page.domain | join: ', ' }}</dd></div>
+      <div><dt>기간</dt><dd>{{ page.period | default: '일정 수립 중' }}</dd></div>
+      <div><dt>프로젝트 리드</dt><dd>{{ page.lead | default: 'AICRA' }}</dd></div>
+      <div><dt>업데이트</dt><dd>{{ page.last_modified_at | date: '%Y-%m-%d' }}</dd></div>
+    </dl>
+
+    {% if page.progress %}
+    <div class="project-progress" aria-label="프로젝트 진척도 {{ page.progress }} 퍼센트">
+      <div class="project-progress__label"><span>진척도</span><strong>{{ page.progress }}%</strong></div>
+      <div class="project-progress__track"><span style="width:{{ page.progress }}%"></span></div>
+    </div>
+    {% endif %}
+  </header>
+
+  {% if page.research_questions %}
+  <section class="project-section">
+    <h2>핵심 연구 질문</h2>
+    <ol>
+      {% for question in page.research_questions %}<li>{{ question }}</li>{% endfor %}
+    </ol>
+  </section>
+  {% endif %}
+
+  {% if page.milestones %}
+  <section class="project-section">
+    <h2>마일스톤</h2>
+    <div class="project-timeline">
+      {% for milestone in page.milestones %}
+      <article class="project-timeline__item">
+        <p class="project-timeline__date">{{ milestone.date }}</p>
+        <h3>{{ milestone.title }}</h3>
+        <p>{{ milestone.description }}</p>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if page.deliverables %}
+  <section class="project-section">
+    <h2>예정 산출물</h2>
+    <ul class="project-deliverables">
+      {% for deliverable in page.deliverables %}<li>{{ deliverable }}</li>{% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+
+  <div class="project-content">
+    {{ content }}
+  </div>
+
+  {% if page.open_call %}
+  <aside class="project-participation">
+    <p class="eyebrow">Open Research</p>
+    <h2>이 프로젝트에 참여하세요</h2>
+    <p>관련 연구, 재현 실험, 데이터셋 검토 또는 실무 사례 제공으로 기여할 수 있습니다.</p>
+    <div class="button-row">
+      <a class="button button--primary" href="https://github.com/AICRA-PAGE/AICRA-PAGE.github.io/issues/new?labels=research-project&amp;title={{ page.title | url_encode }}" target="_blank" rel="noopener">참여 제안 남기기</a>
+      <a class="button button--secondary" href="mailto:{{ site.email }}?subject={{ page.title | url_encode }}">이메일 문의</a>
+    </div>
+  </aside>
+  {% endif %}
+</article>

@@ -14,6 +14,12 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Validate post content policy
+        run: node scripts/validate-frontmatter.js
+
+      - name: Run reproducible security labs
+        run: python3 -m unittest discover -s tests -p 'test_agent_security_lab.py'
+
       - name: Check post author permission
         uses: actions/github-script@v7
         with:

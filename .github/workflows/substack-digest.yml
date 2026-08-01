@@ -12,10 +12,12 @@ on:
         type: boolean
         default: false
 
+permissions:
+  contents: write
+
 jobs:
   generate-digest:
     runs-on: ubuntu-latest
-    if: ${{ vars.ENABLE_SUBSTACK == 'true' }}
 
     steps:
       - name: Checkout
@@ -68,56 +70,69 @@ jobs:
           const month = today.toLocaleDateString('ko-KR', { month: 'long' });
           const year = today.getFullYear();
 
-          let digest = `# AICRA 위클리 AI 보안 뉴스레터
-
-**${year}년 ${month} ${weekNum}주차** | 인공지능보안연구회
-
----
-
-안녕하세요, AICRA 뉴스레터 구독자 여러분!
-
-이번 주 AI 보안 분야의 주요 소식을 전해드립니다.
-
----
-
-## 📝 AICRA 블로그 신규 포스트
-
-`;
+          let digest = [
+            '# AICRA 위클리 AI 보안 뉴스레터',
+            '',
+            `**${year}년 ${month} ${weekNum}주차** | 인공지능보안연구회`,
+            '',
+            '---',
+            '',
+            '안녕하세요, AICRA 뉴스레터 구독자 여러분!',
+            '',
+            '이번 주 AI 보안 분야의 주요 소식을 전해드립니다.',
+            '',
+            '---',
+            '',
+            '## AICRA 블로그 신규 포스트',
+            ''
+          ].join('\n');
 
           posts.forEach((post, i) => {
-            const url = `https://aicra-page.github.io/AICRA-analyze/${post.file.replace('.md', '/')}`;
-            digest += `### ${i + 1}. ${post.title || 'Untitled'}
-
-${post.description || post.excerpt || '자세한 내용은 블로그에서 확인하세요.'}
-
-👉 [전문 읽기](${url})
-
-`;
+            const match = post.file.match(/^(\d{4})-\d{2}-\d{2}-(.+)\.md$/);
+            const url = match
+              ? `https://aicra-page.github.io/blog/${match[1]}/${match[2]}/`
+              : 'https://aicra-page.github.io/blog/';
+            digest += [
+              `### ${i + 1}. ${post.title || 'Untitled'}`,
+              '',
+              post.description || post.excerpt || '자세한 내용은 블로그에서 확인하세요.',
+              '',
+              `[전문 읽기](${url})`,
+              ''
+            ].join('\n');
           });
 
-          digest += `---
-
-## 💬 AICRA에서 알립니다
-
-AI 보안에 관한 질문이나 연구 주제 제안이 있으시면 언제든 연락주세요!
-
----
-
-**읽어주셔서 감사합니다!**
-
-다음 주에도 AI 보안 소식으로 찾아뵙겠습니다.
-
-🌐 블로그: https://aicra-page.github.io/AICRA-analyze/
-
----
-
-*이 뉴스레터가 유용하셨다면, 동료에게 공유해 주세요!*
-`;
+          digest += [
+            '---',
+            '',
+            '## AICRA에서 알립니다',
+            '',
+            'AI 보안에 관한 질문이나 연구 주제 제안이 있으시면 언제든 연락주세요!',
+            '',
+            '---',
+            '',
+            '**읽어주셔서 감사합니다!**',
+            '',
+            '다음 주에도 AI 보안 소식으로 찾아뵙겠습니다.',
+            '',
+            '웹사이트: https://aicra-page.github.io/',
+            '',
+            '---',
+            '',
+            '*이 뉴스레터가 유용하셨다면, 동료에게 공유해 주세요!*',
+            ''
+          ].join('\n');
 
           // Save digest
-          const digestPath = `_crosspost/substack/digest-${today.toISOString().split('T')[0]}.md`;
+          const dateString = today.toISOString().split('T')[0];
+          const issueDir = '_newsletters';
+          const issueNumber = fs.existsSync(issueDir)
+            ? fs.readdirSync(issueDir).filter(f => f.endsWith('.md')).length + 1
+            : 1;
+          const frontmatter = `---\nlayout: newsletter\ntitle: "AICRA 위클리 AI 보안 브리핑"\ndescription: "지난 7일간 발행된 AICRA 연구와 실무 체크리스트"\ndate: ${dateString}\nissue: ${issueNumber}\nreading_time: 5분\ntags: [AI Security, Weekly Briefing]\n---\n\n`;
+          const digestPath = `${issueDir}/${dateString}-weekly-security-briefing.md`;
           fs.mkdirSync(path.dirname(digestPath), { recursive: true });
-          fs.writeFileSync(digestPath, digest);
+          fs.writeFileSync(digestPath, frontmatter + digest);
           fs.writeFileSync('digest-status.txt', 'generated');
           fs.writeFileSync('digest-path.txt', digestPath);
 
@@ -154,7 +169,7 @@ AI 보안에 관한 질문이나 연구 주제 제안이 있으시면 언제든 
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add _crosspost/substack/ || true
+          git add _newsletters/ || true
           git diff --staged --quiet || git commit -m "chore: Generate weekly Substack digest [skip ci]"
           git push || true
 
