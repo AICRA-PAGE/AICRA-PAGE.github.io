@@ -1,5 +1,548 @@
 [
   {
+    "id": "thedeepfakedetectionchallenged",
+    "title": "The DeepFake Detection Challenge (DFDC) Dataset.",
+    "authors": [
+      "Brian Dolhansky",
+      "Joanna Bitton",
+      "Ben Pflaum",
+      "Jikuo Lu",
+      "Russ Howes",
+      "Menglin Wang",
+      "Cristian Canton Ferrer"
+    ],
+    "abstract": "",
+    "year": 2020,
+    "venue": "",
+    "arxiv_id": "",
+    "doi": "",
+    "semantic_scholar_id": "77810e84d07b55818f00b9c22defbf82eccb43bb",
+    "url": "https://www.semanticscholar.org/paper/77810e84d07b55818f00b9c22defbf82eccb43bb",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "citation_count": 1207,
+    "relevance_score": 100,
+    "match_reasons": [
+      "high-citation",
+      "deepfake detection"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "high-citation"
+    ],
+    "last_checked": "2026-11-02T00:22:11.432Z"
+  },
+  {
+    "id": "10-1109-CVPR46437-2021-00222",
+    "title": "Multi-attentional Deepfake Detection",
+    "authors": [
+      "Han-Qing Zhao",
+      "Tianyi Wei",
+      "Wenbo Zhou",
+      "Wei-Ming Zhang",
+      "Dong-Dong Chen",
+      "Neng-Hai Yu"
+    ],
+    "abstract": "Face forgery by deepfake is widely spread over the internet and has raised severe societal concerns. Recently, how to detect such forgery contents has become a hot research topic and many deepfake detection methods have been proposed. Most of them model deepfake detection as a vanilla binary classification problem, i.e, first use a backbone network to extract a global feature and then feed it into a binary classifier (real/fake). But since the difference between the real and fake images in this ",
+    "year": 2021,
+    "venue": "Computer Vision and Pattern Recognition",
+    "arxiv_id": "2103.02406",
+    "doi": "10.1109/CVPR46437.2021.00222",
+    "semantic_scholar_id": "eb3165d08407275ac518ae6186c082ff7f5276f9",
+    "url": "https://www.semanticscholar.org/paper/eb3165d08407275ac518ae6186c082ff7f5276f9",
+    "pdf_url": "https://arxiv.org/pdf/2103.02406",
+    "categories": [],
+    "keywords": [],
+    "citation_count": 1017,
+    "relevance_score": 100,
+    "match_reasons": [
+      "high-citation",
+      "deepfake detection"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "high-citation"
+    ],
+    "last_checked": "2026-11-02T00:22:11.432Z"
+  },
+  {
+    "id": "10-1109-CVPR52733-2024-02657",
+    "title": "Rethinking the Up-Sampling Operations in CNN-Based Generative Network for Generalizable Deepfake Detection",
+    "authors": [
+      "Chuang-Chuang Tan",
+      "Huan Liu",
+      "Yao Zhao",
+      "Shi-Kui Wei",
+      "Guanghua Gu",
+      "Ping Liu",
+      "Yun-Chao Wei"
+    ],
+    "abstract": "",
+    "year": 2024,
+    "venue": "Computer Vision and Pattern Recognition",
+    "arxiv_id": "",
+    "doi": "10.1109/CVPR52733.2024.02657",
+    "semantic_scholar_id": "7e3b3d82df3c22cb90f10921f28c2a3f6c07e77f",
+    "url": "https://www.semanticscholar.org/paper/7e3b3d82df3c22cb90f10921f28c2a3f6c07e77f",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "citation_count": 473,
+    "relevance_score": 97,
+    "match_reasons": [
+      "high-citation",
+      "deepfake detection"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "high-citation"
+    ],
+    "last_checked": "2026-11-02T00:22:11.432Z"
+  },
+  {
+    "id": "10-48550-arXiv-2505-11413",
+    "title": "CARES: Comprehensive Evaluation of Safety and Adversarial Robustness in Medical LLMs",
+    "authors": [
+      "Sijia Chen",
+      "Xiao-Min Li",
+      "Mengxue Zhang",
+      "Eric Hanchen Jiang",
+      "Qin Zeng",
+      "Cheng Yu"
+    ],
+    "abstract": "Large language models (LLMs) are increasingly deployed in medical contexts, raising critical concerns about safety, alignment, and susceptibility to adversarial manipulation. While prior benchmarks assess model refusal capabilities for harmful prompts, they often lack clinical specificity, graded harmfulness levels, and coverage of jailbreak-style attacks. We introduce CARES (Clinical Adversarial Robustness and Evaluation of Safety), a benchmark for evaluating LLM safety in healthcare. CARES inc",
+    "year": 2025,
+    "venue": "NeurIPS",
+    "arxiv_id": "2505.11413",
+    "doi": "10.48550/arXiv.2505.11413",
+    "semantic_scholar_id": "15b8ead2bf17a7cc36bbe68b1830a46107ab43e6",
+    "url": "https://www.semanticscholar.org/paper/15b8ead2bf17a7cc36bbe68b1830a46107ab43e6",
+    "pdf_url": "https://arxiv.org/pdf/2505.11413",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 95,
+    "match_reasons": [
+      "adversarial",
+      "jailbreak",
+      "robustness",
+      "alignment",
+      "attack"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "NeurIPS"
+    ],
+    "last_checked": "2026-11-02T00:09:22.538Z"
+  },
+  {
+    "id": "10-48550-arXiv-2511-18138",
+    "title": "Vulnerability-Aware Robust Multimodal Adversarial Training",
+    "authors": [
+      "Junrui Zhang",
+      "Xin-Yu Zhao",
+      "Jie Peng",
+      "Chenjie Wang",
+      "Jian-Min Ji",
+      "Tian-Long Chen"
+    ],
+    "abstract": "Multimodal learning has shown significant superiority on various tasks by integrating multiple modalities.\nHowever, the interdependencies among modalities increase the susceptibility of multimodal models to adversarial attacks.\nExisting methods mainly focus on attacks on specific modalities or indiscriminately attack all modalities. \nIn this paper, we find that these approaches ignore the differences between modalities in their contribution to final robustness, resulting in suboptimal robustness",
+    "year": 2025,
+    "venue": "AAAI",
+    "arxiv_id": "2511.18138",
+    "doi": "10.48550/arXiv.2511.18138",
+    "semantic_scholar_id": "8b9eb249ed1bc0081a666968ece0a819be389696",
+    "url": "https://www.semanticscholar.org/paper/8b9eb249ed1bc0081a666968ece0a819be389696",
+    "pdf_url": "https://arxiv.org/pdf/2511.18138",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 95,
+    "match_reasons": [
+      "adversarial",
+      "robustness",
+      "adversarial training",
+      "vulnerability",
+      "attack"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "AAAI"
+    ],
+    "last_checked": "2026-11-02T00:10:34.485Z"
+  },
+  {
+    "id": "10-1609-aaai-v38i5-28310",
+    "title": "Frequency-Aware Deepfake Detection: Improving Generalizability through Frequency Space Domain Learning",
+    "authors": [
+      "Chuang-Chuang Tan",
+      "Yao Zhao",
+      "Shi-Kui Wei",
+      "Guanghua Gu",
+      "Ping Liu",
+      "Yun-Chao Wei"
+    ],
+    "abstract": "This research addresses the challenge of developing a universal deepfake detector that can effectively identify unseen deepfake images despite limited training data. Existing frequency-based paradigms have relied on frequency-level artifacts introduced during the up-sampling in GAN pipelines to detect forgeries. However, the rapid advancements in synthesis technology have led to specific artifacts for each generation model. Consequently, these detectors have exhibited a lack of proficiency in le",
+    "year": 2024,
+    "venue": "AAAI Conference on Artificial Intelligence",
+    "arxiv_id": "",
+    "doi": "10.1609/aaai.v38i5.28310",
+    "semantic_scholar_id": "a19241eaaa6c35f8763b4c3bf5c754b9fdb09331",
+    "url": "https://www.semanticscholar.org/paper/a19241eaaa6c35f8763b4c3bf5c754b9fdb09331",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "citation_count": 393,
+    "relevance_score": 89,
+    "match_reasons": [
+      "high-citation",
+      "deepfake detection"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "high-citation"
+    ],
+    "last_checked": "2026-11-02T00:22:11.432Z"
+  },
+  {
+    "id": "vapdananomalydetectionmodelfor",
+    "title": "VAPD: An Anomaly Detection Model for PDF Malware Forensics with Adversarial Robustness",
+    "authors": [
+      "Side Liu",
+      "Ming Jiang",
+      "Yi-Lin Zhou",
+      "Jian-Ming Fu",
+      "Guo-Jun Peng"
+    ],
+    "abstract": "",
+    "year": 2025,
+    "venue": "USENIX Security",
+    "arxiv_id": "",
+    "doi": "",
+    "semantic_scholar_id": "e357bc74ecba649751e38e95201bd010179a533f",
+    "url": "https://www.semanticscholar.org/paper/e357bc74ecba649751e38e95201bd010179a533f",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 80,
+    "match_reasons": [
+      "adversarial",
+      "robustness",
+      "malware",
+      "anomaly detection"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "USENIX Security"
+    ],
+    "last_checked": "2026-11-02T00:08:48.948Z"
+  },
+  {
+    "id": "10-48550-arXiv-2505-21494",
+    "title": "Adversarial Attacks against Closed-Source MLLMs via Feature Optimal Alignment",
+    "authors": [
+      "Xiao-Jun Jia",
+      "Sen-Sen Gao",
+      "Si-Meng Qin",
+      "Tian-Yu Pang",
+      "Chao Du",
+      "Yi-Hao Huang",
+      "Xin-Feng Li",
+      "Yi-Ming Li",
+      "Bo Li",
+      "Yang Liu"
+    ],
+    "abstract": "Multimodal large language models (MLLMs) remain vulnerable to transferable adversarial examples. While existing methods typically achieve targeted attacks by aligning global features-such as CLIP's [CLS] token-between adversarial and target samples, they often overlook the rich local information encoded in patch tokens. This leads to suboptimal alignment and limited transferability, particularly for closed-source models. To address this limitation, we propose a targeted transferable adversarial ",
+    "year": 2025,
+    "venue": "NeurIPS",
+    "arxiv_id": "2505.21494",
+    "doi": "10.48550/arXiv.2505.21494",
+    "semantic_scholar_id": "76f8d092d1f74a9fe6f1e118a6c48717049cbb07",
+    "url": "https://www.semanticscholar.org/paper/76f8d092d1f74a9fe6f1e118a6c48717049cbb07",
+    "pdf_url": "https://arxiv.org/pdf/2505.21494",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 80,
+    "match_reasons": [
+      "adversarial",
+      "alignment",
+      "adversarial example",
+      "attack"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "NeurIPS"
+    ],
+    "last_checked": "2026-11-02T00:09:22.537Z"
+  },
+  {
+    "id": "10-48550-arXiv-2405-15589",
+    "title": "Efficient Adversarial Training in LLMs with Continuous Attacks",
+    "authors": [
+      "Sophie Xhonneux",
+      "A. Sordoni",
+      "Stephan Günnemann",
+      "G. Gidel",
+      "Leo Schwinn"
+    ],
+    "abstract": "Large language models (LLMs) are vulnerable to adversarial attacks that can bypass their safety guardrails. In many domains, adversarial training has proven to be one of the most promising methods to reliably improve robustness against such attacks. Yet, in the context of LLMs, current methods for adversarial training are hindered by the high computational costs required to perform discrete adversarial attacks at each training iteration. We address this problem by instead calculating adversarial",
+    "year": 2024,
+    "venue": "NeurIPS",
+    "arxiv_id": "2405.15589",
+    "doi": "10.48550/arXiv.2405.15589",
+    "semantic_scholar_id": "723ae07c5c8921eb94ac52528c8a53bec837c5a9",
+    "url": "https://www.semanticscholar.org/paper/723ae07c5c8921eb94ac52528c8a53bec837c5a9",
+    "pdf_url": "https://arxiv.org/pdf/2405.15589",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 80,
+    "match_reasons": [
+      "adversarial",
+      "robustness",
+      "adversarial training",
+      "attack"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "NeurIPS"
+    ],
+    "last_checked": "2026-11-02T00:09:22.538Z"
+  },
+  {
+    "id": "10-48550-arXiv-2511-07049",
+    "title": "From Pretrain to Pain: Adversarial Vulnerability of Video Foundation Models Without Task Knowledge",
+    "authors": [
+      "Hui Lu",
+      "Yi Yu",
+      "Song Xia",
+      "Yi-Ming Yang",
+      "Deepu Rajan",
+      "Boon Poh Ng",
+      "A. Kot",
+      "Xu-Dong Jiang"
+    ],
+    "abstract": "Large-scale Video Foundation Models (VFMs) have significantly advanced various video-related tasks, either through task-specific models or Multi-modal Large Language Models (MLLMs). However, the open accessibility of VFMs also introduces critical security risks, as adversaries can exploit full knowledge of the VFMs to launch potent attacks. This paper investigates a novel and practical adversarial threat scenario: attacking downstream models or MLLMs fine-tuned from open-source VFMs, without req",
+    "year": 2025,
+    "venue": "AAAI",
+    "arxiv_id": "2511.07049",
+    "doi": "10.48550/arXiv.2511.07049",
+    "semantic_scholar_id": "17dabb7cc4e74eb05bac5ffc595b40f888aa87e4",
+    "url": "https://www.semanticscholar.org/paper/17dabb7cc4e74eb05bac5ffc595b40f888aa87e4",
+    "pdf_url": "https://arxiv.org/pdf/2511.07049",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 80,
+    "match_reasons": [
+      "adversarial",
+      "vulnerability",
+      "attack",
+      "threat"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "AAAI"
+    ],
+    "last_checked": "2026-11-02T00:10:34.485Z"
+  },
+  {
+    "id": "10-1609-aaai-v38i7-28503",
+    "title": "Step Vulnerability Guided Mean Fluctuation Adversarial Attack against Conditional Diffusion Models",
+    "authors": [
+      "Hong-Wei Yu",
+      "Jian-Sheng Chen",
+      "Xin-Long Ding",
+      "Yudong Zhang",
+      "Ting Tang",
+      "Huimin Ma"
+    ],
+    "abstract": "The high-quality generation results of conditional diffusion models have brought about concerns regarding privacy and copyright issues. As a possible technique for preventing the abuse of diffusion models, the adversarial attack against diffusion models has attracted academic attention recently. In this work, utilizing the phenomenon that diffusion models are highly sensitive to the mean value of the input noise, we propose the Mean Fluctuation Attack (MFA) to introduce mean fluctuations by shif",
+    "year": 2024,
+    "venue": "AAAI",
+    "arxiv_id": "",
+    "doi": "10.1609/aaai.v38i7.28503",
+    "semantic_scholar_id": "70512c218693310ba994bdec3254b2c3be4ed632",
+    "url": "https://www.semanticscholar.org/paper/70512c218693310ba994bdec3254b2c3be4ed632",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 80,
+    "match_reasons": [
+      "adversarial",
+      "vulnerability",
+      "privacy",
+      "attack"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "AAAI"
+    ],
+    "last_checked": "2026-11-02T00:10:34.485Z"
+  },
+  {
+    "id": "10-1609-aaai-v39i9-32988",
+    "title": "Data-Free Universal Attack by Exploiting the Intrinsic Vulnerability of Deep Models",
+    "authors": [
+      "Yan Yan",
+      "Jinyu Tian"
+    ],
+    "abstract": "Deep neural networks (DNNs) are susceptible to Universal Adversarial Perturbations (UAPs), which are instance-agnostic perturbations that can deceive a target model across a wide range of samples. Unlike instance-specific adversarial examples, UAPs present a greater challenge as they must generalize across different samples and models. Generating UAPs typically requires access to numerous examples, which is a strong assumption in real-world tasks. In this paper, we propose a novel data-free meth",
+    "year": 2025,
+    "venue": "AAAI",
+    "arxiv_id": "2503.22205",
+    "doi": "10.1609/aaai.v39i9.32988",
+    "semantic_scholar_id": "fcb4ddfc59c5d822d183c6684596777129be11e7",
+    "url": "https://www.semanticscholar.org/paper/fcb4ddfc59c5d822d183c6684596777129be11e7",
+    "pdf_url": "https://arxiv.org/pdf/2503.22205",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 80,
+    "match_reasons": [
+      "adversarial",
+      "adversarial example",
+      "vulnerability",
+      "attack"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "AAAI"
+    ],
+    "last_checked": "2026-11-02T00:10:34.485Z"
+  },
+  {
+    "id": "10-1016-j-patcog-2025-112042",
+    "title": "Unveiling Hidden Vulnerabilities in Digital Human Generation via Adversarial Attacks",
+    "authors": [
+      "Zhiying Li",
+      "Ye-Ying Jin",
+      "Fan Shen",
+      "Zhi Liu",
+      "Weibin Chen",
+      "Peng-Ju Zhang",
+      "Xiaomei Zhang",
+      "Bo-Yu Chen",
+      "Michael Shen",
+      "Kejian Wu"
+    ],
+    "abstract": "Expressive human pose and shape estimation (EHPS) is crucial for digital human generation, especially in applications like live streaming. While existing research primarily focuses on reducing estimation errors, it largely neglects robustness and security aspects, leaving these systems vulnerable to adversarial attacks. To address this significant challenge, we propose the \\textbf{Tangible Attack (TBA)}, a novel framework designed to generate adversarial examples capable of effectively compromis",
+    "year": 2025,
+    "venue": "PR",
+    "arxiv_id": "2504.17457",
+    "doi": "10.1016/j.patcog.2025.112042",
+    "semantic_scholar_id": "916b4ec7cfedd272d408f3ebf015043b6a0a0875",
+    "url": "https://www.semanticscholar.org/paper/916b4ec7cfedd272d408f3ebf015043b6a0a0875",
+    "pdf_url": "https://arxiv.org/pdf/2504.17457",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 80,
+    "match_reasons": [
+      "adversarial",
+      "robustness",
+      "adversarial example",
+      "attack"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "PR"
+    ],
+    "last_checked": "2026-11-02T00:12:55.627Z"
+  },
+  {
+    "id": "10-1016-j-patcog-2023-110130",
+    "title": "Topological safeguard for evasion attack interpreting the neural networks' behavior",
+    "authors": [
+      "Xabier Echeberria-Barrio",
+      "Amaia Gil-Lerchundi",
+      "Iñigo Mendialdua",
+      "Raul Orduna Urrutia"
+    ],
+    "abstract": "In the last years, Deep Learning technology has been proposed in different fields, bringing many advances in each of them, but identifying new threats in these solutions regarding cybersecurity. Those implemented models have brought several vulnerabilities associated with Deep Learning technology. Moreover, those allow taking advantage of the implemented model, obtaining private information, and even modifying the model's decision-making. Therefore, interest in studying those vulnerabilities/att",
+    "year": 2024,
+    "venue": "PR",
+    "arxiv_id": "2402.07480",
+    "doi": "10.1016/j.patcog.2023.110130",
+    "semantic_scholar_id": "c7545e21c80ba4270aa60c5cada34454b0067711",
+    "url": "https://www.semanticscholar.org/paper/c7545e21c80ba4270aa60c5cada34454b0067711",
+    "pdf_url": "https://arxiv.org/pdf/2402.07480",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 80,
+    "match_reasons": [
+      "evasion attack",
+      "cybersecurity",
+      "attack",
+      "threat"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "PR"
+    ],
+    "last_checked": "2026-11-02T00:12:55.627Z"
+  },
+  {
+    "id": "10-1145-3708821-3733915",
+    "title": "When Better Features Mean Greater Risks: The Performance-Privacy Trade-Off in Contrastive Learning",
+    "authors": [
+      "R. Sun",
+      "Hongsheng Hu",
+      "Wei Luo",
+      "Zhaoxi Zhang",
+      "Yan-Jun Zhang",
+      "Haizhuan Yuan",
+      "L. Zhang"
+    ],
+    "abstract": "With the rapid advancement of deep learning technology, pre-trained encoder models have demonstrated exceptional feature extraction capabilities, playing a pivotal role in the research and application of deep learning. However, their widespread use has raised significant concerns about the risk of training data privacy leakage. This paper systematically investigates the privacy threats posed by membership inference attacks (MIAs) targeting encoder models, focusing on contrastive learning framewo",
+    "year": 2025,
+    "venue": "ASIACCS",
+    "arxiv_id": "2506.05743",
+    "doi": "10.1145/3708821.3733915",
+    "semantic_scholar_id": "fd4c6847e8b03c8f93f228fba1c8ac0306cf6811",
+    "url": "https://www.semanticscholar.org/paper/fd4c6847e8b03c8f93f228fba1c8ac0306cf6811",
+    "pdf_url": "https://arxiv.org/pdf/2506.05743",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 80,
+    "match_reasons": [
+      "membership inference",
+      "privacy",
+      "attack",
+      "threat"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "ASIACCS"
+    ],
+    "last_checked": "2026-11-02T00:21:09.750Z"
+  },
+  {
     "id": "2603-23925",
     "title": "DP^2-VL: Private Photo Dataset Protection by Data Poisoning for Vision-Language Models",
     "authors": [
@@ -118,6 +661,532 @@
       "arxiv"
     ],
     "last_checked": "2026-03-26T22:13:39.737Z"
+  },
+  {
+    "id": "10-1109-SP54263-2024-00139",
+    "title": "Flash: A Comprehensive Approach to Intrusion Detection via Provenance Graph Representation Learning",
+    "authors": [
+      "M. Ur Rehman",
+      "Hadi Ahmadi",
+      "Wajih Ul Hassan"
+    ],
+    "abstract": "Recently, provenance-based Intrusion Detection Systems (IDSes) have gained popularity for their potential in detecting sophisticated Advanced Persistent Threat (APT) attacks. These IDSes employ provenance graphs created from system logs to identify potentially malicious activities. Despite their potential, they face challenges in accuracy, practicality, and scalability, particularly when dealing with large provenance graphs. We present Flash, a scalable IDS that leverages graph representation le",
+    "year": 2024,
+    "venue": "IEEE S&P",
+    "arxiv_id": "",
+    "doi": "10.1109/SP54263.2024.00139",
+    "semantic_scholar_id": "d3ad994d5504a87b4c79a1ca8485d71b6106be01",
+    "url": "https://www.semanticscholar.org/paper/d3ad994d5504a87b4c79a1ca8485d71b6106be01",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 65,
+    "match_reasons": [
+      "intrusion detection",
+      "attack",
+      "threat"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "IEEE S&P"
+    ],
+    "last_checked": "2026-11-02T00:08:12.028Z"
+  },
+  {
+    "id": "10-1109-SP54263-2024-00253",
+    "title": "R-CAID: Embedding Root Cause Analysis within Provenance-based Intrusion Detection",
+    "authors": [
+      "Akul Goyal",
+      "Gang Wang",
+      "Adam Bates"
+    ],
+    "abstract": "In modern enterprise security, endpoint detection products fire an alert when process activity matches known attack behavior patterns. Human analysts then perform Root Cause Analysis (RCA) over event logs to determine if the alert is indicative of an actual attack. Data Provenance can help to automate RCA by representing event logs as a causal dependency graphs; in fact, researchers are now examining whether provenance-based anomaly detection should replace pattern-based detection altogether. Un",
+    "year": 2024,
+    "venue": "IEEE S&P",
+    "arxiv_id": "",
+    "doi": "10.1109/SP54263.2024.00253",
+    "semantic_scholar_id": "e8c24a78017e8cfdfeafef50bdce0700df5a80f5",
+    "url": "https://www.semanticscholar.org/paper/e8c24a78017e8cfdfeafef50bdce0700df5a80f5",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 65,
+    "match_reasons": [
+      "intrusion detection",
+      "anomaly detection",
+      "attack"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "IEEE S&P"
+    ],
+    "last_checked": "2026-11-02T00:08:12.029Z"
+  },
+  {
+    "id": "10-1109-SP63933-2026-00242",
+    "title": "Beyond Nodes vs. Edges: A Multi-View Fusion Framework for Provenance-Based Intrusion Detection",
+    "authors": [
+      "Fan Yang",
+      "Binyan Xu",
+      "Dixin Tang",
+      "Kehuan Zhang"
+    ],
+    "abstract": "Provenance-based intrusion detection has emerged as a promising approach for analyzing complex attack behaviors through system-level provenance graphs. However, existing defense methods face an inherent granularity limitation. Node-centric detectors, which evaluate anomalies using entities' attributes and local structural patterns, may misclassify benign behavioral changes or configuration modifications as suspicious. In contrast, edge-centric detectors, which focus more on interactions, may lac",
+    "year": 2026,
+    "venue": "IEEE S&P",
+    "arxiv_id": "2604.14685",
+    "doi": "10.1109/SP63933.2026.00242",
+    "semantic_scholar_id": "e95b5be18944fccca44f2a06e12b624f9f2a7e2f",
+    "url": "https://www.semanticscholar.org/paper/e95b5be18944fccca44f2a06e12b624f9f2a7e2f",
+    "pdf_url": "https://arxiv.org/pdf/2604.14685",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 65,
+    "match_reasons": [
+      "intrusion detection",
+      "attack",
+      "defense"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "IEEE S&P"
+    ],
+    "last_checked": "2026-11-02T00:08:12.029Z"
+  },
+  {
+    "id": "10-1109-SP61157-2025-00112",
+    "title": "What We Talk About When We Talk About Logs: Understanding the Effects of Dataset Quality on Endpoint Threat Detection Research",
+    "authors": [
+      "Jason Liu",
+      "Muhammad Adil Inam",
+      "Akul Goyal",
+      "Andy Riddle",
+      "Kim Westfall",
+      "Adam Bates"
+    ],
+    "abstract": "Endpoint threat detection research hinges on the availability of worthwhile evaluation benchmarks, but experimenters' understanding of the contents of benchmark datasets is often limited. Typically, attention is only paid to the realism of attack behaviors, which comprises only a small percentage of the audit logs in the dataset, while other characteristics of the data are inscrutable and unknown. We propose a new set of questions for what to talk about when we talk about logs (i.e., datasets): ",
+    "year": 2025,
+    "venue": "IEEE S&P",
+    "arxiv_id": "",
+    "doi": "10.1109/SP61157.2025.00112",
+    "semantic_scholar_id": "5a410e743f8f3cc8f48580be4cf1e8066f00b3a4",
+    "url": "https://www.semanticscholar.org/paper/5a410e743f8f3cc8f48580be4cf1e8066f00b3a4",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 65,
+    "match_reasons": [
+      "threat detection",
+      "attack",
+      "threat"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "IEEE S&P"
+    ],
+    "last_checked": "2026-11-02T00:08:12.030Z"
+  },
+  {
+    "id": "10-48550-arXiv-2407-02886",
+    "title": "A Wolf in Sheep's Clothing: Practical Black-box Adversarial Attacks for Evading Learning-based Windows Malware Detection in the Wild",
+    "authors": [
+      "Xiang Ling",
+      "Zhi-Yu Wu",
+      "Bin Wang",
+      "Wei Deng",
+      "Jing-Zheng Wu",
+      "Shou-Ling Ji",
+      "Tian-Yue Luo",
+      "Yan-Jun Wu"
+    ],
+    "abstract": "Given the remarkable achievements of existing learning-based malware detection in both academia and industry, this paper presents MalGuise, a practical black-box adversarial attack framework that evaluates the security risks of existing learning-based Windows malware detection systems under the black-box setting. MalGuise first employs a novel semantics-preserving transformation of call-based redividing to concurrently manipulate both nodes and edges of malware's control-flow graph, making it le",
+    "year": 2024,
+    "venue": "USENIX Security",
+    "arxiv_id": "2407.02886",
+    "doi": "10.48550/arXiv.2407.02886",
+    "semantic_scholar_id": "fd2561d18dbaa3b93f83a89b8f0081f2d209380e",
+    "url": "https://www.semanticscholar.org/paper/fd2561d18dbaa3b93f83a89b8f0081f2d209380e",
+    "pdf_url": "https://arxiv.org/pdf/2407.02886",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 65,
+    "match_reasons": [
+      "adversarial",
+      "malware",
+      "attack"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "USENIX Security"
+    ],
+    "last_checked": "2026-11-02T00:08:48.948Z"
+  },
+  {
+    "id": "fightingfirewithfirecontinuous",
+    "title": "Fighting Fire with Fire: Continuous Attack for Adversarial Android Malware Detection",
+    "authors": [
+      "Yin-Yuan Zhang",
+      "Cui-Ying Gao",
+      "Yue-Ming Wu",
+      "Shi-Han Dou",
+      "Cong Wu",
+      "Ying Zhang",
+      "Wei Yuan",
+      "Yang Liu"
+    ],
+    "abstract": "",
+    "year": 2025,
+    "venue": "USENIX Security",
+    "arxiv_id": "",
+    "doi": "",
+    "semantic_scholar_id": "5a5cc3d61edd08b5831ecd9a50b8b8805bd9dfb1",
+    "url": "https://www.semanticscholar.org/paper/5a5cc3d61edd08b5831ecd9a50b8b8805bd9dfb1",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 65,
+    "match_reasons": [
+      "adversarial",
+      "malware",
+      "attack"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "USENIX Security"
+    ],
+    "last_checked": "2026-11-02T00:08:48.948Z"
+  },
+  {
+    "id": "10-48550-arXiv-2405-15234",
+    "title": "Defensive Unlearning with Adversarial Training for Robust Concept Erasure in Diffusion Models",
+    "authors": [
+      "Yimeng Zhang",
+      "Xin Chen",
+      "Jinghan Jia",
+      "Yihua Zhang",
+      "Chong-Yu Fan",
+      "Jiancheng Liu",
+      "Mingyi Hong",
+      "Ke Ding",
+      "Sijia Liu"
+    ],
+    "abstract": "Diffusion models (DMs) have achieved remarkable success in text-to-image generation, but they also pose safety risks, such as the potential generation of harmful content and copyright violations. The techniques of machine unlearning, also known as concept erasing, have been developed to address these risks. However, these techniques remain vulnerable to adversarial prompt attacks, which can prompt DMs post-unlearning to regenerate undesired images containing concepts (such as nudity) meant to be",
+    "year": 2024,
+    "venue": "NeurIPS",
+    "arxiv_id": "2405.15234",
+    "doi": "10.48550/arXiv.2405.15234",
+    "semantic_scholar_id": "3fdda2d3fe6156f7f0e48e4af62ff995484fe866",
+    "url": "https://www.semanticscholar.org/paper/3fdda2d3fe6156f7f0e48e4af62ff995484fe866",
+    "pdf_url": "https://arxiv.org/pdf/2405.15234",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 65,
+    "match_reasons": [
+      "adversarial",
+      "adversarial training",
+      "attack"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "NeurIPS"
+    ],
+    "last_checked": "2026-11-02T00:09:22.537Z"
+  },
+  {
+    "id": "10-48550-arXiv-2402-16822",
+    "title": "Rainbow Teaming: Open-Ended Generation of Diverse Adversarial Prompts",
+    "authors": [
+      "Mikayel Samvelyan",
+      "S. Raparthy",
+      "Andrei Lupu",
+      "Eric Hambro",
+      "Aram H. Markosyan",
+      "Manish Bhatt",
+      "Yun-ing Mao",
+      "Minqi Jiang",
+      "Jack Parker-Holder",
+      "J. Foerster"
+    ],
+    "abstract": "As large language models (LLMs) become increasingly prevalent across many real-world applications, understanding and enhancing their robustness to adversarial attacks is of paramount importance. Existing methods for identifying adversarial prompts tend to focus on specific domains, lack diversity, or require extensive human annotations. To address these limitations, we present Rainbow Teaming, a novel black-box approach for producing a diverse collection of adversarial prompts. Rainbow Teaming c",
+    "year": 2024,
+    "venue": "NeurIPS",
+    "arxiv_id": "2402.16822",
+    "doi": "10.48550/arXiv.2402.16822",
+    "semantic_scholar_id": "7ea5e86bbbcc445eca1a765deb314eefc06067b8",
+    "url": "https://www.semanticscholar.org/paper/7ea5e86bbbcc445eca1a765deb314eefc06067b8",
+    "pdf_url": "https://arxiv.org/pdf/2402.16822",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 65,
+    "match_reasons": [
+      "adversarial",
+      "robustness",
+      "attack"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "NeurIPS"
+    ],
+    "last_checked": "2026-11-02T00:09:22.538Z"
+  },
+  {
+    "id": "10-48550-arXiv-2506-07001",
+    "title": "Adversarial Paraphrasing: A Universal Attack for Humanizing AI-Generated Text",
+    "authors": [
+      "Yize Cheng",
+      "Vinu Sankar Sadasivan",
+      "Mehrdad Saberi",
+      "Shoumik Saha",
+      "S. Feizi"
+    ],
+    "abstract": "The increasing capabilities of Large Language Models (LLMs) have raised concerns about their misuse in AI-generated plagiarism and social engineering. While various AI-generated text detectors have been proposed to mitigate these risks, many remain vulnerable to simple evasion techniques such as paraphrasing. However, recent detectors have shown greater robustness against such basic attacks. In this work, we introduce Adversarial Paraphrasing, a training-free attack framework that universally hu",
+    "year": 2025,
+    "venue": "NeurIPS",
+    "arxiv_id": "2506.07001",
+    "doi": "10.48550/arXiv.2506.07001",
+    "semantic_scholar_id": "1bccca9673ec8aff2fd4c505952f554b717b2cf3",
+    "url": "https://www.semanticscholar.org/paper/1bccca9673ec8aff2fd4c505952f554b717b2cf3",
+    "pdf_url": "https://arxiv.org/pdf/2506.07001",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 65,
+    "match_reasons": [
+      "adversarial",
+      "robustness",
+      "attack"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "NeurIPS"
+    ],
+    "last_checked": "2026-11-02T00:09:22.538Z"
+  },
+  {
+    "id": "10-48550-arXiv-2403-00871",
+    "title": "Teach LLMs to Phish: Stealing Private Information from Language Models",
+    "authors": [
+      "Ashwinee Panda",
+      "Christopher A. Choquette-Choo",
+      "Zhengming Zhang",
+      "Yao-Qing Yang",
+      "Prateek Mittal"
+    ],
+    "abstract": "When large language models are trained on private data, it can be a significant privacy risk for them to memorize and regurgitate sensitive information. In this work, we propose a new practical data extraction attack that we call\"neural phishing\". This attack enables an adversary to target and extract sensitive or personally identifiable information (PII), e.g., credit card numbers, from a model trained on user data with upwards of 10% attack success rates, at times, as high as 50%. Our attack a",
+    "year": 2024,
+    "venue": "ICLR",
+    "arxiv_id": "2403.00871",
+    "doi": "10.48550/arXiv.2403.00871",
+    "semantic_scholar_id": "ee529552e871dbd7d2c53d9cde4b46380712cbe0",
+    "url": "https://www.semanticscholar.org/paper/ee529552e871dbd7d2c53d9cde4b46380712cbe0",
+    "pdf_url": "https://arxiv.org/pdf/2403.00871",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 65,
+    "match_reasons": [
+      "phishing",
+      "privacy",
+      "attack"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "ICLR"
+    ],
+    "last_checked": "2026-11-02T00:10:19.187Z"
+  },
+  {
+    "id": "10-48550-arXiv-2502-15932",
+    "title": "CVE-LLM : Ontology-Assisted Automatic Vulnerability Evaluation Using Large Language Models",
+    "authors": [
+      "Rikhiya Ghosh",
+      "Hans-Martin von Stockhausen",
+      "Martin Schmitt",
+      "V. Marica",
+      "Sanjeev Kumar Karn",
+      "Oladimeji Farri"
+    ],
+    "abstract": "The National Vulnerability Database (NVD) publishes over a thousand new vulnerabilities monthly, with a projected 25 percent increase in 2024, highlighting the crucial need for rapid vulnerability identification to mitigate cybersecurity attacks and save costs and resources. In this work, we propose using large language models (LLMs) to learn vulnerability evaluation from historical assessments of medical device vulnerabilities in a single manufacturer's portfolio. We highlight the effectiveness",
+    "year": 2025,
+    "venue": "AAAI",
+    "arxiv_id": "2502.15932",
+    "doi": "10.48550/arXiv.2502.15932",
+    "semantic_scholar_id": "7e4c280c9be28463d5a1999522186b44e59bfc1d",
+    "url": "https://www.semanticscholar.org/paper/7e4c280c9be28463d5a1999522186b44e59bfc1d",
+    "pdf_url": "https://arxiv.org/pdf/2502.15932",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 65,
+    "match_reasons": [
+      "vulnerability",
+      "cybersecurity",
+      "attack"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "AAAI"
+    ],
+    "last_checked": "2026-11-02T00:10:34.484Z"
+  },
+  {
+    "id": "10-1109-TDSC-2023-3253121",
+    "title": "Quantitative Evaluation of Extensive Vulnerability Set Using Cost Benefit Analysis",
+    "authors": [
+      "Urvashi Bansal",
+      "Geeta Sikka",
+      "L. K. Awasthi",
+      "Bharat K. Bhargava"
+    ],
+    "abstract": "The significant expansion in network size to support new paradigms such as cloud computing, IoT (Internet of Things), etc. together with the exponential increase in vulnerabilities has challenged the existing security mechanisms greatly. These challenges have opened many avenues for research in network security. However, while attack graphs play an important role in analyzing vulnerabilities, analyzing large attack graphs itself is a major issue. Therefore, it is necessary to extract only the cr",
+    "year": 2024,
+    "venue": "TDSC",
+    "arxiv_id": "",
+    "doi": "10.1109/TDSC.2023.3253121",
+    "semantic_scholar_id": "f842283b157ce4c6772e67bb84c4ed39a827d243",
+    "url": "https://www.semanticscholar.org/paper/f842283b157ce4c6772e67bb84c4ed39a827d243",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 65,
+    "match_reasons": [
+      "vulnerability",
+      "network security",
+      "attack"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "TDSC"
+    ],
+    "last_checked": "2026-11-02T00:11:34.764Z"
+  },
+  {
+    "id": "10-1016-j-patcog-2025-111862",
+    "title": "Desensitizing for improving corruption robustness in point cloud classification through adversarial training",
+    "authors": [
+      "Zhiqiang Tian",
+      "Wei-Gang Li",
+      "Chunhua Deng",
+      "Junwei Hu",
+      "Yongqiang Wang",
+      "Wen-Ping Liu"
+    ],
+    "abstract": "Due to scene complexity, sensor inaccuracies, and processing imprecision, point cloud corruption is inevitable. Over-reliance on input features is the root cause of DNN vulnerabilities. It remains unclear whether this issue exists in 3D tasks involving point clouds and whether reducing dependence on these features can enhance the model's robustness to corrupted point clouds. This study attempts to answer these questions. Specifically, we quantified the sensitivity of the DNN to point cloud featu",
+    "year": 2025,
+    "venue": "PR",
+    "arxiv_id": "2509.23010",
+    "doi": "10.1016/j.patcog.2025.111862",
+    "semantic_scholar_id": "a1c1c466bf3ab9ce46642ebcb5ab7d606b5bbd80",
+    "url": "https://www.semanticscholar.org/paper/a1c1c466bf3ab9ce46642ebcb5ab7d606b5bbd80",
+    "pdf_url": "https://arxiv.org/pdf/2509.23010",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 65,
+    "match_reasons": [
+      "adversarial",
+      "robustness",
+      "adversarial training"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "PR"
+    ],
+    "last_checked": "2026-11-02T00:12:55.627Z"
+  },
+  {
+    "id": "10-48550-arXiv-2409-04982",
+    "title": "2DSig-Detect: a semi-supervised framework for anomaly detection on image data using 2D-signatures",
+    "authors": [
+      "Xinheng Xie",
+      "Kureha Yamaguchi",
+      "Margaux Leblanc",
+      "Simon Malzard",
+      "Varun Chhabra",
+      "Victoria Nockles",
+      "Yue Wu"
+    ],
+    "abstract": "The rapid advancement of machine learning technologies raises questions about the security of machine learning models, with respect to both training-time (poisoning) and test-time (evasion, impersonation, and inversion) attacks. Models performing image-related tasks, e.g. detection, and classification, are vulnerable to adversarial attacks that can degrade their performance and produce undesirable outcomes. This paper introduces a novel technique for anomaly detection in images called 2DSig-Dete",
+    "year": 2024,
+    "venue": "PR",
+    "arxiv_id": "2409.04982",
+    "doi": "10.48550/arXiv.2409.04982",
+    "semantic_scholar_id": "c95c318b4ba70c436628e3a1da3d105ceb91c1d2",
+    "url": "https://www.semanticscholar.org/paper/c95c318b4ba70c436628e3a1da3d105ceb91c1d2",
+    "pdf_url": "https://arxiv.org/pdf/2409.04982",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 65,
+    "match_reasons": [
+      "adversarial",
+      "anomaly detection",
+      "attack"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "PR"
+    ],
+    "last_checked": "2026-11-02T00:12:55.627Z"
+  },
+  {
+    "id": "10-1145-3708821-3733914",
+    "title": "Enhancing Search Privacy on Tor: Advanced Deep Keyword Fingerprinting Attacks and BurstGuard Defense",
+    "authors": [
+      "Chaiwon Hwang",
+      "Haeseung Jeon",
+      "Jiwoo Hong",
+      "Hosung Kang",
+      "Nate Mathews",
+      "Goun Kim",
+      "S. Oh"
+    ],
+    "abstract": "This paper addresses the privacy risks associated with Keyword Fingerprinting (KF) on Tor, a process that involves inferring user-typed keywords through traffic analysis. Existing research has been inadequate in effectively fingerprinting keywords. To bridge this gap, we introduce Deep Keyword Fingerprinting (DKF), a novel approach that utilizes a large dataset, deep learning models, and adapted website fingerprinting features to significantly enhance the accuracy of predicting user-searched key",
+    "year": 2025,
+    "venue": "ASIACCS",
+    "arxiv_id": "",
+    "doi": "10.1145/3708821.3733914",
+    "semantic_scholar_id": "2615b982bf3f4df6bd571267dac2052a17592c94",
+    "url": "https://www.semanticscholar.org/paper/2615b982bf3f4df6bd571267dac2052a17592c94",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 65,
+    "match_reasons": [
+      "privacy",
+      "attack",
+      "defense"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "ASIACCS"
+    ],
+    "last_checked": "2026-11-02T00:21:09.751Z"
   },
   {
     "id": "2603-17174",
@@ -371,6 +1440,607 @@
     "last_checked": "2026-03-26T22:13:39.737Z"
   },
   {
+    "id": "10-1007-s11042-024-20548-6",
+    "title": "Video deepfake detection using a hybrid CNN-LSTM-Transformer model for identity verification",
+    "authors": [
+      "G. Petmezas",
+      "Vazgken Vanian",
+      "Konstantinos Konstantoudakis",
+      "Elena E. I. Almaloglou",
+      "Dimitris Zarpalas"
+    ],
+    "abstract": "The proliferation of deepfake technology poses significant challenges due to its potential for misuse in creating highly convincing manipulated videos. Deep learning (DL) techniques have emerged as powerful tools for analyzing and identifying subtle inconsistencies that distinguish genuine content from deepfakes. This paper introduces a novel approach for video deepfake detection that integrates 3D Morphable Models (3DMMs) with a hybrid CNN-LSTM-Transformer model, aimed at enhancing detection ac",
+    "year": 2025,
+    "venue": "Multimedia tools and applications",
+    "arxiv_id": "",
+    "doi": "10.1007/s11042-024-20548-6",
+    "semantic_scholar_id": "e17c9359b8cbf6f327523694fcf4019a65134a09",
+    "url": "https://www.semanticscholar.org/paper/e17c9359b8cbf6f327523694fcf4019a65134a09",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "citation_count": 71,
+    "relevance_score": 57,
+    "match_reasons": [
+      "high-citation",
+      "deepfake detection"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "high-citation"
+    ],
+    "last_checked": "2026-11-02T00:22:11.432Z"
+  },
+  {
+    "id": "10-1109-SP63933-2026-00202",
+    "title": "A Context Is Worth a Thousand Lies: Evading Intrusion Detectors via Intelligent Context Distortion",
+    "authors": [
+      "Magdy Nasr",
+      "Vansh Rastogi",
+      "Azadeh TabibanB"
+    ],
+    "abstract": "Provenance-based Intrusion Detection Systems (PIDSes) have become one of the most promising solutions for detecting sophisticated attacks. However, many existing PIDSes can be evaded by approaches obfuscating malicious nodes among frequent benign events (i.e., gadgets) or replacing rare malicious events with frequent benign sequences. While effective against earlier PIDSes, those approaches largely overlook advanced node-level PIDSes, which leverage semantic information, temporal ordering, and g",
+    "year": 2026,
+    "venue": "IEEE S&P",
+    "arxiv_id": "",
+    "doi": "10.1109/SP63933.2026.00202",
+    "semantic_scholar_id": "046e8296ecc52541e9a8057cc67142e45fd41ca5",
+    "url": "https://www.semanticscholar.org/paper/046e8296ecc52541e9a8057cc67142e45fd41ca5",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 50,
+    "match_reasons": [
+      "intrusion detection",
+      "attack"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "IEEE S&P"
+    ],
+    "last_checked": "2026-11-02T00:08:12.029Z"
+  },
+  {
+    "id": "10-1109-SP63933-2026-00016",
+    "title": "APIECHO: Training-Less Anomaly Detection via Intra-API Behavioral Comparison for Web Applications",
+    "authors": [
+      "Yihao Peng",
+      "Yi-Ming Wu",
+      "Du Wu",
+      "Shou-Lin Ji",
+      "Hai Wan",
+      "Xi-Bin Zhao"
+    ],
+    "abstract": "Anomaly detection is crucial for web application security, yet existing methods like rule-based validation and learning-based models face significant limitations. Rule-based systems struggle with novel attacks, while learning-based approaches require frequent, costly retraining to adapt to dynamic application updates, often leading to high false positives. While recent self-comparison methods address retraining by comparing replicas in microservice scenarios, they are ill-suited for monolithic a",
+    "year": 2026,
+    "venue": "IEEE S&P",
+    "arxiv_id": "",
+    "doi": "10.1109/SP63933.2026.00016",
+    "semantic_scholar_id": "8321c7423cb308079b7c2c4794dbe474af563183",
+    "url": "https://www.semanticscholar.org/paper/8321c7423cb308079b7c2c4794dbe474af563183",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 50,
+    "match_reasons": [
+      "anomaly detection",
+      "attack"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "IEEE S&P"
+    ],
+    "last_checked": "2026-11-02T00:08:12.029Z"
+  },
+  {
+    "id": "10-1109-SP61157-2025-00250",
+    "title": "DataSentinel: A Game-Theoretic Detection of Prompt Injection Attacks",
+    "authors": [
+      "Yupei Liu",
+      "Yu-Qi Jia",
+      "Jin-Yuan Jia",
+      "Dawn Song",
+      "N. Gong"
+    ],
+    "abstract": "LLM-integrated applications and agents are vulnerable to prompt injection attacks, where an attacker injects prompts into their inputs to induce attacker-desired outputs. A detection method aims to determine whether a given input is contaminated by an injected prompt. However, existing detection methods have limited effectiveness against state-of-the-art attacks, let alone adaptive ones. In this work, we propose DataSentinel, a game-theoretic method to detect prompt injection attacks. Specifical",
+    "year": 2025,
+    "venue": "IEEE S&P",
+    "arxiv_id": "2504.11358",
+    "doi": "10.1109/SP61157.2025.00250",
+    "semantic_scholar_id": "a90068513bf2eae66c81ff80b5060ce115097176",
+    "url": "https://www.semanticscholar.org/paper/a90068513bf2eae66c81ff80b5060ce115097176",
+    "pdf_url": "https://arxiv.org/pdf/2504.11358",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 50,
+    "match_reasons": [
+      "prompt injection",
+      "attack"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "IEEE S&P"
+    ],
+    "last_checked": "2026-11-02T00:08:12.029Z"
+  },
+  {
+    "id": "10-1109-SP61157-2025-00194",
+    "title": "Chimera: Fuzzing P4 Network Infrastructure for Multi-Plane Bug Detection and Vulnerability Discovery",
+    "authors": [
+      "Jiwon Kim",
+      "D. Tian",
+      "Benjamin E. Ujcich"
+    ],
+    "abstract": "Programmable network data planes, such as P4, offer flexibility in defining network forwarding behavior. However, such programmability introduces a new attack surface for bugs and security vulnerabilities. Most P4 security research has focused solely on the data plane, overlooking its integration with the control plane. We investigated past bug reports in open-source P4 implementations across both control and data planes, and we observed that many P4 network bugs and vulnerabilities arise from t",
+    "year": 2025,
+    "venue": "IEEE S&P",
+    "arxiv_id": "",
+    "doi": "10.1109/SP61157.2025.00194",
+    "semantic_scholar_id": "50132215fcf0d9077d9e052a233e3653e9932d9e",
+    "url": "https://www.semanticscholar.org/paper/50132215fcf0d9077d9e052a233e3653e9932d9e",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 50,
+    "match_reasons": [
+      "vulnerability",
+      "attack"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "IEEE S&P"
+    ],
+    "last_checked": "2026-11-02T00:08:12.030Z"
+  },
+  {
+    "id": "10-48550-arXiv-2503-09124",
+    "title": "AdvAD: Exploring Non-Parametric Diffusion for Imperceptible Adversarial Attacks",
+    "authors": [
+      "Jin Li",
+      "Ziqiang He",
+      "An-Wei Luo",
+      "Jian-Fang Hu",
+      "Z. Wang",
+      "Xiangui Kang"
+    ],
+    "abstract": "Imperceptible adversarial attacks aim to fool DNNs by adding imperceptible perturbation to the input data. Previous methods typically improve the imperceptibility of attacks by integrating common attack paradigms with specifically designed perception-based losses or the capabilities of generative models. In this paper, we propose Adversarial Attacks in Diffusion (AdvAD), a novel modeling framework distinct from existing attack paradigms. AdvAD innovatively conceptualizes attacking as a non-param",
+    "year": 2025,
+    "venue": "NeurIPS",
+    "arxiv_id": "2503.09124",
+    "doi": "10.48550/arXiv.2503.09124",
+    "semantic_scholar_id": "a19d3077ed267a9a7ac25f11fa17b109c818693d",
+    "url": "https://www.semanticscholar.org/paper/a19d3077ed267a9a7ac25f11fa17b109c818693d",
+    "pdf_url": "https://arxiv.org/pdf/2503.09124",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 50,
+    "match_reasons": [
+      "adversarial",
+      "attack"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "NeurIPS"
+    ],
+    "last_checked": "2026-11-02T00:09:22.538Z"
+  },
+  {
+    "id": "ai2taleaninnovativeinformation",
+    "title": "AI2TALE: An Innovative Information Theory-based Approach for Learning to Localize Phishing Attacks",
+    "authors": [
+      "Van Nguyen",
+      "Tingmin Wu",
+      "Xingliang Yuan",
+      "M. Grobler",
+      "Surya Nepal",
+      "Carsten Rudolph"
+    ],
+    "abstract": "",
+    "year": 2025,
+    "venue": "ICLR",
+    "arxiv_id": "",
+    "doi": "",
+    "semantic_scholar_id": "fb08e80ae23b743af505c80d1b306352a6d809a3",
+    "url": "https://www.semanticscholar.org/paper/fb08e80ae23b743af505c80d1b306352a6d809a3",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 50,
+    "match_reasons": [
+      "phishing",
+      "attack"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "ICLR"
+    ],
+    "last_checked": "2026-11-02T00:10:19.187Z"
+  },
+  {
+    "id": "10-48550-arXiv-2406-12935",
+    "title": "ChatBug: A Common Vulnerability of Aligned LLMs Induced by Chat Templates",
+    "authors": [
+      "Feng-Qing Jiang",
+      "Zhangchen Xu",
+      "Luyao Niu",
+      "Bill Yuchen Lin",
+      "Radha Poovendran"
+    ],
+    "abstract": "Large language models (LLMs) are expected to follow instructions from users and engage in conversations. Techniques to enhance LLMs' instruction-following capabilities typically fine-tune them using data structured according to a predefined chat template. Although chat templates are shown to be effective in optimizing LLM performance, their impact on safety alignment of LLMs has been less understood, which is crucial for deploying LLMs safely at scale.\n\nIn this paper, we investigate how chat tem",
+    "year": 2024,
+    "venue": "AAAI",
+    "arxiv_id": "2406.12935",
+    "doi": "10.48550/arXiv.2406.12935",
+    "semantic_scholar_id": "e2d282bba1500e002c7c14ab49bd3d2216950b46",
+    "url": "https://www.semanticscholar.org/paper/e2d282bba1500e002c7c14ab49bd3d2216950b46",
+    "pdf_url": "https://arxiv.org/pdf/2406.12935",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 50,
+    "match_reasons": [
+      "alignment",
+      "vulnerability"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "AAAI"
+    ],
+    "last_checked": "2026-11-02T00:10:34.484Z"
+  },
+  {
+    "id": "10-1609-aaai-v39i1-31981",
+    "title": "CLEP: A Novel Contrastive Learning Method for Evolutionary Reentrancy Vulnerability Detection",
+    "authors": [
+      "Jie Chen",
+      "Liang-Min Wang",
+      "Huijuan Zhu",
+      "Victor S. Sheng"
+    ],
+    "abstract": "Reentrancy vulnerabilities in smart contracts have been exploited to steal enormous amounts of money, thus detecting reentrancy vulnerabilities is a hotspot issue in security research. However, a new attack is emerging in which attackers continuously release new reentrancy patterns to exploit fresh vulnerabilities and obfuscate existing ones. Existing detection methods neglect the time-series evolution of vulnerabilities across different smart contract versions, leading to a gradual decline in t",
+    "year": 2025,
+    "venue": "AAAI",
+    "arxiv_id": "",
+    "doi": "10.1609/aaai.v39i1.31981",
+    "semantic_scholar_id": "8b05cb54b7f977013e32e0b5df0093cc5a4d2aa4",
+    "url": "https://www.semanticscholar.org/paper/8b05cb54b7f977013e32e0b5df0093cc5a4d2aa4",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 50,
+    "match_reasons": [
+      "vulnerability",
+      "attack"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "AAAI"
+    ],
+    "last_checked": "2026-11-02T00:10:34.485Z"
+  },
+  {
+    "id": "10-1109-TDSC-2024-3384146",
+    "title": "Mismatched Control and Monitoring Frequencies: Vulnerability, Attack, and Mitigation",
+    "authors": [
+      "Ze-Yu Yang",
+      "Liang He",
+      "Peng Cheng",
+      "Ji-Ming Chen"
+    ],
+    "abstract": "Stealthy attacks manipulate the operation of Industrial Control Systems (ICSs) without being undetected, allowing persistent manipulation of system operation and thus the potential to cause destructive damage. This article introduces a new vulnerability of ICS that can be exploited to mount stealthy attacks without requiring any domain knowledge. This vulnerability is caused by a common practice in system monitoring, i.e., the SCADA monitors ICS operation at a much lower frequency than system ex",
+    "year": 2025,
+    "venue": "TDSC",
+    "arxiv_id": "",
+    "doi": "10.1109/TDSC.2024.3384146",
+    "semantic_scholar_id": "f9711dd4951ebaf7de50860d9bcdc9b46f68cf68",
+    "url": "https://www.semanticscholar.org/paper/f9711dd4951ebaf7de50860d9bcdc9b46f68cf68",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 50,
+    "match_reasons": [
+      "vulnerability",
+      "attack"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "TDSC"
+    ],
+    "last_checked": "2026-11-02T00:11:34.763Z"
+  },
+  {
+    "id": "10-48550-arXiv-2501-04390",
+    "title": "iFADIT: Invertible Face Anonymization via Disentangled Identity Transform",
+    "authors": [
+      "Lin Yuan",
+      "Kai Liang",
+      "Xiong Li",
+      "Tao Wu",
+      "Nan-Nan Wang",
+      "Xin-Bo Gao"
+    ],
+    "abstract": "Face anonymization aims to conceal the visual identity of a face to safeguard the individual's privacy. Traditional methods like blurring and pixelation can largely remove identifying features, but these techniques significantly degrade image quality and are vulnerable to deep reconstruction attacks. Generative models have emerged as a promising solution for anonymizing faces while preserving a natural appearance. However, many still face limitations in visual quality and often overlook the pote",
+    "year": 2025,
+    "venue": "PR",
+    "arxiv_id": "2501.04390",
+    "doi": "10.48550/arXiv.2501.04390",
+    "semantic_scholar_id": "8468cd60e3ca33caa138407a51265ef2cca1e315",
+    "url": "https://www.semanticscholar.org/paper/8468cd60e3ca33caa138407a51265ef2cca1e315",
+    "pdf_url": "https://arxiv.org/pdf/2501.04390",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 50,
+    "match_reasons": [
+      "privacy",
+      "attack"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "PR"
+    ],
+    "last_checked": "2026-11-02T00:12:55.626Z"
+  },
+  {
+    "id": "10-1016-j-patcog-2025-112412",
+    "title": "Benchmarking the Spatial Robustness of DNNs via Natural and Adversarial Localized Corruptions",
+    "authors": [
+      "Giulia Marchiori Pietrosanti",
+      "Giulio Rossolini",
+      "Alessandro Biondi",
+      "Giorgio C. Buttazzo"
+    ],
+    "abstract": "The robustness of deep neural networks is a crucial factor in safety-critical applications, particularly in complex and dynamic environments (e.g., medical or driving scenarios) where localized corruptions can arise. While previous studies have evaluated the robustness of semantic segmentation (SS) models under whole-image natural or adversarial corruptions, a comprehensive investigation into the spatial robustness of dense vision models under localized corruptions remains underexplored. This pa",
+    "year": 2025,
+    "venue": "PR",
+    "arxiv_id": "2504.01632",
+    "doi": "10.1016/j.patcog.2025.112412",
+    "semantic_scholar_id": "07a20934ec433891a51a0e89180dfe8d5ca74aef",
+    "url": "https://www.semanticscholar.org/paper/07a20934ec433891a51a0e89180dfe8d5ca74aef",
+    "pdf_url": "https://arxiv.org/pdf/2504.01632",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 50,
+    "match_reasons": [
+      "adversarial",
+      "robustness"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "PR"
+    ],
+    "last_checked": "2026-11-02T00:12:55.627Z"
+  },
+  {
+    "id": "10-1007-s11432-024-4542-8",
+    "title": "Propagation rectified attack: on improving adversarial transferability",
+    "authors": [
+      "Xuxiang Sun",
+      "Hongyu Peng",
+      "Gong Cheng",
+      "Jun-Wei Han"
+    ],
+    "abstract": "",
+    "year": 2025,
+    "venue": "SCIS",
+    "arxiv_id": "",
+    "doi": "10.1007/s11432-024-4542-8",
+    "semantic_scholar_id": "1f6a42df097680d82771470bed67770d676e8f5b",
+    "url": "https://www.semanticscholar.org/paper/1f6a42df097680d82771470bed67770d676e8f5b",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 50,
+    "match_reasons": [
+      "adversarial",
+      "attack"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "SCIS"
+    ],
+    "last_checked": "2026-11-02T00:20:04.419Z"
+  },
+  {
+    "id": "10-1007-s11432-025-4843-6",
+    "title": "On the adversarial robustness of AI-based CSI feedback systems",
+    "authors": [
+      "Zeng-Bao Zhu",
+      "Qi-Mei Cui",
+      "Jin-Li Zhai",
+      "Pu-Ning Xu",
+      "Yu-Sen Wang",
+      "Xiao-Feng Tao"
+    ],
+    "abstract": "",
+    "year": 2026,
+    "venue": "SCIS",
+    "arxiv_id": "",
+    "doi": "10.1007/s11432-025-4843-6",
+    "semantic_scholar_id": "d6af2b971c6faf448210d92df495af49bbc9abff",
+    "url": "https://www.semanticscholar.org/paper/d6af2b971c6faf448210d92df495af49bbc9abff",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 50,
+    "match_reasons": [
+      "adversarial",
+      "robustness"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "SCIS"
+    ],
+    "last_checked": "2026-11-02T00:20:04.419Z"
+  },
+  {
+    "id": "10-1007-s11432-025-4559-7",
+    "title": "Trend virtual adversarial training for semi-supervised time series classification",
+    "authors": [
+      "Qing-Yi Pan",
+      "Li-Yuan Wang",
+      "Jing-Yi Zhang",
+      "Jun Zhu",
+      "Ning Chen"
+    ],
+    "abstract": "",
+    "year": 2026,
+    "venue": "SCIS",
+    "arxiv_id": "",
+    "doi": "10.1007/s11432-025-4559-7",
+    "semantic_scholar_id": "249ee6ca478b25b4b3796deb70951aed40f33b20",
+    "url": "https://www.semanticscholar.org/paper/249ee6ca478b25b4b3796deb70951aed40f33b20",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 50,
+    "match_reasons": [
+      "adversarial",
+      "adversarial training"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "SCIS"
+    ],
+    "last_checked": "2026-11-02T00:20:04.419Z"
+  },
+  {
+    "id": "10-1007-s11432-025-4703-6",
+    "title": "New frontiers in large code language model security: a review of emerging adversarial threats and countermeasures",
+    "authors": [
+      "Yulong Yang",
+      "Haoran Fan",
+      "Chen-Hao Lin",
+      "Wei-Peng Jiang",
+      "Shiwei Wang",
+      "Qian Li",
+      "Zheng-Yu Zhao",
+      "Chong Zhang",
+      "Xiao-Hong Guan",
+      "Chao Shen"
+    ],
+    "abstract": "",
+    "year": 2026,
+    "venue": "SCIS",
+    "arxiv_id": "",
+    "doi": "10.1007/s11432-025-4703-6",
+    "semantic_scholar_id": "0cce745ff9bc56be90fa55190f61b6801affe79d",
+    "url": "https://www.semanticscholar.org/paper/0cce745ff9bc56be90fa55190f61b6801affe79d",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 50,
+    "match_reasons": [
+      "adversarial",
+      "threat"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "SCIS"
+    ],
+    "last_checked": "2026-11-02T00:20:04.419Z"
+  },
+  {
+    "id": "10-1145-3708821-3736187",
+    "title": "Towards Usability of Data with Privacy: A Unified Framework for Privacy-Preserving Data Sharing with High Utility",
+    "authors": [
+      "M. A. P. Chamikara",
+      "Seung Ick Jang",
+      "I. Oppermann",
+      "Dong-Xi Liu",
+      "Musotto Roberto",
+      "S. Ruj",
+      "Arindam Pal",
+      "Meisam Mohammady",
+      "Seyit Ahmet Camtepe",
+      "Sylvia Young"
+    ],
+    "abstract": "Tabular data sharing serves as a common method for data exchange. However, sharing sensitive information without adequate privacy protection can compromise individual privacy. Thus, ensuring privacy-preserving data sharing is crucial. Differential privacy (DP) is regarded as the gold standard in data privacy. Despite this, current DP methods tend to generate privacy-preserving tabular datasets that often suffer from limited practical utility due to heavy perturbation and disregard for the tables",
+    "year": 2025,
+    "venue": "ASIACCS",
+    "arxiv_id": "",
+    "doi": "10.1145/3708821.3736187",
+    "semantic_scholar_id": "75c688d5e26c12931e0af3341397fbde28c810ae",
+    "url": "https://www.semanticscholar.org/paper/75c688d5e26c12931e0af3341397fbde28c810ae",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 50,
+    "match_reasons": [
+      "differential privacy",
+      "privacy"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "ASIACCS"
+    ],
+    "last_checked": "2026-11-02T00:21:09.751Z"
+  },
+  {
+    "id": "10-1145-3708821-3735346",
+    "title": "POSTER: When Models Speak Too Much: Privacy Leakage on Large Language Models",
+    "authors": [
+      "Mingjun Zhang",
+      "Mahrokh Abdollahi",
+      "Thilina Ranbaduge",
+      "Ming Ding"
+    ],
+    "abstract": "As large language models (LLMs) become increasingly integrated into various applications, concerns regarding the inadvertent leakage of personally identifiable information (PII) have gained significant attention. This paper analyse the inherent risks associated with fine-tuning on extensive datasets that may contain PII and examine the implications of model outputs. We explore two different privacy attacks on various LLM architectures. Furthermore, we explore mitigation strategies, including dat",
+    "year": 2025,
+    "venue": "ASIACCS",
+    "arxiv_id": "",
+    "doi": "10.1145/3708821.3735346",
+    "semantic_scholar_id": "99b13df7fb3c5e143b7b9a8ee7923aae5b025635",
+    "url": "https://www.semanticscholar.org/paper/99b13df7fb3c5e143b7b9a8ee7923aae5b025635",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 50,
+    "match_reasons": [
+      "privacy",
+      "attack"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "ASIACCS"
+    ],
+    "last_checked": "2026-11-02T00:21:09.751Z"
+  },
+  {
     "id": "2603-16137",
     "title": "SIA: A Synthesize-Inject-Align Framework for Knowledge-Grounded and Secure E-commerce Search LLMs with Industrial Deployment",
     "authors": [
@@ -439,6 +2109,1036 @@
       "arxiv"
     ],
     "last_checked": "2026-03-26T22:13:39.736Z"
+  },
+  {
+    "id": "10-1109-SP61157-2025-00011",
+    "title": "EPScan: Automated Detection of Excessive RBAC Permissions in Kubernetes Applications",
+    "authors": [
+      "Yue Gu",
+      "Xin Tan",
+      "Yuan Zhang",
+      "Siyang Gao",
+      "Min Yang"
+    ],
+    "abstract": "As the dominant container orchestration system, Kubernetes has a large ecosystem of third-party applications. The third-party Kubernetes applications access various cluster resources to extend the cluster functionality and Kubernetes adopts the RBAC mechanism to manage the resource access permissions. Recently, researchers revealed that third-party applications are granted excessive permissions and proposed an excessive permission attack. The attacker can exploit some critical excessive permissi",
+    "year": 2025,
+    "venue": "IEEE S&P",
+    "arxiv_id": "",
+    "doi": "10.1109/SP61157.2025.00011",
+    "semantic_scholar_id": "0aaf5216c5cbf89e1dc0869695d60beb3bf93a4f",
+    "url": "https://www.semanticscholar.org/paper/0aaf5216c5cbf89e1dc0869695d60beb3bf93a4f",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 35,
+    "match_reasons": [
+      "attack"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "IEEE S&P"
+    ],
+    "last_checked": "2026-11-02T00:08:12.030Z"
+  },
+  {
+    "id": "10-1109-SP61157-2025-00213",
+    "title": "HouseFuzz: Service-Aware Grey-Box Fuzzing for Vulnerability Detection in Linux-Based Firmware",
+    "authors": [
+      "Haoyu Xiao",
+      "Zi-Qi Wei",
+      "Jia-Run Dai",
+      "Bowen Li",
+      "Yuan Zhang",
+      "Min Yang"
+    ],
+    "abstract": "To date, grey-box fuzzing has become an essential technique to detect vulnerabilities implied in Linux-based firmware. However, existing fuzzing approaches commonly encounter three overlooked obstacles stemming from firmware service characteristics, which largely hinder the effectiveness and efficiency of vulnerability identification. Firstly, the multi-process nature of firmware services is oversimplified during both the emulation and the fuzzing procedures, limiting the scope of firmware testi",
+    "year": 2025,
+    "venue": "IEEE S&P",
+    "arxiv_id": "",
+    "doi": "10.1109/SP61157.2025.00213",
+    "semantic_scholar_id": "b2c2c17417febfde48e00852778fb092187f78e0",
+    "url": "https://www.semanticscholar.org/paper/b2c2c17417febfde48e00852778fb092187f78e0",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 35,
+    "match_reasons": [
+      "vulnerability"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "IEEE S&P"
+    ],
+    "last_checked": "2026-11-02T00:08:12.030Z"
+  },
+  {
+    "id": "dvaextractingvictimsandabuseve",
+    "title": "DVa: Extracting Victims and Abuse Vectors from Android Accessibility Malware",
+    "authors": [
+      "Hai-Chuan Xu",
+      "Ming-Xuan Yao",
+      "Runze Zhang",
+      "Mohamed Moustafa Dawoud",
+      "Jeman Park",
+      "Brendan Saltaformaggio"
+    ],
+    "abstract": "",
+    "year": 2024,
+    "venue": "USENIX Security",
+    "arxiv_id": "",
+    "doi": "",
+    "semantic_scholar_id": "2712536443a57996b0d6e54bbc8aaa6b0d3ef76e",
+    "url": "https://www.semanticscholar.org/paper/2712536443a57996b0d6e54bbc8aaa6b0d3ef76e",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 35,
+    "match_reasons": [
+      "malware"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "USENIX Security"
+    ],
+    "last_checked": "2026-11-02T00:08:48.948Z"
+  },
+  {
+    "id": "imregrettingthatihitruninsitua",
+    "title": "\"I'm regretting that I hit run\": In-situ Assessment of Potential Malware",
+    "authors": [
+      "Brandon Lit",
+      "Edward Crowder",
+      "Hassan Khan",
+      "Daniel Vogel"
+    ],
+    "abstract": "",
+    "year": 2025,
+    "venue": "USENIX Security",
+    "arxiv_id": "",
+    "doi": "",
+    "semantic_scholar_id": "76b9f8430d679779469c44faab54871893692d3c",
+    "url": "https://www.semanticscholar.org/paper/76b9f8430d679779469c44faab54871893692d3c",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 35,
+    "match_reasons": [
+      "malware"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "USENIX Security"
+    ],
+    "last_checked": "2026-11-02T00:08:48.948Z"
+  },
+  {
+    "id": "2409-14596",
+    "title": "DarkGram: A Large-Scale Analysis of Cybercriminal Activity Channels on Telegram",
+    "authors": [
+      "S. Roy",
+      "Elham Pourabbas Vafa",
+      "Kobra Khanmohamaddi",
+      "Shirin Nilizadeh"
+    ],
+    "abstract": "We present the first large-scale analysis of 339 cybercriminal activity channels (CACs). Followed by over 23.8 million users, these channels share a wide array of malicious and unethical content with their subscribers, including compromised credentials, pirated software and media, social media manipulation tools, and blackhat hacking resources such as malware, exploit kits, and social engineering scams. To evaluate these channels, we developed DarkGram, a BERT-based framework that automatically ",
+    "year": 2024,
+    "venue": "USENIX Security",
+    "arxiv_id": "2409.14596",
+    "doi": "",
+    "semantic_scholar_id": "2e4a7fdad46d0361b9b826f471a9ecc8a82782f4",
+    "url": "https://www.semanticscholar.org/paper/2e4a7fdad46d0361b9b826f471a9ecc8a82782f4",
+    "pdf_url": "https://arxiv.org/pdf/2409.14596",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 35,
+    "match_reasons": [
+      "malware"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "USENIX Security"
+    ],
+    "last_checked": "2026-11-02T00:08:48.948Z"
+  },
+  {
+    "id": "10-48550-arXiv-2501-07326",
+    "title": "Am I Infected? Lessons from Operating a Large-Scale IoT Security Diagnostic Service",
+    "authors": [
+      "Takayuki Sasaki",
+      "Tomoya Inazawa",
+      "Youhei Yamaguchi",
+      "S. Parkin",
+      "M. van Eeten",
+      "Katsunari Yoshioka",
+      "Tsutomu Matsumoto"
+    ],
+    "abstract": "There is an expectation that users of home IoT devices will be able to secure those devices, but they may lack information about what they need to do. In February 2022, we launched a web service that scans users' IoT devices to determine how secure they are. The service aims to diagnose and remediate vulnerabilities and malware infections of IoT devices of Japanese users. This paper reports on findings from operating this service drawn from three studies: (1) the engagement of 114,747 users betw",
+    "year": 2025,
+    "venue": "USENIX Security",
+    "arxiv_id": "2501.07326",
+    "doi": "10.48550/arXiv.2501.07326",
+    "semantic_scholar_id": "87445f3923396ed13de2550c1968998588aea923",
+    "url": "https://www.semanticscholar.org/paper/87445f3923396ed13de2550c1968998588aea923",
+    "pdf_url": "https://arxiv.org/pdf/2501.07326",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 35,
+    "match_reasons": [
+      "malware"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "USENIX Security"
+    ],
+    "last_checked": "2026-11-02T00:08:48.948Z"
+  },
+  {
+    "id": "10-48550-arXiv-2506-09350",
+    "title": "Autoregressive Adversarial Post-Training for Real-Time Interactive Video Generation",
+    "authors": [
+      "Shanchuan Lin",
+      "Ce-Yuan Yang",
+      "Hao He",
+      "Jianwen Jiang",
+      "Yu-Xi Ren",
+      "X. Xia",
+      "Yang Zhao",
+      "Xuefeng Xiao",
+      "Lu Jiang"
+    ],
+    "abstract": "Existing large-scale video generation models are computationally intensive, preventing adoption in real-time and interactive applications. In this work, we propose autoregressive adversarial post-training (AAPT) to transform a pre-trained latent video diffusion model into a real-time, interactive video generator. Our model autoregressively generates a latent frame at a time using a single neural function evaluation (1NFE). The model can stream the result to the user in real time and receive inte",
+    "year": 2025,
+    "venue": "NeurIPS",
+    "arxiv_id": "2506.09350",
+    "doi": "10.48550/arXiv.2506.09350",
+    "semantic_scholar_id": "7c1f2866c29fab2f6ebb748002c76b2801720977",
+    "url": "https://www.semanticscholar.org/paper/7c1f2866c29fab2f6ebb748002c76b2801720977",
+    "pdf_url": "https://arxiv.org/pdf/2506.09350",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 35,
+    "match_reasons": [
+      "adversarial"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "NeurIPS"
+    ],
+    "last_checked": "2026-11-02T00:09:22.537Z"
+  },
+  {
+    "id": "10-48550-arXiv-2504-19162",
+    "title": "SPC: Evolving Self-Play Critic via Adversarial Games for LLM Reasoning",
+    "authors": [
+      "Jiaqi Chen",
+      "Bang Zhang",
+      "Ruotian Ma",
+      "Peisong Wang",
+      "Xiao-Dan Liang",
+      "Zhaopeng Tu",
+      "Xiaolong Li",
+      "Kwan-Yee K. Wong"
+    ],
+    "abstract": "Evaluating the step-by-step reliability of large language model (LLM) reasoning, such as Chain-of-Thought, remains challenging due to the difficulty and cost of obtaining high-quality step-level supervision. In this paper, we introduce Self-Play Critic (SPC), a novel approach where a critic model evolves its ability to assess reasoning steps through adversarial self-play games, eliminating the need for manual step-level annotation. SPC involves fine-tuning two copies of a base model to play two ",
+    "year": 2025,
+    "venue": "NeurIPS",
+    "arxiv_id": "2504.19162",
+    "doi": "10.48550/arXiv.2504.19162",
+    "semantic_scholar_id": "160820bb80922cfc3ff47a0c9b3a2bb369bb97b9",
+    "url": "https://www.semanticscholar.org/paper/160820bb80922cfc3ff47a0c9b3a2bb369bb97b9",
+    "pdf_url": "https://arxiv.org/pdf/2504.19162",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 35,
+    "match_reasons": [
+      "adversarial"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "NeurIPS"
+    ],
+    "last_checked": "2026-11-02T00:09:22.537Z"
+  },
+  {
+    "id": "10-48550-arXiv-2504-14305",
+    "title": "Adversarial Locomotion and Motion Imitation for Humanoid Policy Learning",
+    "authors": [
+      "Ji-Yuan Shi",
+      "Xin-Zhe Liu",
+      "De-Wei Wang",
+      "Ouyang Lu",
+      "Sören Schwertfeger",
+      "Chi Zhang",
+      "Fu-Chun Sun",
+      "Chen-Jia Bai",
+      "Xue-Long Li"
+    ],
+    "abstract": "Humans exhibit diverse and expressive whole-body movements. However, attaining human-like whole-body coordination in humanoid robots remains challenging, as conventional approaches that mimic whole-body motions often neglect the distinct roles of upper and lower body. This oversight leads to computationally intensive policy learning and frequently causes robot instability and falls during real-world execution. To address these issues, we propose Adversarial Locomotion and Motion Imitation (ALMI)",
+    "year": 2025,
+    "venue": "NeurIPS",
+    "arxiv_id": "2504.14305",
+    "doi": "10.48550/arXiv.2504.14305",
+    "semantic_scholar_id": "d510ed7c118c548cd46381e2ed203293cc9438e7",
+    "url": "https://www.semanticscholar.org/paper/d510ed7c118c548cd46381e2ed203293cc9438e7",
+    "pdf_url": "https://arxiv.org/pdf/2504.14305",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 35,
+    "match_reasons": [
+      "adversarial"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "NeurIPS"
+    ],
+    "last_checked": "2026-11-02T00:09:22.538Z"
+  },
+  {
+    "id": "10-48550-arXiv-2502-16955",
+    "title": "MTVHunter: Smart Contracts Vulnerability Detection Based on Multi-Teacher Knowledge Translation",
+    "authors": [
+      "Guo-Kai Sun",
+      "Yuan Zhuang",
+      "Shuo Zhang",
+      "Xiao Feng",
+      "Zhen-Guang Liu",
+      "Liguo Zhang"
+    ],
+    "abstract": "Smart contracts, closely intertwined with cryptocurrency transactions, have sparked widespread concerns about considerable\nfinancial losses of security issues. To counteract this, a variety of tools have been developed to identify vulnerability\nin smart contract. However, they fail to overcome two challenges at the same time when faced with smart contract\nbytecode: (i) strong interference caused by enormous non-relevant instructions; (ii) missing semantics of bytecode\ndue to incomplete data and ",
+    "year": 2025,
+    "venue": "AAAI",
+    "arxiv_id": "2502.16955",
+    "doi": "10.48550/arXiv.2502.16955",
+    "semantic_scholar_id": "edeba410640b9ad60599637546671aac542a618a",
+    "url": "https://www.semanticscholar.org/paper/edeba410640b9ad60599637546671aac542a618a",
+    "pdf_url": "https://arxiv.org/pdf/2502.16955",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 35,
+    "match_reasons": [
+      "vulnerability"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "AAAI"
+    ],
+    "last_checked": "2026-11-02T00:10:34.484Z"
+  },
+  {
+    "id": "10-1609-aaai-v40i45-41178",
+    "title": "GraphVSSM: Graph Variational State-Space Model for Probabilistic Spatiotemporal Inference of Dynamic Exposure and Vulnerability for Regional Disaster Resilience Assessment",
+    "authors": [
+      "Joshua Dimasaka",
+      "Christian Geiss",
+      "Emily So"
+    ],
+    "abstract": "Regional disaster resilience quantifies the changing nature of physical risks to inform policy instruments ranging from local immediate recovery to international sustainable development. While many existing state-of-practice methods have greatly advanced the dynamic mapping of exposure and hazard, our understanding of large-scale physical vulnerability has remained static, costly, limited, region-specific, coarse-grained, overly aggregated, and inadequately calibrated. With the significant growt",
+    "year": 2025,
+    "venue": "AAAI",
+    "arxiv_id": "2508.01310",
+    "doi": "10.1609/aaai.v40i45.41178",
+    "semantic_scholar_id": "9b3598864dd899d45771a03f5918efa4e6e69f50",
+    "url": "https://www.semanticscholar.org/paper/9b3598864dd899d45771a03f5918efa4e6e69f50",
+    "pdf_url": "https://arxiv.org/pdf/2508.01310",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 35,
+    "match_reasons": [
+      "vulnerability"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "AAAI"
+    ],
+    "last_checked": "2026-11-02T00:10:34.485Z"
+  },
+  {
+    "id": "10-48550-arXiv-2409-07407",
+    "title": "CLNX: Bridging Code and Natural Language for C/C++ Vulnerability-Contributing Commits Identification",
+    "authors": [
+      "Z. Qin",
+      "Yi-Wei Wu",
+      "Lan-Sheng Han"
+    ],
+    "abstract": "Large Language Models (LLMs) have shown great promise in vulnerability identification. As C/C++ comprise half of the open-source Software (OSS) vulnerabilities over the past decade and updates in OSS mainly occur through commits, enhancing LLMs' ability to identify C/C++ Vulnerability-Contributing Commits (VCCs) is essential. However, current studies primarily focus on further pre-training LLMs on massive code datasets, which is resource-intensive and poses efficiency challenges. In this paper, ",
+    "year": 2024,
+    "venue": "AAAI",
+    "arxiv_id": "2409.07407",
+    "doi": "10.48550/arXiv.2409.07407",
+    "semantic_scholar_id": "c4eb296917571ae761fbdf2e263958370664b75c",
+    "url": "https://www.semanticscholar.org/paper/c4eb296917571ae761fbdf2e263958370664b75c",
+    "pdf_url": "https://arxiv.org/pdf/2409.07407",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 35,
+    "match_reasons": [
+      "vulnerability"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "AAAI"
+    ],
+    "last_checked": "2026-11-02T00:10:34.485Z"
+  },
+  {
+    "id": "10-1109-TDSC-2025-3586669",
+    "title": "HgtJIT: Just-in-Time Vulnerability Detection Based on Heterogeneous Graph Transformer",
+    "authors": [
+      "Xiao-Bing Sun",
+      "Mingxuan Zhou",
+      "Si-Cong Cao",
+      "Xiao-Xue Wu",
+      "Li-Li Bo",
+      "Di Wu",
+      "Bin Li",
+      "Yang Xiang"
+    ],
+    "abstract": "Vulnerability detection plays a crucial role in the software development lifecycle. Commit-level vulnerability detection aims to detect whether the changed code contributed to potential vulnerabilities by the developer when submitting the code, which is also referred to as Just-In-Time (JIT) vulnerability detection. Previous JIT vulnerability detection approaches relied on code metrics and textual features, which were unable to effectively characterize vulnerability-contributing commits (VCCs). ",
+    "year": 2025,
+    "venue": "TDSC",
+    "arxiv_id": "",
+    "doi": "10.1109/TDSC.2025.3586669",
+    "semantic_scholar_id": "57dcdc2d6d458b2abd242cf3b1a65dd08ae066dc",
+    "url": "https://www.semanticscholar.org/paper/57dcdc2d6d458b2abd242cf3b1a65dd08ae066dc",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 35,
+    "match_reasons": [
+      "vulnerability"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "TDSC"
+    ],
+    "last_checked": "2026-11-02T00:11:34.763Z"
+  },
+  {
+    "id": "10-1109-TDSC-2022-3192419",
+    "title": "How About Bug-Triggering Paths? - Understanding and Characterizing Learning-Based Vulnerability Detectors",
+    "authors": [
+      "Xiao Cheng",
+      "Xu Nie",
+      "Ning-Ke Li",
+      "Haoyu Wang",
+      "Zheng Zheng",
+      "Yulei Sui"
+    ],
+    "abstract": "Machine learning and its promising branch deep learning have proven to be effective in a wide range of application domains. Recently, several efforts have shown success in applying deep learning techniques for automatic vulnerability discovery, as alternatives to traditional static bug detection. In principle, these learning-based approaches are built on top of classification models using supervised learning. Depending on the different granularities to detect vulnerabilities, these approaches re",
+    "year": 2024,
+    "venue": "TDSC",
+    "arxiv_id": "",
+    "doi": "10.1109/TDSC.2022.3192419",
+    "semantic_scholar_id": "64342afadda2b8b08c23eb7f3e48298cf4c83b40",
+    "url": "https://www.semanticscholar.org/paper/64342afadda2b8b08c23eb7f3e48298cf4c83b40",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 35,
+    "match_reasons": [
+      "vulnerability"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "TDSC"
+    ],
+    "last_checked": "2026-11-02T00:11:34.763Z"
+  },
+  {
+    "id": "10-1109-TDSC-2024-3354789",
+    "title": "Evaluating C/C++ Vulnerability Detectability of Query-Based Static Application Security Testing Tools",
+    "authors": [
+      "Zong-Jie Li",
+      "Zhibo Liu",
+      "Wai-Kin Wong",
+      "Pingchuan Ma",
+      "Shuai Wang"
+    ],
+    "abstract": "In recent years, query-based static application security testing(Q-SAST) tools such as CodeQL have gained popularity due to their ability to codify vulnerability knowledge into SQL-like queries and search for vulnerabilities in the database derived from the software. The industry has made considerable progress in building Q-SAST tools, facilitating their integration into the continuous integration (CI) pipeline, and sustaining an active community. However, we do not have a systematic understandi",
+    "year": 2024,
+    "venue": "TDSC",
+    "arxiv_id": "",
+    "doi": "10.1109/TDSC.2024.3354789",
+    "semantic_scholar_id": "f357df6e7503bb5876a621516348fca1871f6349",
+    "url": "https://www.semanticscholar.org/paper/f357df6e7503bb5876a621516348fca1871f6349",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 35,
+    "match_reasons": [
+      "vulnerability"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "TDSC"
+    ],
+    "last_checked": "2026-11-02T00:11:34.763Z"
+  },
+  {
+    "id": "10-1109-TDSC-2025-3532487",
+    "title": "Enabling Generalized Zero-Shot Vulnerability Classification",
+    "authors": [
+      "Jinghao Hu",
+      "Jinsong Guo",
+      "Chen Luo",
+      "Yang Hu",
+      "Matthias Lanzinger",
+      "Zhanshan Li"
+    ],
+    "abstract": "Regarding computer security, the growth of code vulnerability types presents a persistent challenge. These vulnerabilities, which may cause severe consequences, necessitate precise classification for effective mitigation. However, the rapid emergence of new vulnerability types complicates the classification process. Traditional methodologies, which often involve human expertise and the manual labeling or generation of example instances, are not only resource-intensive but also struggle to adapt ",
+    "year": 2025,
+    "venue": "TDSC",
+    "arxiv_id": "",
+    "doi": "10.1109/TDSC.2025.3532487",
+    "semantic_scholar_id": "0eb80241112461e8fc0db56218d72b395ba2b9b2",
+    "url": "https://www.semanticscholar.org/paper/0eb80241112461e8fc0db56218d72b395ba2b9b2",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 35,
+    "match_reasons": [
+      "vulnerability"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "TDSC"
+    ],
+    "last_checked": "2026-11-02T00:11:34.763Z"
+  },
+  {
+    "id": "10-1109-TDSC-2025-3605773",
+    "title": "Interaction-Aware Vulnerability Detection in Smart Contract Bytecodes",
+    "authors": [
+      "Wen-Kai Li",
+      "Xiao-Qi Li",
+      "Ying-Jie Mao",
+      "Yuqing Zhang"
+    ],
+    "abstract": "The detection of vulnerabilities in smart contracts remains a significant challenge. While numerous tools are available for analyzing smart contracts in source code, only about 1.79% of smart contracts on Ethereum are open-source. For existing tools that target bytecodes, most of them only consider the semantic logic context and disregard function interface information in the bytecodes. In this paper, we propose COBRA, a novel framework that integrates semantic context and function interfaces to",
+    "year": 2024,
+    "venue": "TDSC",
+    "arxiv_id": "2410.20712",
+    "doi": "10.1109/TDSC.2025.3605773",
+    "semantic_scholar_id": "158f199505fbabf3899452da0894155aeaf2472e",
+    "url": "https://www.semanticscholar.org/paper/158f199505fbabf3899452da0894155aeaf2472e",
+    "pdf_url": "https://arxiv.org/pdf/2410.20712",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 35,
+    "match_reasons": [
+      "vulnerability"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "TDSC"
+    ],
+    "last_checked": "2026-11-02T00:11:34.763Z"
+  },
+  {
+    "id": "10-1109-TDSC-2025-3601228",
+    "title": "Real-World Code Vulnerability Detection Framework: From Data Preprocessing to Multi-Feature Fusion Detection",
+    "authors": [
+      "Jixian Zhang",
+      "Qingfeng Du",
+      "Sheng Li",
+      "Zhongda Lu",
+      "Ting He",
+      "Cheng-Wei Liu"
+    ],
+    "abstract": "Code vulnerability detection (CVD) is a critical approach to ensuring the security, stability, and reliability of software. When exploited by malicious actors or hackers, code vulnerabilities can lead to a series of severe consequences and cause significant losses. However, the effectiveness of real-world CVD is currently unsatisfactory, with several issues that need to be optimized and resolved. These issues include the poor quality of real-world CVD datasets, the high resource consumption of c",
+    "year": 2025,
+    "venue": "TDSC",
+    "arxiv_id": "",
+    "doi": "10.1109/TDSC.2025.3601228",
+    "semantic_scholar_id": "b4e25df76ddbc1e67074df26eea80467f335f329",
+    "url": "https://www.semanticscholar.org/paper/b4e25df76ddbc1e67074df26eea80467f335f329",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 35,
+    "match_reasons": [
+      "vulnerability"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "TDSC"
+    ],
+    "last_checked": "2026-11-02T00:11:34.764Z"
+  },
+  {
+    "id": "10-1109-TDSC-2023-3294433",
+    "title": "ILLATION: Improving Vulnerability Risk Prioritization by Learning From Network",
+    "authors": [
+      "Zhen Zeng",
+      "Di-Jiang Huang",
+      "G. Xue",
+      "Yuli Deng",
+      "N. Vadnere",
+      "Liguang Xie"
+    ],
+    "abstract": "Network administrators face the challenge of efficiently patching overwhelming volumes of vulnerabilities with limited time and resources. To address this issue, they must prioritize vulnerabilities based on the associated risk/severity measurements (i.e., CVSS). Existing solutions struggle to efficiently patch thousands of vulnerabilities on a network. This article presents ILLATION, a proof-of-concept model that provides network-specific vulnerability risk prioritization to support efficient p",
+    "year": 2024,
+    "venue": "TDSC",
+    "arxiv_id": "",
+    "doi": "10.1109/TDSC.2023.3294433",
+    "semantic_scholar_id": "72c754c379fce0bd54acd39b8a5e83318b3c243c",
+    "url": "https://www.semanticscholar.org/paper/72c754c379fce0bd54acd39b8a5e83318b3c243c",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 35,
+    "match_reasons": [
+      "vulnerability"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "TDSC"
+    ],
+    "last_checked": "2026-11-02T00:11:34.764Z"
+  },
+  {
+    "id": "10-1109-TDSC-2023-3324646",
+    "title": "V-Digger: An Efficient and Secure Vulnerability Assessment for Large-Scale ISP Network",
+    "authors": [
+      "Ning Lu",
+      "Ru-Xiao Huang",
+      "Mingliang Yao",
+      "Wen-Bo Shi",
+      "K. Choo"
+    ],
+    "abstract": "Vulnerability assessment allows cyber security professionals to discover vulnerable end devices. Generally, in such a process one extracts the default Service Banner (SB) from the application layer message of each device, prior to matching the SB with each Common Vulnerabilities and Exposures (CVE) in the public National Vulnerability Database (NVD). However, such an approach is not practical in large-scale ISP networks due to the efforts involved (e.g., collecting of SBs, and CVE matching) and ",
+    "year": 2024,
+    "venue": "TDSC",
+    "arxiv_id": "",
+    "doi": "10.1109/TDSC.2023.3324646",
+    "semantic_scholar_id": "7c85c833760ce0ea2791f2945c876a1f15dbf5d4",
+    "url": "https://www.semanticscholar.org/paper/7c85c833760ce0ea2791f2945c876a1f15dbf5d4",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 35,
+    "match_reasons": [
+      "vulnerability"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "TDSC"
+    ],
+    "last_checked": "2026-11-02T00:11:34.764Z"
+  },
+  {
+    "id": "10-1155-2024-9897623",
+    "title": "Retracted: A New Method for Inverter Diagnosis of Electric Locomotive Using Adversarial Neural Networks",
+    "authors": [
+      "Security and Communication Networks"
+    ],
+    "abstract": "<jats:p />",
+    "year": 2024,
+    "venue": "SCN",
+    "arxiv_id": "",
+    "doi": "10.1155/2024/9897623",
+    "semantic_scholar_id": "99ba9777b55b1fc031d4e03f0a46f199d166164e",
+    "url": "https://www.semanticscholar.org/paper/99ba9777b55b1fc031d4e03f0a46f199d166164e",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 35,
+    "match_reasons": [
+      "adversarial"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "SCN"
+    ],
+    "last_checked": "2026-11-02T00:14:24.674Z"
+  },
+  {
+    "id": "10-1155-sec-5898106",
+    "title": "A Review of Automatic Identification System Approaches for Maritime Cyber Security",
+    "authors": [
+      "S. A. U. Zaman",
+      "Faizan Qamar",
+      "Masnizah Mohd",
+      "Nur Hanis Sabrina Suhaimi",
+      "A. Khandakar"
+    ],
+    "abstract": "The Automatic Identification System (AIS) has become a cornerstone of modern maritime navigation, traffic management, and situational awareness, enabling continuous exchange of vessel identity, position, speed, and voyage‐related information across global maritime networks. While AIS significantly enhances navigational safety and operational efficiency, its open and unauthenticated broadcast design introduces critical cybersecurity vulnerabilities that can be exploited through spoofing, message ",
+    "year": 2026,
+    "venue": "SCN",
+    "arxiv_id": "",
+    "doi": "10.1155/sec/5898106",
+    "semantic_scholar_id": "54dfb8a20758c95e4a2510974d020fd2ef972f0b",
+    "url": "https://www.semanticscholar.org/paper/54dfb8a20758c95e4a2510974d020fd2ef972f0b",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 35,
+    "match_reasons": [
+      "cybersecurity"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "SCN"
+    ],
+    "last_checked": "2026-11-02T00:14:24.674Z"
+  },
+  {
+    "id": "10-1007-s11432-022-3952-3",
+    "title": "GPS: graph contrastive learning via multi-scale augmented views from adversarial pooling",
+    "authors": [
+      "Wei Ju",
+      "Yiyang Gu",
+      "Zheng-Yan Mao",
+      "Zi-Yue Qiao",
+      "Yifang Qin",
+      "Xiao Luo",
+      "Hui Xiong",
+      "Ming Zhang"
+    ],
+    "abstract": "Self-supervised graph representation learning has recently shown considerable promise in a range of fields, including bioinformatics and social networks. A large number of graph contrastive learning approaches have shown promising performance for representation learning on graphs, which train models by maximizing agreement between original graphs and their augmented views (i.e., positive views). Unfortunately, these methods usually involve pre-defined augmentation strategies based on the knowled",
+    "year": 2024,
+    "venue": "SCIS",
+    "arxiv_id": "2401.16011",
+    "doi": "10.1007/s11432-022-3952-3",
+    "semantic_scholar_id": "8bc4f48ad42bdf0756fec87e8372bac7e2d67545",
+    "url": "https://www.semanticscholar.org/paper/8bc4f48ad42bdf0756fec87e8372bac7e2d67545",
+    "pdf_url": "https://arxiv.org/pdf/2401.16011",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 35,
+    "match_reasons": [
+      "adversarial"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "SCIS"
+    ],
+    "last_checked": "2026-11-02T00:20:04.419Z"
+  },
+  {
+    "id": "10-1007-s11432-024-4400-8",
+    "title": "LEDNet: a multimodal foundation model for robust deepfake detection",
+    "authors": [
+      "Ren-Shuai Tao",
+      "Shijie Tang",
+      "Haotong Qin",
+      "Wei Wang",
+      "Yun-Chao Wei",
+      "Yao Zhao"
+    ],
+    "abstract": "",
+    "year": 2025,
+    "venue": "SCIS",
+    "arxiv_id": "",
+    "doi": "10.1007/s11432-024-4400-8",
+    "semantic_scholar_id": "79996c631dd849407a1744581be253036694d8a4",
+    "url": "https://www.semanticscholar.org/paper/79996c631dd849407a1744581be253036694d8a4",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 35,
+    "match_reasons": [
+      "deepfake"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "SCIS"
+    ],
+    "last_checked": "2026-11-02T00:20:04.419Z"
+  },
+  {
+    "id": "10-1007-s11432-025-4471-7",
+    "title": "Quantum-enhanced blockchain federated learning via quantum Byzantine agreement",
+    "authors": [
+      "Hao-Wen Liu",
+      "Zhi-Ping Liu",
+      "Hua-Lei Yin",
+      "Zeng-Bing Chen"
+    ],
+    "abstract": "",
+    "year": 2025,
+    "venue": "SCIS",
+    "arxiv_id": "",
+    "doi": "10.1007/s11432-025-4471-7",
+    "semantic_scholar_id": "74c0fe5f4fb71f10e70ddcbdcb4b20db072f9910",
+    "url": "https://www.semanticscholar.org/paper/74c0fe5f4fb71f10e70ddcbdcb4b20db072f9910",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 35,
+    "match_reasons": [
+      "federated"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "SCIS"
+    ],
+    "last_checked": "2026-11-02T00:20:04.419Z"
+  },
+  {
+    "id": "10-1007-s11432-025-4895-2",
+    "title": "Enhancing performance and cybersecurity resilience in ICSs 4.0: a reinforcement learning-driven intelligent control framework",
+    "authors": [
+      "Xiao Cai",
+      "Yan-Bin Sun",
+      "Kai-Bo Shi",
+      "Chong-Wu Dong",
+      "Huai-Cheng Yan",
+      "Zhihong Tian"
+    ],
+    "abstract": "",
+    "year": 2026,
+    "venue": "SCIS",
+    "arxiv_id": "",
+    "doi": "10.1007/s11432-025-4895-2",
+    "semantic_scholar_id": "8642a66265ccd3d8b4f34c2e481f37fd70d8f11e",
+    "url": "https://www.semanticscholar.org/paper/8642a66265ccd3d8b4f34c2e481f37fd70d8f11e",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 35,
+    "match_reasons": [
+      "cybersecurity"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "SCIS"
+    ],
+    "last_checked": "2026-11-02T00:20:04.419Z"
+  },
+  {
+    "id": "10-1145-3708821-3733888",
+    "title": "SoK: The Privacy Paradox of Large Language Models: Advancements, Privacy Risks, and Mitigation",
+    "authors": [
+      "Yashothara Shanmugarasa",
+      "Ming Ding",
+      "Chamikara Mahawaga Arachchige",
+      "Thierry Rakotoarivelo"
+    ],
+    "abstract": "Large language models (LLMs) are sophisticated artificial intelligence systems that enable machines to generate human-like text with remarkable precision. While LLMs offer significant technological progress, their development using vast amounts of user data scraped from the web and collected from extensive user interactions poses risks of sensitive information leakage. Most existing surveys focus on the privacy implications of the training data but tend to overlook privacy risks from user intera",
+    "year": 2025,
+    "venue": "ASIACCS",
+    "arxiv_id": "2506.12699",
+    "doi": "10.1145/3708821.3733888",
+    "semantic_scholar_id": "7d52e2da2d773587b1f6b9f57edfc06946b89d6d",
+    "url": "https://www.semanticscholar.org/paper/7d52e2da2d773587b1f6b9f57edfc06946b89d6d",
+    "pdf_url": "https://arxiv.org/pdf/2506.12699",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 35,
+    "match_reasons": [
+      "privacy"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "ASIACCS"
+    ],
+    "last_checked": "2026-11-02T00:21:09.750Z"
+  },
+  {
+    "id": "10-1145-3779208-3785270",
+    "title": "SoK: Reviewing Two Decades of Security, Privacy, Accessibility, and Usability Studies on Internet of Things for Older Adults",
+    "authors": [
+      "Suleiman Saka",
+      "Sanchari Das"
+    ],
+    "abstract": "The Internet of Things (IoT) has the potential to enhance older adults' independence and quality of life, but it also exposes them to security, privacy, accessibility, and usability (SPAU) risks. We conducted a systematic review of 44 peer-reviewed studies published between 2004 and 2024 using a five-phase screening pipeline. From each study, we extracted data on study design, IoT type, SPAU measures, and identified research gaps. We introduce the SPAU-IoT Framework, which comprises 27 criteria ",
+    "year": 2025,
+    "venue": "ASIACCS",
+    "arxiv_id": "2512.16394",
+    "doi": "10.1145/3779208.3785270",
+    "semantic_scholar_id": "b2b41389925947a99358b93c772f5bca18bed0e7",
+    "url": "https://www.semanticscholar.org/paper/b2b41389925947a99358b93c772f5bca18bed0e7",
+    "pdf_url": "https://arxiv.org/pdf/2512.16394",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 35,
+    "match_reasons": [
+      "privacy"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "ASIACCS"
+    ],
+    "last_checked": "2026-11-02T00:21:09.750Z"
+  },
+  {
+    "id": "10-1145-3708821-3736212",
+    "title": "PSP: A Privacy-Preserving Self-certify Pseudonym Protocol for V2X",
+    "authors": [
+      "Xuyuan Cai",
+      "Rui Song",
+      "Bin Xie",
+      "Qingjun Xiao",
+      "Bin Xiao"
+    ],
+    "abstract": "The advancement of Vehicle-to-Everything (V2X) communication is pivotal in the deployment of Intelligent Transportation Systems (ITS), offering significant improvements in road safety and traffic management. Current systems predominantly utilize pseudonym-based approaches to address privacy concerns; however, these systems confront several limitations, including reliance on centralized authorization authorities and insufficient support for practical scenarios where there is a need to disclose ce",
+    "year": 2025,
+    "venue": "ASIACCS",
+    "arxiv_id": "",
+    "doi": "10.1145/3708821.3736212",
+    "semantic_scholar_id": "73ce17707f4bbe6a5e45067af2c295c0e4af0c0b",
+    "url": "https://www.semanticscholar.org/paper/73ce17707f4bbe6a5e45067af2c295c0e4af0c0b",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 35,
+    "match_reasons": [
+      "privacy"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "ASIACCS"
+    ],
+    "last_checked": "2026-11-02T00:21:09.750Z"
+  },
+  {
+    "id": "10-1145-3708821-3710821",
+    "title": "Open Access Alert: Studying the Privacy Risks in Android WebView's Web Permission Enforcement",
+    "authors": [
+      "Trung Tin Nguyen",
+      "Ben Stock"
+    ],
+    "abstract": "Besides rendering pages in common browsers like Chrome, it is customary for apps to rely on WebViews to display web pages. While browsers handle permissions through user prompts for each visited site, WebViews require developers to manage web permission requests individually, leaving significant room for error. However, to date, the community lacks insight into the current developers’ practices of WebView’s permission enforcement. To address this research gap, we present the first large-scale st",
+    "year": 2025,
+    "venue": "ASIACCS",
+    "arxiv_id": "",
+    "doi": "10.1145/3708821.3710821",
+    "semantic_scholar_id": "9d89d39e6ab788c925d43d004cd154ffe5b83720",
+    "url": "https://www.semanticscholar.org/paper/9d89d39e6ab788c925d43d004cd154ffe5b83720",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 35,
+    "match_reasons": [
+      "privacy"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "ASIACCS"
+    ],
+    "last_checked": "2026-11-02T00:21:09.750Z"
+  },
+  {
+    "id": "10-1145-3708821-3736211",
+    "title": "Pace: Privacy-Preserving and Atomic Cross-chain Swaps for Cryptocurrency Exchanges",
+    "authors": [
+      "Jianhuan Wang",
+      "Bin Xiao"
+    ],
+    "abstract": "Cryptocurrency exchanges serve as critical infrastructure within the blockchain ecosystem, providing traders with accessible platforms for exchanging cryptocurrencies across a vast blockchain network. Atomic swap represents a promising underlying protocol for currency exchanges, ensuring secure currency swaps for traders. However, most existing atomic swap solutions fail to consider user privacy, with only a few achieving privacy preservation under specific constraints (e.g., only supporting ano",
+    "year": 2025,
+    "venue": "ASIACCS",
+    "arxiv_id": "",
+    "doi": "10.1145/3708821.3736211",
+    "semantic_scholar_id": "a31a3516b2e9f161504c54d628defc754be53c08",
+    "url": "https://www.semanticscholar.org/paper/a31a3516b2e9f161504c54d628defc754be53c08",
+    "pdf_url": "",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 35,
+    "match_reasons": [
+      "privacy"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "ASIACCS"
+    ],
+    "last_checked": "2026-11-02T00:21:09.751Z"
+  },
+  {
+    "id": "10-1145-3708821-3710826",
+    "title": "OblivCDN: A Practical Privacy-preserving CDN with Oblivious Content Access",
+    "authors": [
+      "V. Vo",
+      "Shang-Qi Lai",
+      "Xing-Liang Yuan",
+      "Surya Nepal",
+      "Qi Li"
+    ],
+    "abstract": "Content providers increasingly utilise Content Delivery Networks (CDNs) to enhance users’ content download experience. However, this deployment scenario raises significant security concerns regarding content confidentiality and user privacy due to the involvement of third-party providers. Prior proposals using private information retrieval (PIR) and oblivious RAM (ORAM) have proven impractical due to high computation and communication costs, as well as integration challenges within distributed C",
+    "year": 2025,
+    "venue": "ASIACCS",
+    "arxiv_id": "2501.07262",
+    "doi": "10.1145/3708821.3710826",
+    "semantic_scholar_id": "6b4eb1173ebbd0894d316481ab0cf3fdc98fa426",
+    "url": "https://www.semanticscholar.org/paper/6b4eb1173ebbd0894d316481ab0cf3fdc98fa426",
+    "pdf_url": "https://arxiv.org/pdf/2501.07262",
+    "categories": [],
+    "keywords": [],
+    "relevance_score": 35,
+    "match_reasons": [
+      "privacy"
+    ],
+    "published_at": "",
+    "updated_at": "",
+    "discovered_from": [
+      "semantic-scholar",
+      "ASIACCS"
+    ],
+    "last_checked": "2026-11-02T00:21:09.751Z"
   },
   {
     "id": "2603-19469",
